@@ -1,5 +1,6 @@
 package com.yiran.minecraft.gtmqol
 
+import com.yiran.minecraft.gtmqol.config.ConfigHolder
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
@@ -25,6 +26,8 @@ object GTMQoL {
 
     private fun onCommonSetup(event: FMLCommonSetupEvent) {
         LOGGER.info("$MOD_ID common setup")
+
+        ConfigHolder.init()
     }
 
     private fun onClientSetup(event: FMLClientSetupEvent) {

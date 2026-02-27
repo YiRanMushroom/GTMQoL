@@ -20,13 +20,27 @@ java {
 }
 
 loom {
-    // use this if you are using the official mojang mappings
-    // and want loom to stop warning you about their license
     silentMojangMappingsLicense()
 
-    // since loom 0.10, you are **required** to use the
-    // "forge" block to configure forge-specific features,
-    // such as the mixinConfigs array or datagen
+    runs {
+        named("client") {
+            programArgs("--width", "1280", "--height", "720")
+            ideConfigGenerated(true)
+            vmArgs("-Dmixin.debug.export=true")
+            runDir("run")
+        }
+        named("server") {
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+    }
+
+    mods {
+        create("gtmqol") {
+            sourceSet(sourceSets.main.get())
+        }
+    }
+
     forge {
         // specify the mixin configs used in this mod
         // this will be added to the jar manifest as well!
@@ -135,9 +149,17 @@ repositories {
     }
     maven { url = uri("https://jitpack.io") }
     maven {
+        name = "GuideME Snapshots"
+        url = uri("https://central.sonatype.com/repository/maven-snapshots/")
+        content {
+            includeModule("org.appliedenergistics", "guideme")
+        }
+    }
+    maven {
         name = "Kotlin for Forge"
         url = uri("https://thedarkcolour.github.io/KotlinForForge/")
     }
+    maven { url = uri("https://modmaven.dev/") }
 }
 
 dependencies {
@@ -165,11 +187,12 @@ dependencies {
     implementation(include("io.github.llamalad7:mixinextras-forge:${project.property("mixinextras_version")}")!!)
 
     // lombok
-    compileOnly("org.projectlombok:lombok:1.18.24")
-    annotationProcessor("org.projectlombok:lombok:1.18.24")
+    compileOnly("org.projectlombok:lombok:1.18.36")
+    annotationProcessor("org.projectlombok:lombok:1.18.36")
 
-    modImplementation("curse.maven:jade-324717:${project.property("jade_file_id")}")
+    modRuntimeOnly("curse.maven:jade-324717:6106101")
     modImplementation("appeng:appliedenergistics2-forge:${project.property("ae2_version")}") { isTransitive = false }
+    modRuntimeOnly("org.appliedenergistics:guideme:${project.property("guideme_version")}") { isTransitive = false }
 
     modCompileOnly("dev.architectury:architectury-forge:${project.property("architectury_version")}")
     modCompileOnly("dev.ftb.mods:ftb-library-forge:${project.property("ftb_library_version")}") { isTransitive = false }
@@ -183,7 +206,12 @@ dependencies {
 
     // Kotlin for Forge
     modImplementation("thedarkcolour:kotlinforforge:${project.property("kff_version")}")
+    forgeRuntimeLibrary("thedarkcolour:kotlinforforge:${project.property("kff_version")}")
+
+    modCompileOnly("mekanism:Mekanism:${project.property("mekanism_version")}:api")
+    modImplementation("mekanism:Mekanism:${project.property("mekanism_version")}")
 }
+
 
 tasks.processResources {
     // set up properties for filling into metadata
@@ -204,6 +232,17 @@ tasks.processResources {
     filesMatching("META-INF/mods.toml") {
         expand(properties)
     }
+}
+
+// Copy Kotlin classes to resources/main so Forge can find @Mod classes in dev environment
+tasks.register<Copy>("copyKotlinClasses") {
+    dependsOn("compileKotlin")
+    from(layout.buildDirectory.dir("classes/kotlin/main"))
+    into(layout.buildDirectory.dir("resources/main"))
+}
+
+tasks.named("processResources") {
+    dependsOn("copyKotlinClasses")
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -249,7 +288,3 @@ publishing {
         // retrieving dependencies.
     }
 }
-
-
-
-
