@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol
 
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
+import com.yiran.minecraft.gtmqol.mixin_impl.AddDefaultMultiesImpl
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
@@ -20,6 +21,7 @@ object GTMQoL {
     init {
         MOD_BUS.addListener(::onCommonSetup)
         MOD_BUS.addListener(::onClientSetup)
+        MOD_BUS.addListener(AddDefaultMultiesImpl::onAddPackFinders)
 
         LOGGER.info("$MOD_ID initializing")
     }
@@ -32,6 +34,8 @@ object GTMQoL {
 
     private fun onClientSetup(event: FMLClientSetupEvent) {
         LOGGER.info("$MOD_ID client setup")
+
+//        AddDefaultMultiesImpl-()
     }
 }
 

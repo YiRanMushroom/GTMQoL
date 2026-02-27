@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "mixins": [
-    "ForgeCommonEventListener$AttachEnergyProxy$Mixin"
+    "ForgeCommonEventListener$AttachEnergyProxy$Mixin",
+    "GTMachineUtils$AddDefaultMulties$Mixin"
   ],
   "client": [
   ],
