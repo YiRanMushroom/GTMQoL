@@ -2,6 +2,7 @@ package com.yiran.minecraft.gtmqol.mixin_impl
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.gregtechceu.gtceu.GTCEu
 import com.gregtechceu.gtceu.api.data.RotationState
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine
@@ -55,6 +56,8 @@ object AddDefaultMultiesImpl {
                     .where('#', Predicates.air())
                     .build()
             }
+            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
+                GTCEu.id("block/multiblock/primitive_blast_furnace"))
             .register()
 
         nameToMultiblockDefinitionMap[machineName] = definition
@@ -171,29 +174,17 @@ object AddDefaultMultiesImpl {
         private fun generateCompositeModel(overlayTex: String): String {
             return """
             {
-              "particle": "$steelCasingTex",
+              "parent": "minecraft:block/block",
               "textures": {
-                "casing": "$steelCasingTex",
+                "particle": "$steelCasingTex",
                 "overlay": "$overlayTex"
               },
               "elements": [
                 {
-                  "from": [ 0, 0, 0 ],
-                  "to": [ 16, 16, 16 ],
+                  "from": [ 0, 0, -0.01 ],
+                  "to": [ 16, 16, 0.01 ],
                   "faces": {
-                    "down":  { "texture": "#casing", "cullface": "down" },
-                    "up":    { "texture": "#casing", "cullface": "up" },
-                    "north": { "texture": "#casing", "cullface": "north" },
-                    "south": { "texture": "#casing", "cullface": "south" },
-                    "west":  { "texture": "#casing", "cullface": "west" },
-                    "east":  { "texture": "#casing", "cullface": "east" }
-                  }
-                },
-                {
-                  "from": [ -0.01, -0.01, -0.01 ],
-                  "to": [ 16.01, 16.01, 16.01 ],
-                  "faces": {
-                    "north": { "texture": "#overlay", "tintindex": 0 }
+                    "north": { "texture": "#overlay" }
                   }
                 }
               ]
