@@ -1,5 +1,6 @@
 package com.yiran.minecraft.gtmqol.mixin_impl
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.gregtechceu.gtceu.api.data.RotationState
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition
@@ -10,7 +11,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers
-import net.minecraft.core.Direction
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackResources
@@ -27,12 +27,6 @@ import java.io.InputStream
 import java.nio.charset.StandardCharsets
 
 object AddDefaultMultiesImpl {
-    val blackListedRecipeTypes = hashSetOf<GTRecipeType>()
-
-    fun addBlackListedRecipeType(recipeType: GTRecipeType) {
-        blackListedRecipeTypes.add(recipeType)
-    }
-
     val nameToMultiblockDefinitionMap = hashMapOf<String, MultiblockMachineDefinition>()
 
     @JvmStatic
@@ -89,28 +83,34 @@ object AddDefaultMultiesImpl {
     }
 
     class SophisticatedPackResources : PackResources {
-        private val blockModel = "minecraft:block/iron_block"
+        private val steelCasingTex = "gtceu:block/casings/solid/machine_casing_solid_steel"
 
         override fun getRootResource(vararg elements: String): IoSupplier<InputStream>? = null
 
         override fun getResource(type: PackType, location: ResourceLocation): IoSupplier<InputStream>? {
-            val path = location.path
-//            System.out.println("[GTMQoL-DEBUG] GET_RESOURCE: $path")
-
             if (type != PackType.CLIENT_RESOURCES || location.namespace != "gtceu") return null
+
+            val path = location.path
+            System.out.println("[GTMQoL-DEBUG] GET_RESOURCE: $path")
 
             val name = path.substringAfterLast("/").substringBefore(".json")
             if (!nameToMultiblockDefinitionMap.containsKey(name)) return null
 
             if (path.startsWith("blockstates/")) {
                 System.out.println("[GTMQoL-DEBUG] PROVIDING_BS: $name")
-                return IoSupplier { ByteArrayInputStream(generateBlockstate().toByteArray(StandardCharsets.UTF_8)) }
+                return IoSupplier { ByteArrayInputStream(generateMultipartBS(name).toByteArray(StandardCharsets.UTF_8)) }
             }
 
             if (path.startsWith("models/item/")) {
                 System.out.println("[GTMQoL-DEBUG] PROVIDING_ITEM: $name")
-                val json = """{"parent": "$blockModel"}"""
+                val json = """{"parent": "gtceu:block/$name"}"""
                 return IoSupplier { ByteArrayInputStream(json.toByteArray(StandardCharsets.UTF_8)) }
+            }
+
+            if (path.startsWith("models/block/")) {
+                System.out.println("[GTMQoL-DEBUG] PROVIDING_BLOCK_MODEL: $name")
+                val overlayTex = "gtceu:block/multiblock/overlays/${name.substringAfter("sophisticated_")}"
+                return IoSupplier { ByteArrayInputStream(generateCompositeModel(overlayTex).toByteArray(StandardCharsets.UTF_8)) }
             }
 
             return null
@@ -121,38 +121,84 @@ object AddDefaultMultiesImpl {
 
             System.out.println("[GTMQoL-DEBUG] LIST_RESOURCES_SCAN: $path")
 
-            if (path.startsWith("blockstates")) {
+            if (path.contains("blockstates")) {
                 nameToMultiblockDefinitionMap.keys.forEach { name ->
-                    val loc = ResourceLocation("gtceu", "blockstates/$name.json")
+                    val loc = ResourceLocation.tryBuild("gtceu", "blockstates/$name.json")
                     System.out.println("[GTMQoL-DEBUG] LIST_ACCEPT_BS: $loc")
-                    resourceOutput.accept(loc) { ByteArrayInputStream(generateBlockstate().toByteArray(StandardCharsets.UTF_8)) }
+                    resourceOutput.accept(loc) { ByteArrayInputStream(generateMultipartBS(name).toByteArray(StandardCharsets.UTF_8)) }
                 }
             }
 
-            if (path.startsWith("models")) {
+            if (path.contains("models")) {
                 nameToMultiblockDefinitionMap.keys.forEach { name ->
-                    val loc = ResourceLocation("gtceu", "models/item/$name.json")
-                    System.out.println("[GTMQoL-DEBUG] LIST_ACCEPT_ITEM: $loc")
-                    val json = """{"parent": "$blockModel"}"""
-                    resourceOutput.accept(loc) { ByteArrayInputStream(json.toByteArray(StandardCharsets.UTF_8)) }
+                    val itemLoc = ResourceLocation.tryBuild("gtceu", "models/item/$name.json")
+                    System.out.println("[GTMQoL-DEBUG] LIST_ACCEPT_ITEM: $itemLoc")
+                    resourceOutput.accept(itemLoc) { ByteArrayInputStream("""{"parent": "gtceu:block/$name"}""".toByteArray(StandardCharsets.UTF_8)) }
+
+                    val blockLoc = ResourceLocation.tryBuild("gtceu", "models/block/$name.json")
+                    System.out.println("[GTMQoL-DEBUG] LIST_ACCEPT_BLOCK_MODEL: $blockLoc")
+                    val overlayTex = "gtceu:block/multiblock/overlays/${name.substringAfter("sophisticated_")}"
+                    resourceOutput.accept(blockLoc) { ByteArrayInputStream(generateCompositeModel(overlayTex).toByteArray(StandardCharsets.UTF_8)) }
                 }
             }
         }
 
-        private fun generateBlockstate(): String {
-            val blockstateJson = JsonObject()
-            val variants = JsonObject()
-            val dirs = arrayOf("north", "south", "east", "west", "up", "down")
-            for (f in dirs) {
-                for (u in dirs) {
-                    val variantKey = "facing=$f,upwards_facing=$u"
-                    val config = JsonObject()
-                    config.addProperty("model", blockModel)
-                    variants.add(variantKey, config)
+        private fun generateMultipartBS(name: String): String {
+            val root = JsonObject()
+            val multipart = JsonArray()
+            val hDirs = arrayOf("north", "south", "east", "west")
+            for (dir in hDirs) {
+                val part = JsonObject()
+                val whenObj = JsonObject()
+                whenObj.addProperty("facing", dir)
+                part.add("when", whenObj)
+                val apply = JsonObject()
+                apply.addProperty("model", "gtceu:block/$name")
+                val y = when (dir) {
+                    "south" -> 180
+                    "west" -> 270
+                    "east" -> 90
+                    else -> 0
                 }
+                if (y != 0) apply.addProperty("y", y)
+                part.add("apply", apply)
+                multipart.add(part)
             }
-            blockstateJson.add("variants", variants)
-            return blockstateJson.toString()
+            root.add("multipart", multipart)
+            return root.toString()
+        }
+
+        private fun generateCompositeModel(overlayTex: String): String {
+            return """
+            {
+              "particle": "$steelCasingTex",
+              "textures": {
+                "casing": "$steelCasingTex",
+                "overlay": "$overlayTex"
+              },
+              "elements": [
+                {
+                  "from": [ 0, 0, 0 ],
+                  "to": [ 16, 16, 16 ],
+                  "faces": {
+                    "down":  { "texture": "#casing", "cullface": "down" },
+                    "up":    { "texture": "#casing", "cullface": "up" },
+                    "north": { "texture": "#casing", "cullface": "north" },
+                    "south": { "texture": "#casing", "cullface": "south" },
+                    "west":  { "texture": "#casing", "cullface": "west" },
+                    "east":  { "texture": "#casing", "cullface": "east" }
+                  }
+                },
+                {
+                  "from": [ -0.01, -0.01, -0.01 ],
+                  "to": [ 16.01, 16.01, 16.01 ],
+                  "faces": {
+                    "north": { "texture": "#overlay", "tintindex": 0 }
+                  }
+                }
+              ]
+            }
+            """.trimIndent()
         }
 
         override fun getNamespaces(type: PackType): Set<String> {
