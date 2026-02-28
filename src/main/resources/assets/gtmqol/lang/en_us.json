@@ -1,3 +1,4 @@
 {
-  "gtmqol.modular_machine.name_format": "Modular %s"
+  "gtmqol.modular_machine.name_format": "Modular %s",
+  "block.gtmqol.smart_assembly_factory": "Smart Assembly Factory"
 }

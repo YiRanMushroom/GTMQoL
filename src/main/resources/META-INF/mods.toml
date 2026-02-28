@@ -1,5 +1,5 @@
-modLoader = "kotlinforforge"
-loaderVersion = "[4,)"
+modLoader = "javafml"
+loaderVersion = "[47,)"
 license = "${mod_license}"
 
 # This is a URL to e.g. your GitHub or CurseForge issues page.
