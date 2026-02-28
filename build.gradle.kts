@@ -205,8 +205,8 @@ dependencies {
     forgeRuntimeLibrary("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
 
     // Kotlin for Forge
-    modImplementation("thedarkcolour:kotlinforforge:${project.property("kff_version")}")
-    forgeRuntimeLibrary("thedarkcolour:kotlinforforge:${project.property("kff_version")}")
+//    modImplementation("thedarkcolour:kotlinforforge:${project.property("kff_version")}")
+//    forgeRuntimeLibrary("thedarkcolour:kotlinforforge:${project.property("kff_version")}")
 
     modCompileOnly("mekanism:Mekanism:${project.property("mekanism_version")}:api")
     modImplementation("mekanism:Mekanism:${project.property("mekanism_version")}")

@@ -8,12 +8,9 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern
 import com.gregtechceu.gtceu.api.pattern.Predicates
 import com.gregtechceu.gtceu.api.pattern.Predicates.blocks
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
-import com.gregtechceu.gtceu.common.registry.GTRegistration
-import com.yiran.minecraft.gtmqol.GTMQoLGTAddon
 import com.yiran.minecraft.gtmqol.GTMQoLRegistrate
 
 object OPMultiblocks {
@@ -30,9 +27,13 @@ object OPMultiblocks {
                 ::WorkableElectricMultiblockMachine
             ).rotationState(RotationState.ALL)
                 .recipeType(GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
-                .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.OC_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE)
+                .recipeModifiers(
+                    GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.OC_PERFECT_SUBTICK,
+                    GTRecipeModifiers.BATCH_MODE
+                )
                 .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
-                .pattern({ definition ->
+                .pattern { definition ->
                     FactoryBlockPattern.start(
                         RelativeDirection.BACK,
                         RelativeDirection.UP,
@@ -52,19 +53,18 @@ object OPMultiblocks {
                             'X', blocks(GTBlocks.CASING_STEEL_SOLID.get())
                                 .or(Predicates.autoAbilities(*definition.getRecipeTypes()))
                                 .or(Predicates.autoAbilities(true, false, true))
-                                .or(Predicates.dataHatchPredicate(Predicates.blocks(GTBlocks.CASING_GRATE.get())))
+                                .or(Predicates.dataHatchPredicate(blocks(GTBlocks.CASING_GRATE.get())))
                         )
-                        .where('G', Predicates.blocks(GTBlocks.CASING_GRATE.get()))
-                        .where('A', Predicates.blocks(GTBlocks.CASING_ASSEMBLY_CONTROL.get()))
-                        .where('R', Predicates.blocks(GTBlocks.CASING_LAMINATED_GLASS.get()))
-                        .where('T', Predicates.blocks(GTBlocks.CASING_ASSEMBLY_LINE.get()))
+                        .where('G', blocks(GTBlocks.CASING_GRATE.get()))
+                        .where('A', blocks(GTBlocks.CASING_ASSEMBLY_CONTROL.get()))
+                        .where('R', blocks(GTBlocks.CASING_LAMINATED_GLASS.get()))
+                        .where('T', blocks(GTBlocks.CASING_ASSEMBLY_LINE.get()))
                         .where('#', Predicates.any())
                         .build()
-                })
+                }
                 .workableCasingModel(
                     GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
-                    GTCEu.id("block/multiblock/assembly_line")
-                )
+                    GTCEu.id("block/multiblock/assembly_line"))
                 .register()
     }
 }

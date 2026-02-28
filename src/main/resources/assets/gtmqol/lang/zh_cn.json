@@ -1,4 +1,5 @@
 {
   "gtmqol.modular_machine.name_format": "模块化%s",
-  "block.gtmqol.smart_assembly_factory": "智能装配工厂"
+  "block.gtmqol.smart_assembly_factory": "智能装配工厂",
+  "itemGroup.gtmqol.main": "GT: QOL"
 }
