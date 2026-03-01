@@ -20,7 +20,6 @@ object GTMQoLRegistrate {
         }.register()
 
         this.creativeModeTab(MAIN_TAB)
-
     }
 
     @JvmStatic

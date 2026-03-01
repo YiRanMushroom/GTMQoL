@@ -29,12 +29,14 @@ sourceSets {
         resources {
             srcDir("src/generated/resources")
         }
+        output.dir(layout.buildDirectory.dir("classes/java/main"))
     }
 }
 
 val devShadowJar = tasks.register<ShadowJar>("devShadowJar") {
     group = "build"
-    from(sourceSets.main.get().output)
+    from(sourceSets.main.get().output.classesDirs)
+
     exclude("META-INF/**")
     archiveClassifier.set("dev-merged")
     destinationDirectory.set(layout.buildDirectory.dir("relo-classes"))
@@ -70,7 +72,7 @@ loom {
 
     mods {
         create("gtmqol") {
-            dependency(devShadowJar.get().archiveFile.get().asFile)
+            sourceSet(sourceSets.main.get())
         }
     }
 
@@ -254,15 +256,28 @@ tasks.jar {
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
     options.release.set(17)
+    destinationDirectory.set(layout.buildDirectory.dir("tmp/java_classes"))
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+    destinationDirectory.set(layout.buildDirectory.dir("tmp/kotlin_classes"))
 }
 
-// 确保 classes 任务依赖于合并任务
+val relocateClasses = tasks.register<Sync>("relocateClasses") {
+    group = "build"
+
+    val compileJava = tasks.named<JavaCompile>("compileJava")
+    val compileKotlin = tasks.named<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileKotlin")
+
+    from(compileJava.flatMap { it.destinationDirectory })
+    from(compileKotlin.flatMap { it.destinationDirectory })
+
+    into(layout.buildDirectory.dir("classes/java/main"))
+}
+
 tasks.named("classes") {
-    dependsOn(devShadowJar)
+    dependsOn(relocateClasses)
 }
 
 publishing {
