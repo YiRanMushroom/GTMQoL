@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers
-import com.lowdragmc.lowdraglib.LDLib
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackResources
@@ -41,41 +41,57 @@ object AddDefaultMultiesImpl {
 
     private val registryData = hashMapOf<String, MutableMap<String, MachineEntry>>()
 
+    fun isDataGen(): Boolean {
+        return net.minecraftforge.fml.loading.FMLLoader.getLaunchHandler().isData
+    }
+
     @JvmStatic
     fun generateMultiblockForSimpleMachine(
         registrate: GTRegistrate,
         simpleMachineName: String,
-        recipeType: GTRecipeType
+        recipeTypes: Array<GTRecipeType>
     ) {
-//        return
-//        val namespace = registrate.modid
-//        val modularName = "modular_$simpleMachineName"
-//
-//        val definition = registrate.multiblock(modularName, ::WorkableElectricMultiblockMachine)
-//            .rotationState(RotationState.ALL)
-//            .recipeType(recipeType)
-//            .recipeModifiers(GTRecipeModifiers.OC_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE)
-//            .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
-//            .pattern { d ->
-//                FactoryBlockPattern.start()
-//                    .aisle("XXX", "XXX", "XXX")
-//                    .aisle("XXX", "X#X", "XXX")
-//                    .aisle("XXX", "XSX", "XXX")
-//                    .where('S', Predicates.controller(Predicates.blocks(d.block)))
-//                    .where('X', Predicates.blocks(
-//                        GTBlocks.CASING_STEEL_SOLID.get(),
-//                        Blocks.GLASS,
-//                        GTBlocks.CASING_TEMPERED_GLASS.get()
-//                    ).or(Predicates.autoAbilities(*d.recipeTypes))
-//                        .or(Predicates.autoAbilities(true, false, false)))
-//                    .where('#', Predicates.air())
-//                    .build()
-//            }
-////            .blockModel { _, _ -> } // to disable datagen block model generation, as we will provide our own dynamic one
-//            .register()
-//
-//        registryData.computeIfAbsent(namespace) { hashMapOf() }[modularName] =
-//            MachineEntry(modularName, simpleMachineName, namespace, definition)
+        val isDataGen = isDataGen()
+
+        if (isDataGen) {
+            return
+        }
+
+        if (recipeTypes.isEmpty() || recipeTypes.any {
+                it == GTRecipeTypes.DUMMY_RECIPES
+            }) {
+            return
+        }
+
+        val namespace = registrate.modid
+        val modularName = "modular_$simpleMachineName"
+
+        val definition = registrate.multiblock(modularName, ::WorkableElectricMultiblockMachine)
+            .rotationState(RotationState.ALL)
+            .recipeTypes(*recipeTypes)
+            .recipeModifiers(GTRecipeModifiers.OC_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE)
+            .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
+            .pattern { d ->
+                FactoryBlockPattern.start()
+                    .aisle("XXX", "XXX", "XXX")
+                    .aisle("XXX", "X#X", "XXX")
+                    .aisle("XXX", "XSX", "XXX")
+                    .where('S', Predicates.controller(Predicates.blocks(d.block)))
+                    .where(
+                        'X', Predicates.blocks(
+                            GTBlocks.CASING_STEEL_SOLID.get(),
+                            Blocks.GLASS,
+                            GTBlocks.CASING_TEMPERED_GLASS.get()
+                        ).or(Predicates.autoAbilities(*d.recipeTypes))
+                            .or(Predicates.autoAbilities(true, false, false))
+                    )
+                    .where('#', Predicates.air())
+                    .build()
+            }
+            .register()
+
+        registryData.computeIfAbsent(namespace) { hashMapOf() }[modularName] =
+            MachineEntry(modularName, simpleMachineName, namespace, definition)
     }
 
     @JvmStatic
@@ -114,19 +130,52 @@ object AddDefaultMultiesImpl {
             return when {
                 path.startsWith("lang/") -> {
                     val langCode = path.substringAfter("lang/").substringBefore(".json")
-                    IoSupplier { ByteArrayInputStream(generateDynamicLang(namespace, langCode).toByteArray(StandardCharsets.UTF_8)) }
+                    IoSupplier {
+                        ByteArrayInputStream(
+                            generateDynamicLang(namespace, langCode).toByteArray(
+                                StandardCharsets.UTF_8
+                            )
+                        )
+                    }
                 }
+
                 path.startsWith("blockstates/") ->
-                    IoSupplier { ByteArrayInputStream(generateAllRotationBS(namespace, name).toByteArray(StandardCharsets.UTF_8)) }
+                    IoSupplier {
+                        ByteArrayInputStream(
+                            generateAllRotationBS(namespace, name).toByteArray(
+                                StandardCharsets.UTF_8
+                            )
+                        )
+                    }
+
                 path.startsWith("models/item/") ->
-                    IoSupplier { ByteArrayInputStream("""{"parent": "$namespace:block/machine/$name"}""".toByteArray(StandardCharsets.UTF_8)) }
+                    IoSupplier {
+                        ByteArrayInputStream(
+                            """{"parent": "$namespace:block/machine/$name"}""".toByteArray(
+                                StandardCharsets.UTF_8
+                            )
+                        )
+                    }
+
                 path.startsWith("models/block/machine/") ->
-                    IoSupplier { ByteArrayInputStream(generateFullBlockModel(namespace, entry).toByteArray(StandardCharsets.UTF_8)) }
+                    IoSupplier {
+                        ByteArrayInputStream(
+                            generateFullBlockModel(namespace, entry).toByteArray(
+                                StandardCharsets.UTF_8
+                            )
+                        )
+                    }
+
                 else -> null
             }
         }
 
-        override fun listResources(packType: PackType, namespace: String, path: String, resourceOutput: PackResources.ResourceOutput) {
+        override fun listResources(
+            packType: PackType,
+            namespace: String,
+            path: String,
+            resourceOutput: PackResources.ResourceOutput
+        ) {
             if (packType != PackType.CLIENT_RESOURCES) return
             val entries = registryData[namespace] ?: return
 
@@ -137,23 +186,50 @@ object AddDefaultMultiesImpl {
 
                 allLangs.forEach { lang ->
                     val loc = ResourceLocation.tryBuild(namespace, "lang/$lang.json")!!
-                    resourceOutput.accept(loc) { ByteArrayInputStream(generateDynamicLang(namespace, lang).toByteArray(StandardCharsets.UTF_8)) }
+                    resourceOutput.accept(loc) {
+                        ByteArrayInputStream(
+                            generateDynamicLang(namespace, lang).toByteArray(
+                                StandardCharsets.UTF_8
+                            )
+                        )
+                    }
                 }
             }
 
             if (path.contains("blockstates")) {
                 entries.keys.forEach { name ->
                     val loc = ResourceLocation.tryBuild(namespace, "blockstates/$name.json")!!
-                    resourceOutput.accept(loc) { ByteArrayInputStream(generateAllRotationBS(namespace, name).toByteArray(StandardCharsets.UTF_8)) }
+                    resourceOutput.accept(loc) {
+                        ByteArrayInputStream(
+                            generateAllRotationBS(
+                                namespace,
+                                name
+                            ).toByteArray(StandardCharsets.UTF_8)
+                        )
+                    }
                 }
             }
             if (path.contains("models")) {
                 entries.values.forEach { entry ->
                     val itemLoc = ResourceLocation.tryBuild(namespace, "models/item/${entry.modularName}.json")!!
-                    resourceOutput.accept(itemLoc) { ByteArrayInputStream("""{"parent": "$namespace:block/machine/${entry.modularName}"}""".toByteArray(StandardCharsets.UTF_8)) }
+                    resourceOutput.accept(itemLoc) {
+                        ByteArrayInputStream(
+                            """{"parent": "$namespace:block/machine/${entry.modularName}"}""".toByteArray(
+                                StandardCharsets.UTF_8
+                            )
+                        )
+                    }
 
-                    val blockLoc = ResourceLocation.tryBuild(namespace, "models/block/machine/${entry.modularName}.json")!!
-                    resourceOutput.accept(blockLoc) { ByteArrayInputStream(generateFullBlockModel(namespace, entry).toByteArray(StandardCharsets.UTF_8)) }
+                    val blockLoc =
+                        ResourceLocation.tryBuild(namespace, "models/block/machine/${entry.modularName}.json")!!
+                    resourceOutput.accept(blockLoc) {
+                        ByteArrayInputStream(
+                            generateFullBlockModel(
+                                namespace,
+                                entry
+                            ).toByteArray(StandardCharsets.UTF_8)
+                        )
+                    }
                 }
             }
         }
@@ -187,7 +263,16 @@ object AddDefaultMultiesImpl {
 
             entries.values.forEach { entry ->
                 val baseKey = "$namespace.${entry.simpleName}"
-                val baseName = sourceLang[baseKey] ?: sourceFallback[baseKey] ?: baseKey
+
+                val baseNameFromLang = sourceLang[baseKey] ?: sourceFallback[baseKey]
+
+                val baseName = baseNameFromLang ?: entry.simpleName
+                    .split("_")
+                    .filter { it.isNotEmpty() }
+                    .joinToString(" ") { part ->
+                        part.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                    }.trim()
+
                 resultLang.addProperty("block.$namespace.${entry.modularName}", format.replace("%s", baseName))
             }
             return resultLang.toString()
@@ -200,10 +285,12 @@ object AddDefaultMultiesImpl {
             if (Files.exists(path)) {
                 try {
                     Files.newInputStream(path).use { stream ->
-                        val json = JsonParser.parseReader(InputStreamReader(stream, StandardCharsets.UTF_8)).asJsonObject
+                        val json =
+                            JsonParser.parseReader(InputStreamReader(stream, StandardCharsets.UTF_8)).asJsonObject
                         json.entrySet().forEach { (k, v) -> map[k] = v.asString }
                     }
-                } catch (e: Exception) {}
+                } catch (e: Exception) {
+                }
             }
             return map
         }
@@ -225,9 +312,18 @@ object AddDefaultMultiesImpl {
                         "up" -> config.addProperty("x", 270)
                     }
                     val z = when (f) {
-                        "north", "south", "east", "west" -> when(u) { "south" -> 180; "west" -> 90; "east" -> 270; else -> 0 }
-                        "down" -> when(u) { "south" -> 180; "east" -> 90; "west" -> 270; else -> 0 }
-                        "up" -> when(u) { "north" -> 180; "east" -> 90; "west" -> 270; else -> 0 }
+                        "north", "south", "east", "west" -> when (u) {
+                            "south" -> 180; "west" -> 90; "east" -> 270; else -> 0
+                        }
+
+                        "down" -> when (u) {
+                            "south" -> 180; "east" -> 90; "west" -> 270; else -> 0
+                        }
+
+                        "up" -> when (u) {
+                            "north" -> 180; "east" -> 90; "west" -> 270; else -> 0
+                        }
+
                         else -> 0
                     }
                     if (z != 0) config.addProperty("gtceu:z", z)
@@ -239,37 +335,62 @@ object AddDefaultMultiesImpl {
         }
 
         private fun generateFullBlockModel(namespace: String, entry: MachineEntry): String {
-            val baseOverlay = "${entry.namespace}:block/machines/${entry.simpleName}/overlay_front"
+            val modid = entry.namespace
+            val name = entry.simpleName
+            val resourceManager = net.minecraft.client.Minecraft.getInstance().resourceManager
+
+            val frontPath = ResourceLocation.tryBuild(modid, "textures/block/machines/$name/overlay_front.png")!!
+            val hasOverlay = resourceManager.getResource(frontPath).isPresent
+
+            val finalBaseOverlay = if (hasOverlay) {
+                "$modid:block/machines/$name/overlay_front"
+            } else {
+                "gtceu:block/machines/assembler/overlay_front"
+            }
+
             val casing = "gtceu:block/casings/solid/machine_casing_solid_steel"
             val template = "gtceu:block/machine/template/cube_all/sided"
+
             val root = JsonObject()
             root.addProperty("parent", "minecraft:block/block")
             root.addProperty("loader", "gtceu:machine")
             root.addProperty("machine", "$namespace:${entry.modularName}")
-            val overrides = JsonObject()
-            overrides.addProperty("all", casing)
-            root.add("texture_overrides", overrides)
+
+            val textureOverrides = JsonObject()
+            textureOverrides.addProperty("all", casing)
+            root.add("texture_overrides", textureOverrides)
+
             val variants = JsonObject()
-            val statuses = mapOf("idle" to "", "suspend" to "", "waiting" to "_active", "working" to "_active")
-            arrayOf(true, false).forEach { formed ->
+            val statuses = mapOf(
+                "idle" to "",
+                "suspend" to "",
+                "waiting" to "_active",
+                "working" to "_active"
+            )
+
+            listOf(true, false).forEach { formed ->
                 statuses.forEach { (status, suffix) ->
-                    val model = JsonObject()
+                    val model = com.google.gson.JsonObject()
                     model.addProperty("parent", template)
+
                     val tex = JsonObject()
                     tex.addProperty("all", casing)
-                    tex.addProperty("overlay_front", "$baseOverlay$suffix")
+                    tex.addProperty("overlay_front", "$finalBaseOverlay$suffix")
                     model.add("textures", tex)
-                    val config = JsonObject()
+
+                    val config = com.google.gson.JsonObject()
                     config.add("model", model)
                     variants.add("is_formed=$formed,recipe_logic_status=$status", config)
                 }
             }
+
             root.add("variants", variants)
             return root.toString()
         }
 
         override fun getNamespaces(type: PackType): Set<String> =
             if (type == PackType.CLIENT_RESOURCES) registryData.keys else emptySet()
+
         override fun <T : Any?> getMetadataSection(serializer: MetadataSectionSerializer<T>): T? = null
         override fun packId(): String = "gtmqol_universal_assets"
         override fun close() {}

@@ -1,5 +1,6 @@
 {
   "gtmqol.modular_machine.name_format": "Modular %s",
   "block.gtmqol.smart_assembly_factory": "Smart Assembly Factory",
-  "itemGroup.gtmqol.main": "GT: QOL"
+  "itemGroup.gtmqol.main": "GT: QOL",
+  "gtmqol.greenhouse": "Greenhouse"
 }

@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import groovy.json.JsonSlurper
 import groovy.json.JsonBuilder
@@ -7,6 +8,7 @@ plugins {
     id("maven-publish")
     kotlin("jvm")
     kotlin("plugin.serialization")
+    id("com.gradleup.shadow") version "9.3.0"
 }
 
 base {
@@ -28,6 +30,14 @@ sourceSets {
             srcDir("src/generated/resources")
         }
     }
+}
+
+val devShadowJar = tasks.register<ShadowJar>("devShadowJar") {
+    group = "build"
+    from(sourceSets.main.get().output)
+    exclude("META-INF/**")
+    archiveClassifier.set("dev-merged")
+    destinationDirectory.set(layout.buildDirectory.dir("relo-classes"))
 }
 
 loom {
@@ -60,9 +70,8 @@ loom {
 
     mods {
         create("gtmqol") {
-            sourceSet(sourceSets.main.get())
+            dependency(devShadowJar.get().archiveFile.get().asFile)
         }
-
     }
 
     forge {
@@ -245,12 +254,15 @@ tasks.jar {
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
     options.release.set(17)
-    destinationDirectory.set(layout.buildDirectory.dir("classes/java/main"))
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
-    destinationDirectory.set(layout.buildDirectory.dir("classes/java/main"))
+}
+
+// 确保 classes 任务依赖于合并任务
+tasks.named("classes") {
+    dependsOn(devShadowJar)
 }
 
 publishing {
