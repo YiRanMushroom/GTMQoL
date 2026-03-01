@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers
+import com.lowdragmc.lowdraglib.LDLib
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackResources
@@ -46,37 +47,35 @@ object AddDefaultMultiesImpl {
         simpleMachineName: String,
         recipeType: GTRecipeType
     ) {
-        val namespace = registrate.modid
-        val modularName = "modular_$simpleMachineName"
-
-        val definition = registrate.multiblock(modularName, ::WorkableElectricMultiblockMachine)
-            .rotationState(RotationState.ALL)
-            .recipeType(recipeType)
-            .recipeModifiers(GTRecipeModifiers.OC_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE)
-            .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
-            .pattern { d ->
-                FactoryBlockPattern.start()
-                    .aisle("XXX", "XXX", "XXX")
-                    .aisle("XXX", "X#X", "XXX")
-                    .aisle("XXX", "XSX", "XXX")
-                    .where('S', Predicates.controller(Predicates.blocks(d.block)))
-                    .where('X', Predicates.blocks(
-                        GTBlocks.CASING_STEEL_SOLID.get(),
-                        Blocks.GLASS,
-                        GTBlocks.CASING_TEMPERED_GLASS.get()
-                    ).or(Predicates.autoAbilities(*d.recipeTypes))
-                        .or(Predicates.autoAbilities(true, false, false)))
-                    .where('#', Predicates.air())
-                    .build()
-            }
-            .workableCasingModel(
-                ResourceLocation.tryBuild("gtceu", "block/casings/solid/machine_casing_solid_steel")!!,
-                ResourceLocation.tryBuild(namespace, "block/machines/$simpleMachineName")!!
-            )
-            .register()
-
-        registryData.computeIfAbsent(namespace) { hashMapOf() }[modularName] =
-            MachineEntry(modularName, simpleMachineName, namespace, definition)
+//        return
+//        val namespace = registrate.modid
+//        val modularName = "modular_$simpleMachineName"
+//
+//        val definition = registrate.multiblock(modularName, ::WorkableElectricMultiblockMachine)
+//            .rotationState(RotationState.ALL)
+//            .recipeType(recipeType)
+//            .recipeModifiers(GTRecipeModifiers.OC_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE)
+//            .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
+//            .pattern { d ->
+//                FactoryBlockPattern.start()
+//                    .aisle("XXX", "XXX", "XXX")
+//                    .aisle("XXX", "X#X", "XXX")
+//                    .aisle("XXX", "XSX", "XXX")
+//                    .where('S', Predicates.controller(Predicates.blocks(d.block)))
+//                    .where('X', Predicates.blocks(
+//                        GTBlocks.CASING_STEEL_SOLID.get(),
+//                        Blocks.GLASS,
+//                        GTBlocks.CASING_TEMPERED_GLASS.get()
+//                    ).or(Predicates.autoAbilities(*d.recipeTypes))
+//                        .or(Predicates.autoAbilities(true, false, false)))
+//                    .where('#', Predicates.air())
+//                    .build()
+//            }
+////            .blockModel { _, _ -> } // to disable datagen block model generation, as we will provide our own dynamic one
+//            .register()
+//
+//        registryData.computeIfAbsent(namespace) { hashMapOf() }[modularName] =
+//            MachineEntry(modularName, simpleMachineName, namespace, definition)
     }
 
     @JvmStatic

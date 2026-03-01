@@ -20,6 +20,9 @@ pluginManagement {
             if (requested.id.id == "org.jetbrains.kotlin.jvm") {
                 useVersion("2.0.21")
             }
+            if (requested.id.id == "org.jetbrains.kotlin.plugin.serialization") {
+                useModule("org.jetbrains.kotlin:kotlin-serialization:${requested.version ?: "2.0.21"}")
+            }
         }
     }
 }

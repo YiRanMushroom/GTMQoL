@@ -3,7 +3,7 @@ package com.yiran.minecraft.gtmqol
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs
 import com.tterrag.registrate.util.entry.RegistryEntry
-import com.yiran.minecraft.gtmqol.data.OPMultiblocks
+import com.yiran.minecraft.gtmqol.data.QoLMultiblocks
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.CreativeModeTab
 
@@ -15,7 +15,7 @@ object GTMQoLRegistrate {
             builder
                 .displayItems(GTCreativeModeTabs.RegistrateDisplayItemsGenerator("main", REGISTRATE))
                 .title(Component.translatable("itemGroup.gtmqol.main"))
-                .icon { OPMultiblocks.SMART_ASSEMBLY_FACTORY?.asStack() }
+                .icon { QoLMultiblocks.SMART_ASSEMBLY_FACTORY?.asStack() }
                 .build()
         }.register()
 

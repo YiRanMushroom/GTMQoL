@@ -1,9 +1,12 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import groovy.json.JsonSlurper
+import groovy.json.JsonBuilder
 
 plugins {
     id("dev.architectury.loom") version "1.13.467"
     id("maven-publish")
     kotlin("jvm")
+    kotlin("plugin.serialization")
 }
 
 base {
@@ -17,6 +20,14 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
     withSourcesJar()
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir("src/generated/resources")
+        }
+    }
 }
 
 loom {
@@ -33,133 +44,79 @@ loom {
             ideConfigGenerated(true)
             runDir("run")
         }
+
+        create("data") {
+            data()
+            programArgs(
+                "--all",
+                "--mod", project.property("mod_id") as String,
+                "--output", file("src/generated/resources").absolutePath,
+                "--existing", file("src/main/resources").absolutePath
+            )
+            ideConfigGenerated(true)
+            runDir("run/data")
+        }
     }
 
     mods {
         create("gtmqol") {
             sourceSet(sourceSets.main.get())
         }
+
     }
 
     forge {
-        // specify the mixin configs used in this mod
-        // this will be added to the jar manifest as well!
         mixinConfig("gtmqol.mixins.json")
+    }
+}
 
-        // missing access transformers?
-        // don't worry, you can still use them!
-        // note that your AT *MUST* be located at
-        // src/main/resources/META-INF/accesstransformer.cfg
-        // to work as there is currently no config option to change this.
-        // also, any names used in your access transformer will need to be
-        // in SRG mapped ("func_" / "field_" with MCP class names) to work!
-        // (both of these things may be subject to change in the future)
+tasks.named<JavaExec>("runData") {
+    doFirst {
+        val gtceuFile = configurations.runtimeClasspath.get().files.find {
+            it.name.contains("gtceu") && (it.extension == "jar" || it.isDirectory)
+        }
+
+        gtceuFile?.let {
+            args("--existing", it.absolutePath)
+            println("DataGen Resource Resolver: Found GTCEu at -> ${it.absolutePath}")
+        } ?: println("DataGen Resource Resolver: [WARN] GTCEu not found in runtimeClasspath!")
     }
 }
 
 repositories {
     mavenLocal()
-    flatDir {
-        dir("libs")
-    }
+    flatDir { dir("libs") }
     mavenCentral()
+    maven { url = uri("https://maven.firstdarkdev.xyz/snapshots/") }
     maven {
-        name = "FirstDarkDev"
-        url = uri("https://maven.firstdarkdev.xyz/snapshots/")
-    }
-    maven {
-        name = "GTCEu Maven"
         url = uri("https://maven.gtceu.com")
-        content {
-            includeGroup("com.gregtechceu.gtceu")
-        }
+        content { includeGroup("com.gregtechceu.gtceu") }
     }
-    maven {
-        name = "Quilt"
-        url = uri("https://maven.quiltmc.org/repository/release/")
-    }
-    maven {
-        name = "ParchmentMC"
-        url = uri("https://maven.parchmentmc.org")
-    }
+    maven { url = uri("https://maven.quiltmc.org/repository/release/") }
+    maven { url = uri("https://maven.parchmentmc.org") }
     maven {
         url = uri("https://maven.saps.dev/releases/")
-        content {
-            includeGroup("dev.latvian.mods")
-        }
+        content { includeGroup("dev.latvian.mods") }
     }
-    maven { // Registrate
+    maven {
         url = uri("https://maven.tterrag.com/")
         content {
-            // need to be specific here due to version overlaps
             includeGroup("com.jozufozu.flywheel")
             includeGroup("com.tterrag.registrate")
             includeGroup("com.simibubi.create")
         }
     }
-    maven {
-        // Patchouli, JEI
-        name = "BlameJared"
-        url = uri("https://maven.blamejared.com/")
-    }
-    maven {
-        url = uri("https://maven.theillusivec4.top/")
-    }
-    maven {
-        // Curse Forge File
-        url = uri("https://cursemaven.com/")
-        content {
-            includeGroup("curse.maven")
-        }
-    }
-    maven {
-        url = uri("https://maven.architectury.dev/")
-    }
-    maven {
-        url = uri("https://maven.saps.dev/minecraft")
-    }
-    maven {
-        name = "Configuration"
-        url = uri("https://api.repsy.io/mvn/toma/public/")
-    }
-    maven {
-        name = "Modrinth"
-        url = uri("https://api.modrinth.com/maven")
-        content {
-            includeGroup("maven.modrinth")
-        }
-    }
-    maven {
-        name = "TerraformersMC"
-        url = uri("https://maven.terraformersmc.com/")
-        content {
-            includeGroup("dev.emi")
-        }
-    }
-    maven {
-        name = "AE2"
-        url = uri("https://modmaven.dev/")
-        content {
-            includeGroup("appeng")
-        }
-    }
-    exclusiveContent { // FTB mods
-        forRepository { maven { url = uri("https://maven.ftb.dev/releases") } }
-        filter { includeGroup("dev.ftb.mods") }
-    }
-    maven { url = uri("https://jitpack.io") }
-    maven {
-        name = "GuideME Snapshots"
-        url = uri("https://central.sonatype.com/repository/maven-snapshots/")
-        content {
-            includeModule("org.appliedenergistics", "guideme")
-        }
-    }
-    maven {
-        name = "Kotlin for Forge"
-        url = uri("https://thedarkcolour.github.io/KotlinForForge/")
-    }
+    maven { url = uri("https://maven.blamejared.com/") }
+    maven { url = uri("https://maven.theillusivec4.top/") }
+    maven { url = uri("https://cursemaven.com/") }
+    maven { url = uri("https://maven.architectury.dev/") }
+    maven { url = uri("https://api.repsy.io/mvn/toma/public/") }
+    maven { url = uri("https://api.modrinth.com/maven") }
+    maven { url = uri("https://maven.terraformersmc.com/") }
     maven { url = uri("https://modmaven.dev/") }
+    maven { url = uri("https://maven.ftb.dev/releases") }
+    maven { url = uri("https://jitpack.io") }
+    maven { url = uri("https://thedarkcolour.github.io/KotlinForForge/") }
 }
 
 dependencies {
@@ -172,16 +129,32 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-${project.property("minecraft_version")}:${project.property("parchment_mappings")}@zip")
     })
 
-    modCompileOnly("mezz.jei:jei-${project.property("minecraft_version")}-forge-api:${project.property("jei_version")}") { isTransitive = false }
-    modCompileOnly("mezz.jei:jei-${project.property("minecraft_version")}-common-api:${project.property("jei_version")}") { isTransitive = false }
+    modCompileOnly("mezz.jei:jei-${project.property("minecraft_version")}-forge-api:${project.property("jei_version")}") {
+        isTransitive = false
+    }
+    modCompileOnly("mezz.jei:jei-${project.property("minecraft_version")}-common-api:${project.property("jei_version")}") {
+        isTransitive = false
+    }
     modCompileOnly("dev.emi:emi-forge:${project.property("emi_version")}:api") { isTransitive = false }
 
-    modImplementation("com.gregtechceu.gtceu:gtceu-${project.property("minecraft_version")}:${project.property("gtceu_version")}") { isTransitive = false }
-    modImplementation("com.lowdragmc.ldlib:ldlib-forge-${project.property("minecraft_version")}:${project.property("ldlib_version")}") { isTransitive = false }
+    modImplementation("com.gregtechceu.gtceu:gtceu-${project.property("minecraft_version")}:${project.property("gtceu_version")}") {
+        isTransitive = false
+    }
+    modImplementation("com.lowdragmc.ldlib:ldlib-forge-${project.property("minecraft_version")}:${project.property("ldlib_version")}") {
+        isTransitive = false
+    }
     modImplementation("com.tterrag.registrate:Registrate:${project.property("registrate_version")}")
 
-    modRuntimeOnly("dev.toma.configuration:configuration-forge-${project.property("minecraft_version")}:${project.property("configuration_version")}")
-    modRuntimeOnly("mezz.jei:jei-${project.property("minecraft_version")}-forge:${project.property("jei_version")}") { isTransitive = false }
+    modRuntimeOnly(
+        "dev.toma.configuration:configuration-forge-${project.property("minecraft_version")}:${
+            project.property(
+                "configuration_version"
+            )
+        }"
+    )
+    modRuntimeOnly("mezz.jei:jei-${project.property("minecraft_version")}-forge:${project.property("jei_version")}") {
+        isTransitive = false
+    }
 
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${project.property("mixinextras_version")}")!!)
     implementation(include("io.github.llamalad7:mixinextras-forge:${project.property("mixinextras_version")}")!!)
@@ -206,15 +179,15 @@ dependencies {
 
     // Kotlin for Forge
 //    modImplementation("thedarkcolour:kotlinforforge:${project.property("kff_version")}")
-//    forgeRuntimeLibrary("thedarkcolour:kotlinforforge:${project.property("kff_version")}")
+    forgeRuntimeLibrary("thedarkcolour:kotlinforforge:${project.property("kff_version")}")
 
     modCompileOnly("mekanism:Mekanism:${project.property("mekanism_version")}:api")
     modImplementation("mekanism:Mekanism:${project.property("mekanism_version")}")
 }
 
-
 tasks.processResources {
-    // set up properties for filling into metadata
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
     val properties = mapOf(
         "mod_license" to project.property("mod_license"),
         "mod_id" to project.property("mod_id"),
@@ -222,7 +195,7 @@ tasks.processResources {
         "mod_name" to project.property("mod_name"),
         "mod_url" to project.property("mod_url"),
         "mod_author" to project.property("mod_author"),
-        "forge_version" to (project.property("forge_version") as String).split(".")[0], // only specify major version of forge
+        "forge_version" to (project.property("forge_version") as String).split(".")[0],
         "minecraft_version" to project.property("minecraft_version"),
         "gtceu_version" to project.property("gtceu_version"),
         "ae2_version" to project.property("ae2_version")
@@ -232,31 +205,28 @@ tasks.processResources {
     filesMatching("META-INF/mods.toml") {
         expand(properties)
     }
-}
 
-// Copy Kotlin classes to resources/main so Forge can find @Mod classes in dev environment
-tasks.register<Copy>("copyKotlinClasses") {
-    dependsOn("compileKotlin")
-    from(layout.buildDirectory.dir("classes/kotlin/main"))
-    into(layout.buildDirectory.dir("resources/main"))
-}
+    doLast {
+        val langPath = "assets/gtmqol/lang/en_us.json"
+        val generatedFile = file("src/generated/resources/$langPath")
+        val manualFile = file("src/main/resources/$langPath")
+        val outputDir = layout.buildDirectory.dir("resources/main").get().asFile
+        val outputFile = file("$outputDir/$langPath")
 
-tasks.named("processResources") {
-    dependsOn("copyKotlinClasses")
-}
+        if (generatedFile.exists() && manualFile.exists()) {
+            val slurper = JsonSlurper()
+            val generatedMap = slurper.parse(generatedFile) as MutableMap<String, Any>
+            val manualMap = slurper.parse(manualFile) as Map<String, Any>
 
-tasks.withType<JavaCompile>().configureEach {
-    options.encoding = "UTF-8"
-    options.release.set(17)
-}
+            val mergedMap = generatedMap + manualMap
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+            if (!outputFile.parentFile.exists()) outputFile.parentFile.mkdirs()
+            outputFile.writeText(JsonBuilder(mergedMap).toPrettyString())
+        }
+    }
 }
-
 
 tasks.jar {
-    // add some additional metadata to the jar manifest
     manifest {
         attributes(
             mapOf(
@@ -272,19 +242,21 @@ tasks.jar {
     }
 }
 
-// configure the maven publication
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    options.release.set(17)
+    destinationDirectory.set(layout.buildDirectory.dir("classes/java/main"))
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+    destinationDirectory.set(layout.buildDirectory.dir("classes/java/main"))
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
         }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
     }
 }

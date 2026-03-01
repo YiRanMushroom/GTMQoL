@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeModifiers
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
 import com.yiran.minecraft.gtmqol.GTMQoLRegistrate
 
-object OPMultiblocks {
+object QoLMultiblocks {
     @JvmStatic
     var SMART_ASSEMBLY_FACTORY: MultiblockMachineDefinition? = null
 

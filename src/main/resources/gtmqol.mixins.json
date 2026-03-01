@@ -5,8 +5,10 @@
   "minVersion": "0.8",
   "mixins": [
     "ForgeCommonEventListener$AttachEnergyProxy$Mixin",
+    "GTMachines$InitMyMachines$Mixin",
     "GTMachineUtils$AddDefaultMulties$Mixin",
-    "GTMultiMachines$InjectMyMultiRegistration$Mixin"
+    "GTMultiMachines$InjectMyMultiRegistration$Mixin",
+    "GTRecipeTypes$InitMyRecipeType$Mixin"
   ],
   "client": [
   ],
