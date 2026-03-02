@@ -1,0 +1,9 @@
+// 1.20.1	2026-03-01T20:35:37.1450762	Tags for minecraft:item mod id gtmqol
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/forge/tags/items/circuits/advanced.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/forge/tags/items/circuits/basic.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/forge/tags/items/circuits/elite.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/forge/tags/items/circuits/ultimate.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/gtceu/tags/items/circuits/ev.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/gtceu/tags/items/circuits/hv.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/gtceu/tags/items/circuits/lv.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/gtceu/tags/items/circuits/mv.json
