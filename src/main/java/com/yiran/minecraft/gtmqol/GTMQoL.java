@@ -1,7 +1,8 @@
 package com.yiran.minecraft.gtmqol;
 
 import com.yiran.minecraft.gtmqol.config.ConfigHolder;
-import com.yiran.minecraft.gtmqol.mixin_impl.AddDefaultMultiesImpl;
+import com.yiran.minecraft.gtmqol.functionality.AddDefaultMultiesLogic;
+import com.yiran.minecraft.gtmqol.init.OverclockingPatcher;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -25,9 +26,12 @@ public class GTMQoL {
 
         ConfigHolder.init();
 
+        if (ConfigHolder.getInstance().overlockingConfig.enableOverclockingDurationOverride)
+            OverclockingPatcher.init();
+
         modBus.addListener(this::onCommonSetup);
         modBus.addListener(this::onClientSetup);
-        modBus.addListener(AddDefaultMultiesImpl::onAddPackFinders);
+        modBus.addListener(AddDefaultMultiesLogic::onAddPackFinders);
 
         MinecraftForge.EVENT_BUS.register(this);
         LOGGER.info("{} initializing", MOD_ID);
@@ -39,6 +43,8 @@ public class GTMQoL {
 
     private void onCommonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("{} common setup", MOD_ID);
+
+
     }
 
     private void onClientSetup(final FMLClientSetupEvent event) {

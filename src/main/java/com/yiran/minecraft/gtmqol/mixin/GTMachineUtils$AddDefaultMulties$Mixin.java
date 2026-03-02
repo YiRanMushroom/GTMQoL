@@ -6,7 +6,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
-import com.yiran.minecraft.gtmqol.mixin_impl.AddDefaultMultiesImpl;
+import com.yiran.minecraft.gtmqol.config.ConfigHolder;
+import com.yiran.minecraft.gtmqol.functionality.AddDefaultMultiesLogic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,11 +23,15 @@ public class GTMachineUtils$AddDefaultMulties$Mixin {
             at = @At("RETURN"),
             remap = false)
     private static void $addDefaultMulties(GTRegistrate registrate, String name, BiFunction<IMachineBlockEntity, Integer, MetaMachine> factory, BiFunction<Integer, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder, int[] tiers, CallbackInfoReturnable<MachineDefinition[]> cir) {
+        if (!ConfigHolder.getInstance().addonConfig.registerModularMachinesForSimpleMachines) {
+            return;
+        }
+
         Arrays.stream(cir.getReturnValue())
                 .filter(Objects::nonNull)
                 .findFirst()
                 .ifPresent(definition ->
-                        AddDefaultMultiesImpl.generateMultiblockForSimpleMachine(
+                        AddDefaultMultiesLogic.generateMultiblockForSimpleMachine(
                                 registrate, name, definition.getRecipeTypes()));
     }
 }

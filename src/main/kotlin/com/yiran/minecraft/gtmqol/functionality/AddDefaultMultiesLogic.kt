@@ -1,4 +1,4 @@
-package com.yiran.minecraft.gtmqol.mixin_impl
+package com.yiran.minecraft.gtmqol.functionality
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -8,10 +8,13 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern
 import com.gregtechceu.gtceu.api.pattern.Predicates
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType
+import com.gregtechceu.gtceu.api.recipe.OverclockingLogic
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
+import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackResources
@@ -24,13 +27,14 @@ import net.minecraft.world.flag.FeatureFlagSet
 import net.minecraft.world.level.block.Blocks
 import net.minecraftforge.event.AddPackFindersEvent
 import net.minecraftforge.fml.ModList
+import net.minecraftforge.fml.loading.FMLLoader
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
-object AddDefaultMultiesImpl {
+object AddDefaultMultiesLogic {
 
     data class MachineEntry(
         val modularName: String,
@@ -42,8 +46,11 @@ object AddDefaultMultiesImpl {
     private val registryData = hashMapOf<String, MutableMap<String, MachineEntry>>()
 
     fun isDataGen(): Boolean {
-        return net.minecraftforge.fml.loading.FMLLoader.getLaunchHandler().isData
+        return FMLLoader.getLaunchHandler().isData
     }
+
+    private val perfectGeneratorOverclockingLogic = OverclockingLogic.create(0.5, 4.0, true)
+    private val perfectGeneratorOverclockingRecipeModifier = GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(perfectGeneratorOverclockingLogic)
 
     @JvmStatic
     fun generateMultiblockForSimpleMachine(
@@ -63,13 +70,26 @@ object AddDefaultMultiesImpl {
             return
         }
 
+        // Recipe types must not contain generator, or must all be generator
+
+        val allGenerator = recipeTypes.all { it.group == "generator" }
+        val anyGenerator = recipeTypes.any { it.group == "generator" }
+
+        if (anyGenerator && !allGenerator) {
+            return
+        }
+
+        val baseRecipeModifier : RecipeModifier = if (!allGenerator) GTRecipeModifiers.OC_PERFECT_SUBTICK
+              else perfectGeneratorOverclockingRecipeModifier
+
         val namespace = registrate.modid
         val modularName = "modular_$simpleMachineName"
 
         val definition = registrate.multiblock(modularName, ::WorkableElectricMultiblockMachine)
             .rotationState(RotationState.ALL)
             .recipeTypes(*recipeTypes)
-            .recipeModifiers(GTRecipeModifiers.OC_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(baseRecipeModifier, GTRecipeModifiers.BATCH_MODE)
+            .generator(allGenerator)
             .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
             .pattern { d ->
                 FactoryBlockPattern.start()
@@ -337,7 +357,7 @@ object AddDefaultMultiesImpl {
         private fun generateFullBlockModel(namespace: String, entry: MachineEntry): String {
             val modid = entry.namespace
             val name = entry.simpleName
-            val resourceManager = net.minecraft.client.Minecraft.getInstance().resourceManager
+            val resourceManager = Minecraft.getInstance().resourceManager
 
             val frontPath = ResourceLocation.tryBuild(modid, "textures/block/machines/$name/overlay_front.png")!!
             val hasOverlay = resourceManager.getResource(frontPath).isPresent
@@ -370,7 +390,7 @@ object AddDefaultMultiesImpl {
 
             listOf(true, false).forEach { formed ->
                 statuses.forEach { (status, suffix) ->
-                    val model = com.google.gson.JsonObject()
+                    val model = JsonObject()
                     model.addProperty("parent", template)
 
                     val tex = JsonObject()
@@ -378,7 +398,7 @@ object AddDefaultMultiesImpl {
                     tex.addProperty("overlay_front", "$finalBaseOverlay$suffix")
                     model.add("textures", tex)
 
-                    val config = com.google.gson.JsonObject()
+                    val config = JsonObject()
                     config.add("model", model)
                     variants.add("is_formed=$formed,recipe_logic_status=$status", config)
                 }

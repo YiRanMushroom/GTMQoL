@@ -128,6 +128,20 @@ repositories {
     maven { url = uri("https://maven.ftb.dev/releases") }
     maven { url = uri("https://jitpack.io") }
     maven { url = uri("https://thedarkcolour.github.io/KotlinForForge/") }
+    maven {
+        url = uri("https://maven.latvian.dev/releases")
+        content {
+            includeGroup("dev.latvian.mods")
+            includeGroup("dev.latvian.apps")
+        }
+    }
+
+    maven {
+        url = uri("https://jitpack.io")
+        content {
+            includeGroup("com.github.rtyley")
+        }
+    }
 }
 
 dependencies {
@@ -194,6 +208,8 @@ dependencies {
 
     modCompileOnly("mekanism:Mekanism:${project.property("mekanism_version")}:api")
     modImplementation("mekanism:Mekanism:${project.property("mekanism_version")}")
+
+    modApi("dev.latvian.mods:kubejs-forge:${project.property("kubejs_version")}")
 }
 
 tasks.processResources {

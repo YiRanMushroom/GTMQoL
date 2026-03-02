@@ -37,7 +37,7 @@ This mod provides some QoL(Not really) machines and capabilities, as well as som
         side = "BOTH"
     [[dependencies.gtmqol]]
         modId = "ae2"
-        mandatory = true
+        mandatory = false
         versionRange = "[${ae2_version},)"
         ordering = "AFTER"
         side = "BOTH"

@@ -5,10 +5,15 @@
   "minVersion": "0.8",
   "mixins": [
     "ForgeCommonEventListener$AttachEnergyProxy$Mixin",
+    "FusionReactor$ChangeOverclockingLogic$Mixin",
+    "GTItems$RegisterMine$Mixin",
     "GTMachines$InitMyMachines$Mixin",
     "GTMachineUtils$AddDefaultMulties$Mixin",
     "GTMultiMachines$InjectMyMultiRegistration$Mixin",
-    "GTRecipeTypes$InitMyRecipeType$Mixin"
+    "GTMultiMachines$Misc$Mixin",
+    "GTRecipeTypes$InitMyRecipeType$Mixin",
+    "OverclockingLogic$Misc$Mixin",
+    "PredicatesMixin"
   ],
   "client": [
   ],
