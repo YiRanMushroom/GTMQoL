@@ -4,5 +4,6 @@
   "itemGroup.gtmqol.main": "GT: QOL",
   "gtmqol.greenhouse": "Greenhouse",
   "gtmqol.me_assembler": "ME Assembler",
-  "gtmqol.me_circuit_slicer": "ME Circuit Slicer"
+  "gtmqol.me_circuit_slicer": "ME Circuit Slicer",
+  "gtmqol.magical_assembler": "Magical Assembler"
 }

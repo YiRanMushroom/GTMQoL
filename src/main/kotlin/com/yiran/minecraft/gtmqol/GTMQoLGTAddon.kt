@@ -24,4 +24,8 @@ class GTMQoLGTAddon : IGTAddon {
     override fun addRecipes(provider: Consumer<FinishedRecipe>) {
         QoLRecipes.init(provider)
     }
+
+    override fun requiresHighTier(): Boolean {
+        return true
+    }
 }

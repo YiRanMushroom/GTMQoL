@@ -17,6 +17,8 @@ object QoLRecipeTypes {
     var ME_ASSEMBLER_RECIPES: GTRecipeType? = null
     @JvmField
     var ME_CIRCUIT_SLICER_RECIPES: GTRecipeType? = null
+    @JvmField
+    var MAGICAL_ASSEMBLER: GTRecipeType? = null
 
     init {
         if (ConfigHolder.instance.addonConfig.enableGreenhouse) {
@@ -50,6 +52,15 @@ object QoLRecipeTypes {
                 .setSound(GTSoundEntries.CUT)
 
         }
+
+        MAGICAL_ASSEMBLER = GTRecipeTypes.register("gtmqol:magical_assembler", "electric")
+            .setMaxIOSize(6, 3, 3, 3)
+            .setEUIO(IO.IN)
+            .prepareBuilder { recipeBuilder ->
+                recipeBuilder.EUt(GTValues.VA[1].toLong())
+            }
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, ProgressTexture.FillDirection.LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.SCIENCE)
     }
 
     @JvmStatic

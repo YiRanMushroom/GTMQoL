@@ -4,5 +4,6 @@
   "itemGroup.gtmqol.main": "GT: QOL",
   "gtmqol.greenhouse": "温室",
   "gtmqol.me_assembler": "ME装配机",
-  "gtmqol.me_circuit_slicer": "ME电路切割机"
+  "gtmqol.me_circuit_slicer": "ME电路切割机",
+  "gtmqol.magical_assembler": "神奇装配机"
 }

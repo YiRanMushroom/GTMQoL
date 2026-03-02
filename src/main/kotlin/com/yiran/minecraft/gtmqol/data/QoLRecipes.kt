@@ -69,6 +69,19 @@ object QoLRecipes {
             registerCircuitSlicerRecipes(provider)
             registerMEAssemblerRecipes(provider)
         }
+
+        registerMiscRecipes(provider)
+    }
+
+    private fun registerMiscRecipes(provider: Consumer<FinishedRecipe>) {
+        registerMachineRecipe(
+            provider, QoLMachines.MAGICAL_ASSEMBLER,
+            "PGP", "GMG", "PCP",
+            'M', HULL,
+            'G', Items.GLASS,
+            'C', CIRCUIT,
+            'P', PLATE
+        )
     }
 
     private fun registerGreenhouseMachineRecipes(provider: Consumer<FinishedRecipe>) {

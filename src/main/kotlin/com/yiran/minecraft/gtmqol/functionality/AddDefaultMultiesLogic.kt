@@ -93,9 +93,9 @@ object AddDefaultMultiesLogic {
             .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
             .pattern { d ->
                 FactoryBlockPattern.start()
-                    .aisle("XXX", "XXX", "XXX")
+                    .aisle("XXX", "#X#", "XXX")
                     .aisle("XXX", "X#X", "XXX")
-                    .aisle("XXX", "XSX", "XXX")
+                    .aisle("XXX", "#S#", "XXX")
                     .where('S', Predicates.controller(Predicates.blocks(d.block)))
                     .where(
                         'X', Predicates.blocks(
@@ -105,7 +105,7 @@ object AddDefaultMultiesLogic {
                         ).or(Predicates.autoAbilities(*d.recipeTypes))
                             .or(Predicates.autoAbilities(true, false, false))
                     )
-                    .where('#', Predicates.air())
+                    .where('#', Predicates.any())
                     .build()
             }
             .register()

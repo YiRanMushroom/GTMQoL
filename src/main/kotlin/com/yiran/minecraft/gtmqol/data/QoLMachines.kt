@@ -22,6 +22,9 @@ object QoLMachines {
     @JvmField
     var ME_CIRCUIT_SLICER: Array<MachineDefinition>? = null
 
+    @JvmField
+    var MAGICAL_ASSEMBLER: Array<MachineDefinition>? = null
+
     fun registerSimpleMachine(
         name: String,
         recipeType: GTRecipeType,
@@ -83,8 +86,9 @@ object QoLMachines {
             ME_CIRCUIT_SLICER = registerSimpleMachine("me_circuit_slicer", QoLRecipeTypes.ME_CIRCUIT_SLICER_RECIPES!!) {
                 "ME Circuit Slicer"
             }
-
         }
+
+        MAGICAL_ASSEMBLER = registerSimpleMachine("magical_assembler", QoLRecipeTypes.MAGICAL_ASSEMBLER!!)
     }
 
     @JvmStatic
