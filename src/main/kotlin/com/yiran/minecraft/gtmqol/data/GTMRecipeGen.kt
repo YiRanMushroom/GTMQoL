@@ -2,12 +2,10 @@ package com.yiran.minecraft.gtmqol.data
 
 import com.gregtechceu.gtceu.api.GTCEuAPI
 import com.gregtechceu.gtceu.api.GTValues
-import com.gregtechceu.gtceu.api.item.ComponentItem
 import com.gregtechceu.gtceu.common.data.GTMachines
 import com.hepdd.gtmthings.GTMThings
 import com.hepdd.gtmthings.data.CustomItems
 import com.hepdd.gtmthings.data.WirelessMachines
-import com.tterrag.registrate.util.entry.ItemEntry
 import com.yiran.minecraft.gtmqol.gtmthings.WirelessEnergyAccessor
 import net.minecraft.data.recipes.FinishedRecipe
 import java.util.*
@@ -16,7 +14,7 @@ import java.util.function.Consumer
 
 object GTMRecipeGen {
     fun initGTMRecipes(provider: Consumer<FinishedRecipe>) {
-        val MAGIC_ASSEMBLER_RECIPES = QoLRecipeTypes.MAGICAL_ASSEMBLER!!
+        val MAGIC_ASSEMBLER_RECIPES = QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES!!
         MAGIC_ASSEMBLER_RECIPES.recipeBuilder(GTMThings.id("wireless_energy_interface"))
             .inputItems(GTMachines.ENERGY_INPUT_HATCH[1].asStack())
             .inputItems(CustomItems.WIRELESS_ENERGY_RECEIVE_COVER_LV_4A.asStack(4))

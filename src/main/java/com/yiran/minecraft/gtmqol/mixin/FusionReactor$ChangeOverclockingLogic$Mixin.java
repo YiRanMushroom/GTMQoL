@@ -20,7 +20,7 @@ public class FusionReactor$ChangeOverclockingLogic$Mixin {
     @Expression("FUSION_OC.getModifier(?, ?, ?, ?)")
     @WrapOperation(method = "recipeModifier", at = @At(value = "MIXINEXTRAS:EXPRESSION"), remap = false)
     private static ModifierFunction fusionUseOverclockingLogic(OverclockingLogic instance, MetaMachine metaMachine, GTRecipe gtRecipe, long voltage, boolean parallel, Operation<ModifierFunction> original) {
-        if (ConfigHolder.getInstance().overlockingConfig.buffFusionReactorOverclocking) {
+        if (ConfigHolder.getInstance().overclockingConfig.buffFusionReactorOverclocking) {
             return original.call(
                     instance, metaMachine, gtRecipe,
                     ((FusionReactorMachine) metaMachine).getOverclockVoltage(), true);
@@ -33,7 +33,7 @@ public class FusionReactor$ChangeOverclockingLogic$Mixin {
     @Expression("FUSION_OC = @(?)")
     @WrapOperation(method = "<clinit>", at = @At("MIXINEXTRAS:EXPRESSION"))
     private static OverclockingLogic modifyFusionOverclockingLogic(double durationFactor, double voltageFactor, boolean subtick, Operation<OverclockingLogic> original) {
-        if (ConfigHolder.getInstance().overlockingConfig.buffFusionReactorOverclocking) {
+        if (ConfigHolder.getInstance().overclockingConfig.buffFusionReactorOverclocking) {
             return OverclockingLogic.PERFECT_OVERCLOCK_SUBTICK;
         } else {
             return original.call(durationFactor, voltageFactor, subtick);

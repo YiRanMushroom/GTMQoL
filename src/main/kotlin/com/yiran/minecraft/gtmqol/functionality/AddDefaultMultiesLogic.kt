@@ -146,7 +146,7 @@ object AddDefaultMultiesLogic {
     fun registerMachineRecipes(provider: Consumer<FinishedRecipe>) {
         registryData.values.forEach {
             it.values.forEach { entry ->
-                QoLRecipeTypes.MAGICAL_ASSEMBLER!!.recipeBuilder("${entry.namespace}_${entry.simpleName}_convert_to_modular")
+                QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES!!.recipeBuilder("${entry.namespace}_${entry.simpleName}_convert_to_modular")
                     .inputItems(entry.simpleMachineDefinition.item)
                     .outputItems(entry.definition.item)
                     .circuitMeta(5)

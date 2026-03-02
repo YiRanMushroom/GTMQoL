@@ -1,9 +1,7 @@
 package com.yiran.minecraft.gtmqol;
 
-import com.hepdd.gtmthings.GTMThings;
 import com.yiran.minecraft.gtmqol.config.ConfigHolder;
 import com.yiran.minecraft.gtmqol.functionality.AddDefaultMultiesLogic;
-import com.yiran.minecraft.gtmqol.init.GTMInit;
 import com.yiran.minecraft.gtmqol.init.OverclockingPatcher;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,7 +26,7 @@ public class GTMQoL {
 
         ConfigHolder.init();
 
-        if (ConfigHolder.getInstance().overlockingConfig.enableOverclockingDurationOverride)
+        if (ConfigHolder.getInstance().overclockingConfig.enableOverclockingDurationOverride)
             OverclockingPatcher.init();
 
 //        GTMInit.init();

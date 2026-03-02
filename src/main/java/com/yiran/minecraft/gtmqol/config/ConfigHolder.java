@@ -22,7 +22,7 @@ public class ConfigHolder {
         }
     }
 
-    public static class OverlockingConfig {
+    public static class OverclockingConfig {
         @Configurable
         @Configurable.Comment({"Enable overclocking duration override for machines", "Default: true"})
         public boolean enableOverclockingDurationOverride = true;
@@ -45,7 +45,7 @@ public class ConfigHolder {
     }
 
     @Configurable
-    public OverlockingConfig overlockingConfig = new OverlockingConfig();
+    public OverclockingConfig overclockingConfig = new OverclockingConfig();
 
     public static class AddonConfig {
         @Configurable
@@ -71,6 +71,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Enable GTMThings Integration (if present)", "Default: true"})
         public boolean enableGTMThingsIntegration = true;
+
+        @Configurable
+        @Configurable.Comment({"Enable Electric Implosion Recipes", "Default: true"})
+        public boolean enableElectricImplosionRecipes = true;
     }
 
     @Configurable

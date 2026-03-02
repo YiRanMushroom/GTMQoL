@@ -88,7 +88,7 @@ object QoLMachines {
             }
         }
 
-        MAGICAL_ASSEMBLER = registerSimpleMachine("magical_assembler", QoLRecipeTypes.MAGICAL_ASSEMBLER!!)
+        MAGICAL_ASSEMBLER = registerSimpleMachine("magical_assembler", QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES!!)
     }
 
     @JvmStatic

@@ -6,17 +6,21 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern
 import com.gregtechceu.gtceu.api.pattern.Predicates
-import com.gregtechceu.gtceu.api.pattern.Predicates.blocks
+import com.gregtechceu.gtceu.api.pattern.Predicates.*
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
+import com.yiran.minecraft.gtmqol.GTMQoL
 import com.yiran.minecraft.gtmqol.GTMQoLRegistrate
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
 
 object QoLMultiblocks {
     @JvmStatic
     var SMART_ASSEMBLY_FACTORY: MultiblockMachineDefinition? = null
+
+    @JvmStatic
+    var ELECTRIC_IMPLOSION_COMPRESSOR: MultiblockMachineDefinition? = null
 
     @JvmStatic
     fun init() {
@@ -51,10 +55,10 @@ object QoLMultiblocks {
                             .setRepeatable(4)
                             .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX") // last
                             // layer
-                            .where('S', Predicates.controller(blocks(definition.getBlock())))
+                            .where('S', Predicates.controller(blocks(definition.block)))
                             .where(
                                 'X', blocks(GTBlocks.CASING_STEEL_SOLID.get())
-                                    .or(Predicates.autoAbilities(*definition.getRecipeTypes()))
+                                    .or(Predicates.autoAbilities(*definition.recipeTypes))
                                     .or(Predicates.autoAbilities(true, false, true))
                                     .or(Predicates.dataHatchPredicate(blocks(GTBlocks.CASING_GRATE.get())))
                             )
@@ -68,6 +72,46 @@ object QoLMultiblocks {
                     .workableCasingModel(
                         GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                         GTCEu.id("block/multiblock/assembly_line")
+                    )
+                    .register()
+        }
+
+        if (ConfigHolder.instance.addonConfig.enableElectricImplosionRecipes) {
+            ELECTRIC_IMPLOSION_COMPRESSOR =
+                registrate.multiblock(
+                    "electric_implosion_compressor",
+                    ::WorkableElectricMultiblockMachine
+                ).rotationState(RotationState.ALL)
+                    .recipeType(QoLRecipeTypes.ELECTRIC_IMPLOSION_RECIPES!!)
+                    .recipeModifiers(
+                        GTRecipeModifiers.PARALLEL_HATCH,
+                        GTRecipeModifiers.OC_PERFECT_SUBTICK,
+                        GTRecipeModifiers.BATCH_MODE
+                    )
+                    .appearanceBlock(GTBlocks.CASING_TUNGSTENSTEEL_ROBUST)
+                    .pattern{
+                            definition ->
+                        FactoryBlockPattern.start()
+                            .aisle("XXXXX", "F###F", "F###F", "F###F", "F###F", "XXXXX")
+                            .aisle("XXXXX", "#PGP#", "#PGP#", "#PGP#", "#PGP#", "XXXXX")
+                            .aisle("XXXXX", "#GAG#", "#GAG#", "#GAG#", "#GAG#", "XXXXX")
+                            .aisle("XXXXX", "#PGP#", "#PGP#", "#PGP#", "#PGP#", "XXXXX")
+                            .aisle("XXSXX", "F###F", "F###F", "F###F", "F###F", "XXXXX")
+                            .where('S', controller(blocks(definition.get())))
+                            .where('X',
+                                blocks(GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.get())
+                                    .or(autoAbilities(*definition.recipeTypes))
+                                    .or(autoAbilities(true, false, true)))
+                            .where('P', blocks(GTBlocks.CASING_TUNGSTENSTEEL_PIPE.get()))
+                            .where('G', blocks(GTBlocks.CASING_TEMPERED_GLASS.get()))
+                            .where('F', blocks(GTBlocks.FIREBOX_TUNGSTENSTEEL.get()))
+                            .where('A', air())
+                            .where('#', any())
+                            .build();
+                    }
+                    .workableCasingModel(
+                        GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
+                        GTCEu.id("block/multiblock/implosion_compressor")
                     )
                     .register()
         }

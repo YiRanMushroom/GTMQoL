@@ -1,18 +1,24 @@
 package com.yiran.minecraft.gtmqol.data
 
+import appeng.api.util.AEColor
 import appeng.core.definitions.AEBlocks
 import appeng.core.definitions.AEBlocks.INSCRIBER
 import appeng.core.definitions.AEItems
 import appeng.core.definitions.AEParts
 import com.gregtechceu.gtceu.api.GTValues.LV
 import com.gregtechceu.gtceu.api.GTValues.VA
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTItems
 import com.gregtechceu.gtceu.common.data.GTMaterials
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines
 import com.gregtechceu.gtceu.data.recipe.CustomTags
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
 import com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.registerMachineRecipe
 import com.yiran.minecraft.gtmqol.ae2PresentedAndIntegrationEnabled
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
@@ -27,6 +33,8 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.material.Fluids
 import net.minecraftforge.fluids.FluidStack
 import java.util.function.Consumer
+import javax.swing.text.html.HTML.Tag
+
 
 object QoLRecipes {
 
@@ -69,6 +77,7 @@ object QoLRecipes {
             registerAEMachineRecipes(provider)
             registerCircuitSlicerRecipes(provider)
             registerMEAssemblerRecipes(provider)
+            registerMiscAERecipes(provider);
         }
 
         registerMiscRecipes(provider)
@@ -76,6 +85,47 @@ object QoLRecipes {
         if (gtmthingsPresentedAndIntegrationEnabled()) {
             GTMRecipeGen.initGTMRecipes(provider)
         }
+    }
+
+    private fun registerMiscAERecipes(provider: Consumer<FinishedRecipe>) {
+        GTRecipeTypes.WIREMILL_RECIPES.recipeBuilder("gtmqol:quartz_fiber_from_nether_quartz")
+            .inputItems(TagPrefix.gem, GTMaterials.NetherQuartz)
+            .outputItems(AEParts.QUARTZ_FIBER.asItem(), 3)
+            .EUt(VA[LV].toLong())
+            .duration(100)
+            .save(provider)
+
+        GTRecipeTypes.WIREMILL_RECIPES.recipeBuilder("gtmqol:quartz_fiber_from_certus_quartz")
+            .inputItems(TagPrefix.gem, GTMaterials.CertusQuartz)
+            .outputItems(AEParts.QUARTZ_FIBER.asItem(), 3)
+            .EUt(VA[LV].toLong())
+            .duration(100)
+            .save(provider)
+
+        GTRecipeTypes.WIREMILL_RECIPES.recipeBuilder("gtmqol:ae_fluix_cable")
+            .inputItems(ItemTags.create(ResourceLocation.tryBuild("forge", "gems/fluix")!!))
+            .outputItems(AEParts.GLASS_CABLE.item(AEColor.TRANSPARENT).asItem(), 4)
+            .EUt(VA[LV].toLong())
+            .duration(160)
+            .save(provider)
+
+        GTRecipeTypes.POLARIZER_RECIPES.recipeBuilder("gtmqol:charge_certus_quartz")
+            .inputItems(TagPrefix.gem, GTMaterials.CertusQuartz)
+            .outputItems(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
+            .EUt(VA[LV].toLong())
+            .duration(80)
+            .save(provider)
+
+        GTRecipeTypes.MIXER_RECIPES.recipeBuilder("gtmqol:mix_fluix")
+            .inputItems(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
+            .inputItems(TagPrefix.dust, GTMaterials.Redstone)
+            .inputItems(TagPrefix.gem, GTMaterials.NetherQuartz)
+            .inputFluids(GTMaterials.Water, 100)
+            .outputItems(AEItems.FLUIX_CRYSTAL.asItem(), 4)
+            .EUt(VA[LV].toLong())
+            .duration(200)
+            .save(provider)
+
     }
 
     private fun registerMiscRecipes(provider: Consumer<FinishedRecipe>) {
@@ -89,7 +139,7 @@ object QoLRecipes {
         )
 
         QoLItems.circuitTiers().forEach {
-            QoLRecipeTypes.MAGICAL_ASSEMBLER!!.recipeBuilder("circuit_conversion_tier_${it}")
+            QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES!!.recipeBuilder("circuit_conversion_tier_${it}")
                 .inputItems(CustomTags.CIRCUITS_ARRAY[it])
                 .outputItems(QoLItems.UNIVERSAL_CIRCUITS[it])
                 .circuitMeta(5)
@@ -100,6 +150,18 @@ object QoLRecipes {
 
         if (ConfigHolder.instance.addonConfig.registerModularMachinesForSimpleMachines) {
             AddDefaultMultiesLogic.registerMachineRecipes(provider)
+        }
+
+        if (ConfigHolder.instance.addonConfig.enableElectricImplosionRecipes) {
+            VanillaRecipeHelper.addShapedRecipe(
+                provider, true, "gtmqol:electric_implosion_compressor",
+                QoLMultiblocks.ELECTRIC_IMPLOSION_COMPRESSOR!!.asStack(),
+                "PCP", "FSF", "PCP",
+                'C', CustomTags.ZPM_CIRCUITS,
+                'S', GTMultiMachines.IMPLOSION_COMPRESSOR.asStack(),
+                'P', GTItems.ELECTRIC_MOTOR_IV.asStack(),
+                'F', GTItems.FIELD_GENERATOR_IV
+            )
         }
     }
 

@@ -4,21 +4,31 @@ import com.gregtechceu.gtceu.api.GTValues
 import com.gregtechceu.gtceu.api.capability.recipe.IO
 import com.gregtechceu.gtceu.api.gui.GuiTextures
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType
+import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes.MULTIBLOCK
 import com.gregtechceu.gtceu.common.data.GTSoundEntries
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture
 import com.yiran.minecraft.gtmqol.ae2PresentedAndIntegrationEnabled
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
+import net.minecraft.sounds.SoundEvents
+import net.minecraft.sounds.SoundSource
 
 object QoLRecipeTypes {
     @JvmField
     var GREEN_HOUSE_RECIPES: GTRecipeType? = null
+
     @JvmField
     var ME_ASSEMBLER_RECIPES: GTRecipeType? = null
+
     @JvmField
     var ME_CIRCUIT_SLICER_RECIPES: GTRecipeType? = null
+
     @JvmField
-    var MAGICAL_ASSEMBLER: GTRecipeType? = null
+    var MAGICAL_ASSEMBLER_RECIPES: GTRecipeType? = null
+
+    @JvmField
+    var ELECTRIC_IMPLOSION_RECIPES: GTRecipeType? = null
 
     init {
         if (ConfigHolder.instance.addonConfig.enableGreenhouse) {
@@ -53,7 +63,7 @@ object QoLRecipeTypes {
 
         }
 
-        MAGICAL_ASSEMBLER = GTRecipeTypes.register("gtmqol:magical_assembler", "electric")
+        MAGICAL_ASSEMBLER_RECIPES = GTRecipeTypes.register("gtmqol:magical_assembler", "electric")
             .setMaxIOSize(6, 3, 3, 3)
             .setEUIO(IO.IN)
             .prepareBuilder { recipeBuilder ->
@@ -61,6 +71,16 @@ object QoLRecipeTypes {
             }
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, ProgressTexture.FillDirection.LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.SCIENCE)
+
+        if (ConfigHolder.instance.addonConfig.enableElectricImplosionRecipes) {
+            ELECTRIC_IMPLOSION_RECIPES = GTRecipeTypes.register("gtmqol:electric_implosion_compressor", MULTIBLOCK)
+                .setMaxIOSize(3, 2, 0, 0).setEUIO(IO.IN)
+                .prepareBuilder({ recipeBuilder -> recipeBuilder.duration(20).EUt(GTValues.VA[GTValues.LV].toLong()) })
+                .setSlotOverlay(false, false, true, GuiTextures.IMPLOSION_OVERLAY_1)
+                .setSlotOverlay(false, false, false, GuiTextures.IMPLOSION_OVERLAY_2)
+                .setSlotOverlay(true, false, true, GuiTextures.DUST_OVERLAY)
+                .setSound(ExistingSoundEntry(SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS))
+        }
     }
 
     @JvmStatic
