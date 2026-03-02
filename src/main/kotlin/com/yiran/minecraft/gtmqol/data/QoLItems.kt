@@ -2,6 +2,7 @@ package com.yiran.minecraft.gtmqol.data
 
 import com.gregtechceu.gtceu.api.GTCEuAPI
 import com.gregtechceu.gtceu.api.GTValues
+import com.gregtechceu.gtceu.data.recipe.CustomTags
 import com.tterrag.registrate.util.entry.ItemEntry
 import com.yiran.minecraft.gtmqol.GTMQoLRegistrate
 import net.minecraft.world.item.Item
@@ -34,8 +35,10 @@ object QoLItems {
             .lang("Neutronium Doped Silicon Chip").register()
 
         UNIVERSAL_CIRCUITS = circuitTiers().map {
-            GTMQoLRegistrate.REGISTRATE.item("universal_circuits/${GTValues.VN[it].lowercase(ENGLISH)}_universal_circuit", ::Item)
-                .lang("${GTValues.VN[it]} Universal Circuit").register() as ItemEntry<Item>
+            GTMQoLRegistrate.REGISTRATE.item("${GTValues.VN[it].lowercase(ENGLISH)}_universal_circuit", ::Item)
+                .lang("${GTValues.VN[it]} Universal Circuit")
+                .tag(CustomTags.CIRCUITS_ARRAY[it])
+                .register() as ItemEntry<Item>
         }.toTypedArray()
     }
 

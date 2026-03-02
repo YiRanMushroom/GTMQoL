@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtmthings:block/machine/wireless_energy_accessor",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtmthings:block/machine/wireless_energy_accessor",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtmthings:block/machine/wireless_energy_accessor"
+    },
+    "facing=south": {
+      "model": "gtmthings:block/machine/wireless_energy_accessor",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtmthings:block/machine/wireless_energy_accessor",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtmthings:block/machine/wireless_energy_accessor",
+      "y": 270
+    }
+  }
+}

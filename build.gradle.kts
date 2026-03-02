@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import groovy.json.JsonSlurper
 import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("dev.architectury.loom") version "1.13.467"
@@ -210,6 +210,12 @@ dependencies {
     modImplementation("mekanism:Mekanism:${project.property("mekanism_version")}")
 
     modApi("dev.latvian.mods:kubejs-forge:${project.property("kubejs_version")}")
+
+    modImplementation(files("libs/gtmthings-1.5.4.jar"))
+
+    implementation("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
+
+    forgeRuntimeLibrary("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
 }
 
 tasks.processResources {
@@ -225,7 +231,8 @@ tasks.processResources {
         "forge_version" to (project.property("forge_version") as String).split(".")[0],
         "minecraft_version" to project.property("minecraft_version"),
         "gtceu_version" to project.property("gtceu_version"),
-        "ae2_version" to project.property("ae2_version")
+        "ae2_version" to project.property("ae2_version"),
+        "mekanism_version" to project.property("mekanism_version"),
     )
     inputs.properties(properties)
 

@@ -63,6 +63,14 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Enable AE2 Integration (if present)", "Default: true"})
         public boolean enableAE2Integration = true;
+
+        @Configurable
+        @Configurable.Comment({"Enable Mekanism Integration (if present)", "Default: true"})
+        public boolean enableMekanismIntegration = true;
+
+        @Configurable
+        @Configurable.Comment({"Enable GTMThings Integration (if present)", "Default: true"})
+        public boolean enableGTMThingsIntegration = true;
     }
 
     @Configurable

@@ -1,0 +1,22 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtmthings:wireless_energy_accessor",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
+  "variants": {
+    "": {
+      "model": {
+        "parent": "gtmthings:block/machine/part/energy_input_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/iv/bottom",
+          "side": "gtceu:block/casings/voltage/iv/side",
+          "top": "gtceu:block/casings/voltage/iv/top"
+        }
+      }
+    }
+  }
+}

@@ -2,7 +2,10 @@ package com.yiran.minecraft.gtmqol.functionality
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.gregtechceu.gtceu.api.GTValues.LV
+import com.gregtechceu.gtceu.api.GTValues.VA
 import com.gregtechceu.gtceu.api.data.RotationState
+import com.gregtechceu.gtceu.api.machine.MachineDefinition
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern
@@ -14,7 +17,9 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
+import com.yiran.minecraft.gtmqol.data.QoLRecipeTypes
 import net.minecraft.client.Minecraft
+import net.minecraft.data.recipes.FinishedRecipe
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackResources
@@ -33,6 +38,7 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
+import java.util.function.Consumer
 
 object AddDefaultMultiesLogic {
 
@@ -40,7 +46,8 @@ object AddDefaultMultiesLogic {
         val modularName: String,
         val simpleName: String,
         val namespace: String,
-        val definition: MultiblockMachineDefinition
+        val definition: MultiblockMachineDefinition,
+        val simpleMachineDefinition: MachineDefinition
     )
 
     private val registryData = hashMapOf<String, MutableMap<String, MachineEntry>>()
@@ -50,13 +57,15 @@ object AddDefaultMultiesLogic {
     }
 
     private val perfectGeneratorOverclockingLogic = OverclockingLogic.create(0.5, 4.0, true)
-    private val perfectGeneratorOverclockingRecipeModifier = GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(perfectGeneratorOverclockingLogic)
+    private val perfectGeneratorOverclockingRecipeModifier =
+        GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(perfectGeneratorOverclockingLogic)
 
     @JvmStatic
     fun generateMultiblockForSimpleMachine(
         registrate: GTRegistrate,
         simpleMachineName: String,
-        recipeTypes: Array<GTRecipeType>
+        recipeTypes: Array<GTRecipeType>,
+        simpleMachineDefinition: MachineDefinition
     ) {
         val isDataGen = isDataGen()
 
@@ -79,8 +88,8 @@ object AddDefaultMultiesLogic {
             return
         }
 
-        val baseRecipeModifier : RecipeModifier = if (!allGenerator) GTRecipeModifiers.OC_PERFECT_SUBTICK
-              else perfectGeneratorOverclockingRecipeModifier
+        val baseRecipeModifier: RecipeModifier = if (!allGenerator) GTRecipeModifiers.OC_PERFECT_SUBTICK
+        else perfectGeneratorOverclockingRecipeModifier
 
         val namespace = registrate.modid
         val modularName = "modular_$simpleMachineName"
@@ -111,7 +120,7 @@ object AddDefaultMultiesLogic {
             .register()
 
         registryData.computeIfAbsent(namespace) { hashMapOf() }[modularName] =
-            MachineEntry(modularName, simpleMachineName, namespace, definition)
+            MachineEntry(modularName, simpleMachineName, namespace, definition, simpleMachineDefinition)
     }
 
     @JvmStatic
@@ -130,6 +139,20 @@ object AddDefaultMultiesLogic {
             )
             if (pack != null) {
                 event.addRepositorySource { it.accept(pack) }
+            }
+        }
+    }
+
+    fun registerMachineRecipes(provider: Consumer<FinishedRecipe>) {
+        registryData.values.forEach {
+            it.values.forEach { entry ->
+                QoLRecipeTypes.MAGICAL_ASSEMBLER!!.recipeBuilder("${entry.namespace}_${entry.simpleName}_convert_to_modular")
+                    .inputItems(entry.simpleMachineDefinition.item)
+                    .outputItems(entry.definition.item)
+                    .circuitMeta(5)
+                    .EUt(VA[LV].toLong())
+                    .duration(200)
+                    .save(provider)
             }
         }
     }

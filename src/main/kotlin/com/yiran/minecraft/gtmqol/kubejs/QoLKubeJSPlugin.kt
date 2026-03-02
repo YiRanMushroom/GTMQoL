@@ -9,5 +9,8 @@ class QoLKubeJSPlugin : KubeJSPlugin() {
         val qolNameSpace = event.namespace("gtmqol")
 
         qolNameSpace.register("greenhouse", GTRecipeSchema.SCHEMA)
+        qolNameSpace.register("me_assembler", GTRecipeSchema.SCHEMA)
+        qolNameSpace.register("me_circuit_slicer", GTRecipeSchema.SCHEMA)
+        qolNameSpace.register("magical_assembler", GTRecipeSchema.SCHEMA)
     }
 }

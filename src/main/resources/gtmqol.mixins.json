@@ -13,8 +13,12 @@
     "GTMultiMachines$Misc$Mixin",
     "GTRecipeTypes$InitMyRecipeType$Mixin",
     "OverclockingLogic$Misc$Mixin",
-    "PredicatesMixin"
+    "PredicatesMixin",
+    "gtmthings.WirelessEnergyContainerMixin",
+    "gtmthings.WirelessEnergyMonitorMixin",
+    "gtmthings.WirelessMachinesMixin"
   ],
+  "plugin": "com.yiran.minecraft.gtmqol.mixin.ModMixinPlugin",
   "client": [
   ],
   "injectors": {

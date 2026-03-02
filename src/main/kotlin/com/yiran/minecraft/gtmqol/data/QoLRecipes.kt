@@ -1,6 +1,5 @@
 package com.yiran.minecraft.gtmqol.data
 
-import appeng.core.definitions.AEBlockEntities
 import appeng.core.definitions.AEBlocks
 import appeng.core.definitions.AEBlocks.INSCRIBER
 import appeng.core.definitions.AEItems
@@ -12,11 +11,13 @@ import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTItems
 import com.gregtechceu.gtceu.common.data.GTMaterials
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines
+import com.gregtechceu.gtceu.data.recipe.CustomTags
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*
 import com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.registerMachineRecipe
 import com.yiran.minecraft.gtmqol.ae2PresentedAndIntegrationEnabled
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
-import com.yiran.minecraft.gtmqol.data.QoLRecipes.WoodEntry
+import com.yiran.minecraft.gtmqol.functionality.AddDefaultMultiesLogic
+import com.yiran.minecraft.gtmqol.gtmthingsPresentedAndIntegrationEnabled
 import net.minecraft.data.recipes.FinishedRecipe
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.ItemTags
@@ -71,6 +72,10 @@ object QoLRecipes {
         }
 
         registerMiscRecipes(provider)
+
+        if (gtmthingsPresentedAndIntegrationEnabled()) {
+            GTMRecipeGen.initGTMRecipes(provider)
+        }
     }
 
     private fun registerMiscRecipes(provider: Consumer<FinishedRecipe>) {
@@ -82,6 +87,20 @@ object QoLRecipes {
             'C', CIRCUIT,
             'P', PLATE
         )
+
+        QoLItems.circuitTiers().forEach {
+            QoLRecipeTypes.MAGICAL_ASSEMBLER!!.recipeBuilder("circuit_conversion_tier_${it}")
+                .inputItems(CustomTags.CIRCUITS_ARRAY[it])
+                .outputItems(QoLItems.UNIVERSAL_CIRCUITS[it])
+                .circuitMeta(5)
+                .duration(1)
+                .EUt(1)
+                .save(provider)
+        }
+
+        if (ConfigHolder.instance.addonConfig.registerModularMachinesForSimpleMachines) {
+            AddDefaultMultiesLogic.registerMachineRecipes(provider)
+        }
     }
 
     private fun registerGreenhouseMachineRecipes(provider: Consumer<FinishedRecipe>) {

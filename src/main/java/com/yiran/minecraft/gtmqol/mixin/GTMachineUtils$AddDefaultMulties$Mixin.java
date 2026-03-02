@@ -32,6 +32,6 @@ public class GTMachineUtils$AddDefaultMulties$Mixin {
                 .findFirst()
                 .ifPresent(definition ->
                         AddDefaultMultiesLogic.generateMultiblockForSimpleMachine(
-                                registrate, name, definition.getRecipeTypes()));
+                                registrate, name, definition.getRecipeTypes(), definition));
     }
 }

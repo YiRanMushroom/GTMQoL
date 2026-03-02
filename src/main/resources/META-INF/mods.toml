@@ -41,3 +41,9 @@ This mod provides some QoL(Not really) machines and capabilities, as well as som
         versionRange = "[${ae2_version},)"
         ordering = "AFTER"
         side = "BOTH"
+    [[dependencies.gtmqol]]
+        modId = "mekanism"
+        mandatory = false
+        versionRange = "[${mekanism_version},)"
+        ordering = "AFTER"
+        side = "BOTH"
