@@ -7,6 +7,7 @@
     "ForgeCommonEventListener$AttachEnergyProxy$Mixin",
     "FusionReactor$ChangeOverclockingLogic$Mixin",
     "GCYMMachines$Misc$Mixin",
+    "GTClientProxyMixin",
     "GTItems$RegisterMine$Mixin",
     "GTMachines$InitMyMachines$Mixin",
     "GTMachineUtils$AddDefaultMulties$Mixin",

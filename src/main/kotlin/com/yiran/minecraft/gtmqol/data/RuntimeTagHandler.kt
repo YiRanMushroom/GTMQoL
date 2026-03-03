@@ -1,12 +1,6 @@
 package com.yiran.minecraft.gtmqol.handler
 
-import com.gregtechceu.gtceu.api.GTValues.*
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix
-import com.gregtechceu.gtceu.common.data.GTMaterials
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes
-import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack
 import com.yiran.minecraft.gtmqol.GTMQoL
-import com.yiran.minecraft.gtmqol.config.ConfigHolder
 import com.yiran.minecraft.gtmqol.mekanismPresentedAndIntegrationEnabled
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
@@ -24,7 +18,7 @@ object RuntimeTagHandler {
     @JvmStatic
     fun onTagsUpdated(event: TagsUpdatedEvent) {
 
-        if (mekanismPresentedAndIntegrationEnabled()) return
+        if (!mekanismPresentedAndIntegrationEnabled()) return
 
         val registryManager = event.registryAccess
         val itemRegistry = registryManager.registryOrThrow(Registries.ITEM)

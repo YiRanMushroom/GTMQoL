@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol;
 
 import com.yiran.minecraft.gtmqol.config.ConfigHolder;
+import com.yiran.minecraft.gtmqol.data.ClientDynamicModelRegisterer;
 import com.yiran.minecraft.gtmqol.functionality.AddModularMultiblocksLogic;
 import com.yiran.minecraft.gtmqol.init.OverclockingPatcher;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +34,7 @@ public class GTMQoL {
 
         modBus.addListener(this::onCommonSetup);
         modBus.addListener(this::onClientSetup);
-        modBus.addListener(AddModularMultiblocksLogic::onAddPackFinders);
+//        modBus.addListener(AddModularMultiblocksLogic::onAddPackFinders);
 
         MinecraftForge.EVENT_BUS.register(this);
         LOGGER.info("{} initializing", MOD_ID);
@@ -45,7 +46,6 @@ public class GTMQoL {
 
     private void onCommonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("{} common setup", MOD_ID);
-
 
     }
 

@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol
 
 import com.lowdragmc.lowdraglib.LDLib
+import com.yiran.minecraft.gtmqol.GTMQoL.LOGGER
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
 import net.minecraftforge.fml.loading.FMLLoader
 
@@ -16,6 +17,7 @@ fun ae2PresentedAndIntegrationEnabled(): Boolean {
 }
 
 fun mekanismPresentedAndIntegrationEnabled(): Boolean {
+    LOGGER.info("Checking Mekanism integration: isModLoaded = ${LDLib.isModLoaded("mekanism")}, configEnabled = ${ConfigHolder.instance.addonConfig.enableMekanismIntegration}")
     return LDLib.isModLoaded("mekanism") && ConfigHolder.instance.addonConfig.enableMekanismIntegration
 }
 
