@@ -1,4 +1,4 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+//import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -8,7 +8,7 @@ plugins {
     id("maven-publish")
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("com.gradleup.shadow") version "9.3.0"
+//    id("com.gradleup.shadow") version "9.3.0"
 }
 
 base {
@@ -33,14 +33,14 @@ sourceSets {
     }
 }
 
-val devShadowJar = tasks.register<ShadowJar>("devShadowJar") {
-    group = "build"
-    from(sourceSets.main.get().output.classesDirs)
-
-    exclude("META-INF/**")
-    archiveClassifier.set("dev-merged")
-    destinationDirectory.set(layout.buildDirectory.dir("relo-classes"))
-}
+//val devShadowJar = tasks.register<ShadowJar>("devShadowJar") {
+//    group = "build"
+//    from(sourceSets.main.get().output.classesDirs)
+//
+//    exclude("META-INF/**")
+//    archiveClassifier.set("dev-merged")
+//    destinationDirectory.set(layout.buildDirectory.dir("relo-classes"))
+//}
 
 loom {
     silentMojangMappingsLicense()
@@ -274,6 +274,10 @@ tasks.jar {
             )
         )
     }
+
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    dependsOn(relocateClasses)
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -309,4 +313,12 @@ publishing {
             from(components["java"])
         }
     }
+}
+
+sourceSets.main.configure {
+    (output.classesDirs as ConfigurableFileCollection).setFrom(layout.buildDirectory.dir("classes/java/main"))
+}
+
+tasks.named<Jar>("sourcesJar") {
+    exclude { it.file.absolutePath.contains("generated") }
 }
