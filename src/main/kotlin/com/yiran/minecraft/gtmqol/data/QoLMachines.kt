@@ -76,7 +76,7 @@ object QoLMachines {
 
     init {
         if (ConfigHolder.instance.addonConfig.enableGreenhouse) {
-            GREENHOUSE = registerSimpleMachine("greenhouse", QoLRecipeTypes.GREEN_HOUSE_RECIPES!!)
+            GREENHOUSE = registerSimpleMachine("greenhouse", QoLRecipeTypes.GREENHOUSE_RECIPES!!)
         }
 
         if (ae2PresentedAndIntegrationEnabled()) {

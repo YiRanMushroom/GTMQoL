@@ -1,5 +1,10 @@
 package com.yiran.minecraft.gtmqol.handler
 
+import com.gregtechceu.gtceu.api.GTValues.*
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix
+import com.gregtechceu.gtceu.common.data.GTMaterials
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes
+import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
 import com.yiran.minecraft.gtmqol.mekanismPresentedAndIntegrationEnabled
 import net.minecraft.core.Holder
@@ -13,46 +18,38 @@ import net.minecraftforge.fml.common.Mod
 
 @Mod.EventBusSubscriber(modid = "gtmqol", bus = Mod.EventBusSubscriber.Bus.FORGE)
 object RuntimeTagHandler {
-
-    val onceLock = Any()
-    var hasRun = false
-
     @SubscribeEvent
     @JvmStatic
     fun onTagsUpdated(event: TagsUpdatedEvent) {
-        synchronized(onceLock) {
-            if (hasRun) return
-            hasRun = true
 
-            if (mekanismPresentedAndIntegrationEnabled()) return
+        if (mekanismPresentedAndIntegrationEnabled()) return
 
-            val registryManager = event.registryAccess
-            val itemRegistry = registryManager.registryOrThrow(Registries.ITEM)
+        val registryManager = event.registryAccess
+        val itemRegistry = registryManager.registryOrThrow(Registries.ITEM)
 
-            val conversionPairs = listOf(
-                createLocation("gtceu", "circuits/lv") to createLocation("forge", "circuits/basic"),
-                createLocation("gtceu", "circuits/mv") to createLocation("forge", "circuits/advanced"),
-                createLocation("gtceu", "circuits/hv") to createLocation("forge", "circuits/elite"),
-                createLocation("gtceu", "circuits/ev") to createLocation("forge", "circuits/ultimate")
-            )
+        val conversionPairs = listOf(
+            createLocation("gtceu", "circuits/lv") to createLocation("forge", "circuits/basic"),
+            createLocation("gtceu", "circuits/mv") to createLocation("forge", "circuits/advanced"),
+            createLocation("gtceu", "circuits/hv") to createLocation("forge", "circuits/elite"),
+            createLocation("gtceu", "circuits/ev") to createLocation("forge", "circuits/ultimate")
+        )
 
-            conversionPairs.forEach { (gtLoc, forgeLoc) ->
-                val gtTagKey = ItemTags.create(gtLoc)
-                val forgeTagKey = ItemTags.create(forgeLoc)
+        conversionPairs.forEach { (gtLoc, forgeLoc) ->
+            val gtTagKey = ItemTags.create(gtLoc)
+            val forgeTagKey = ItemTags.create(forgeLoc)
 
-                val gtHolderSet = itemRegistry.getOrCreateTag(gtTagKey)
-                val forgeHolderSet = itemRegistry.getOrCreateTag(forgeTagKey)
+            val gtHolderSet = itemRegistry.getOrCreateTag(gtTagKey)
+            val forgeHolderSet = itemRegistry.getOrCreateTag(forgeTagKey)
 
-                val combinedList = mutableListOf<Holder<Item>>()
+            val combinedList = mutableListOf<Holder<Item>>()
 
-                gtHolderSet.forEach { combinedList.add(it) }
-                forgeHolderSet.forEach { combinedList.add(it) }
+            gtHolderSet.forEach { combinedList.add(it) }
+            forgeHolderSet.forEach { combinedList.add(it) }
 
-                val distinctHolders = combinedList.distinct()
+            val distinctHolders = combinedList.distinct()
 
-                gtHolderSet.bind(distinctHolders)
-                forgeHolderSet.bind(distinctHolders)
-            }
+            gtHolderSet.bind(distinctHolders)
+            forgeHolderSet.bind(distinctHolders)
         }
 
     }

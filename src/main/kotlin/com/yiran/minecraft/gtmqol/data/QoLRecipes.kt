@@ -7,8 +7,6 @@ import appeng.core.definitions.AEItems
 import appeng.core.definitions.AEParts
 import com.gregtechceu.gtceu.api.GTValues.LV
 import com.gregtechceu.gtceu.api.GTValues.VA
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTItems
@@ -33,7 +31,6 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.material.Fluids
 import net.minecraftforge.fluids.FluidStack
 import java.util.function.Consumer
-import javax.swing.text.html.HTML.Tag
 
 
 object QoLRecipes {
@@ -177,7 +174,7 @@ object QoLRecipes {
 
     fun registerTreeGrowingRecipes(woodEntries: List<WoodEntry>, provider: Consumer<FinishedRecipe>) {
         woodEntries.forEach { entry ->
-            QoLRecipeTypes.GREEN_HOUSE_RECIPES!!.recipeBuilder("${entry.name}_growing_1")
+            QoLRecipeTypes.GREENHOUSE_RECIPES!!.recipeBuilder("${entry.name}_growing_1")
                 .notConsumable(entry.sapling)
                 .inputFluids(FluidStack(Fluids.WATER, 100))
                 .circuitMeta(1)
@@ -189,7 +186,7 @@ object QoLRecipes {
                 .EUt(VA[LV].toLong())
                 .save(provider)
 
-            QoLRecipeTypes.GREEN_HOUSE_RECIPES!!.recipeBuilder("${entry.name}_growing_2")
+            QoLRecipeTypes.GREENHOUSE_RECIPES!!.recipeBuilder("${entry.name}_growing_2")
                 .notConsumable(entry.sapling)
                 .inputFluids(FluidStack(Fluids.WATER, 500))
                 .circuitMeta(2)
@@ -201,7 +198,7 @@ object QoLRecipes {
                 .EUt(VA[LV].toLong())
                 .save(provider)
 
-            QoLRecipeTypes.GREEN_HOUSE_RECIPES!!.recipeBuilder("${entry.name}_growing_3")
+            QoLRecipeTypes.GREENHOUSE_RECIPES!!.recipeBuilder("${entry.name}_growing_3")
                 .notConsumable(entry.sapling)
                 .notConsumableFluid(FluidStack(Fluids.WATER, 1000))
                 .circuitMeta(3)

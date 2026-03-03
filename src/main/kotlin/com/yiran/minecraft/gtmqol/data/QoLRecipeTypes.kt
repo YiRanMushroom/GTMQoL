@@ -11,12 +11,13 @@ import com.gregtechceu.gtceu.common.data.GTSoundEntries
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture
 import com.yiran.minecraft.gtmqol.ae2PresentedAndIntegrationEnabled
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
+import com.yiran.minecraft.gtmqol.logic.GreenhouseCustomRecipeLogic
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 
 object QoLRecipeTypes {
     @JvmField
-    var GREEN_HOUSE_RECIPES: GTRecipeType? = null
+    var GREENHOUSE_RECIPES: GTRecipeType? = null
 
     @JvmField
     var ME_ASSEMBLER_RECIPES: GTRecipeType? = null
@@ -32,9 +33,10 @@ object QoLRecipeTypes {
 
     init {
         if (ConfigHolder.instance.addonConfig.enableGreenhouse) {
-            GREEN_HOUSE_RECIPES = GTRecipeTypes.register("gtmqol:greenhouse", "electric")
+            GREENHOUSE_RECIPES = GTRecipeTypes.register("gtmqol:greenhouse", "electric")
                 .setMaxIOSize(6, 6, 3, 3)
                 .setEUIO(IO.IN)
+                .addCustomRecipeLogic(GreenhouseCustomRecipeLogic())
                 .prepareBuilder { recipeBuilder ->
                     recipeBuilder.EUt(GTValues.VA[1].toLong())
                 }
