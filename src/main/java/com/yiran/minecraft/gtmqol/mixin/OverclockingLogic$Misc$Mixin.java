@@ -45,7 +45,7 @@ public interface OverclockingLogic$Misc$Mixin {
                 return ModifierFunction.IDENTITY;
             } else {
                 int maxParallels;
-                if (shouldParallel && this != PERFECT_OVERCLOCK && this != NON_PERFECT_OVERCLOCK) {
+                if (shouldParallel) {
                     int lg = IntMath.log2(recipe.duration, RoundingMode.FLOOR) / 2;
                     if (lg > OCs) {
                         maxParallels = 16;
@@ -109,5 +109,65 @@ public interface OverclockingLogic$Misc$Mixin {
         }
 
         return new OverclockingLogic.OCResult(Math.pow(4.0, ocLevel), durationMultiplier, ocLevel, (int) parallel);
+    }
+
+    /**
+     * @author Yiran
+     * @reason Try to boost sub-tick parallel OC amount
+     */
+    @Overwrite
+    static OverclockingLogic.OCResult subTickParallelOC(OverclockingLogic.OCParams params, long maxVoltage, double durationFactor, double voltageFactor) {
+        double initialDuration = (double) params.duration();
+        double initialEUt = (double) params.eut();
+        int ocAmount = params.ocAmount();
+        int recipeMaxParallels = params.maxParallels();
+
+//        LOGGER.info("[OC INPUT] InitialDuration: {}, InitialEUt: {}, N: {}, MaxParallels: {}, DurationFactor: {}, VoltageFactor: {}, MaxVoltage: {}",
+//                initialDuration, initialEUt, ocAmount, recipeMaxParallels, durationFactor, voltageFactor, maxVoltage);
+
+        double speedGainFactor = 1.0 / durationFactor;
+
+        double maxOverclockEffectiveSpeedGain = Math.pow(speedGainFactor, (double) ocAmount);
+
+        double recipeInConditionAbsoluteMaxEffectiveSpeedGain = initialDuration * (double) recipeMaxParallels;
+        double effectiveSpeedGain;
+
+        if (maxOverclockEffectiveSpeedGain >= recipeInConditionAbsoluteMaxEffectiveSpeedGain) {
+            effectiveSpeedGain = recipeInConditionAbsoluteMaxEffectiveSpeedGain;
+        } else {
+            if (maxOverclockEffectiveSpeedGain >= initialDuration) {
+                effectiveSpeedGain = Math.floor(maxOverclockEffectiveSpeedGain / initialDuration) * initialDuration;
+            } else {
+                effectiveSpeedGain = maxOverclockEffectiveSpeedGain;
+            }
+        }
+
+        double effectiveOCAmount = Math.log(effectiveSpeedGain) / Math.log(speedGainFactor);
+
+        double finalRecipeTotalVoltageMultiplier = Math.pow(voltageFactor, effectiveOCAmount);
+
+        double finalDurationMultiplier;
+        double finalParallel;
+
+        if (effectiveSpeedGain <= initialDuration + 1e-7) {
+            finalDurationMultiplier = 1.0 / effectiveSpeedGain;
+            finalParallel = 1.0;
+        } else {
+            finalDurationMultiplier = 1.0 / initialDuration;
+            finalParallel = effectiveSpeedGain / initialDuration;
+        }
+
+//        LOGGER.info("[OC SCRATCH] SpeedGainFactor: {}, MaxTotalGain: {}, HardwareMaxGain: {}, Effective(RealGain): {}, EffectiveOCAmount: {}",
+//                speedGainFactor, maxOverclockEffectiveSpeedGain, recipeInConditionAbsoluteMaxEffectiveSpeedGain, effectiveSpeedGain, effectiveOCAmount);
+//
+//        LOGGER.info("[OC OUTPUT] FinalVoltageMultiplier: {}, FinalDurationMultiplier: {}, FinalParallel: {}, RealEffectiveSpeedGain: {}",
+//                finalRecipeTotalVoltageMultiplier, finalDurationMultiplier, (int) Math.round(finalParallel), (finalParallel / finalDurationMultiplier));
+
+        return new OverclockingLogic.OCResult(
+                finalRecipeTotalVoltageMultiplier,
+                finalDurationMultiplier,
+                (int) Math.ceil(effectiveOCAmount - 1e-7),
+                (int) Math.round(finalParallel)
+        );
     }
 }
