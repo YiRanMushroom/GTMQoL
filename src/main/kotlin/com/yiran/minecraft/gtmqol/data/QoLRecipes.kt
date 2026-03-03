@@ -20,7 +20,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
 import com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.registerMachineRecipe
 import com.yiran.minecraft.gtmqol.ae2PresentedAndIntegrationEnabled
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
-import com.yiran.minecraft.gtmqol.functionality.AddDefaultMultiesLogic
+import com.yiran.minecraft.gtmqol.functionality.AddModularMultiblocksLogic
 import com.yiran.minecraft.gtmqol.gtmthingsPresentedAndIntegrationEnabled
 import net.minecraft.data.recipes.FinishedRecipe
 import net.minecraft.resources.ResourceLocation
@@ -146,7 +146,7 @@ object QoLRecipes {
         }
 
         if (ConfigHolder.instance.addonConfig.registerModularMachinesForSimpleMachines) {
-            AddDefaultMultiesLogic.registerMachineRecipes(provider)
+            AddModularMultiblocksLogic.registerMachineRecipes(provider)
         }
 
         if (ConfigHolder.instance.addonConfig.enableElectricImplosionRecipes) {

@@ -1,7 +1,7 @@
 package com.yiran.minecraft.gtmqol;
 
 import com.yiran.minecraft.gtmqol.config.ConfigHolder;
-import com.yiran.minecraft.gtmqol.functionality.AddDefaultMultiesLogic;
+import com.yiran.minecraft.gtmqol.functionality.AddModularMultiblocksLogic;
 import com.yiran.minecraft.gtmqol.init.OverclockingPatcher;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,7 +33,7 @@ public class GTMQoL {
 
         modBus.addListener(this::onCommonSetup);
         modBus.addListener(this::onClientSetup);
-        modBus.addListener(AddDefaultMultiesLogic::onAddPackFinders);
+        modBus.addListener(AddModularMultiblocksLogic::onAddPackFinders);
 
         MinecraftForge.EVENT_BUS.register(this);
         LOGGER.info("{} initializing", MOD_ID);

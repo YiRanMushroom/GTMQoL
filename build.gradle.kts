@@ -275,37 +275,37 @@ tasks.jar {
         )
     }
 
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+//    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
-    dependsOn(relocateClasses)
+//    dependsOn(relocateClasses)
 }
 
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
     options.release.set(17)
-    destinationDirectory.set(layout.buildDirectory.dir("tmp/java_classes"))
+    destinationDirectory.set(layout.buildDirectory.dir("classes/java/main"))
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
-    destinationDirectory.set(layout.buildDirectory.dir("tmp/kotlin_classes"))
+    destinationDirectory.set(layout.buildDirectory.dir("classes/java/main"))
 }
 
-val relocateClasses = tasks.register<Sync>("relocateClasses") {
-    group = "build"
+//val relocateClasses = tasks.register<Sync>("relocateClasses") {
+//    group = "build"
+//
+//    val compileJava = tasks.named<JavaCompile>("compileJava")
+//    val compileKotlin = tasks.named<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileKotlin")
+//
+//    from(compileJava.flatMap { it.destinationDirectory })
+//    from(compileKotlin.flatMap { it.destinationDirectory })
+//
+//    into(layout.buildDirectory.dir("classes/java/main"))
+//}
 
-    val compileJava = tasks.named<JavaCompile>("compileJava")
-    val compileKotlin = tasks.named<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileKotlin")
-
-    from(compileJava.flatMap { it.destinationDirectory })
-    from(compileKotlin.flatMap { it.destinationDirectory })
-
-    into(layout.buildDirectory.dir("classes/java/main"))
-}
-
-tasks.named("classes") {
-    dependsOn(relocateClasses)
-}
+//tasks.named("classes") {
+//    dependsOn(relocateClasses)
+//}
 
 publishing {
     publications {

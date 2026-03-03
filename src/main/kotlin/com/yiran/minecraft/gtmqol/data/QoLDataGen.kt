@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix
 import com.gregtechceu.gtceu.common.data.GTMaterials
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack
+import com.yiran.minecraft.gtmqol.GTMQoL
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
 import com.yiran.minecraft.gtmqol.mekanismPresentedAndIntegrationEnabled
 import net.minecraft.core.Holder
@@ -16,7 +17,8 @@ import net.minecraftforge.event.TagsUpdatedEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
 
-@Mod.EventBusSubscriber(modid = "gtmqol", bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Suppress("UNUSED")
+@Mod.EventBusSubscriber(modid = GTMQoL.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 object RuntimeTagHandler {
     @SubscribeEvent
     @JvmStatic

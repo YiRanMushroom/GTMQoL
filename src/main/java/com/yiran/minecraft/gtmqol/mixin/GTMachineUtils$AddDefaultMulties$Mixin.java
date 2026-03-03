@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.yiran.minecraft.gtmqol.config.ConfigHolder;
-import com.yiran.minecraft.gtmqol.functionality.AddDefaultMultiesLogic;
+import com.yiran.minecraft.gtmqol.functionality.AddModularMultiblocksLogic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,7 +31,7 @@ public class GTMachineUtils$AddDefaultMulties$Mixin {
                 .filter(Objects::nonNull)
                 .findFirst()
                 .ifPresent(definition ->
-                        AddDefaultMultiesLogic.generateMultiblockForSimpleMachine(
+                        AddModularMultiblocksLogic.generateMultiblockForSimpleMachine(
                                 registrate, name, definition.getRecipeTypes(), definition));
     }
 }

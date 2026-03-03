@@ -40,7 +40,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.util.function.Consumer
 
-object AddDefaultMultiesLogic {
+object AddModularMultiblocksLogic {
 
     data class MachineEntry(
         val modularName: String,
