@@ -58,7 +58,8 @@ loom {
                 "--all",
                 "--mod", project.property("mod_id") as String,
                 "--output", file("src/generated/resources").absolutePath,
-                "--existing", file("src/main/resources").absolutePath
+                "--existing", file("src/main/resources").absolutePath,
+                "--existing-mod", "gtceu",
             )
             ideConfigGenerated(true)
             runDir("run/data")
@@ -73,19 +74,6 @@ loom {
 
     forge {
         mixinConfig("gtmqol.mixins.json")
-    }
-}
-
-tasks.named<JavaExec>("runData") {
-    doFirst {
-        val gtceuFile = configurations.runtimeClasspath.get().files.find {
-            it.name.contains("gtceu") && (it.extension == "jar" || it.isDirectory)
-        }
-
-        gtceuFile?.let {
-            args("--existing", it.absolutePath)
-            println("DataGen Resource Resolver: Found GTCEu at -> ${it.absolutePath}")
-        } ?: println("DataGen Resource Resolver: [WARN] GTCEu not found in runtimeClasspath!")
     }
 }
 
