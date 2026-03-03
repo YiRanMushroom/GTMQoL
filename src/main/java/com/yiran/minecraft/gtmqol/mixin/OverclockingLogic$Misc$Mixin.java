@@ -118,7 +118,7 @@ public interface OverclockingLogic$Misc$Mixin {
     @Overwrite
     static OverclockingLogic.OCResult subTickParallelOC(OverclockingLogic.OCParams params, long maxVoltage, double durationFactor, double voltageFactor) {
         double initialDuration = (double) params.duration();
-        double initialEUt = (double) params.eut();
+//        double initialEUt = (double) params.eut();
         int ocAmount = params.ocAmount();
         int recipeMaxParallels = params.maxParallels();
 

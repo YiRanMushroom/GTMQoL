@@ -13,6 +13,7 @@
     "GTMultiMachines$InjectMyMultiRegistration$Mixin",
     "GTMultiMachines$Misc$Mixin",
     "GTRecipeBuilderMixin",
+    "GTRecipeModifiers$FixMultiSmelterForOC$Mixin",
     "GTRecipeTypeMixin",
     "GTRecipeTypes$InitMyRecipeType$Mixin",
     "GTRecipeTypes$Misc$Mixin",
