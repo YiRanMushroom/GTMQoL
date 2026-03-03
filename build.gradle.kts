@@ -33,14 +33,6 @@ sourceSets {
     }
 }
 
-//val devShadowJar = tasks.register<ShadowJar>("devShadowJar") {
-//    group = "build"
-//    from(sourceSets.main.get().output.classesDirs)
-//
-//    exclude("META-INF/**")
-//    archiveClassifier.set("dev-merged")
-//    destinationDirectory.set(layout.buildDirectory.dir("relo-classes"))
-//}
 
 loom {
     silentMojangMappingsLicense()
@@ -59,6 +51,9 @@ loom {
 
         create("data") {
             data()
+
+            property("fml.ignoredMods", "kubejs")
+
             programArgs(
                 "--all",
                 "--mod", project.property("mod_id") as String,

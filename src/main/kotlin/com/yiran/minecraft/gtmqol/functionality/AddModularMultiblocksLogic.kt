@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
+import com.yiran.minecraft.gtmqol.ModUtils
 import com.yiran.minecraft.gtmqol.data.QoLRecipeTypes
 import net.minecraft.client.Minecraft
 import net.minecraft.data.recipes.FinishedRecipe
@@ -52,10 +53,6 @@ object AddModularMultiblocksLogic {
 
     private val registryData = hashMapOf<String, MutableMap<String, MachineEntry>>()
 
-    fun isDataGen(): Boolean {
-        return FMLLoader.getLaunchHandler().isData
-    }
-
     private val perfectGeneratorOverclockingLogic = OverclockingLogic.create(0.5, 4.0, true)
     private val perfectGeneratorOverclockingRecipeModifier =
         GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(perfectGeneratorOverclockingLogic)
@@ -67,7 +64,7 @@ object AddModularMultiblocksLogic {
         recipeTypes: Array<GTRecipeType>,
         simpleMachineDefinition: MachineDefinition
     ) {
-        val isDataGen = isDataGen()
+        val isDataGen = ModUtils.isDataGen()
 
         if (isDataGen) {
             return

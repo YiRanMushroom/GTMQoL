@@ -47,3 +47,5 @@ bin/
 /run
 /.gradle
 /build
+
+/.idea
