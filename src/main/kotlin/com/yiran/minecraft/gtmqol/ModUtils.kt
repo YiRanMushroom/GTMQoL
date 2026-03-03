@@ -10,6 +10,29 @@ object ModUtils {
     fun isDataGen(): Boolean {
         return FMLLoader.getLaunchHandler().isData
     }
+
+    @JvmStatic
+    fun binlog(bits: Int): Int {
+        var bits = bits
+        var log = 0
+        if ((bits and -0x10000) != 0) {
+            bits = bits ushr 16
+            log = 16
+        }
+        if (bits >= 256) {
+            bits = bits ushr 8
+            log += 8
+        }
+        if (bits >= 16) {
+            bits = bits ushr 4
+            log += 4
+        }
+        if (bits >= 4) {
+            bits = bits ushr 2
+            log += 2
+        }
+        return log + (bits ushr 1)
+    }
 }
 
 fun ae2PresentedAndIntegrationEnabled(): Boolean {

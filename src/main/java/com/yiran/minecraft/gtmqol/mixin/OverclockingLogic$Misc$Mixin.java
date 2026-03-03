@@ -1,24 +1,20 @@
 package com.yiran.minecraft.gtmqol.mixin;
 
-import com.google.common.math.IntMath;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
-import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.yiran.minecraft.gtmqol.config.ConfigHolder;
+import com.yiran.minecraft.gtmqol.ModUtils;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
-import java.math.RoundingMode;
-
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.NON_PERFECT_OVERCLOCK;
-import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.PERFECT_OVERCLOCK;
+import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK;
 import static com.mojang.text2speech.Narrator.LOGGER;
 
 @Mixin(OverclockingLogic.class)
@@ -46,13 +42,34 @@ public interface OverclockingLogic$Misc$Mixin {
             } else {
                 int maxParallels;
                 if (shouldParallel) {
-                    int lg = IntMath.log2(recipe.duration, RoundingMode.FLOOR) / 2;
-                    if (lg > OCs) {
-                        maxParallels = 16;
+                    // log the time taken by this method for debugging
+                    long startTime = System.nanoTime();
+
+//                    int lg = IntMath.log2(recipe.duration, RoundingMode.FLOOR) / 2;
+//                    if (lg > OCs) {
+////                        maxParallels = 16;
+//                    } else {
+////                        int p = GTMath.saturatedCast((1L << 2 * (OCs - lg)) + 1L) * 4;
+////                        maxParallels = ParallelLogic.getParallelAmount(machine, recipe, p);
+//                    }
+                    if (this == OverclockingLogic.PERFECT_OVERCLOCK || this == OverclockingLogic.PERFECT_OVERCLOCK_SUBTICK) {
+                        int effectiveBoostPower = OCs * 3 - (ModUtils.binlog(recipe.duration)) + 4;
+
+                        if (effectiveBoostPower > 30) {
+                            maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, 2000000000);
+                        } else {
+                            maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, (1 << effectiveBoostPower) + 1);
+                        }
+                    } else if (this == NON_PERFECT_OVERCLOCK || this == NON_PERFECT_OVERCLOCK_SUBTICK) {
+                        maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, Math.max((int) Math.min(maxVoltage / recipe.duration, 2000000000), 1));
                     } else {
-                        int p = GTMath.saturatedCast((1L << 2 * (OCs - lg)) + 1L);
-                        maxParallels = ParallelLogic.getParallelAmount(machine, recipe, p);
+                        maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, 2000000000);
                     }
+
+
+//                    maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, (1 << OCs) / recipe.duration);
+
+                    LOGGER.info("Parallel logic calculation took {} us", (System.nanoTime() - startTime) / 1000);
                 } else {
                     maxParallels = 1;
                 }
@@ -117,10 +134,17 @@ public interface OverclockingLogic$Misc$Mixin {
      */
     @Overwrite
     static OverclockingLogic.OCResult subTickParallelOC(OverclockingLogic.OCParams params, long maxVoltage, double durationFactor, double voltageFactor) {
+        // log the time taken by this method for debugging
+        long startTime = System.nanoTime();
+
         double initialDuration = (double) params.duration();
 //        double initialEUt = (double) params.eut();
         int ocAmount = params.ocAmount();
         int recipeMaxParallels = params.maxParallels();
+
+        if (recipeMaxParallels <= 0) {
+            return new OverclockingLogic.OCResult(1.0, 1.0, 0, 1);
+        }
 
 //        LOGGER.info("[OC INPUT] InitialDuration: {}, InitialEUt: {}, N: {}, MaxParallels: {}, DurationFactor: {}, VoltageFactor: {}, MaxVoltage: {}",
 //                initialDuration, initialEUt, ocAmount, recipeMaxParallels, durationFactor, voltageFactor, maxVoltage);
@@ -162,6 +186,8 @@ public interface OverclockingLogic$Misc$Mixin {
 //
 //        LOGGER.info("[OC OUTPUT] FinalVoltageMultiplier: {}, FinalDurationMultiplier: {}, FinalParallel: {}, RealEffectiveSpeedGain: {}",
 //                finalRecipeTotalVoltageMultiplier, finalDurationMultiplier, (int) Math.round(finalParallel), (finalParallel / finalDurationMultiplier));
+
+        LOGGER.info("Sub-tick parallel OC calculation took {} us", (System.nanoTime() - startTime) / 1000);
 
         return new OverclockingLogic.OCResult(
                 finalRecipeTotalVoltageMultiplier,

@@ -42,6 +42,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Buff Fusion Reactor Overclocking", "Default: true"})
         public boolean buffFusionReactorOverclocking = true;
+
+        @Configurable
+        @Configurable.Comment({"Maximum parallel amount for subtick overclocking(increasing this would significantly impact mstp)", "Default: 1024"})
+        public int maxParallelAmountForSubtickOverclocking = 1024;
     }
 
     @Configurable
