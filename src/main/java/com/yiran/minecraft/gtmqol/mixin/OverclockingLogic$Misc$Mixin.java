@@ -43,7 +43,7 @@ public interface OverclockingLogic$Misc$Mixin {
                 int maxParallels;
                 if (shouldParallel) {
                     // log the time taken by this method for debugging
-                    long startTime = System.nanoTime();
+//                    long startTime = System.nanoTime();
 
 //                    int lg = IntMath.log2(recipe.duration, RoundingMode.FLOOR) / 2;
 //                    if (lg > OCs) {
@@ -69,7 +69,7 @@ public interface OverclockingLogic$Misc$Mixin {
 
 //                    maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, (1 << OCs) / recipe.duration);
 
-                    LOGGER.info("Parallel logic calculation took {} us", (System.nanoTime() - startTime) / 1000);
+//                    LOGGER.info("Parallel logic calculation took {} us", (System.nanoTime() - startTime) / 1000);
                 } else {
                     maxParallels = 1;
                 }
@@ -135,7 +135,7 @@ public interface OverclockingLogic$Misc$Mixin {
     @Overwrite
     static OverclockingLogic.OCResult subTickParallelOC(OverclockingLogic.OCParams params, long maxVoltage, double durationFactor, double voltageFactor) {
         // log the time taken by this method for debugging
-        long startTime = System.nanoTime();
+//        long startTime = System.nanoTime();
 
         double initialDuration = (double) params.duration();
 //        double initialEUt = (double) params.eut();
@@ -187,7 +187,7 @@ public interface OverclockingLogic$Misc$Mixin {
 //        LOGGER.info("[OC OUTPUT] FinalVoltageMultiplier: {}, FinalDurationMultiplier: {}, FinalParallel: {}, RealEffectiveSpeedGain: {}",
 //                finalRecipeTotalVoltageMultiplier, finalDurationMultiplier, (int) Math.round(finalParallel), (finalParallel / finalDurationMultiplier));
 
-        LOGGER.info("Sub-tick parallel OC calculation took {} us", (System.nanoTime() - startTime) / 1000);
+//        LOGGER.info("Sub-tick parallel OC calculation took {} us", (System.nanoTime() - startTime) / 1000);
 
         return new OverclockingLogic.OCResult(
                 finalRecipeTotalVoltageMultiplier,

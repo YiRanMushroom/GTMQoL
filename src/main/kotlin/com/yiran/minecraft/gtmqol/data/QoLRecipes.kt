@@ -22,6 +22,7 @@ import com.yiran.minecraft.gtmqol.ae2PresentedAndIntegrationEnabled
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
 import com.yiran.minecraft.gtmqol.functionality.AddModularMultiblocksLogic
 import com.yiran.minecraft.gtmqol.gtmthingsPresentedAndIntegrationEnabled
+import com.yiran.minecraft.gtmqol.logic.GreenhouseRecipeLogic
 import net.minecraft.data.recipes.FinishedRecipe
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.ItemTags
@@ -37,37 +38,37 @@ object QoLRecipes {
 
     data class WoodEntry(val sapling: Item, val log: Item, val leaves: Item, val name: String)
 
-    @JvmStatic
-    @Suppress("Unused")
-    fun addWood(sapling: Item, log: Item, leaves: Item, name: String) {
-        WOOD_ENTRIES.add(WoodEntry(sapling, log, leaves, name))
-    }
-
-    val WOOD_ENTRIES = mutableListOf(
-        WoodEntry(Items.OAK_SAPLING, Items.OAK_LOG, Items.OAK_LEAVES, "oak"),
-        WoodEntry(Items.SPRUCE_SAPLING, Items.SPRUCE_LOG, Items.SPRUCE_LEAVES, "spruce"),
-        WoodEntry(Items.BIRCH_SAPLING, Items.BIRCH_LOG, Items.BIRCH_LEAVES, "birch"),
-        WoodEntry(Items.JUNGLE_SAPLING, Items.JUNGLE_LOG, Items.JUNGLE_LEAVES, "jungle"),
-        WoodEntry(Items.ACACIA_SAPLING, Items.ACACIA_LOG, Items.ACACIA_LEAVES, "acacia"),
-        WoodEntry(Items.DARK_OAK_SAPLING, Items.DARK_OAK_LOG, Items.DARK_OAK_LEAVES, "dark_oak"),
-        WoodEntry(Items.MANGROVE_PROPAGULE, Items.MANGROVE_LOG, Items.MANGROVE_LEAVES, "mangrove"),
-        WoodEntry(Items.CHERRY_SAPLING, Items.CHERRY_LOG, Items.CHERRY_LEAVES, "cherry"),
-        WoodEntry(Items.AZALEA, Items.OAK_LOG, Items.AZALEA_LEAVES, "azalea"),
-        WoodEntry(Items.FLOWERING_AZALEA, Items.OAK_LOG, Items.FLOWERING_AZALEA_LEAVES, "flowering_azalea"),
-        WoodEntry(Items.CRIMSON_FUNGUS, Items.CRIMSON_STEM, Items.NETHER_WART_BLOCK, "crimson"),
-        WoodEntry(Items.WARPED_FUNGUS, Items.WARPED_STEM, Items.WARPED_WART_BLOCK, "warped"),
-        WoodEntry(
-            GTBlocks.RUBBER_SAPLING.asItem(),
-            GTBlocks.RUBBER_LOG.asItem(),
-            GTBlocks.RUBBER_LEAVES.asItem(),
-            "rubber"
-        )
-    )
+//    @JvmStatic
+//    @Suppress("Unused")
+//    fun addWood(sapling: Item, log: Item, leaves: Item, name: String) {
+//        WOOD_ENTRIES.add(WoodEntry(sapling, log, leaves, name))
+//    }
+//
+//    val WOOD_ENTRIES = mutableListOf(
+//        WoodEntry(Items.OAK_SAPLING, Items.OAK_LOG, Items.OAK_LEAVES, "oak"),
+//        WoodEntry(Items.SPRUCE_SAPLING, Items.SPRUCE_LOG, Items.SPRUCE_LEAVES, "spruce"),
+//        WoodEntry(Items.BIRCH_SAPLING, Items.BIRCH_LOG, Items.BIRCH_LEAVES, "birch"),
+//        WoodEntry(Items.JUNGLE_SAPLING, Items.JUNGLE_LOG, Items.JUNGLE_LEAVES, "jungle"),
+//        WoodEntry(Items.ACACIA_SAPLING, Items.ACACIA_LOG, Items.ACACIA_LEAVES, "acacia"),
+//        WoodEntry(Items.DARK_OAK_SAPLING, Items.DARK_OAK_LOG, Items.DARK_OAK_LEAVES, "dark_oak"),
+//        WoodEntry(Items.MANGROVE_PROPAGULE, Items.MANGROVE_LOG, Items.MANGROVE_LEAVES, "mangrove"),
+//        WoodEntry(Items.CHERRY_SAPLING, Items.CHERRY_LOG, Items.CHERRY_LEAVES, "cherry"),
+//        WoodEntry(Items.AZALEA, Items.OAK_LOG, Items.AZALEA_LEAVES, "azalea"),
+//        WoodEntry(Items.FLOWERING_AZALEA, Items.OAK_LOG, Items.FLOWERING_AZALEA_LEAVES, "flowering_azalea"),
+//        WoodEntry(Items.CRIMSON_FUNGUS, Items.CRIMSON_STEM, Items.NETHER_WART_BLOCK, "crimson"),
+//        WoodEntry(Items.WARPED_FUNGUS, Items.WARPED_STEM, Items.WARPED_WART_BLOCK, "warped"),
+//        WoodEntry(
+//            GTBlocks.RUBBER_SAPLING.asItem(),
+//            GTBlocks.RUBBER_LOG.asItem(),
+//            GTBlocks.RUBBER_LEAVES.asItem(),
+//            "rubber"
+//        )
+//    )
 
     fun init(provider: Consumer<FinishedRecipe>) {
         if (ConfigHolder.instance.addonConfig.enableGreenhouse) {
             registerGreenhouseMachineRecipes(provider)
-            registerTreeGrowingRecipes(WOOD_ENTRIES, provider)
+            GreenhouseRecipeLogic.init(provider)
         }
 
         if (ae2PresentedAndIntegrationEnabled()) {

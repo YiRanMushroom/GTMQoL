@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate
 import com.yiran.minecraft.gtmqol.data.QoLRecipes
 import net.minecraft.data.recipes.FinishedRecipe
+import net.minecraftforge.registries.ForgeRegistries
 import java.util.function.Consumer
 
 @GTAddon

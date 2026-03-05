@@ -20,6 +20,7 @@
     "GTRecipeTypes$Misc$Mixin",
     "OverclockingLogic$Misc$Mixin",
     "PredicatesMixin",
+    "SaplingBlockMixin",
     "bug_fix.KubeJsDataGenFixMixin",
     "gtmthings.WirelessEnergyContainerMixin",
     "gtmthings.WirelessEnergyMonitorMixin",

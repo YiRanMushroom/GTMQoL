@@ -1,83 +1,67 @@
 package com.yiran.minecraft.gtmqol.logic
 
-import com.gregtechceu.gtceu.api.GTValues.*
-import com.gregtechceu.gtceu.api.capability.recipe.IO
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder
-import com.gregtechceu.gtceu.api.recipe.GTRecipe
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType.ICustomRecipeLogic
-import com.gregtechceu.gtceu.common.data.GTMaterials
-import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities
+import com.gregtechceu.gtceu.api.GTValues.LV
+import com.gregtechceu.gtceu.api.GTValues.VA
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder
 import com.yiran.minecraft.gtmqol.data.QoLRecipeTypes
-import net.minecraft.resources.ResourceLocation
+import com.yiran.minecraft.gtmqol.logic.RegistryUtils.addSuffix
+import com.yiran.minecraft.gtmqol.logic.RegistryUtils.asItem
+import com.yiran.minecraft.gtmqol.logic.RegistryUtils.atNamespace
+import com.yiran.minecraft.gtmqol.logic.RegistryUtils.resourceLocation
+import net.minecraft.data.recipes.FinishedRecipe
+import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
+import net.minecraft.world.level.block.SaplingBlock
 import net.minecraft.world.level.material.Fluids
 import net.minecraftforge.fluids.FluidStack
-import net.minecraftforge.registries.ForgeRegistries
+import java.util.*
+import java.util.function.Consumer
+import java.util.function.Supplier
 
+object GreenhouseRecipeLogic {
+    private val saplingProviders = mutableListOf<Supplier<Item?>>()
 
-class GreenhouseCustomRecipeLogic : ICustomRecipeLogic {
-    val itemToRecipeCache: MutableMap<Item, GTRecipe?> = mutableMapOf()
-
-    fun handleSaplingRecipes(location: ResourceLocation): GTRecipe? {
-        if (!location.path.endsWith("_sapling")) return null
-        val saplingItem = ForgeRegistries.ITEMS.getValue(location) ?: return null
-        val logOrStemItem = ForgeRegistries.ITEMS.getValue(
-            ResourceLocation.tryBuild(location.namespace, location.path.removeSuffix("_sapling") + "_log")
-                ?: ResourceLocation.tryBuild(location.namespace, location.path.removeSuffix("_sapling") + "_stem")
-        ) ?: return null
-        val leavesItem = ForgeRegistries.ITEMS.getValue(
-            ResourceLocation.tryBuild(
-                location.namespace,
-                location.path.removeSuffix("_sapling") + "_leaves"
-            )
-        )
-
-        val stickItem = Items.STICK
-
-        itemToRecipeCache[saplingItem] =
-            QoLRecipeTypes.GREENHOUSE_RECIPES!!.recipeBuilder("grow_${location.namespace}_${location.path}")
-                .notConsumable(saplingItem)
-                .notConsumableFluid(FluidStack(Fluids.WATER, 1000))
-                .outputItems(saplingItem, 2)
-                .outputItems(logOrStemItem, 4)
-                .outputItems(stickItem, 4)
-                .apply {
-                    leavesItem?.let { outputItems(it, 4) }
-                }
-                .duration(600)
-                .EUt(VA[LV].toLong())
-                .buildRawRecipe()
-
-        return itemToRecipeCache[saplingItem]
+    @JvmStatic
+    fun addSaplingProvider(provider: Supplier<Item?>) {
+        saplingProviders.add(provider)
     }
 
-    fun handleSeedRecipes(resourceLocation: ResourceLocation): GTRecipe? {
-        return null
-    }
-
-    fun handleCropRecipes(resourceLocation: ResourceLocation): GTRecipe? {
-        return null
-    }
-
-    override fun createCustomRecipe(recipeCapabilityHolder: IRecipeCapabilityHolder): GTRecipe? {
-        val itemIn = recipeCapabilityHolder.capabilitiesFlat.get(IO.IN)?.get(GTRecipeCapabilities.ITEM) ?: return null
-
-        itemIn.forEach { recipeHandler ->
-            recipeHandler.contents.forEach { itemStack ->
-                if (itemStack is ItemStack) {
-                    itemToRecipeCache.get(itemStack.item)?.let {
-                        return it
-                    }
-
-                    val location = ForgeRegistries.ITEMS.getKey(itemStack.item) ?: return null
-
-                    return handleSaplingRecipes(location) ?: handleSeedRecipes(location) ?: handleCropRecipes(location)
-                }
+    fun init(provider: Consumer<FinishedRecipe>) {
+        saplingProviders.mapNotNull(Supplier<Item?>::get).forEach {
+            for (recipeProvider in TreeGrowingRecipeProviders) {
+                val recipeBuilder = recipeProvider(it) ?: continue
+                recipeBuilder.save(provider)
             }
         }
+    }
 
-        return null
+    val TreeGrowingRecipeProviders: LinkedList<(Item) -> GTRecipeBuilder?> = LinkedList()
+
+    init {
+        TreeGrowingRecipeProviders.add(::defaultTreeGrowingRecipeProvider)
+    }
+
+    fun defaultTreeGrowingRecipeProvider(item: Item): GTRecipeBuilder? {
+        if (item !is BlockItem || item.block !is SaplingBlock) {
+            return null
+        }
+
+        val location = item.resourceLocation()!!
+
+        val namespace = location.namespace
+        val path = location.path
+
+        val logItem = path.substringBeforeLast('_').addSuffix("_log").atNamespace(namespace).asItem() ?: return null
+        val leavesItem =
+            path.substringBeforeLast('_').addSuffix("_leaves").atNamespace(namespace).asItem() ?: return null
+
+        return QoLRecipeTypes.GREENHOUSE_RECIPES!!.recipeBuilder("gtmqol:greenhouse/grow_${namespace}_${path}")
+            .notConsumable(item)
+            .notConsumableFluid(FluidStack(Fluids.WATER, 1000))
+            .circuitMeta(1)
+            .EUt(VA[LV].toLong())
+            .outputItems(item, 4)
+            .outputItems(logItem, 8)
+            .outputItems(leavesItem, 4)
     }
 }
