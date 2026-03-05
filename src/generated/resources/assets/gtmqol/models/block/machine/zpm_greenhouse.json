@@ -5,38 +5,22 @@
   "variants": {
     "recipe_logic_status=idle": {
       "model": {
-        "parent": "gtceu:block/casings/voltage/zpm",
-        "textures": {
-          "overlay_front": "gtmqol:block/machines/greenhouse/overlay_front",
-          "overlay_front_emissive": "gtmqol:block/machines/greenhouse/overlay_front_emissive"
-        }
+        "parent": "gtceu:block/casings/voltage/zpm"
       }
     },
     "recipe_logic_status=suspend": {
       "model": {
-        "parent": "gtceu:block/casings/voltage/zpm",
-        "textures": {
-          "overlay_front": "gtmqol:block/machines/greenhouse/overlay_front",
-          "overlay_front_emissive": "gtmqol:block/machines/greenhouse/overlay_front_emissive"
-        }
+        "parent": "gtceu:block/casings/voltage/zpm"
       }
     },
     "recipe_logic_status=waiting": {
       "model": {
-        "parent": "gtceu:block/casings/voltage/zpm",
-        "textures": {
-          "overlay_front": "gtmqol:block/machines/greenhouse/overlay_front_active",
-          "overlay_front_emissive": "gtmqol:block/machines/greenhouse/overlay_front_active_emissive"
-        }
+        "parent": "gtceu:block/casings/voltage/zpm"
       }
     },
     "recipe_logic_status=working": {
       "model": {
-        "parent": "gtceu:block/casings/voltage/zpm",
-        "textures": {
-          "overlay_front": "gtmqol:block/machines/greenhouse/overlay_front_active",
-          "overlay_front_emissive": "gtmqol:block/machines/greenhouse/overlay_front_active_emissive"
-        }
+        "parent": "gtceu:block/casings/voltage/zpm"
       }
     }
   }
