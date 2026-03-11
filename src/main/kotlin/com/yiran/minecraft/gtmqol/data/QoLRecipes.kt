@@ -5,8 +5,7 @@ import appeng.core.definitions.AEBlocks
 import appeng.core.definitions.AEBlocks.INSCRIBER
 import appeng.core.definitions.AEItems
 import appeng.core.definitions.AEParts
-import com.gregtechceu.gtceu.api.GTValues.LV
-import com.gregtechceu.gtceu.api.GTValues.VA
+import com.gregtechceu.gtceu.api.GTValues.*
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTItems
@@ -111,7 +110,7 @@ object QoLRecipes {
         )
 
         QoLItems.circuitTiers().forEach {
-            QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES!!.recipeBuilder("circuit_conversion_tier_${it}")
+            QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES!!.recipeBuilder("gtmqol:circuit_conversion_tier_${it}")
                 .inputItems(CustomTags.CIRCUITS_ARRAY[it])
                 .outputItems(QoLItems.UNIVERSAL_CIRCUITS[it])
                 .circuitMeta(5)
@@ -134,6 +133,24 @@ object QoLRecipes {
                 'P', GTItems.ELECTRIC_MOTOR_IV.asStack(),
                 'F', GTItems.FIELD_GENERATOR_IV
             )
+        }
+
+        if (ConfigHolder.instance.addonConfig.enableSmartAssemblyFactory) {
+
+            QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES!!.recipeBuilder("gtmqol:smart_assembly_factory")
+                .inputItems(GTMultiMachines.ASSEMBLY_LINE.asStack(16))
+                .inputItems(CustomTags.UV_CIRCUITS, 8)
+                .inputItems(TagPrefix.plateDouble, GTMaterials.Osmiridium, 64)
+                .inputItems(GTItems.FIELD_GENERATOR_ZPM, 16)
+                .inputItems(GTItems.ELECTRIC_PUMP_UV, 8)
+                .inputItems(GTItems.ROBOT_ARM_UV, 8)
+                .inputFluids(GTMaterials.Europium, 144 * 64)
+                .inputFluids(GTMaterials.Polybenzimidazole, 144 * 32)
+                .inputFluids(GTMaterials.Naquadria, 144 * 16)
+                .outputItems(QoLMultiblocks.SMART_ASSEMBLY_FACTORY!!.asStack())
+                .duration(2000)
+                .EUt(VA[ZPM].toLong())
+                .save(provider)
         }
     }
 

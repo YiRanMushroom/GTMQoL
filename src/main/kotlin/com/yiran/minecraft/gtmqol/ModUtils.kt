@@ -34,8 +34,21 @@ object ModUtils {
         return log + (bits ushr 1)
     }
 
-    inline fun <reified T> Any?.asType() : T? {
+    inline fun <reified T> Any?.asType(): T? {
         return this as? T
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T> T?.asNotNull(): T {
+        return this as T
+    }
+
+    inline fun <reified T> T?.orElse(defaultValue: () -> T): T {
+        return this ?: defaultValue()
+    }
+
+    inline fun <reified T> T?.orElse(defaultValue: T): T {
+        return this ?: defaultValue
     }
 }
 

@@ -1,4 +1,4 @@
-package com.yiran.minecraft.gtmqol.handler
+package com.yiran.minecraft.gtmqol.data
 
 import com.yiran.minecraft.gtmqol.GTMQoL
 import com.yiran.minecraft.gtmqol.mekanismPresentedAndIntegrationEnabled
