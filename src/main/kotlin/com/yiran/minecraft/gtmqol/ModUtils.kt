@@ -33,6 +33,10 @@ object ModUtils {
         }
         return log + (bits ushr 1)
     }
+
+    inline fun <reified T> Any?.asType() : T? {
+        return this as? T
+    }
 }
 
 fun ae2PresentedAndIntegrationEnabled(): Boolean {
