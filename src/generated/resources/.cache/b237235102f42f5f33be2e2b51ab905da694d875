@@ -1,4 +1,4 @@
-// 1.20.1	2026-03-14T03:09:18.1343632	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.20.1	2026-03-14T03:28:01.6445527	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
 a23d8c7ddd4017e9dcb0183492b72508b5b72d04 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
 d7e1fffcf5689a78615a16458861461bd5b8b231 assets/gtmqol/blockstates/electric_implosion_compressor.json
 e078042db1af7fcbeef1333901aab24b9b52d824 assets/gtmqol/blockstates/ev_greenhouse.json
@@ -56,7 +56,7 @@ d81054eb38b5ad22ea6e470fabf8fec7612ad25f assets/gtmqol/blockstates/zpm_magical_a
 e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circuit_slicer.json
 1888543f0f15fba3bdcc1ab73ff74f5edf406f83 assets/gtmqol/lang/en_ud.json
 1bd04547be046e986c2ad0bbdf67a88147d198cd assets/gtmqol/lang/en_us.json
-6b25d397c2f5c137dfe5f05246e4195e8681b74e assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
+0068570044ce9829eadaf33afdcd7a529832ceff assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
 b95d9406d9646792d78cf50448f74f19a01d8e69 assets/gtmqol/models/block/machine/electric_implosion_compressor.json
 89eae505fd55895ebf4d1897c0aa65ca67d62d30 assets/gtmqol/models/block/machine/ev_greenhouse.json
 43e20a64b464684c43af6a30b86673d37ebca485 assets/gtmqol/models/block/machine/ev_magical_assembler.json

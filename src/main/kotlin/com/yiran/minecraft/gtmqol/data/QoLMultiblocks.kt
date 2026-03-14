@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.data
 
 import com.gregtechceu.gtceu.GTCEu
+import com.gregtechceu.gtceu.api.GTValues
 import com.gregtechceu.gtceu.api.data.RotationState
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility
@@ -11,7 +12,6 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern
 import com.gregtechceu.gtceu.api.pattern.Predicates
 import com.gregtechceu.gtceu.api.pattern.Predicates.*
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection
-import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTBlocks.FUSION_GLASS
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers
@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.data.models.GTMachineModels.createWorkableCa
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine
 import com.yiran.minecraft.gtmqol.GTMQoLRegistrate
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
+import net.minecraft.network.chat.Component
 
 object QoLMultiblocks {
     @JvmStatic
@@ -28,6 +29,9 @@ object QoLMultiblocks {
 
     @JvmStatic
     var ELECTRIC_IMPLOSION_COMPRESSOR: MultiblockMachineDefinition? = null
+
+    @JvmStatic
+    var DIMENSIONALLY_TRANSCENDENT_FUSION_REACTOR: MultiblockMachineDefinition? = null
 
     @JvmStatic
     fun init() {
@@ -124,16 +128,17 @@ object QoLMultiblocks {
         }
 
         if (ConfigHolder.instance.addonConfig.enableDimensionallyTranscendentFusionReactor) {
-            GTMQoLRegistrate.REGISTRATE.multiblock(
+            DIMENSIONALLY_TRANSCENDENT_FUSION_REACTOR = GTMQoLRegistrate.REGISTRATE.multiblock(
                 "dimensionally_transcendent_fusion_reactor",
                 ::WorkableElectricMultiblockMachine
             )
                 .rotationState(RotationState.ALL)
                 .recipeType(GTRecipeTypes.FUSION_RECIPES)
                 .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.OC_PERFECT_SUBTICK, BATCH_MODE)
-                .appearanceBlock({ FusionReactorMachine.getCasingState(3) })
-                .pattern({ definition ->
-                    var casing = blocks(FusionReactorMachine.getCasingState(3))
+                .appearanceBlock { FusionReactorMachine.getCasingState(GTValues.UV) }
+                .tooltips(Component.translatable("gtmqol.multiblock.dimensionally_transcendent_fusion_reactor.tooltip"))
+                .pattern { definition ->
+                    var casing = blocks(FusionReactorMachine.getCasingState(GTValues.UV))
                     FactoryBlockPattern.start()
                         .aisle("###############", "######OGO######", "###############")
                         .aisle("######ICI######", "####GGAAAGG####", "######ICI######")
@@ -165,15 +170,16 @@ object QoLMultiblocks {
                         .where('I', casing.or(abilities(PartAbility.IMPORT_FLUIDS)))
                         .where('#', any())
                         .build()
-                })
+                }
 
                 .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
                 .model(
                     createWorkableCasingMachineModel(
-                        FusionReactorMachine.getCasingType(3).texture,
+                        FusionReactorMachine.getCasingType(GTValues.UV).texture,
                         GTCEu.id("block/multiblock/fusion_reactor")
-                    ).andThen { b -> b.addDynamicRenderer(DynamicRenderHelper::createFusionRingRender) })
-                .hasBER(true)
+                    )/*.andThen { b -> b.addDynamicRenderer(DynamicRenderHelper::createFusionRingRender) }*/
+                )
+//                .hasBER(true)
                 .register()
         }
     }

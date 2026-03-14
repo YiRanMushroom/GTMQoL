@@ -6,5 +6,6 @@
   "gtmqol.me_assembler": "ME装配机",
   "gtmqol.me_circuit_slicer": "ME电路切割机",
   "gtmqol.magical_assembler": "神奇装配机",
-  "gtmqol.electric_implosion_compressor": "电子聚爆压缩机"
+  "gtmqol.electric_implosion_compressor": "电子聚爆压缩机",
+  "gtmqol.multiblock.dimensionally_transcendent_fusion_reactor.tooltip": "只要你有足够的能量输入，就可以运行任何级别的聚变配方。"
 }

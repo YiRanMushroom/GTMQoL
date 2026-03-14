@@ -6,5 +6,6 @@
   "gtmqol.me_assembler": "ME Assembler",
   "gtmqol.me_circuit_slicer": "ME Circuit Slicer",
   "gtmqol.magical_assembler": "Magical Assembler",
-  "gtmqol.electric_implosion_compressor": "Electrical Implosion Compressor"
+  "gtmqol.electric_implosion_compressor": "Electrical Implosion Compressor",
+  "gtmqol.multiblock.dimensionally_transcendent_fusion_reactor.tooltip": "Can run fusion recipes of any tier, as long as you have enough energy inputs."
 }

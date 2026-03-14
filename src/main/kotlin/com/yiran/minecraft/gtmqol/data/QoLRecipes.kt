@@ -5,6 +5,7 @@ import appeng.core.definitions.AEBlocks
 import appeng.core.definitions.AEBlocks.INSCRIBER
 import appeng.core.definitions.AEItems
 import appeng.core.definitions.AEParts
+import com.gregtechceu.gtceu.api.GTValues
 import com.gregtechceu.gtceu.api.GTValues.*
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix
 import com.gregtechceu.gtceu.common.data.GTBlocks
@@ -150,6 +151,24 @@ object QoLRecipes {
                 .outputItems(QoLMultiblocks.SMART_ASSEMBLY_FACTORY!!.asStack())
                 .duration(2000)
                 .EUt(VA[ZPM].toLong())
+                .save(provider)
+        }
+
+        if (ConfigHolder.instance.addonConfig.enableDimensionallyTranscendentFusionReactor) {
+
+            QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES!!.recipeBuilder("gtmqol:dimensionally_transcendent_fusion_reactor")
+                .inputItems(GTMultiMachines.FUSION_REACTOR[UV].asStack(16))
+                .inputItems(CustomTags.UHV_CIRCUITS, 8)
+                .inputItems(TagPrefix.plateDouble, GTMaterials.Tritanium, 64)
+                .inputItems(GTItems.FIELD_GENERATOR_UV, 16)
+                .inputItems(GTBlocks.FUSION_COIL, 64)
+                .inputItems(GTBlocks.FUSION_CASING_MK3, 64)
+                .inputFluids(GTMaterials.Duranium, 144 * 64)
+                .inputFluids(GTMaterials.Polybenzimidazole, 144 * 32)
+                .inputFluids(GTMaterials.Neutronium, 144 * 16)
+                .outputItems(QoLMultiblocks.DIMENSIONALLY_TRANSCENDENT_FUSION_REACTOR!!.asStack())
+                .duration(2000)
+                .EUt(VA[UV].toLong())
                 .save(provider)
         }
     }
