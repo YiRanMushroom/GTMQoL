@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "mixins": [
+    "BushBlockMixin",
     "ForgeCommonEventListener$AttachEnergyProxy$Mixin",
     "FusionReactor$ChangeOverclockingLogic$Mixin",
     "GCYMMachines$Misc$Mixin",

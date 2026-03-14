@@ -79,6 +79,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Enable Electric Implosion Recipes", "Default: true"})
         public boolean enableElectricImplosionRecipes = true;
+
+        @Configurable
+        @Configurable.Comment({"Enable Dimensionally Transcendent Fusion Reactor"})
+        public boolean enableDimensionallyTranscendentFusionReactor = true;
     }
 
     @Configurable

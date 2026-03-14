@@ -8,9 +8,13 @@ import com.gregtechceu.gtceu.api.GTValues.VA
 import com.gregtechceu.gtceu.api.data.RotationState
 import com.gregtechceu.gtceu.api.machine.MachineDefinition
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern
+import com.gregtechceu.gtceu.api.pattern.MultiblockState
 import com.gregtechceu.gtceu.api.pattern.Predicates
+import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate
+import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier
@@ -27,12 +31,15 @@ import com.yiran.minecraft.gtmqol.data.QoLRecipeTypes
 import net.minecraft.client.Minecraft
 import net.minecraft.data.recipes.FinishedRecipe
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraftforge.fml.ModList
+import org.apache.commons.lang3.ArrayUtils
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.util.function.Consumer
+import java.util.function.Predicate
 
 object AddModularMultiblocksLogic {
 
@@ -79,7 +86,7 @@ object AddModularMultiblocksLogic {
             .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
             .pattern { d ->
                 FactoryBlockPattern.start()
-                    .aisle("XXX", "#X#", "XXX").aisle("XXX", "X#X", "XXX").aisle("XXX", "#S#", "XXX")
+                    .aisle("XXX", "XXX", "XXX").aisle("XXX", "XXX", "XXX").aisle("XXX", "XSX", "XXX")
                     .where('S', Predicates.controller(Predicates.blocks(d.block)))
                     .where(
                         'X',
@@ -87,11 +94,25 @@ object AddModularMultiblocksLogic {
                             GTBlocks.CASING_STEEL_SOLID.get(),
                             Blocks.GLASS,
                             GTBlocks.CASING_TEMPERED_GLASS.get()
-                        )
+                        ).setMinGlobalLimited(5).setPreviewCount(100)
                             .or(Predicates.autoAbilities(*d.recipeTypes))
                             .or(Predicates.autoAbilities(true, false, false))
+                            .or(/*TraceabilityPredicate(AnyButNotBlockPredicate(
+                                Arrays.stream<PartAbility?>(arrayOf())
+                                    .map<MutableCollection<Block?>?> { obj: PartAbility? -> obj!!.getAllBlocks() }
+                                    .flatMap<Block?> { obj: MutableCollection<Block?>? -> obj!!.stream() }
+                                    .toArray<Block?> { `x$0`: Int -> arrayOfNulls<Block>(`x$0`) } as Array<Block?>
+                            ).buildPredicate())*/Predicates.any())
                     )
-                    .where('#', Predicates.any()).build()
+                    /*.where(
+                        '#', Predicates.blocks(
+                            GTBlocks.CASING_STEEL_SOLID.get(),
+                            Blocks.GLASS,
+                            GTBlocks.CASING_TEMPERED_GLASS.get()
+                        )
+                            .or(Predicates.autoAbilities(*d.recipeTypes))
+                            .or(Predicates.autoAbilities(true, false, false)).or(Predicates.any())
+                    )*/.build()
             }
 
         registryData.add(
@@ -121,8 +142,10 @@ object AddModularMultiblocksLogic {
             val simpleName = entry.simpleName
             val modName = entry.modularName
 
-            val machineFront = ResourceLocation.tryBuild(sourceNS, "textures/block/machines/$simpleName/overlay_front.png")!!
-            val generatorFront = ResourceLocation.tryBuild(sourceNS, "textures/block/generators/$simpleName/overlay_front.png")!!
+            val machineFront =
+                ResourceLocation.tryBuild(sourceNS, "textures/block/machines/$simpleName/overlay_front.png")!!
+            val generatorFront =
+                ResourceLocation.tryBuild(sourceNS, "textures/block/generators/$simpleName/overlay_front.png")!!
 
             val hasMachineFront = rm.getResource(machineFront).isPresent
             val hasGeneratorFront = rm.getResource(generatorFront).isPresent
@@ -139,6 +162,7 @@ object AddModularMultiblocksLogic {
 //                    GTCEu.LOGGER.info(" - Fallback: Using Generator Fallback -> $fallback")
                     fallback
                 }
+
                 else -> {
                     val fallback = GTCEu.id("block/multiblock/implosion_compressor")
 //                    GTCEu.LOGGER.info(" - Fallback: Using Machine Fallback -> $fallback")
@@ -211,5 +235,32 @@ object AddModularMultiblocksLogic {
 
     init {
         ClientDynamicModelRegisterer.onGTCEuClientSetup(::runAllClientSetup)
+    }
+}
+
+class AnyButNotBlockPredicate : SimplePredicate("not_block") {
+    lateinit var notBlocks: Array<Block>
+
+    fun PredicateBlocks() {
+    }
+
+    fun PredicateBlocks(vararg blocks: Block?) {
+        this.notBlocks = blocks.filterNotNull().toTypedArray()
+    }
+
+    override fun buildPredicate(): SimplePredicate {
+        this.notBlocks = this.notBlocks.toList().toTypedArray()
+        if (this.notBlocks.isEmpty()) {
+            this.notBlocks = arrayOf(Blocks.BARRIER)
+        }
+
+        this.predicate = Predicate { state: MultiblockState ->
+            !ArrayUtils.contains(
+                this.notBlocks,
+                state.blockState.block
+            )
+        }
+        this.candidates = null
+        return this
     }
 }

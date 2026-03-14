@@ -1,4 +1,5 @@
-// 1.20.1	2026-03-11T00:33:17.5639294	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.20.1	2026-03-14T03:09:18.1343632	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+a23d8c7ddd4017e9dcb0183492b72508b5b72d04 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
 d7e1fffcf5689a78615a16458861461bd5b8b231 assets/gtmqol/blockstates/electric_implosion_compressor.json
 e078042db1af7fcbeef1333901aab24b9b52d824 assets/gtmqol/blockstates/ev_greenhouse.json
 e56ce4c77d68a08637181b48d3164a158cc4a89d assets/gtmqol/blockstates/ev_magical_assembler.json
@@ -53,8 +54,9 @@ aacee5d7d6ffe89416a8d5f073a991f602333c8b assets/gtmqol/blockstates/uxv_me_circui
 d81054eb38b5ad22ea6e470fabf8fec7612ad25f assets/gtmqol/blockstates/zpm_magical_assembler.json
 81519f782630929faed83acb0b72af56e3e7fb89 assets/gtmqol/blockstates/zpm_me_assembler.json
 e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circuit_slicer.json
-058ffc28db404fbca52c6f844369c90c8644a6b5 assets/gtmqol/lang/en_ud.json
-d7308f0d3d2c32f45e9750bf62f15a21422afec2 assets/gtmqol/lang/en_us.json
+1888543f0f15fba3bdcc1ab73ff74f5edf406f83 assets/gtmqol/lang/en_ud.json
+1bd04547be046e986c2ad0bbdf67a88147d198cd assets/gtmqol/lang/en_us.json
+6b25d397c2f5c137dfe5f05246e4195e8681b74e assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
 b95d9406d9646792d78cf50448f74f19a01d8e69 assets/gtmqol/models/block/machine/electric_implosion_compressor.json
 89eae505fd55895ebf4d1897c0aa65ca67d62d30 assets/gtmqol/models/block/machine/ev_greenhouse.json
 43e20a64b464684c43af6a30b86673d37ebca485 assets/gtmqol/models/block/machine/ev_magical_assembler.json
@@ -109,6 +111,7 @@ eeb265bc7c20d435fcce59a1d6785231aa78c164 assets/gtmqol/models/block/machine/uxv_
 60d6e3b4b1167e067659ae341db2eaaf6d7c7184 assets/gtmqol/models/block/machine/zpm_magical_assembler.json
 4f2efbd3ce94298a761c36afdd6b027004ed923a assets/gtmqol/models/block/machine/zpm_me_assembler.json
 625ea7bae37646ce6d01eff177817145ec985f5d assets/gtmqol/models/block/machine/zpm_me_circuit_slicer.json
+cf7743976cfd88da6a96fe40650046a311fa84ec assets/gtmqol/models/item/dimensionally_transcendent_fusion_reactor.json
 3b8ddae18e81cc41975815c2b9441a4d3bb9e4ff assets/gtmqol/models/item/electric_implosion_compressor.json
 b89a90e0750ab28b8798c20596d68a96ae45808d assets/gtmqol/models/item/ev_greenhouse.json
 a4ce3412d9732cdd0237d1c99b1578100584bf59 assets/gtmqol/models/item/ev_magical_assembler.json

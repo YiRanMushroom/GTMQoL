@@ -3,15 +3,22 @@ package com.yiran.minecraft.gtmqol.data
 import com.gregtechceu.gtceu.GTCEu
 import com.gregtechceu.gtceu.api.data.RotationState
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern
 import com.gregtechceu.gtceu.api.pattern.Predicates
 import com.gregtechceu.gtceu.api.pattern.Predicates.*
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper
 import com.gregtechceu.gtceu.common.data.GTBlocks
+import com.gregtechceu.gtceu.common.data.GTBlocks.FUSION_GLASS
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers.BATCH_MODE
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
-import com.yiran.minecraft.gtmqol.GTMQoL
+import com.gregtechceu.gtceu.common.data.models.GTMachineModels.createWorkableCasingMachineModel
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine
 import com.yiran.minecraft.gtmqol.GTMQoLRegistrate
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
 
@@ -66,7 +73,6 @@ object QoLMultiblocks {
                             .where('A', blocks(GTBlocks.CASING_ASSEMBLY_CONTROL.get()))
                             .where('R', blocks(GTBlocks.CASING_LAMINATED_GLASS.get()))
                             .where('T', blocks(GTBlocks.CASING_ASSEMBLY_LINE.get()))
-                            .where('#', Predicates.any())
                             .build()
                     }
                     .workableCasingModel(
@@ -89,8 +95,7 @@ object QoLMultiblocks {
                         GTRecipeModifiers.BATCH_MODE
                     )
                     .appearanceBlock(GTBlocks.CASING_TUNGSTENSTEEL_ROBUST)
-                    .pattern{
-                            definition ->
+                    .pattern { definition ->
                         FactoryBlockPattern.start()
                             .aisle("XXXXX", "F###F", "F###F", "F###F", "F###F", "XXXXX")
                             .aisle("XXXXX", "#PGP#", "#PGP#", "#PGP#", "#PGP#", "XXXXX")
@@ -98,10 +103,12 @@ object QoLMultiblocks {
                             .aisle("XXXXX", "#PGP#", "#PGP#", "#PGP#", "#PGP#", "XXXXX")
                             .aisle("XXSXX", "F###F", "F###F", "F###F", "F###F", "XXXXX")
                             .where('S', controller(blocks(definition.get())))
-                            .where('X',
+                            .where(
+                                'X',
                                 blocks(GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.get())
                                     .or(autoAbilities(*definition.recipeTypes))
-                                    .or(autoAbilities(true, false, true)))
+                                    .or(autoAbilities(true, false, true))
+                            )
                             .where('P', blocks(GTBlocks.CASING_TUNGSTENSTEEL_PIPE.get()))
                             .where('G', blocks(GTBlocks.CASING_TEMPERED_GLASS.get()))
                             .where('F', blocks(GTBlocks.FIREBOX_TUNGSTENSTEEL.get()))
@@ -114,6 +121,60 @@ object QoLMultiblocks {
                         GTCEu.id("block/multiblock/implosion_compressor")
                     )
                     .register()
+        }
+
+        if (ConfigHolder.instance.addonConfig.enableDimensionallyTranscendentFusionReactor) {
+            GTMQoLRegistrate.REGISTRATE.multiblock(
+                "dimensionally_transcendent_fusion_reactor",
+                ::WorkableElectricMultiblockMachine
+            )
+                .rotationState(RotationState.ALL)
+                .recipeType(GTRecipeTypes.FUSION_RECIPES)
+                .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.OC_PERFECT_SUBTICK, BATCH_MODE)
+                .appearanceBlock({ FusionReactorMachine.getCasingState(3) })
+                .pattern({ definition ->
+                    var casing = blocks(FusionReactorMachine.getCasingState(3))
+                    FactoryBlockPattern.start()
+                        .aisle("###############", "######OGO######", "###############")
+                        .aisle("######ICI######", "####GGAAAGG####", "######ICI######")
+                        .aisle("####CC###CC####", "###EAAOGOAAE###", "####CC###CC####")
+                        .aisle("###C#######C###", "##EKEG###GEKE##", "###C#######C###")
+                        .aisle("##C#########C##", "#GAE#######EAG#", "##C#########C##")
+                        .aisle("##C#########C##", "#GAG#######GAG#", "##C#########C##")
+                        .aisle("#I###########I#", "OAO#########OAO", "#I###########I#")
+                        .aisle("#C###########C#", "GAG#########GAG", "#C###########C#")
+                        .aisle("#I###########I#", "OAO#########OAO", "#I###########I#")
+                        .aisle("##C#########C##", "#GAG#######GAG#", "##C#########C##")
+                        .aisle("##C#########C##", "#GAE#######EAG#", "##C#########C##")
+                        .aisle("###C#######C###", "##EKEG###GEKE##", "###C#######C###")
+                        .aisle("####CC###CC####", "###EAAOGOAAE###", "####CC###CC####")
+                        .aisle("######ICI######", "####GGAAAGG####", "######ICI######")
+                        .aisle("###############", "######OSO######", "###############")
+                        .where('S', controller(blocks(definition.get())))
+                        .where('G', blocks(FUSION_GLASS.get()).or(casing))
+                        .where(
+                            'E', casing.or(
+                                abilities(PartAbility.INPUT_ENERGY)
+                                    .setMinGlobalLimited(1).setPreviewCount(16)
+                            )
+                        )
+                        .where('C', casing)
+                        .where('K', blocks(FusionReactorMachine.getCoilState(3)))
+                        .where('O', casing.or(abilities(PartAbility.EXPORT_FLUIDS)))
+                        .where('A', air())
+                        .where('I', casing.or(abilities(PartAbility.IMPORT_FLUIDS)))
+                        .where('#', any())
+                        .build()
+                })
+
+                .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+                .model(
+                    createWorkableCasingMachineModel(
+                        FusionReactorMachine.getCasingType(3).texture,
+                        GTCEu.id("block/multiblock/fusion_reactor")
+                    ).andThen { b -> b.addDynamicRenderer(DynamicRenderHelper::createFusionRingRender) })
+                .hasBER(true)
+                .register()
         }
     }
 }
