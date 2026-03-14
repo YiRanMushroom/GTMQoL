@@ -17,6 +17,8 @@ import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder
@@ -40,6 +42,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.util.function.Consumer
 import java.util.function.Predicate
+import kotlin.math.max
 
 object AddModularMultiblocksLogic {
 
@@ -72,6 +75,22 @@ object AddModularMultiblocksLogic {
         val allGenerator = recipeTypes.all { it.group == "generator" }
         if (recipeTypes.any { it.group == "generator" } && !allGenerator) return
 
+        val startModifier : RecipeModifier = if (!allGenerator) RecipeModifier{
+            _, _ ->
+            ModifierFunction{
+                it.copy().apply {
+                    it.duration = max(it.duration / 8, 1)
+                }
+            }
+        } else RecipeModifier {
+            _, _ ->
+            ModifierFunction {
+                it.copy().apply {
+                    it.duration *= 8
+                }
+            }
+        }
+
         val baseRecipeModifier: RecipeModifier = if (!allGenerator) GTRecipeModifiers.OC_PERFECT_SUBTICK
         else perfectGeneratorOverclockingRecipeModifier
 
@@ -81,7 +100,7 @@ object AddModularMultiblocksLogic {
         val builder = registrate.multiblock(modularName, ::WorkableElectricMultiblockMachine)
             .rotationState(RotationState.ALL)
             .recipeTypes(*recipeTypes)
-            .recipeModifiers(baseRecipeModifier, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(startModifier, baseRecipeModifier, GTRecipeModifiers.BATCH_MODE)
             .generator(allGenerator)
             .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
             .pattern { d ->
