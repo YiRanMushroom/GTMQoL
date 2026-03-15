@@ -2,6 +2,7 @@ package com.yiran.minecraft.gtmqol.data
 
 import com.gregtechceu.gtceu.api.GTCEuAPI
 import com.gregtechceu.gtceu.api.GTValues
+import com.gregtechceu.gtceu.api.GTValues.LV
 import com.gregtechceu.gtceu.common.data.GTMachines
 import com.hepdd.gtmthings.GTMThings
 import com.hepdd.gtmthings.data.CustomItems
@@ -292,6 +293,18 @@ object GTMRecipeGen {
                 .inputItems(GTMachines.LASER_OUTPUT_HATCH_4096[tier].asStack())
                 .circuitMeta(5)
                 .outputItems(WirelessMachines.WIRELESS_ENERGY_OUTPUT_HATCH_4096A[tier].asStack())
+                .duration(200)
+                .EUt(GTValues.VA[GTValues.LV].toLong())
+                .save(provider)
+
+            MAGIC_ASSEMBLER_RECIPES.recipeBuilder(
+                GTMThings.id(
+                    "simple_wireless_energy_monitor"
+                )
+            ).inputItems(GTMachines.HULL[LV].asStack())
+                .inputItems(CustomItems.WIRELESS_ENERGY_RECEIVE_COVER_LV_4A.asStack())
+                .outputItems(WirelessMachines.WIRELESS_ENERGY_MONITOR)
+                .circuitMeta(5)
                 .duration(200)
                 .EUt(GTValues.VA[GTValues.LV].toLong())
                 .save(provider)

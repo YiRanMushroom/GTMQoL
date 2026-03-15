@@ -75,7 +75,12 @@ object AddModularMultiblocksLogic {
         val allGenerator = recipeTypes.all { it.group == "generator" }
         if (recipeTypes.any { it.group == "generator" } && !allGenerator) return
 
-        val startModifier : RecipeModifier = if (!allGenerator) RecipeModifier{
+        val startModifier = RecipeModifier {
+            _, _ ->
+            ModifierFunction.builder().durationMultiplier(if (allGenerator) 8.0 else 0.125).build()
+        }
+
+            /*if (!allGenerator) RecipeModifier{
             _, _ ->
             ModifierFunction{
                 it.copy().apply {
@@ -89,7 +94,7 @@ object AddModularMultiblocksLogic {
                     it.duration *= 8
                 }
             }
-        }
+        }*/
 
         val baseRecipeModifier: RecipeModifier = if (!allGenerator) GTRecipeModifiers.OC_PERFECT_SUBTICK
         else perfectGeneratorOverclockingRecipeModifier
@@ -102,6 +107,7 @@ object AddModularMultiblocksLogic {
             .recipeTypes(*recipeTypes)
             .recipeModifiers(startModifier, baseRecipeModifier, GTRecipeModifiers.BATCH_MODE)
             .generator(allGenerator)
+            .regressWhenWaiting(!allGenerator)
             .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
             .pattern { d ->
                 FactoryBlockPattern.start()

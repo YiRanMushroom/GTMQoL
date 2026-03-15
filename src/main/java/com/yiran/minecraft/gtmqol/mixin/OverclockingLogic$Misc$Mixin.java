@@ -138,7 +138,7 @@ public interface OverclockingLogic$Misc$Mixin {
 //        long startTime = System.nanoTime();
 
         double initialDuration = (double) params.duration();
-//        double initialEUt = (double) params.eut();
+        double initialEUt = (double) params.eut();
         int ocAmount = params.ocAmount();
         int recipeMaxParallels = params.maxParallels();
 
@@ -146,8 +146,8 @@ public interface OverclockingLogic$Misc$Mixin {
             return new OverclockingLogic.OCResult(1.0, 1.0, 0, 1);
         }
 
-//        LOGGER.info("[OC INPUT] InitialDuration: {}, InitialEUt: {}, N: {}, MaxParallels: {}, DurationFactor: {}, VoltageFactor: {}, MaxVoltage: {}",
-//                initialDuration, initialEUt, ocAmount, recipeMaxParallels, durationFactor, voltageFactor, maxVoltage);
+        LOGGER.info("[OC INPUT] InitialDuration: {}, InitialEUt: {}, N: {}, MaxParallels: {}, DurationFactor: {}, VoltageFactor: {}, MaxVoltage: {}",
+                initialDuration, initialEUt, ocAmount, recipeMaxParallels, durationFactor, voltageFactor, maxVoltage);
 
         double speedGainFactor = 1.0 / durationFactor;
 
@@ -181,11 +181,11 @@ public interface OverclockingLogic$Misc$Mixin {
             finalParallel = effectiveSpeedGain / initialDuration;
         }
 
-//        LOGGER.info("[OC SCRATCH] SpeedGainFactor: {}, MaxTotalGain: {}, HardwareMaxGain: {}, Effective(RealGain): {}, EffectiveOCAmount: {}",
-//                speedGainFactor, maxOverclockEffectiveSpeedGain, recipeInConditionAbsoluteMaxEffectiveSpeedGain, effectiveSpeedGain, effectiveOCAmount);
-//
-//        LOGGER.info("[OC OUTPUT] FinalVoltageMultiplier: {}, FinalDurationMultiplier: {}, FinalParallel: {}, RealEffectiveSpeedGain: {}",
-//                finalRecipeTotalVoltageMultiplier, finalDurationMultiplier, (int) Math.round(finalParallel), (finalParallel / finalDurationMultiplier));
+        LOGGER.info("[OC SCRATCH] SpeedGainFactor: {}, MaxTotalGain: {}, HardwareMaxGain: {}, Effective(RealGain): {}, EffectiveOCAmount: {}",
+                speedGainFactor, maxOverclockEffectiveSpeedGain, recipeInConditionAbsoluteMaxEffectiveSpeedGain, effectiveSpeedGain, effectiveOCAmount);
+
+        LOGGER.info("[OC OUTPUT] FinalVoltageMultiplier: {}, FinalDurationMultiplier: {}, FinalParallel: {}, RealEffectiveSpeedGain: {}",
+                finalRecipeTotalVoltageMultiplier, finalDurationMultiplier, (int) Math.round(finalParallel), (finalParallel / finalDurationMultiplier));
 
 //        LOGGER.info("Sub-tick parallel OC calculation took {} us", (System.nanoTime() - startTime) / 1000);
 
