@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.NON_PERFECT_OVERCLOCK;
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK;
-import static com.mojang.text2speech.Narrator.LOGGER;
 
 @Mixin(OverclockingLogic.class)
 public interface OverclockingLogic$Misc$Mixin {
@@ -142,9 +141,11 @@ public interface OverclockingLogic$Misc$Mixin {
         int ocAmount = params.ocAmount();
         int recipeMaxParallels = params.maxParallels();
 
-        if (recipeMaxParallels <= 0) {
+        if (recipeMaxParallels < 0) {
             return new OverclockingLogic.OCResult(1.0, 1.0, 0, 1);
         }
+
+        recipeMaxParallels = 1;
 
 //        LOGGER.info("[OC INPUT] InitialDuration: {}, InitialEUt: {}, N: {}, MaxParallels: {}, DurationFactor: {}, VoltageFactor: {}, MaxVoltage: {}",
 //                initialDuration, initialEUt, ocAmount, recipeMaxParallels, durationFactor, voltageFactor, maxVoltage);
