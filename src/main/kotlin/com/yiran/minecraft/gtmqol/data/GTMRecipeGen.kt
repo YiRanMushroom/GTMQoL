@@ -3,10 +3,18 @@ package com.yiran.minecraft.gtmqol.data
 import com.gregtechceu.gtceu.api.GTCEuAPI
 import com.gregtechceu.gtceu.api.GTValues
 import com.gregtechceu.gtceu.api.GTValues.LV
+import com.gregtechceu.gtceu.api.GTValues.VA
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix.lens
+import com.gregtechceu.gtceu.api.machine.MachineDefinition
 import com.gregtechceu.gtceu.common.data.GTMachines
+import com.gregtechceu.gtceu.common.data.GTMachines.*
+import com.gregtechceu.gtceu.common.data.GTMaterials.Diamond
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES
+import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents
 import com.hepdd.gtmthings.GTMThings
 import com.hepdd.gtmthings.data.CustomItems
 import com.hepdd.gtmthings.data.WirelessMachines
+import com.yiran.minecraft.gtmqol.config.ConfigHolder
 import com.yiran.minecraft.gtmqol.gtmthings.WirelessEnergyAccessor
 import net.minecraft.data.recipes.FinishedRecipe
 import java.util.*
@@ -206,7 +214,10 @@ object GTMRecipeGen {
                 .save(provider)
         }
 
-        for (tier in GTValues.tiersBetween(GTValues.IV, if (GTCEuAPI.isHighTier()) GTValues.OpV else GTValues.UV)) {
+        for (tier in GTValues.tiersBetween(
+            if (ConfigHolder.instance.addonConfig.registerLaserHatchesForAllTiers) GTValues.EV else GTValues.IV,
+            if (GTCEuAPI.isHighTier()) GTValues.OpV else GTValues.UV
+        )) {
             // Wireless Energy Input Hatch 256A: laser input hatch 256A + circuit 16, LV 200t
             MAGIC_ASSEMBLER_RECIPES.recipeBuilder(
                 GTMThings.id(
@@ -251,6 +262,38 @@ object GTMRecipeGen {
                 .duration(200)
                 .EUt(GTValues.VA[GTValues.LV].toLong())
                 .save(provider)
+
+            if (ConfigHolder.instance.addonConfig.enableHigherAmpLaserHatches) {
+                // Wireless Energy Input Hatch 16384A: laser input hatch 16384A + circuit 16, LV 200t
+                MAGIC_ASSEMBLER_RECIPES.recipeBuilder(
+                    GTMThings.id(
+                        "wireless_energy_input_hatch_" + GTValues.VN[tier].lowercase(
+                            Locale.getDefault()
+                        ) + "_16384a"
+
+                    )
+                ).inputItems(QoLMachines.HIGH_AMP_LASERS?.get(16384)?.first?.get(tier)?.asStack()!!)
+                    .circuitMeta(5)
+                    .outputItems(WirelessMachines.WIRELESS_ENERGY_INPUT_HATCH_16384A[tier].asStack())
+                    .duration(200)
+                    .EUt(GTValues.VA[GTValues.LV].toLong())
+                    .save(provider)
+
+                MAGIC_ASSEMBLER_RECIPES.recipeBuilder(
+                    GTMThings.id(
+                        "wireless_energy_input_hatch_" + GTValues.VN[tier].lowercase(
+                            Locale.getDefault()
+                        ) + "_65536a"
+
+                    )
+                ).inputItems(QoLMachines.HIGH_AMP_LASERS?.get(65536)?.first?.get(tier)?.asStack()!!)
+                    .circuitMeta(5)
+                    .outputItems(WirelessMachines.WIRELESS_ENERGY_INPUT_HATCH_65536A[tier].asStack())
+                    .duration(200)
+                    .EUt(GTValues.VA[GTValues.LV].toLong())
+                    .save(provider)
+            }
+
 
             // Wireless Energy Output Hatch 256A: laser output hatch 256A + circuit 16, LV 200t
             MAGIC_ASSEMBLER_RECIPES.recipeBuilder(
@@ -297,6 +340,37 @@ object GTMRecipeGen {
                 .EUt(GTValues.VA[GTValues.LV].toLong())
                 .save(provider)
 
+            if (ConfigHolder.instance.addonConfig.enableHigherAmpLaserHatches) {
+                // Wireless Energy Output Hatch 16384A: laser output hatch 16384A + circuit 16, LV 200t
+                MAGIC_ASSEMBLER_RECIPES.recipeBuilder(
+                    GTMThings.id(
+                        "wireless_energy_output_hatch_" + GTValues.VN[tier].lowercase(
+                            Locale.getDefault()
+                        ) + "_16384a"
+
+                    )
+                ).inputItems(QoLMachines.HIGH_AMP_LASERS?.get(16384)?.second?.get(tier)?.asStack()!!)
+                    .circuitMeta(5)
+                    .outputItems(WirelessMachines.WIRELESS_ENERGY_OUTPUT_HATCH_16384A[tier].asStack())
+                    .duration(200)
+                    .EUt(GTValues.VA[GTValues.LV].toLong())
+                    .save(provider)
+
+                MAGIC_ASSEMBLER_RECIPES.recipeBuilder(
+                    GTMThings.id(
+                        "wireless_energy_output_hatch_" + GTValues.VN[tier].lowercase(
+                            Locale.getDefault()
+                        ) + "_65536a"
+
+                    )
+                ).inputItems(QoLMachines.HIGH_AMP_LASERS?.get(65536)?.second?.get(tier)?.asStack()!!)
+                    .circuitMeta(5)
+                    .outputItems(WirelessMachines.WIRELESS_ENERGY_OUTPUT_HATCH_65536A[tier].asStack())
+                    .duration(200)
+                    .EUt(GTValues.VA[GTValues.LV].toLong())
+                    .save(provider)
+            }
+
             MAGIC_ASSEMBLER_RECIPES.recipeBuilder(
                 GTMThings.id(
                     "simple_wireless_energy_monitor"
@@ -308,6 +382,177 @@ object GTMRecipeGen {
                 .duration(200)
                 .EUt(GTValues.VA[GTValues.LV].toLong())
                 .save(provider)
+        }
+    }
+
+    fun overrideLaserRecipes(provider: Consumer<FinishedRecipe>) {
+
+        // 256A Laser Target Hatches
+        for (tier in 0..<LASER_INPUT_HATCH_256.size) {
+            val hatch =
+                LASER_INPUT_HATCH_256[tier] ?: continue
+
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].lowercase() + "_256a_laser_target_hatch")
+                .inputItems(HULL[tier])
+                .inputItems(lens, Diamond)
+                .inputItems(GTCraftingComponents.SENSOR.get(tier))
+                .inputItems(GTCraftingComponents.PUMP.get(tier))
+                .inputItems(GTCraftingComponents.CABLE.get(tier), 4)
+                .circuitMeta(1)
+                .outputItems(hatch)
+                .duration(300).EUt(VA[tier].toLong())
+                .addMaterialInfo(true).save(provider)
+        }
+
+
+        // 256A Laser Source Hatches
+        for (tier in 0..<LASER_OUTPUT_HATCH_256.size) {
+            val hatch =
+                LASER_OUTPUT_HATCH_256[tier] ?: continue
+
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].lowercase() + "_256a_laser_source_hatch")
+                .inputItems(HULL[tier])
+                .inputItems(lens, Diamond)
+                .inputItems(GTCraftingComponents.EMITTER.get(tier))
+                .inputItems(GTCraftingComponents.PUMP.get(tier))
+                .inputItems(GTCraftingComponents.CABLE.get(tier), 4)
+                .circuitMeta(1)
+                .outputItems(hatch)
+                .duration(300).EUt(VA[tier].toLong())
+                .addMaterialInfo(true).save(provider)
+        }
+
+
+        // 1024A Laser Target Hatches
+        for (tier in 0..<LASER_INPUT_HATCH_1024.size) {
+            val hatch =
+                LASER_INPUT_HATCH_1024[tier] ?: continue
+
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].lowercase() + "_1024a_laser_target_hatch")
+                .inputItems(HULL[tier])
+                .inputItems(lens, Diamond, 1)
+                .inputItems(GTCraftingComponents.SENSOR.get(tier), 2)
+                .inputItems(GTCraftingComponents.PUMP.get(tier), 2)
+                .inputItems(GTCraftingComponents.CABLE_DOUBLE.get(tier), 4)
+                .circuitMeta(2)
+                .outputItems(hatch)
+                .duration(300).EUt(VA[tier].toLong())
+                .addMaterialInfo(true).save(provider)
+        }
+
+
+        // 1024A Laser Source Hatches
+        for (tier in 0..<LASER_OUTPUT_HATCH_1024.size) {
+            val hatch =
+                LASER_OUTPUT_HATCH_1024[tier] ?: continue
+
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].lowercase() + "_1024a_laser_source_hatch")
+                .inputItems(HULL[tier])
+                .inputItems(lens, Diamond, 1)
+                .inputItems(GTCraftingComponents.EMITTER.get(tier), 2)
+                .inputItems(GTCraftingComponents.PUMP.get(tier), 2)
+                .inputItems(GTCraftingComponents.CABLE_DOUBLE.get(tier), 4)
+                .circuitMeta(2)
+                .outputItems(hatch)
+                .duration(300).EUt(VA[tier].toLong())
+                .addMaterialInfo(true).save(provider)
+        }
+
+
+        // 4096A Laser Target Hatches
+        for (tier in 0..<LASER_INPUT_HATCH_4096.size) {
+            val hatch =
+                LASER_INPUT_HATCH_4096[tier] ?: continue
+
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].lowercase() + "_4096a_laser_target_hatch")
+                .inputItems(HULL[tier])
+                .inputItems(lens, Diamond, 1)
+                .inputItems(GTCraftingComponents.SENSOR.get(tier), 3)
+                .inputItems(GTCraftingComponents.PUMP.get(tier), 3)
+                .inputItems(GTCraftingComponents.CABLE_QUAD.get(tier), 4)
+                .circuitMeta(3)
+                .outputItems(hatch)
+                .duration(300).EUt(VA[tier].toLong())
+                .addMaterialInfo(true).save(provider)
+        }
+
+
+        // 4096A Laser Source Hatches
+        for (tier in 0..<LASER_OUTPUT_HATCH_4096.size) {
+
+            val hatch: MachineDefinition =
+                LASER_OUTPUT_HATCH_4096[tier] ?: continue
+
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].lowercase() + "_4096a_laser_output_hatch")
+                .inputItems(HULL[tier])
+                .inputItems(lens, Diamond, 1)
+                .inputItems(GTCraftingComponents.EMITTER.get(tier), 3)
+                .inputItems(GTCraftingComponents.PUMP.get(tier), 3)
+                .inputItems(GTCraftingComponents.CABLE_QUAD.get(tier), 4)
+                .circuitMeta(3)
+                .outputItems(hatch)
+                .duration(300).EUt(VA[tier].toLong())
+                .addMaterialInfo(true).save(provider)
+        }
+
+        for (tier in 0..<(QoLMachines.HIGH_AMP_LASERS?.get(16384)?.first?.size ?: 0)) {
+            val hatch = QoLMachines.HIGH_AMP_LASERS?.get(16384)?.first?.get(tier) ?: continue
+
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].lowercase() + "_16384a_laser_target_hatch")
+                .inputItems(HULL[tier])
+                .inputItems(lens, Diamond, 1)
+                .inputItems(GTCraftingComponents.SENSOR.get(tier), 4)
+                .inputItems(GTCraftingComponents.PUMP.get(tier), 4)
+                .inputItems(GTCraftingComponents.CABLE_QUAD.get(tier), 4)
+                .circuitMeta(4)
+                .outputItems(hatch)
+                .duration(300).EUt(VA[tier].toLong())
+                .addMaterialInfo(true).save(provider)
+        }
+
+        for (tier in 0..<(QoLMachines.HIGH_AMP_LASERS?.get(16384)?.second?.size ?: 0)) {
+            val hatch = QoLMachines.HIGH_AMP_LASERS?.get(16384)?.second?.get(tier) ?: continue
+
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].lowercase() + "_16384a_laser_output_hatch")
+                .inputItems(HULL[tier])
+                .inputItems(lens, Diamond, 1)
+                .inputItems(GTCraftingComponents.EMITTER.get(tier), 4)
+                .inputItems(GTCraftingComponents.PUMP.get(tier), 4)
+                .inputItems(GTCraftingComponents.CABLE_QUAD.get(tier), 4)
+                .circuitMeta(4)
+                .outputItems(hatch)
+                .duration(300).EUt(VA[tier].toLong())
+                .addMaterialInfo(true).save(provider)
+        }
+
+        for (tier in 0..<(QoLMachines.HIGH_AMP_LASERS?.get(65536)?.first?.size ?: 0)) {
+            val hatch = QoLMachines.HIGH_AMP_LASERS?.get(65536)?.first?.get(tier) ?: continue
+
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].lowercase() + "_65536a_laser_target_hatch")
+                .inputItems(HULL[tier])
+                .inputItems(lens, Diamond, 1)
+                .inputItems(GTCraftingComponents.SENSOR.get(tier), 5)
+                .inputItems(GTCraftingComponents.PUMP.get(tier), 5)
+                .inputItems(GTCraftingComponents.CABLE_QUAD.get(tier), 4)
+                .circuitMeta(5)
+                .outputItems(hatch)
+                .duration(300).EUt(VA[tier].toLong())
+                .addMaterialInfo(true).save(provider)
+        }
+
+        for (tier in 0..<(QoLMachines.HIGH_AMP_LASERS?.get(65536)?.second?.size ?: 0)) {
+            val hatch = QoLMachines.HIGH_AMP_LASERS?.get(65536)?.second?.get(tier) ?: continue
+
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].lowercase() + "_65536a_laser_output_hatch")
+                .inputItems(HULL[tier])
+                .inputItems(lens, Diamond, 1)
+                .inputItems(GTCraftingComponents.EMITTER.get(tier), 5)
+                .inputItems(GTCraftingComponents.PUMP.get(tier), 5)
+                .inputItems(GTCraftingComponents.CABLE_QUAD.get(tier), 4)
+                .circuitMeta(5)
+                .outputItems(hatch)
+                .duration(300).EUt(VA[tier].toLong())
+                .addMaterialInfo(true).save(provider)
         }
     }
 }

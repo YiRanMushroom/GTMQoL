@@ -25,6 +25,9 @@ object QoLMachines {
     @JvmField
     var MAGICAL_ASSEMBLER: Array<MachineDefinition>? = null
 
+    @JvmField
+    var HIGH_AMP_LASERS: HashMap<Int, Pair<Array<MachineDefinition>, Array<MachineDefinition>>>? = null
+
     fun registerSimpleMachine(
         name: String,
         recipeType: GTRecipeType,

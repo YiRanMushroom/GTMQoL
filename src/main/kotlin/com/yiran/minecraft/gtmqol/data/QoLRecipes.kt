@@ -57,6 +57,10 @@ object QoLRecipes {
         if (gtmthingsPresentedAndIntegrationEnabled()) {
             GTMRecipeGen.initGTMRecipes(provider)
         }
+
+        if (ConfigHolder.instance.addonConfig.enableHigherAmpLaserHatches) {
+            GTMRecipeGen.overrideLaserRecipes(provider)
+        }
     }
 
     private fun registerMiscAERecipes(provider: Consumer<FinishedRecipe>) {

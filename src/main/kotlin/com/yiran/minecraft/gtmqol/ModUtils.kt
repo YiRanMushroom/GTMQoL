@@ -56,15 +56,7 @@ object ModUtils {
     }
 
     @JvmStatic
-    fun getLaserTiers() : IntArray {
-        if (!ConfigHolder.instance.addonConfig.registerLaserHatchesForAllTiers) {
-            return GTMachineUtils.HIGH_TIERS
-        }
-        return GTValues.tiersBetween(0, if (GTCEuAPI.isHighTier()) 13 else 9)
-    }
-
-    @JvmStatic
-    val highLaserAmps : IntArray = intArrayOf(16384, 65536, 262144, 1048576)
+    val highLaserAmps : IntArray = intArrayOf(16384, 65536)
 }
 
 fun ae2PresentedAndIntegrationEnabled(): Boolean {

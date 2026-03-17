@@ -60,7 +60,9 @@ loom {
                 "--output", file("src/generated/resources").absolutePath,
                 "--existing", file("src/main/resources").absolutePath,
                 "--existing-mod", "gtceu",
+                "--existing-mod", "gtmthings"
             )
+
             ideConfigGenerated(true)
             runDir("run/data")
         }
