@@ -143,9 +143,9 @@ public interface OverclockingLogic$Misc$Mixin {
 
         if (recipeMaxParallels < 0) {
             return new OverclockingLogic.OCResult(1.0, 1.0, 0, 1);
+        } else if (recipeMaxParallels == 0) {
+            recipeMaxParallels = 1;
         }
-
-        recipeMaxParallels = 1;
 
 //        LOGGER.info("[OC INPUT] InitialDuration: {}, InitialEUt: {}, N: {}, MaxParallels: {}, DurationFactor: {}, VoltageFactor: {}, MaxVoltage: {}",
 //                initialDuration, initialEUt, ocAmount, recipeMaxParallels, durationFactor, voltageFactor, maxVoltage);
