@@ -193,7 +193,7 @@ public interface OverclockingLogic$Misc$Mixin {
                 finalRecipeTotalVoltageMultiplier,
                 finalDurationMultiplier,
                 (int) Math.ceil(effectiveOCAmount - 1e-7),
-                (int) Math.round(finalParallel)
+                (int) Math.ceil(finalParallel)
         );
     }
 }

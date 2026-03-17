@@ -46,6 +46,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Maximum parallel amount for subtick overclocking(increasing this would significantly impact mstp)", "Default: 1024"})
         public int maxParallelAmountForSubtickOverclocking = 1024;
+
+        @Configurable
+        @Configurable.Comment({"Enable Multi-Tier Skipping for Multiblocks That Can Tier Skip", "Default: true"})
+        public boolean enableMultiTierSkipping = true;
     }
 
     @Configurable

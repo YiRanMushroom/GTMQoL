@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtmqol:block/machine/ev_4096a_laser_target_hatch",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtmqol:block/machine/ev_4096a_laser_target_hatch",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtmqol:block/machine/ev_4096a_laser_target_hatch"
+    },
+    "facing=south": {
+      "model": "gtmqol:block/machine/ev_4096a_laser_target_hatch",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtmqol:block/machine/ev_4096a_laser_target_hatch",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtmqol:block/machine/ev_4096a_laser_target_hatch",
+      "y": 270
+    }
+  }
+}
