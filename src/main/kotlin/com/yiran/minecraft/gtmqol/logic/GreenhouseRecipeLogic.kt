@@ -53,7 +53,7 @@ object GreenhouseRecipeLogic {
         }
     }
 
-    val TreeGrowingRecipeProviders: LinkedList<(Item) -> GTRecipeBuilder?> = LinkedList()
+    private val TreeGrowingRecipeProviders: Deque<(Item) -> GTRecipeBuilder?> = LinkedList()
 
     init {
         TreeGrowingRecipeProviders.add(::defaultTreeGrowingRecipeProvider)

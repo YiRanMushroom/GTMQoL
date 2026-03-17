@@ -1,9 +1,13 @@
 package com.yiran.minecraft.gtmqol
 
+import com.gregtechceu.gtceu.api.GTCEuAPI
+import com.gregtechceu.gtceu.api.GTValues
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils
 import com.lowdragmc.lowdraglib.LDLib
 import com.yiran.minecraft.gtmqol.GTMQoL.LOGGER
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
 import net.minecraftforge.fml.loading.FMLLoader
+
 
 object ModUtils {
     @JvmStatic
@@ -50,6 +54,17 @@ object ModUtils {
     inline fun <reified T> T?.orElse(defaultValue: T): T {
         return this ?: defaultValue
     }
+
+    @JvmStatic
+    fun getLaserTiers() : IntArray {
+        if (!ConfigHolder.instance.addonConfig.registerLaserHatchesForAllTiers) {
+            return GTMachineUtils.HIGH_TIERS
+        }
+        return GTValues.tiersBetween(0, if (GTCEuAPI.isHighTier()) 13 else 9)
+    }
+
+    @JvmStatic
+    val highLaserAmps : IntArray = intArrayOf(16384, 65536, 262144, 1048576)
 }
 
 fun ae2PresentedAndIntegrationEnabled(): Boolean {

@@ -7,7 +7,7 @@ import net.minecraftforge.registries.ForgeRegistries
 
 
 object RegistryUtils {
-    fun makeResourceLocation(namespace: String, path: String): ResourceLocation {
+    fun resourceLocationOf(namespace: String, path: String): ResourceLocation {
         return ResourceLocation.tryBuild(namespace, path)!!
     }
 
@@ -21,11 +21,11 @@ object RegistryUtils {
     }
 
     fun String.atNamespace(namespace: String): ResourceLocation {
-        return makeResourceLocation(namespace, this)
+        return resourceLocationOf(namespace, this)
     }
 
     fun String.atPath(path: String): ResourceLocation {
-        return makeResourceLocation(this, path)
+        return resourceLocationOf(this, path)
     }
 
     fun String.addSuffix(suffix: String): String {

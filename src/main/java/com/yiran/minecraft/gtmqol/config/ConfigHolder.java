@@ -81,8 +81,16 @@ public class ConfigHolder {
         public boolean enableElectricImplosionRecipes = true;
 
         @Configurable
-        @Configurable.Comment({"Enable Dimensionally Transcendent Fusion Reactor"})
+        @Configurable.Comment({"Enable Dimensionally Transcendent Fusion Reactor", "Default: true"})
         public boolean enableDimensionallyTranscendentFusionReactor = true;
+
+        @Configurable
+        @Configurable.Comment({"Register Laser Hatches for all tiers rather than only high tiers", "Default: true"})
+        public boolean registerLaserHatchesForAllTiers = true;
+
+        @Configurable
+        @Configurable.Comment({"Enable Higher Amp Laser Hatches", "Default: true"})
+        public boolean enableHigherAmpLaserHatches = true;
     }
 
     @Configurable
