@@ -198,6 +198,8 @@ dependencies {
 
     modImplementation(files("libs/gtmthings-1.5.4.jar"))
 
+    modImplementation(files("libs/monilabs-0.20.0.jar"))
+
     implementation("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
 
     forgeRuntimeLibrary("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")

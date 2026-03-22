@@ -29,7 +29,8 @@
     "bug_fix.KubeJsDataGenFixMixin",
     "gtmthings.WirelessEnergyContainerMixin",
     "gtmthings.WirelessEnergyMonitorMixin",
-    "gtmthings.WirelessMachinesMixin"
+    "gtmthings.WirelessMachinesMixin",
+    "modpack_integration.monifactory.MicroverseProjectionMachineMixin"
   ],
   "plugin": "com.yiran.minecraft.gtmqol.mixin.ModMixinPlugin",
   "client": [
