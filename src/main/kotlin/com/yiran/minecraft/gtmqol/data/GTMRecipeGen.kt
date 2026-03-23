@@ -2,8 +2,7 @@ package com.yiran.minecraft.gtmqol.data
 
 import com.gregtechceu.gtceu.api.GTCEuAPI
 import com.gregtechceu.gtceu.api.GTValues
-import com.gregtechceu.gtceu.api.GTValues.LV
-import com.gregtechceu.gtceu.api.GTValues.VA
+import com.gregtechceu.gtceu.api.GTValues.*
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix.lens
 import com.gregtechceu.gtceu.api.machine.MachineDefinition
 import com.gregtechceu.gtceu.common.data.GTMachines
@@ -132,7 +131,7 @@ object GTMRecipeGen {
                 .circuitMeta(5)
                 .outputItems(WIRELESS_ENERGY_RECEIVE_COVER_4A.get(tier - 1)!!.asStack(4))
                 .duration(200)
-                .EUt(GTValues.VA[GTValues.LV].toLong())
+                .EUt(VA[LV].toLong())
                 .save(provider)
 
             // Wireless Energy Receive Cover from Output Hatch: wireless output hatch + circuit 18, 1 to 8
@@ -215,8 +214,8 @@ object GTMRecipeGen {
         }
 
         for (tier in GTValues.tiersBetween(
-            if (ConfigHolder.instance.addonConfig.registerLaserHatchesForAllTiers) GTValues.EV else GTValues.IV,
-            if (GTCEuAPI.isHighTier()) GTValues.OpV else GTValues.UV
+            if (ConfigHolder.instance.addonConfig.registerLaserHatchesForAllTiers) GTValues.LV else GTValues.IV,
+            if (GTCEuAPI.isHighTier()) OpV else GTValues.UV
         )) {
             // Wireless Energy Input Hatch 256A: laser input hatch 256A + circuit 16, LV 200t
             MAGIC_ASSEMBLER_RECIPES.recipeBuilder(

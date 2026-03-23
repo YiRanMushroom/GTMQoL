@@ -52,7 +52,7 @@ public interface OverclockingLogic$Misc$Mixin {
 ////                        maxParallels = ParallelLogic.getParallelAmount(machine, recipe, p);
 //                    }
                     if (this == OverclockingLogic.PERFECT_OVERCLOCK || this == OverclockingLogic.PERFECT_OVERCLOCK_SUBTICK) {
-                        int effectiveBoostPower = OCs * 3 - (ModUtils.binlog(recipe.duration)) + 4;
+                        int effectiveBoostPower = OCs * 2 - (ModUtils.binlog(recipe.duration)) + 4;
 
                         if (effectiveBoostPower > 30) {
                             maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, 2000000000);

@@ -16,17 +16,18 @@ public class OverclockingPatcher {
             LOGGER.info("Patching OverclockingLogic fields to enable sub-tick parallel and modify duration factors...");
 
             double newStdDuration = 0.25;
-            double newPerfectDuration = 0.125;
+            double newPerfectDuration = 0.25;
             double stdVoltage = 4.0;
+            double perfectVoltage = 2.0;
 
             setStaticFinalField(OverclockingLogic.class, "PERFECT_OVERCLOCK",
-                    OverclockingLogic.create(newPerfectDuration, stdVoltage, true));
+                    OverclockingLogic.create(newPerfectDuration, perfectVoltage, true));
 
             setStaticFinalField(OverclockingLogic.class, "NON_PERFECT_OVERCLOCK",
                     OverclockingLogic.create(newStdDuration, stdVoltage, true));
 
             setStaticFinalField(OverclockingLogic.class, "PERFECT_OVERCLOCK_SUBTICK",
-                    OverclockingLogic.create(newPerfectDuration, stdVoltage, true));
+                    OverclockingLogic.create(newPerfectDuration, perfectVoltage, true));
 
             setStaticFinalField(OverclockingLogic.class, "NON_PERFECT_OVERCLOCK_SUBTICK",
                     OverclockingLogic.create(newStdDuration, stdVoltage, true));
