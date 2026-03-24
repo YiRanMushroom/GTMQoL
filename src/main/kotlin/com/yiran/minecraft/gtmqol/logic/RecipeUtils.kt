@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.EqualsNBTPredica
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder
 import com.yiran.minecraft.gtmqol.ModUtils.asType
+import com.yiran.minecraft.gtmqol.predicates.JsonTextNBTPredicate
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.StringTag
 import net.minecraft.network.chat.Component
@@ -12,15 +13,12 @@ import net.minecraft.world.item.ItemStack
 object RecipeUtils {
     fun GTRecipeBuilder.itemInputWithName(itemStack: ItemStack, name: String): GTRecipeBuilder {
         val newStack = itemStack.copy()
-        newStack.hoverName = Component.literal(name)
 
-        val nbtName = newStack.getTagElement(ItemStack.TAG_DISPLAY)
-            ?.getString(ItemStack.TAG_DISPLAY_NAME)
-            ?: ""
+        newStack.setHoverName(Component.literal(name))
 
-        val predicate = EqualsNBTPredicate(
+        val predicate = JsonTextNBTPredicate(
             "${ItemStack.TAG_DISPLAY}.${ItemStack.TAG_DISPLAY_NAME}",
-            StringTag.valueOf(nbtName)
+            name
         )
 
         return this.inputItemNbtPredicate(newStack, predicate)

@@ -4,6 +4,7 @@ import com.yiran.minecraft.gtmqol.config.ConfigHolder;
 import com.yiran.minecraft.gtmqol.data.ClientDynamicModelRegisterer;
 import com.yiran.minecraft.gtmqol.functionality.AddModularMultiblocksLogic;
 import com.yiran.minecraft.gtmqol.init.OverclockingPatcher;
+import com.yiran.minecraft.gtmqol.predicates.JsonTextNBTPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -47,6 +48,8 @@ public class GTMQoL {
     private void onCommonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("{} common setup", MOD_ID);
 
+        com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates.predicateCodecs
+                .put(JsonTextNBTPredicate.TYPE, JsonTextNBTPredicate::fromJson);
     }
 
     private void onClientSetup(final FMLClientSetupEvent event) {

@@ -1,7 +1,10 @@
 GTCEuStartupEvents.registry("gtceu:machine", event => {
+    // const MoniRecipeTypesExtension = Java.loadClass("com.yiran.minecraft.gtmqol.integration.monifactory.MoniRecipeTypesExtension");
+
     event.create("omni_prismatic_crucible", "multiblock")
         .rotationState(RotationState.NON_Y_AXIS)
-        .recipeTypes(MoniRecipeTypes.CHROMATIC_PROCESSING, MoniRecipeTypes.CHROMATIC_TRANSCENDENCE)
+        .recipeTypes("gtceu:omni_prismatic_recipe")
+        // .recipeTypes(MoniRecipeTypesExtension.OMNI_PRISMATIC_CRUCIBLE_RECIPE)
         .recipeModifiers(GTRecipeModifiers.OC_NON_PERFECT)
         .appearanceBlock(MoniBlocks.DIMENSIONAL_STABILIZATION_NETHERITE_CASING)
         .pattern(definition => FactoryBlockPattern.start()

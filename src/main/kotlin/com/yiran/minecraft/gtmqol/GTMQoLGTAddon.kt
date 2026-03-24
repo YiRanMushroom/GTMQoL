@@ -29,4 +29,5 @@ class GTMQoLGTAddon : IGTAddon {
     override fun requiresHighTier(): Boolean {
         return true
     }
+
 }

@@ -34,7 +34,8 @@
     "gtmthings.WirelessMachinesMixin",
     "kjs.ScriptManagerMixin",
     "modpack_integration.monifactory.KJSInjector$InitMoni$Mixin",
-    "modpack_integration.monifactory.MicroverseProjectionMachineMixin"
+    "modpack_integration.monifactory.MicroverseProjectionMachineMixin",
+    "modpack_integration.monifactory.MoniRecipeTypesMixin"
   ],
   "plugin": "com.yiran.minecraft.gtmqol.mixin.ModMixinPlugin",
   "client": [

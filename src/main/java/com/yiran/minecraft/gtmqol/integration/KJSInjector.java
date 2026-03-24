@@ -1,12 +1,16 @@
 package com.yiran.minecraft.gtmqol.integration;
 
 import dev.latvian.mods.kubejs.script.ScriptType;
+import lombok.val;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class KJSInjector {
     public record ScriptTask(String jarPath, String kjsPath, ScriptType type) {}
     public static final List<ScriptTask> TASKS = new ArrayList<>();
+
+    private static boolean qol$initialized = false;
 
     public static void injectStartupScript(String jarPath, String kjsName) {
         addJarSource(jarPath, "startup_scripts/" + kjsName, ScriptType.STARTUP);
@@ -25,6 +29,17 @@ public class KJSInjector {
         TASKS.add(new ScriptTask(path, kjsPath, type));
     }
 
+    public static void mixinInitInjectionPoint() {
+        // Inject registration here
+    }
+
     public static void init() {
+        if (qol$initialized) {
+            return;
+        }
+
+        qol$initialized = true;
+
+        mixinInitInjectionPoint();
     }
 }
