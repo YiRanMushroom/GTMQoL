@@ -27,11 +27,13 @@
     "OverclockingLogic$Misc$Mixin",
     "PredicatesMixin",
     "SaplingBlockMixin",
+    "ScriptManagerMixin",
     "WorkableElectricMultiblock$MultiTierSkip$Mixin",
     "bug_fix.KubeJsDataGenFixMixin",
     "gtmthings.WirelessEnergyContainerMixin",
     "gtmthings.WirelessEnergyMonitorMixin",
     "gtmthings.WirelessMachinesMixin",
+    "kjs.ScriptManagerMixin",
     "modpack_integration.monifactory.MicroverseProjectionMachineMixin"
   ],
   "plugin": "com.yiran.minecraft.gtmqol.mixin.ModMixinPlugin",
