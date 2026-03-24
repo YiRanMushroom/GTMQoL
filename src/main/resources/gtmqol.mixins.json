@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "mixins": [
     "BushBlockMixin",
+    "CleanroomConditionMixin",
     "ForgeCommonEventListener$AttachEnergyProxy$Mixin",
     "FusionReactor$ChangeOverclockingLogic$Mixin",
     "GCYMMachines$Misc$Mixin",

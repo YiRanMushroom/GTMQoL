@@ -95,6 +95,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Enable Higher Amp Laser Hatches", "Default: true"})
         public boolean enableHigherAmpLaserHatches = true;
+
+        @Configurable
+        @Configurable.Comment({"Multiblocks Ignore Cleanroom Recipe Conditions", "Default: true"})
+        public boolean multiblocksIgnoreCleanroomRecipes = true;
     }
 
     @Configurable
