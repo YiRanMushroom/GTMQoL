@@ -80,22 +80,6 @@ object AddModularMultiblocksLogic {
             ModifierFunction.builder().durationMultiplier(if (allGenerator) 8.0 else 0.125).build()
         }
 
-            /*if (!allGenerator) RecipeModifier{
-            _, _ ->
-            ModifierFunction{
-                it.copy().apply {
-                    it.duration = max(it.duration / 8, 1)
-                }
-            }
-        } else RecipeModifier {
-            _, _ ->
-            ModifierFunction {
-                it.copy().apply {
-                    it.duration *= 8
-                }
-            }
-        }*/
-
         val baseRecipeModifier: RecipeModifier = if (!allGenerator) GTRecipeModifiers.OC_PERFECT_SUBTICK
         else perfectGeneratorOverclockingRecipeModifier
 
@@ -122,22 +106,9 @@ object AddModularMultiblocksLogic {
                         ).setMinGlobalLimited(5).setPreviewCount(100)
                             .or(Predicates.autoAbilities(*d.recipeTypes))
                             .or(Predicates.autoAbilities(true, false, false))
-                            .or(/*TraceabilityPredicate(AnyButNotBlockPredicate(
-                                Arrays.stream<PartAbility?>(arrayOf())
-                                    .map<MutableCollection<Block?>?> { obj: PartAbility? -> obj!!.getAllBlocks() }
-                                    .flatMap<Block?> { obj: MutableCollection<Block?>? -> obj!!.stream() }
-                                    .toArray<Block?> { `x$0`: Int -> arrayOfNulls<Block>(`x$0`) } as Array<Block?>
-                            ).buildPredicate())*/Predicates.any())
+                            .or(Predicates.any())
                     )
-                    /*.where(
-                        '#', Predicates.blocks(
-                            GTBlocks.CASING_STEEL_SOLID.get(),
-                            Blocks.GLASS,
-                            GTBlocks.CASING_TEMPERED_GLASS.get()
-                        )
-                            .or(Predicates.autoAbilities(*d.recipeTypes))
-                            .or(Predicates.autoAbilities(true, false, false)).or(Predicates.any())
-                    )*/.build()
+                    .build()
             }
 
         registryData.add(
@@ -157,9 +128,7 @@ object AddModularMultiblocksLogic {
     fun runAllClientSetup() {
         val rm = Minecraft.getInstance().resourceManager
         val langCode = Minecraft.getInstance().languageManager.selected
-        val langAccumulator = mutableMapOf<String, JsonObject>()
-
-//        GTCEu.LOGGER.info("[GTMQoL] Starting Modular Multiblock Asset Injection...")
+        val format = loadRawLang("gtmqol", langCode)["gtmqol.modular_machine.name_format"] ?: "Modular %s"
 
         registryData.forEach { entry ->
             val targetNS = entry.namespace
@@ -167,52 +136,29 @@ object AddModularMultiblocksLogic {
             val simpleName = entry.simpleName
             val modName = entry.modularName
 
-            val machineFront =
-                ResourceLocation.tryBuild(sourceNS, "textures/block/machines/$simpleName/overlay_front.png")!!
-            val generatorFront =
-                ResourceLocation.tryBuild(sourceNS, "textures/block/generators/$simpleName/overlay_front.png")!!
-
-            val hasMachineFront = rm.getResource(machineFront).isPresent
-            val hasGeneratorFront = rm.getResource(generatorFront).isPresent
-
-//            GTCEu.LOGGER.info("[GTMQoL] Processing Machine: $simpleName")
-//            GTCEu.LOGGER.info(" - Checking Machine Path: $machineFront -> $hasMachineFront")
-//            GTCEu.LOGGER.info(" - Checking Generator Path: $generatorFront -> $hasGeneratorFront")
+            val machineFront = ResourceLocation.tryBuild(sourceNS, "textures/block/machines/$simpleName/overlay_front.png")!!
+            val generatorFront = ResourceLocation.tryBuild(sourceNS, "textures/block/generators/$simpleName/overlay_front.png")!!
 
             val overlayDir = when {
-                hasMachineFront -> ResourceLocation.tryBuild(sourceNS, "block/machines/$simpleName")!!
-                hasGeneratorFront -> ResourceLocation.tryBuild(sourceNS, "block/generators/$simpleName")!!
-                entry.isGenerator -> {
-                    val fallback = GTCEu.id("block/multiblock/generator/large_combustion_engine")
-//                    GTCEu.LOGGER.info(" - Fallback: Using Generator Fallback -> $fallback")
-                    fallback
-                }
-
-                else -> {
-                    val fallback = GTCEu.id("block/multiblock/implosion_compressor")
-//                    GTCEu.LOGGER.info(" - Fallback: Using Machine Fallback -> $fallback")
-                    fallback
-                }
+                rm.getResource(machineFront).isPresent -> ResourceLocation.tryBuild(sourceNS, "block/machines/$simpleName")!!
+                rm.getResource(generatorFront).isPresent -> ResourceLocation.tryBuild(sourceNS, "block/generators/$simpleName")!!
+                entry.isGenerator -> GTCEu.id("block/multiblock/generator/large_combustion_engine")
+                else -> GTCEu.id("block/multiblock/implosion_compressor")
             }
-
-//            GTCEu.LOGGER.info(" - Final OverlayDir: $overlayDir")
 
             val baseCasing = GTCEu.id("block/casings/solid/machine_casing_solid_steel")
             entry.builder.model(GTMachineModels.createWorkableCasingMachineModel(baseCasing, overlayDir))
 
             try {
                 entry.builder.generateAssetJsons(null)
-//                GTCEu.LOGGER.info(" - Asset JSONs generated successfully for $modName")
             } catch (e: Exception) {
                 GTCEu.LOGGER.error(" - FAILED to generate assets for $modName: ${e.message}")
             }
 
             val itemModel = JsonObject()
             itemModel.addProperty("parent", "$targetNS:block/machine/$modName")
-            GTDynamicResourcePack.addItemModel(ResourceLocation.tryBuild(targetNS, modName)!!, itemModel)
+            ClientDynamicModelRegisterer.registerItemModel(ResourceLocation.tryBuild(targetNS, modName)!!, itemModel)
 
-            val currentLangJson = langAccumulator.getOrPut(targetNS) { JsonObject() }
-            val format = loadRawLang("gtmqol", langCode)["gtmqol.modular_machine.name_format"] ?: "Modular %s"
             val sourceLang = loadRawLang(sourceNS, langCode)
             val sourceFallback = loadRawLang(sourceNS, "en_us")
 
@@ -221,17 +167,9 @@ object AddModularMultiblocksLogic {
 
             val langKey = "block.$targetNS.$modName"
             val langValue = format.replace("%s", baseName)
-            currentLangJson.addProperty(langKey, langValue)
-//            GTCEu.LOGGER.info(" - Language Entry Added: $langKey -> $langValue")
-        }
 
-        langAccumulator.forEach { (ns, json) ->
-            val langPath = ResourceLocation.tryBuild(ns, "lang/$langCode.json")!!
-            GTDynamicResourcePack.addResource(langPath, json.toString().toByteArray(StandardCharsets.UTF_8))
-//            GTCEu.LOGGER.info("[GTMQoL] Language file injected to: $langPath with ${json.size()} entries.")
+            ClientDynamicModelRegisterer.addLanguageEntry(targetNS, langCode, langKey, langValue)
         }
-
-//        GTCEu.LOGGER.info("[GTMQoL] All Modular assets injected.")
     }
 
     private fun loadRawLang(modId: String, langCode: String): Map<String, String> {
@@ -260,32 +198,5 @@ object AddModularMultiblocksLogic {
 
     init {
         ClientDynamicModelRegisterer.onGTCEuClientSetup(::runAllClientSetup)
-    }
-}
-
-class AnyButNotBlockPredicate : SimplePredicate("not_block") {
-    lateinit var notBlocks: Array<Block>
-
-    fun PredicateBlocks() {
-    }
-
-    fun PredicateBlocks(vararg blocks: Block?) {
-        this.notBlocks = blocks.filterNotNull().toTypedArray()
-    }
-
-    override fun buildPredicate(): SimplePredicate {
-        this.notBlocks = this.notBlocks.toList().toTypedArray()
-        if (this.notBlocks.isEmpty()) {
-            this.notBlocks = arrayOf(Blocks.BARRIER)
-        }
-
-        this.predicate = Predicate { state: MultiblockState ->
-            !ArrayUtils.contains(
-                this.notBlocks,
-                state.blockState.block
-            )
-        }
-        this.candidates = null
-        return this
     }
 }

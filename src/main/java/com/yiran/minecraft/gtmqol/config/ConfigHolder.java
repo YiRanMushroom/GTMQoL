@@ -99,6 +99,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Multiblocks Ignore Cleanroom Recipe Conditions", "Default: true"})
         public boolean multiblocksIgnoreCleanroomRecipes = true;
+
+        @Configurable
+        @Configurable.Comment({"Enable Integration with Moni Factory", "Default: true"})
+        public boolean enableMoniFactoryIntegration = true;
     }
 
     @Configurable

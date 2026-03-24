@@ -19,9 +19,14 @@ import com.gregtechceu.gtceu.common.data.GTRecipeModifiers.BATCH_MODE
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels.createWorkableCasingMachineModel
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine
+import com.yiran.minecraft.gtmqol.GTMQoL
 import com.yiran.minecraft.gtmqol.GTMQoLRegistrate
+import com.yiran.minecraft.gtmqol.ModUtils.asNotNull
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
 import net.minecraft.network.chat.Component
+import net.minecraft.world.level.block.Blocks
+
+import com.yiran.minecraft.gtmqol.data.ClientDynamicModelRegisterer.buildAndRegisterDynamicAssets
 
 object QoLMultiblocks {
     @JvmStatic
@@ -32,6 +37,9 @@ object QoLMultiblocks {
 
     @JvmStatic
     var DIMENSIONALLY_TRANSCENDENT_FUSION_REACTOR: MultiblockMachineDefinition? = null
+
+    @JvmStatic
+    var GREENHOUSE: MultiblockMachineDefinition? = null
 
     @JvmStatic
     fun init() {
@@ -177,10 +185,41 @@ object QoLMultiblocks {
                     createWorkableCasingMachineModel(
                         FusionReactorMachine.getCasingType(GTValues.UV).texture,
                         GTCEu.id("block/multiblock/fusion_reactor")
-                    )/*.andThen { b -> b.addDynamicRenderer(DynamicRenderHelper::createFusionRingRender) }*/
+                    )
                 )
-//                .hasBER(true)
                 .register()
+        }
+
+        if (ConfigHolder.instance.addonConfig.enableGreenhouse) {
+            GREENHOUSE = registrate.multiblock("greenhouse", ::WorkableElectricMultiblockMachine)
+                .rotationState(RotationState.NON_Y_AXIS)
+                .recipeType(QoLRecipeTypes.GREENHOUSE_RECIPES.asNotNull())
+                .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
+                .pattern {
+                        definition -> FactoryBlockPattern.start()
+                    .aisle("CCC", "CGC", "CGC", "CLC", "CCC")
+                    .aisle("CMC", "G#G", "G#G", "LIL", "COC")
+                    .aisle("CKC", "CGC", "CGC", "CLC", "CNC")
+                    .where('K', controller(blocks(definition.get())))
+                    .where('M', blocks(Blocks.MOSS_BLOCK)
+                        .or(blocks(Blocks.DIRT))
+                        .or(blocks(Blocks.GRASS_BLOCK)))
+                    .where('G', blocks(Blocks.GLASS))
+                    .where('I', blocks(Blocks.GLOWSTONE))
+                    .where('L', blocks(GTBlocks.CASING_GRATE.get()))
+                    .where('C', blocks(GTBlocks.CASING_STEEL_SOLID.get())
+                        .or(autoAbilities(*definition.getRecipeTypes())))
+                    .where('O', abilities(PartAbility.MUFFLER)
+                        .setExactLimit(1))
+                    .where('N', abilities(PartAbility.MAINTENANCE))
+                    .where('#', air())
+                    .build()
+                }
+                .workableCasingModel(
+                    GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
+                    GTMQoL.id("block/multiblock/greenhouse")
+                )
+                .buildAndRegisterDynamicAssets()
         }
     }
 }
