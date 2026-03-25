@@ -16,12 +16,13 @@ public class MoniRecipeTypesMixin {
     private static void onStaticInit(CallbackInfo ci) {
         MoniRecipeTypesExtension.init();
 
-        ((IAppendOnBuildAction) (MoniRecipeTypes.CHROMATIC_PROCESSING)).appendOnRecipeBuild(
-                MoniRecipeTypesExtension::onPrismaCRecipeBuild
-        );
+        ((IAppendOnBuildAction) (MoniRecipeTypes.CHROMATIC_PROCESSING))
+                .appendOnRecipeBuild(MoniRecipeTypesExtension::onPrismaCRecipeBuild);
 
-        ((IAppendOnBuildAction) (MoniRecipeTypes.CHROMATIC_TRANSCENDENCE)).appendOnRecipeBuild(
-                MoniRecipeTypesExtension::onPrismaCRecipeBuild
-        );
+        ((IAppendOnBuildAction) (MoniRecipeTypes.CHROMATIC_TRANSCENDENCE))
+                .appendOnRecipeBuild(MoniRecipeTypesExtension::onPrismaCRecipeBuild);
+
+        ((IAppendOnBuildAction) (MoniRecipeTypes.MICROVERSE_RECIPES))
+                .appendOnRecipeBuild(MoniRecipeTypesExtension::onMicroverseRecipeBuild);
     }
 }

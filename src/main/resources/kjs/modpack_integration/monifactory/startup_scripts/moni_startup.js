@@ -5,7 +5,7 @@ GTCEuStartupEvents.registry("gtceu:machine", event => {
         .rotationState(RotationState.NON_Y_AXIS)
         .recipeTypes("gtceu:omni_prismatic_recipe")
         // .recipeTypes(MoniRecipeTypesExtension.OMNI_PRISMATIC_CRUCIBLE_RECIPE)
-        .recipeModifiers(GTRecipeModifiers.OC_NON_PERFECT)
+        .recipeModifiers([GTRecipeModifiers.OC_NON_PERFECT, GTRecipeModifiers.BATCH_MODE])
         .appearanceBlock(MoniBlocks.DIMENSIONAL_STABILIZATION_NETHERITE_CASING)
         .pattern(definition => FactoryBlockPattern.start()
             .aisle("LLL#######LLL", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
@@ -33,4 +33,64 @@ GTCEuStartupEvents.registry("gtceu:machine", event => {
             .where("#", Predicates.any())
             .build())
         .workableCasingModel(MoniLabs.id("block/casing/netherite"), GTCEu.id("block/multiblock/processing_array"))
+
+    event.create("moni_eye_of_harmony", "multiblock")
+        .rotationState(RotationState.NON_Y_AXIS)
+        .recipeTypes("gtceu:moni_eye_of_harmony")
+        .recipeModifiers([GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE])
+        .appearanceBlock(MoniBlocks.MICROVERSE_CASING)
+        .pattern(definition => FactoryBlockPattern.start()
+            .aisle("#########", "#########", "##CCCCC##", "##CVCVC##", "##CCCCC##", "##CVCVC##", "##CCCCC##",
+                "#########", "#########")
+            .aisle("#########", "##CGGGC##", "#CDDDDDC#", "#CDDDDDC#", "#CDDDDDC#", "#CDDDDDC#", "#CDDDDDC#",
+                "##CGGGC##", "#########")
+            .aisle("##CCCCC##", "#CDDDDDC#", "CDDDDDDDC", "CDDDDDDDC", "CDDDDDDDC", "CDDDDDDDC", "CDDDDDDDC",
+                "#CDDDDDC#", "##CCCCC##")
+            .aisle("##CGGGC##", "#GDDDDDG#", "CDDDDDDDC", "GDD###DDG", "GDD###DDG", "GDD###DDG", "CDDDDDDDC",
+                "#GDDDDDG#", "##CGGGC##")
+            .aisle("##CGGGC##", "#GDDDDDG#", "CDDDDDDDC", "GDD###DDG", "GDD###DDG", "GDD###DDG", "CDDDDDDDC",
+                "#GDDDDDG#", "##CGGGC##")
+            .aisle("##CGGGC##", "#GDDDDDG#", "CDDDDDDDC", "GDD###DDG", "GDD###DDG", "GDD###DDG", "CDDDDDDDC",
+                "#GDDDDDG#", "##CGGGC##")
+            .aisle("##CCCCC##", "#CDDDDDC#", "CDDDDDDDC", "CDDDDDDDC", "CDDDDDDDC", "CDDDDDDDC", "CDDDDDDDC",
+                "#CDDDDDC#", "##CCCCC##")
+            .aisle("#########", "##CGGGC##", "#CDDDDDC#", "#CDDDDDC#", "#CDDDDDC#", "#CDDDDDC#", "#CDDDDDC#",
+                "##CGGGC##", "#########")
+            .aisle("#########", "#########", "##CC@CC##", "##CGGGC##", "##CGGGC##", "##CGGGC##", "##CCCCC##",
+                "#########", "#########")
+            .where("@", Predicates.controller(Predicates.blocks(definition.get())))
+            .where("D", Predicates.any())
+            .where("C", Predicates.blocks(MoniBlocks.MICROVERSE_CASING.get()).setMinGlobalLimited(100)
+                .or(Predicates.autoAbilities(definition.getRecipeTypes()))
+                .or(Predicates.abilities(PartAbility.PARALLEL_HATCH).setMaxGlobalLimited(1)))
+            .where("G", Predicates.blocks(MoniBlocks.PRISM_GLASS.get()))
+            .where("V", Predicates.blocks(GTBlocks.CASING_TITANIUM_PIPE.get()))
+            .where("#", Predicates.any())
+            .build())
+        .workableCasingModel(MoniLabs.id("block/casing/microverse"), MoniLabs.id("block/machines/projectors"))
+
+    event.create("sculk_barrel", "multiblock")
+        .recipeTypes(MoniRecipeTypes.SCULK_VAT_RECIPES)
+        .recipeModifiers([GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE])
+        .appearanceBlock(MoniBlocks.CRYOLOBUS_CASING)
+        .pattern(definition => FactoryBlockPattern.start()
+            .aisle("#CCC#", "#CLC#", "#CLC#", "#CLC#", "#CCC#", "#F#F#", "#ccc#")
+            .aisle("CCCCC", "C   C", "C   C", "C   C", "C   C", "FSSSF", "ccccc")
+            .aisle("CCCCC", "L P L", "L P L", "L P L", "C P C", "#SSS#", "ccccc")
+            .aisle("CCCCC", "C   C", "C   C", "C   C", "C   C", "FSSSF", "ccccc")
+            .aisle("#C@C#", "#CLC#", "#CLC#", "#CLC#", "#CCC#", "#F#F#", "#ccc#")
+            .where("@", Predicates.controller(Predicates.blocks(definition.get())))
+            .where("C", Predicates.blocks(MoniBlocks.CRYOLOBUS_CASING.get())
+                .setMinGlobalLimited(40)
+                .or(Predicates.autoAbilities(definition.getRecipeTypes())))
+            .where("c", Predicates.blocks(MoniBlocks.CRYOLOBUS_CASING.get()))
+            .where("L", Predicates.blocks(GTBlocks.CASING_LAMINATED_GLASS.get()))
+            .where("F", Predicates.frames(GTMaterials.BlackSteel))
+            .where("S", Predicates.blocks(GTBlocks.FILTER_CASING_STERILE.get()))
+            .where("P", Predicates.blocks(GTBlocks.CASING_TITANIUM_PIPE.get()))
+            .where(" ", Predicates.air())
+            .where("#", Predicates.any())
+            .build())
+        .workableCasingModel(MoniLabs.id("block/casing/cryolobus"),
+            GTCEu.id("block/machines/fermenter"))
 });
