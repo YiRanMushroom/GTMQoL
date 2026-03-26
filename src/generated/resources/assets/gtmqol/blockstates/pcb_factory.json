@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "gtmqol:block/machine/pcb_factory",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtmqol:block/machine/pcb_factory"
+    },
+    "facing=south": {
+      "model": "gtmqol:block/machine/pcb_factory",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gtmqol:block/machine/pcb_factory",
+      "y": 270
+    }
+  }
+}

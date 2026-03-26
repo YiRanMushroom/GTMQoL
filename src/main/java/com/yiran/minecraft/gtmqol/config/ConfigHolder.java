@@ -103,6 +103,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Enable Integration with Moni Factory", "Default: true"})
         public boolean enableMoniFactoryIntegration = true;
+
+        @Configurable
+        @Configurable.Comment({"Enable PCB Factory", "Default: true"})
+        public boolean enablePCBFactory = true;
     }
 
     @Configurable

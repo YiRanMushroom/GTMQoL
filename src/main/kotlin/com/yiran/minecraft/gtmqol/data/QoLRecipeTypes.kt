@@ -30,6 +30,9 @@ object QoLRecipeTypes {
     @JvmField
     var ELECTRIC_IMPLOSION_RECIPES: GTRecipeType? = null
 
+    @JvmField
+    var PCB_FACTORY_RECIPES: GTRecipeType? = null
+
     init {
         if (ConfigHolder.instance.addonConfig.enableGreenhouse) {
             GREENHOUSE_RECIPES = GTRecipeTypes.register("gtmqol:greenhouse", "electric")
@@ -80,6 +83,15 @@ object QoLRecipeTypes {
                 .setSlotOverlay(false, false, false, GuiTextures.IMPLOSION_OVERLAY_2)
                 .setSlotOverlay(true, false, true, GuiTextures.DUST_OVERLAY)
                 .setSound(ExistingSoundEntry(SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS))
+        }
+
+        if (ConfigHolder.instance.addonConfig.enablePCBFactory) {
+            PCB_FACTORY_RECIPES = GTRecipeTypes.register("gtmqol:pcb_factory", "electric")
+                .setMaxIOSize(6, 1, 6, 0)
+                .setEUIO(IO.IN)
+                .setSlotOverlay(false, false, GuiTextures.SOLIDIFIER_OVERLAY)
+                .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, ProgressTexture.FillDirection.LEFT_TO_RIGHT)
+                .setSound(GTSoundEntries.CHEMICAL)
         }
     }
 

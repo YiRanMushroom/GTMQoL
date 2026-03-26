@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
 import com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.registerMachineRecipe
 import com.yiran.minecraft.gtmqol.ae2PresentedAndIntegrationEnabled
+import com.yiran.minecraft.gtmqol.common.multiblocks.PCBFactoryMachine
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
 import com.yiran.minecraft.gtmqol.functionality.AddModularMultiblocksLogic
 import com.yiran.minecraft.gtmqol.gtmthingsPresentedAndIntegrationEnabled
@@ -60,6 +61,10 @@ object QoLRecipes {
 
         if (ConfigHolder.instance.addonConfig.enableHigherAmpLaserHatches) {
             GTMRecipeGen.overrideLaserRecipes(provider)
+        }
+
+        if (ConfigHolder.instance.addonConfig.enablePCBFactory) {
+            PCBFactoryMachine.registerDefaultRecipes(provider)
         }
     }
 

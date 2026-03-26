@@ -7,5 +7,14 @@
   "gtmqol.me_circuit_slicer": "ME Circuit Slicer",
   "gtmqol.magical_assembler": "Magical Assembler",
   "gtmqol.electric_implosion_compressor": "Electrical Implosion Compressor",
-  "gtmqol.multiblock.dimensionally_transcendent_fusion_reactor.tooltip": "Can run fusion recipes of any tier, as long as you have enough energy inputs."
+  "gtmqol.pcb_factory": "PCB Factory",
+  "gtmqol.multiblock.dimensionally_transcendent_fusion_reactor.tooltip": "Can run fusion recipes of any tier, as long as you have enough energy inputs.",
+  "gtmqol.multiblock.pcb_factory_machine.error_multiple_modifiers": "Multiple modifiers found in the same machine, The machine will not run.",
+  "gtmqol.multiblock.pcb_factory_machine.no_modifiers": "No modifiers found in the machine, recipes will not be modified.",
+  "gtmqol.multiblock.pcb_factory_machine.modifier_count": "Found %d %s in the machine.",
+  "gtmqol.multiblock.pcb_factory_machine.unknown_modifier": "Unknown",
+  "gtmqol.machine.pcb_factory.tooltip.0": "Recipes in this machine can be modified by putting nanites in input buses in this machine",
+  "gtmqol.machine.pcb_factory.tooltip.1": "The duration and output multipliers can be found in the tooltip of the nanites",
+  "gtmqol.machine.pcb_factory.tooltip.2": "Effects are applied multiplicatively, Both duration and output multipliers are capped at 65536x",
+  "item.gtmqol.pcb_recipe_modifier_provider.tooltip": "Output multiplier: %d, Duration multiplier: %d"
 }

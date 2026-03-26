@@ -1,4 +1,4 @@
-// 1.20.1	2026-03-23T06:44:06.378127	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.20.1	2026-03-26T06:10:39.8299344	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
 a23d8c7ddd4017e9dcb0183492b72508b5b72d04 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
 d7e1fffcf5689a78615a16458861461bd5b8b231 assets/gtmqol/blockstates/electric_implosion_compressor.json
 b62c1106ea0cbfd177de09054dfd98b8bc79a61b assets/gtmqol/blockstates/ev_1024a_laser_source_hatch.json
@@ -15,6 +15,7 @@ e078042db1af7fcbeef1333901aab24b9b52d824 assets/gtmqol/blockstates/ev_greenhouse
 e56ce4c77d68a08637181b48d3164a158cc4a89d assets/gtmqol/blockstates/ev_magical_assembler.json
 95861b8025db09b9e60dcb1943809574b7a1f462 assets/gtmqol/blockstates/ev_me_assembler.json
 77578905ec427b24123794e2929f0a7f8ccbd901 assets/gtmqol/blockstates/ev_me_circuit_slicer.json
+d70c1ea661c3bbe1d6e9ce7f727e3d4a59414b96 assets/gtmqol/blockstates/greenhouse.json
 7a2ac5074e2abdf4144c30d73f8ce031a358a0d2 assets/gtmqol/blockstates/hv_1024a_laser_source_hatch.json
 a480c766142412f215a0e8fd0b2c784ce9c97ef8 assets/gtmqol/blockstates/hv_1024a_laser_target_hatch.json
 a2232f157b48097e732ede6daf7f03ea65bcd537 assets/gtmqol/blockstates/hv_1024a_wireless_laser_source_hatch.json
@@ -111,6 +112,7 @@ a35287e71d12483924bc6e1c6b01903bac4fdcef assets/gtmqol/blockstates/mv_me_circuit
 6e45fbee6b7cb59bbfa71ac8f338d30fc0e5907e assets/gtmqol/blockstates/opv_magical_assembler.json
 d788aac5bfcc04fa16958606579375d19a61c313 assets/gtmqol/blockstates/opv_me_assembler.json
 26fbac0d6660f36e8e0ea931c601c75aaafb8c9a assets/gtmqol/blockstates/opv_me_circuit_slicer.json
+93ef1c7bad20f25e1b05c5e48d34a940fad02f3c assets/gtmqol/blockstates/pcb_factory.json
 8387941d6930e58843e205f4f581fd56bab72542 assets/gtmqol/blockstates/smart_assembly_factory.json
 3c9275bdced6e1513ff7e0a7c7dfc6b65801aefc assets/gtmqol/blockstates/uev_16384a_laser_source_hatch.json
 fef25e85e390c65e752c341e132add7fa1245fcf assets/gtmqol/blockstates/uev_16384a_laser_target_hatch.json
@@ -170,8 +172,8 @@ ac3da0a88ba93f39b8b05f81bffe4923906c1b92 assets/gtmqol/blockstates/zpm_16384a_la
 d81054eb38b5ad22ea6e470fabf8fec7612ad25f assets/gtmqol/blockstates/zpm_magical_assembler.json
 81519f782630929faed83acb0b72af56e3e7fb89 assets/gtmqol/blockstates/zpm_me_assembler.json
 e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circuit_slicer.json
-e5093c2733d856336bb90e8e1b7a07a99f6207b4 assets/gtmqol/lang/en_ud.json
-7abe26db6558cfcc472841d69bc2e2b6711d5313 assets/gtmqol/lang/en_us.json
+d8b43aae9c724e5f1a950772cf5c437b64d9029a assets/gtmqol/lang/en_ud.json
+36bad688acff98ca8ffa5dc9b3c65d45fc653234 assets/gtmqol/lang/en_us.json
 0068570044ce9829eadaf33afdcd7a529832ceff assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
 b95d9406d9646792d78cf50448f74f19a01d8e69 assets/gtmqol/models/block/machine/electric_implosion_compressor.json
 6370b7cd5ad6e933a8f1e6b1bb1213a271920139 assets/gtmqol/models/block/machine/ev_1024a_laser_source_hatch.json
@@ -188,6 +190,7 @@ c323eaeadcc43a443b16a5321232cc6cd0fe6037 assets/gtmqol/models/block/machine/ev_6
 43e20a64b464684c43af6a30b86673d37ebca485 assets/gtmqol/models/block/machine/ev_magical_assembler.json
 4d8768c0d137d037f6b072fb3cb30868ef674bf3 assets/gtmqol/models/block/machine/ev_me_assembler.json
 89142eaabfe7d4ca475f7b5077d1e3a331415d58 assets/gtmqol/models/block/machine/ev_me_circuit_slicer.json
+5a4f86b6c9b7ed04ef05fcba4e486d3a58c5114a assets/gtmqol/models/block/machine/greenhouse.json
 9d211fa3dc06776f2611e486a2644c1bd26322c2 assets/gtmqol/models/block/machine/hv_1024a_laser_source_hatch.json
 c2cb162ac6fb1ae4eff1ab48441c104cdbfa3d91 assets/gtmqol/models/block/machine/hv_1024a_laser_target_hatch.json
 d973b68724a60d656dbcb28c501d52588643cb65 assets/gtmqol/models/block/machine/hv_1024a_wireless_laser_source_hatch.json
@@ -284,6 +287,7 @@ b4b7202e32ae43e7af0d0d7a1c05f9fff15e7154 assets/gtmqol/models/block/machine/opv_
 699384ed7d760216d760d981c093a6e16f15a023 assets/gtmqol/models/block/machine/opv_magical_assembler.json
 0a194031a73c153710430754fe16fa2bf0b2e397 assets/gtmqol/models/block/machine/opv_me_assembler.json
 2edc58527ad1b208d8e93720478ef41d4595dfb1 assets/gtmqol/models/block/machine/opv_me_circuit_slicer.json
+3c12a9741fe0a20e19cf422347b8662587921344 assets/gtmqol/models/block/machine/pcb_factory.json
 2c377fb9f894cd142ed38d7cb456288f604454b5 assets/gtmqol/models/block/machine/smart_assembly_factory.json
 b1f5c2b5e2ed5e385d581fbc2be20dae7c3e770a assets/gtmqol/models/block/machine/uev_16384a_laser_source_hatch.json
 224402eeaf4bc0206f8d05654e25c635a7145152 assets/gtmqol/models/block/machine/uev_16384a_laser_target_hatch.json
@@ -360,6 +364,7 @@ a4ce3412d9732cdd0237d1c99b1578100584bf59 assets/gtmqol/models/item/ev_magical_as
 e9e8799b76624b2ca7572680c1aad4cdf4871ace assets/gtmqol/models/item/ev_me_assembler.json
 3d6519a4f773160d6f1e7072db7d1bcb04b6aaf1 assets/gtmqol/models/item/ev_me_circuit_slicer.json
 33731740e96a1a4ee82399d1a20aa9bdc2d652c4 assets/gtmqol/models/item/ev_universal_circuit.json
+78d28629ad1fa9a1aa72268d5341b64479976be1 assets/gtmqol/models/item/greenhouse.json
 5108bdf01b5f6547b9a0556474ab34547a230d41 assets/gtmqol/models/item/hv_1024a_laser_source_hatch.json
 baea698b31445b61e840367fdbba046c9e85c455 assets/gtmqol/models/item/hv_1024a_laser_target_hatch.json
 d69b991293a02e6442033a29ee097c45f86edd68 assets/gtmqol/models/item/hv_1024a_wireless_laser_source_hatch.json
@@ -455,6 +460,7 @@ b3915121697dd824442bb227908994fae4b000d7 assets/gtmqol/models/item/mv_me_circuit
 8cc7b29a6757275e9e42229c0f10034d9ef31a3a assets/gtmqol/models/item/mv_universal_circuit.json
 664cde1b86c00364cad87117c3ec501ac6d5ac51 assets/gtmqol/models/item/naquadah_doped_silicon_chip.json
 ea98e0ebf2ad222302f8248356a1065d71b9e65a assets/gtmqol/models/item/neutronium_doped_silicon_chip.json
+b01844ebad0c7b81d20add5ecea4e38b5b13048d assets/gtmqol/models/item/neutronium_nanite.json
 529e90779376ec0f29aa8e3d801505ec834b1c70 assets/gtmqol/models/item/opv_16384a_laser_source_hatch.json
 b972e2a674c9179bfbae2e85edf565ae4206ce89 assets/gtmqol/models/item/opv_16384a_laser_target_hatch.json
 1c82b89e6d1a8ddcb45da1a5ad1d30d41b2a3c13 assets/gtmqol/models/item/opv_65536a_laser_source_hatch.json
@@ -463,9 +469,12 @@ ea98427dcdf9184d6148324952afa72cd4df4132 assets/gtmqol/models/item/opv_65536a_la
 af376ded7c00987de05e382c36b44ebac571374b assets/gtmqol/models/item/opv_magical_assembler.json
 1728afe0f8e24f0bb0e68f5ddab43f3e28f21256 assets/gtmqol/models/item/opv_me_assembler.json
 151b7b463b17184fc4ec569d8abcff4ef1bb5164 assets/gtmqol/models/item/opv_me_circuit_slicer.json
+d34739a69e4d938881e012a30eeada26ff5e777d assets/gtmqol/models/item/osmiridium_nanite.json
+66531bb2403bad39fda12882f7336e0f445d352a assets/gtmqol/models/item/pcb_factory.json
 693085c624963581fa683792437aa07bd9279089 assets/gtmqol/models/item/phosphorus_doped_silicon_chip.json
 4d621027260803f2e4ebf7bf5388a58f16303c4b assets/gtmqol/models/item/silicon_chip.json
 8ed731296fb90ab6355072e65bf2f8cbb5039acf assets/gtmqol/models/item/smart_assembly_factory.json
+8a339bdad9ce3d6cc5a015a50bdfd42e802b8dc1 assets/gtmqol/models/item/titanium_nanite.json
 b5726db17dbe4be2302aefd8f5b8e98dcb78b49f assets/gtmqol/models/item/uev_16384a_laser_source_hatch.json
 cec6a2b2bac9faf7b662d515bef8556da568c6be assets/gtmqol/models/item/uev_16384a_laser_target_hatch.json
 225bf30b485359d45c22285d5af54a23ee1e42ac assets/gtmqol/models/item/uev_65536a_laser_source_hatch.json

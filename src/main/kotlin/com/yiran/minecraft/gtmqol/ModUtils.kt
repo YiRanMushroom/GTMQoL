@@ -57,6 +57,38 @@ object ModUtils {
 
     @JvmStatic
     val highLaserAmps : IntArray = intArrayOf(16384, 65536)
+
+    @JvmStatic
+    fun safePow(base: Int, exp: Int, limit: Long): Long {
+        if (exp < 0) return 0
+        if (exp == 0) return 1
+        if (base == 0) return 0
+        if (base == 1) return 1
+
+        var res = 1L
+        var b = base.toLong()
+        var e = exp
+
+        while (e > 0) {
+            if (e % 2 == 1) {
+                res = multiplyWithLimit(res, b, limit)
+            }
+            if (res >= limit) return limit
+
+            e /= 2
+            if (e > 0) {
+                b = multiplyWithLimit(b, b, limit)
+            }
+        }
+        return res
+    }
+
+    @JvmStatic
+    private fun multiplyWithLimit(a: Long, b: Long, limit: Long): Long {
+        if (a == 0L || b == 0L) return 0
+        if (a > limit / b) return limit
+        return a * b
+    }
 }
 
 fun ae2PresentedAndIntegrationEnabled(): Boolean {

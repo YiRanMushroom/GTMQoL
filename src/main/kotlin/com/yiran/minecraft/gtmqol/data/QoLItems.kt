@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues
 import com.gregtechceu.gtceu.data.recipe.CustomTags
 import com.tterrag.registrate.util.entry.ItemEntry
 import com.yiran.minecraft.gtmqol.GTMQoLRegistrate
+import com.yiran.minecraft.gtmqol.common.Item.PCBRecipeModifierProviderItem
 import net.minecraft.world.item.Item
 import java.util.Locale.ENGLISH
 
@@ -15,6 +16,10 @@ object QoLItems {
     val NEUTRONIUM_DOPED_SILICON_CHIP: ItemEntry<Item>
 
     val UNIVERSAL_CIRCUITS: Array<ItemEntry<Item>>
+
+    lateinit var TITANIUM_NANITE: ItemEntry<Item>
+    lateinit var OSMIRIDIUM_NANITE: ItemEntry<Item>
+    lateinit var NEUTRONIUM_NANITE: ItemEntry<Item>
 
     fun circuitTiers(): Array<Int> {
         if (GTCEuAPI.isHighTier()) {
@@ -40,6 +45,15 @@ object QoLItems {
                 .tag(CustomTags.CIRCUITS_ARRAY[it])
                 .register() as ItemEntry<Item>
         }.toTypedArray()
+
+        TITANIUM_NANITE = GTMQoLRegistrate.REGISTRATE.item("titanium_nanite", PCBRecipeModifierProviderItem.factory(2, 4))
+            .lang("Titanium Nanite").register()
+
+        OSMIRIDIUM_NANITE = GTMQoLRegistrate.REGISTRATE.item("osmiridium_nanite", PCBRecipeModifierProviderItem.factory(4, 4))
+            .lang("Osmiridium Nanite").register()
+
+        NEUTRONIUM_NANITE = GTMQoLRegistrate.REGISTRATE.item("neutronium_nanite", PCBRecipeModifierProviderItem.factory(4, 2))
+            .lang("Neutronium Nanite").register()
     }
 
     @JvmStatic

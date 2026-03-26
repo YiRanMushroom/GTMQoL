@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMac
 import com.yiran.minecraft.gtmqol.GTMQoL
 import com.yiran.minecraft.gtmqol.GTMQoLRegistrate
 import com.yiran.minecraft.gtmqol.ModUtils.asNotNull
+import com.yiran.minecraft.gtmqol.common.multiblocks.PCBFactoryMachine
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
 import net.minecraft.network.chat.Component
 import net.minecraft.world.level.block.Blocks
@@ -40,6 +41,9 @@ object QoLMultiblocks {
 
     @JvmStatic
     var GREENHOUSE: MultiblockMachineDefinition? = null
+
+    @JvmStatic
+    var PCB_FACTORY: MultiblockMachineDefinition? = null
 
     @JvmStatic
     fun init() {
@@ -220,6 +224,10 @@ object QoLMultiblocks {
                     GTMQoL.id("block/multiblock/greenhouse")
                 )
                 .buildAndRegisterDynamicAssets()
+        }
+
+        if (ConfigHolder.instance.addonConfig.enablePCBFactory) {
+            PCB_FACTORY = PCBFactoryMachine.createDefinition("pcb_factory")
         }
     }
 }
