@@ -5,7 +5,7 @@ GTCEuStartupEvents.registry("gtceu:machine", event => {
         .rotationState(RotationState.NON_Y_AXIS)
         .recipeTypes("gtceu:omni_prismatic_recipe")
         // .recipeTypes(MoniRecipeTypesExtension.OMNI_PRISMATIC_CRUCIBLE_RECIPE)
-        .recipeModifiers([GTRecipeModifiers.OC_NON_PERFECT, GTRecipeModifiers.BATCH_MODE])
+        .recipeModifiers([GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE])
         .appearanceBlock(MoniBlocks.DIMENSIONAL_STABILIZATION_NETHERITE_CASING)
         .pattern(definition => FactoryBlockPattern.start()
             .aisle("LLL#######LLL", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
