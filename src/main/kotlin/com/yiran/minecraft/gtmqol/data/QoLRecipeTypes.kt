@@ -86,7 +86,7 @@ object QoLRecipeTypes {
         }
 
         if (ConfigHolder.instance.addonConfig.enablePCBFactory) {
-            PCB_FACTORY_RECIPES = GTRecipeTypes.register("gtmqol:pcb_factory", "electric")
+            PCB_FACTORY_RECIPES = GTRecipeTypes.register("pcb_factory", "electric")
                 .setMaxIOSize(6, 1, 6, 0)
                 .setEUIO(IO.IN)
                 .setSlotOverlay(false, false, GuiTextures.SOLIDIFIER_OVERLAY)

@@ -20,6 +20,10 @@ public class KJSInjector$InitMoni$Mixin {
             KJSInjector.injectStartupScript("kjs/modpack_integration/monifactory/startup_scripts/moni_startup.js", "monifactory/moni_startup.js");
             KJSInjector.injectClientScript("kjs/modpack_integration/monifactory/client_scripts/moni_client.js", "monifactory/moni_client.js");
             KJSInjector.injectServerScript("kjs/modpack_integration/monifactory/server_scripts/moni_server.js", "monifactory/moni_server.js");
+
+            if (ConfigHolder.getInstance().addonConfig.enablePCBFactory) {
+                KJSInjector.injectServerScript("kjs/modpack_integration/monifactory/server_scripts/moni_pcb_server.js", "zzz_final_load_monifactory/moni_pcb_server.js");
+            }
         }
     }
 }
