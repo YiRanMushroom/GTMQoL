@@ -7,7 +7,7 @@
   "gtmqol.me_circuit_slicer": "ME Circuit Slicer",
   "gtmqol.magical_assembler": "Magical Assembler",
   "gtmqol.electric_implosion_compressor": "Electrical Implosion Compressor",
-  "gtceu.pcb_factory": "PCB Factory",
+  "gtceu.gtmqol_pcb_factory": "PCB Factory",
   "gtmqol.multiblock.dimensionally_transcendent_fusion_reactor.tooltip": "Can run fusion recipes of any tier, as long as you have enough energy inputs.",
   "gtmqol.multiblock.pcb_factory_machine.error_multiple_modifiers": "Multiple modifiers found in the same machine, The machine will not run.",
   "gtmqol.multiblock.pcb_factory_machine.no_modifiers": "No modifiers found in the machine, recipes will not be modified.",

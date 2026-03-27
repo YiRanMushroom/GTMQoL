@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine
 import com.gregtechceu.gtceu.data.recipe.CustomTags
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder
+import com.lowdragmc.lowdraglib.LDLib
 import com.lowdragmc.lowdraglib.syncdata.ISubscription
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted
@@ -445,7 +446,7 @@ class PCBFactoryMachine(holder: IMachineBlockEntity) :
                 .tooltips(
                     Component.translatable(
                         "gtceu.machine.available_recipe_map_1.tooltip",
-                        Component.translatable("gtmqol.pcb_factory")
+                        Component.translatable("gtceu.gtmqol_pcb_factory")
                     )
                 )
                 .recipeType(QoLRecipeTypes.PCB_FACTORY_RECIPES.asNotNull())
@@ -544,18 +545,36 @@ class PCBFactoryMachine(holder: IMachineBlockEntity) :
                     .save(provider)
             }
 
-            PCBRecipeType.recipeBuilder("wetware_circuit_board")
-                .inputItems(TagPrefix.plate, GTMaterials.ReinforcedEpoxyResin, 8)
-                .inputItems(TagPrefix.foil, GTMaterials.AnnealedCopper, 64)
-                .inputFluids(GTMaterials.SulfuricAcid, 1000)
-                .inputItems(TagPrefix.foil, GTMaterials.Palladium, 32)
-                .inputFluids(GTMaterials.SulfuricAcid, 2000)
-                .inputItems(TagPrefix.foil, GTMaterials.NiobiumTitanium, 4)
-                .inputFluids(GTMaterials.SterileGrowthMedium, 1000)
-                .outputItems(GTItems.WETWARE_CIRCUIT_BOARD, 16)
-                .duration(25 * 20 * 4)
-                .EUt(VA[LV].toLong())
-                .save(provider)
+            if (!LDLib.isModLoaded("monilabs")) {
+                PCBRecipeType.recipeBuilder("wetware_circuit_board")
+                    .inputItems(TagPrefix.plate, GTMaterials.ReinforcedEpoxyResin, 8)
+                    .inputItems(TagPrefix.foil, GTMaterials.AnnealedCopper, 64)
+                    .inputFluids(GTMaterials.SulfuricAcid, 1000)
+                    .inputItems(TagPrefix.foil, GTMaterials.Palladium, 32)
+                    .inputFluids(GTMaterials.SulfuricAcid, 2000)
+                    .inputItems(TagPrefix.foil, GTMaterials.NiobiumTitanium, 4)
+                    .inputFluids(GTMaterials.SterileGrowthMedium, 1000)
+                    .outputItems(GTItems.WETWARE_CIRCUIT_BOARD, 16)
+                    .duration(25 * 20 * 4)
+                    .EUt(VA[LV].toLong())
+                    .save(provider)
+
+                PCBRecipeType.recipeBuilder("neuro_circuit_board")
+                    .inputItems(TagPrefix.plate, GTMaterials.ReinforcedEpoxyResin, 8)
+                    .inputItems(TagPrefix.plate, GTMaterials.AnnealedCopper, 16)
+                    .inputFluids(GTMaterials.SulfuricAcid, 1000)
+                    .inputItems(TagPrefix.plate, GTMaterials.Palladium, 8)
+                    .inputFluids(GTMaterials.SulfuricAcid, 2000)
+                    .inputItems(TagPrefix.plate, GTMaterials.NiobiumTitanium, 4)
+                    .inputItems(GTItems.STEM_CELLS, 16)
+                    .inputItems(TagPrefix.plate, GTMaterials.Electrum, 16)
+                    .inputFluids(GTMaterials.SterileGrowthMedium, 1500)
+                    .outputItems(GTItems.NEURO_PROCESSOR, 16)
+                    .duration(25 * 20 * 4)
+                    .EUt(VA[LV].toLong())
+                    .save(provider)
+            }
+
 
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("qol_titanium_nanite")
                 .inputItems(TagPrefix.dust, GTMaterials.Titanium, 64)

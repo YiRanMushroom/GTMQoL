@@ -1,5 +1,5 @@
 ServerEvents.recipes(event => {
-    event.recipes.gtceu["pcb_factory"]("wetware_circuit_board_sulfuric_acid")
+    event.recipes.gtceu["gtmqol_pcb_factory"]("wetware_circuit_board_sulfuric_acid")
         .itemInputs("8x #forge:plates/reinforced_epoxy_resin")
         .itemInputs("64x #forge:foils/annealed_copper")
         .inputFluids("gtceu:sulfuric_acid 1000")
@@ -11,7 +11,7 @@ ServerEvents.recipes(event => {
         .duration(25 * 20 * 4)
         .EUt(30)
 
-    event.recipes.gtceu["pcb_factory"]("wetware_circuit_board_hexafluorosilicic_acid")
+    event.recipes.gtceu["gtmqol_pcb_factory"]("wetware_circuit_board_hexafluorosilicic_acid")
         .itemInputs("8x #forge:plates/reinforced_epoxy_resin")
         .itemInputs("64x #forge:foils/annealed_copper")
         .inputFluids("gtceu:hexafluorosilicic_acid 120")
@@ -23,7 +23,7 @@ ServerEvents.recipes(event => {
         .duration(25 * 20 * 4)
         .EUt(30)
 
-    event.recipes.gtceu["pcb_factory"]("carbon_mesh_reinforced_printed_circuit_board_oxalic_acid")
+    event.recipes.gtceu["gtmqol_pcb_factory"]("carbon_mesh_reinforced_printed_circuit_board_oxalic_acid")
         .itemInputs("8x gtceu:carbon_fiber_mesh")
         .inputFluids("gtceu:polyether_ether_ketone 576")
         .itemInputs("40x #forge:foils/osmium")
@@ -35,7 +35,7 @@ ServerEvents.recipes(event => {
         .duration(25 * 20 * 4)
         .EUt(30)
 
-    event.recipes.gtceu["pcb_factory"]("carbon_mesh_reinforced_printed_circuit_board_iron_iii")
+    event.recipes.gtceu["gtmqol_pcb_factory"]("carbon_mesh_reinforced_printed_circuit_board_iron_iii")
         .itemInputs("8x gtceu:carbon_fiber_mesh")
         .inputFluids("gtceu:polyether_ether_ketone 576")
         .itemInputs("40x #forge:foils/osmium")
@@ -47,7 +47,7 @@ ServerEvents.recipes(event => {
         .duration(25 * 20 * 4)
         .EUt(30)
 
-    event.recipes.gtceu["pcb_factory"]("carbon_mesh_reinforced_printed_circuit_board_sodium_persulfate")
+    event.recipes.gtceu["gtmqol_pcb_factory"]("carbon_mesh_reinforced_printed_circuit_board_sodium_persulfate")
         .itemInputs("8x gtceu:carbon_fiber_mesh")
         .inputFluids("gtceu:polyether_ether_ketone 576")
         .itemInputs("40x #forge:foils/osmium")
@@ -59,7 +59,7 @@ ServerEvents.recipes(event => {
         .duration(25 * 20 * 4)
         .EUt(30)
 
-    event.recipes.gtceu["pcb_factory"]("null_infused_circuit_board")
+    event.recipes.gtceu["gtmqol_pcb_factory"]("null_infused_circuit_board")
         .itemInputs("8x gtceu:carbon_fiber_mesh")
         .inputFluids("gtceu:polyether_ether_ketone 576")
         .inputFluids("gtceu:living_soldering_alloy 144")
@@ -72,7 +72,7 @@ ServerEvents.recipes(event => {
         .duration(5 * 4 * 20)
         .EUt(30)
 
-    event.recipes.gtceu["pcb_factory"]("neuro_circuit_board_sulfuric_acid")
+    event.recipes.gtceu["gtmqol_pcb_factory"]("neuro_circuit_board_sulfuric_acid")
         .itemInputs("8x #forge:plates/reinforced_epoxy_resin")
         .itemInputs("16x #forge:plates/annealed_copper")
         .inputFluids("gtceu:sulfuric_acid 1000")
@@ -86,7 +86,7 @@ ServerEvents.recipes(event => {
         .duration(25 * 20 * 4)
         .EUt(30)
 
-    event.recipes.gtceu["pcb_factory"]("neuro_circuit_board_hexafluorosilicic_acid")
+    event.recipes.gtceu["gtmqol_pcb_factory"]("neuro_circuit_board_hexafluorosilicic_acid")
         .itemInputs("8x #forge:plates/reinforced_epoxy_resin")
         .itemInputs("16x #forge:plates/annealed_copper")
         .inputFluids("gtceu:hexafluorosilicic_acid 120")
