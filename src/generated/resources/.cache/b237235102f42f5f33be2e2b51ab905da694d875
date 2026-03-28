@@ -1,4 +1,4 @@
-// 1.20.1	2026-03-26T06:10:39.8299344	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.20.1	2026-03-28T11:20:30.657147	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
 a23d8c7ddd4017e9dcb0183492b72508b5b72d04 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
 d7e1fffcf5689a78615a16458861461bd5b8b231 assets/gtmqol/blockstates/electric_implosion_compressor.json
 b62c1106ea0cbfd177de09054dfd98b8bc79a61b assets/gtmqol/blockstates/ev_1024a_laser_source_hatch.json
@@ -172,8 +172,8 @@ ac3da0a88ba93f39b8b05f81bffe4923906c1b92 assets/gtmqol/blockstates/zpm_16384a_la
 d81054eb38b5ad22ea6e470fabf8fec7612ad25f assets/gtmqol/blockstates/zpm_magical_assembler.json
 81519f782630929faed83acb0b72af56e3e7fb89 assets/gtmqol/blockstates/zpm_me_assembler.json
 e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circuit_slicer.json
-d8b43aae9c724e5f1a950772cf5c437b64d9029a assets/gtmqol/lang/en_ud.json
-36bad688acff98ca8ffa5dc9b3c65d45fc653234 assets/gtmqol/lang/en_us.json
+9c552006ece64288064f9a5071bea6f09359ec8a assets/gtmqol/lang/en_ud.json
+32f99b820b7835467b1be939bcb9208882dc2687 assets/gtmqol/lang/en_us.json
 0068570044ce9829eadaf33afdcd7a529832ceff assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
 b95d9406d9646792d78cf50448f74f19a01d8e69 assets/gtmqol/models/block/machine/electric_implosion_compressor.json
 6370b7cd5ad6e933a8f1e6b1bb1213a271920139 assets/gtmqol/models/block/machine/ev_1024a_laser_source_hatch.json
@@ -433,6 +433,7 @@ cac55583fc825300433b396b957e0a40b6e6cc93 assets/gtmqol/models/item/lv_greenhouse
 3d8529d6c33910099b155de77bec6c0092366444 assets/gtmqol/models/item/lv_me_assembler.json
 2575ee131c58b6192efb4c95cebf7956be878531 assets/gtmqol/models/item/lv_me_circuit_slicer.json
 b4c5577f7e91677f03762b58d1998a8cd7af22fb assets/gtmqol/models/item/lv_universal_circuit.json
+a4b7b6f335e9bf4b27f51d20d6df1b6ec07e384d assets/gtmqol/models/item/max_universal_circuit.json
 688980e9a8e08a2ef89329ac3944685dc270ef84 assets/gtmqol/models/item/mv_1024a_laser_source_hatch.json
 480ec5a207caa1110ffafbb36f18db6486ac9f96 assets/gtmqol/models/item/mv_1024a_laser_target_hatch.json
 495bd0ab956a85bc1a5ddd37805a6b71533983e0 assets/gtmqol/models/item/mv_1024a_wireless_laser_source_hatch.json
@@ -469,6 +470,7 @@ ea98427dcdf9184d6148324952afa72cd4df4132 assets/gtmqol/models/item/opv_65536a_la
 af376ded7c00987de05e382c36b44ebac571374b assets/gtmqol/models/item/opv_magical_assembler.json
 1728afe0f8e24f0bb0e68f5ddab43f3e28f21256 assets/gtmqol/models/item/opv_me_assembler.json
 151b7b463b17184fc4ec569d8abcff4ef1bb5164 assets/gtmqol/models/item/opv_me_circuit_slicer.json
+2472cc89dd4e137ef0aee4848e8a08d96d7097be assets/gtmqol/models/item/opv_universal_circuit.json
 d34739a69e4d938881e012a30eeada26ff5e777d assets/gtmqol/models/item/osmiridium_nanite.json
 66531bb2403bad39fda12882f7336e0f445d352a assets/gtmqol/models/item/pcb_factory.json
 693085c624963581fa683792437aa07bd9279089 assets/gtmqol/models/item/phosphorus_doped_silicon_chip.json
@@ -483,6 +485,7 @@ c3a0833c0ebbf29d4261019e46dfec4c9c20c844 assets/gtmqol/models/item/uev_greenhous
 fa12ec40c26ad169c1d647367802f47a5c42dc45 assets/gtmqol/models/item/uev_magical_assembler.json
 3583f0d29cdc08a201ad5607815003480128942e assets/gtmqol/models/item/uev_me_assembler.json
 b1d3e96cce81bf19e5d6437b5339ed04b182d292 assets/gtmqol/models/item/uev_me_circuit_slicer.json
+c9c6fe5224c714cb673a62d833fc7d5307deb9aa assets/gtmqol/models/item/uev_universal_circuit.json
 1a39f730b296da652ab9e79a3b613adb4dabe0df assets/gtmqol/models/item/uhv_16384a_laser_source_hatch.json
 225f9e9e404aa0a8ed979e40c9ea3d759ea9b4ab assets/gtmqol/models/item/uhv_16384a_laser_target_hatch.json
 bff245e1592475e512a9ab9e13c811d2d33e678b assets/gtmqol/models/item/uhv_65536a_laser_source_hatch.json
@@ -500,6 +503,7 @@ b7ed50b9de9dc8890d25645efc790678480d2b6b assets/gtmqol/models/item/uiv_greenhous
 ea73b8fcc942ad47bb22b7236e00788267fbba2c assets/gtmqol/models/item/uiv_magical_assembler.json
 c0380cff437497598792e03660e280f0ffbd2356 assets/gtmqol/models/item/uiv_me_assembler.json
 0b6e7412bd97fff2533e86c67bc80f8ecdbfb571 assets/gtmqol/models/item/uiv_me_circuit_slicer.json
+cdad82d2ff46a9eb7642f4085628319d0dc6b31d assets/gtmqol/models/item/uiv_universal_circuit.json
 84967ef996aed9d9d287f09ae8d05d2cf61b533b assets/gtmqol/models/item/ulv_1024a_wireless_laser_source_hatch.json
 738f84529f5582c32c7250c35274f52247efe73b assets/gtmqol/models/item/ulv_1024a_wireless_laser_target_hatch.json
 1344d28237eface96ccbba35be787d2a0b4e4b7e assets/gtmqol/models/item/ulv_16384a_wireless_laser_source_hatch.json
@@ -528,6 +532,7 @@ f13dfc26c5c95f989a65070f413fc2f748182a77 assets/gtmqol/models/item/uxv_65536a_la
 25e1c5234b3e027252c618bd0f096789dfce5055 assets/gtmqol/models/item/uxv_magical_assembler.json
 d8795550dbe6648f455b347b39a48c0eb196be2e assets/gtmqol/models/item/uxv_me_assembler.json
 05d397fafa4054a7c2b37129dabd20a336511c35 assets/gtmqol/models/item/uxv_me_circuit_slicer.json
+21e547c2ec08350205bca8e28505768d44172e5a assets/gtmqol/models/item/uxv_universal_circuit.json
 2ea41257444a2b58a4651e9b8ce8a5634c8a5349 assets/gtmqol/models/item/zpm_16384a_laser_source_hatch.json
 ea52a455a8aabc82fba2666f0b61f37ff489ae8e assets/gtmqol/models/item/zpm_16384a_laser_target_hatch.json
 9ba3d60afc673e0e54986eddcf37c620e870afa1 assets/gtmqol/models/item/zpm_65536a_laser_source_hatch.json
@@ -542,8 +547,13 @@ bab97599b3fde647bccdadb0ca19ea9fcf7448b9 assets/gtmqol/models/item/zpm_universal
 01fc6897e8b7a7725c09c9e24ae10443083347ed data/gtceu/tags/items/circuits/iv.json
 34f7fe2861fd6d7525b6063b8fe7e64256caf597 data/gtceu/tags/items/circuits/luv.json
 288f9f26d3d36c0ff28dc4e1838f12306053a68e data/gtceu/tags/items/circuits/lv.json
+086e8fe912b2fdf71bd5c3b377972011c881bc2f data/gtceu/tags/items/circuits/max.json
 dcc690ebb459d7f6080f3a76046f455f37e1aebf data/gtceu/tags/items/circuits/mv.json
+9a01e4a4b790e3d6b5776963ee7e3ac5e140c479 data/gtceu/tags/items/circuits/opv.json
+16df12bd8d924ac740e78cc53dc7ed2677495d54 data/gtceu/tags/items/circuits/uev.json
 5f39254bf30222e6a85f33c54bdb2a8c71e172ed data/gtceu/tags/items/circuits/uhv.json
+eee5d2f23627b2b3121f141f8fa92af6a4324f19 data/gtceu/tags/items/circuits/uiv.json
 186ccb768ea0664ee40018c7537ddb5aed7bbe65 data/gtceu/tags/items/circuits/ulv.json
 6ce8bc7c6fbbdf27d06908efc66ea34538c555d3 data/gtceu/tags/items/circuits/uv.json
+b874caab72deecbf421cbaf9b570e95a55bc8c1d data/gtceu/tags/items/circuits/uxv.json
 4b9d90c135fd5bfcd8041739b98c7c3990172313 data/gtceu/tags/items/circuits/zpm.json

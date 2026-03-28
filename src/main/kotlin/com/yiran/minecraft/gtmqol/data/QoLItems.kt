@@ -15,6 +15,7 @@ object QoLItems {
     val NAQUADAH_DOPED_SILICON_CHIP: ItemEntry<Item>
     val NEUTRONIUM_DOPED_SILICON_CHIP: ItemEntry<Item>
 
+    @JvmStatic
     val UNIVERSAL_CIRCUITS: Array<ItemEntry<Item>>
 
     lateinit var TITANIUM_NANITE: ItemEntry<Item>
@@ -23,7 +24,7 @@ object QoLItems {
 
     fun circuitTiers(): Array<Int> {
         if (GTCEuAPI.isHighTier()) {
-            return (0..9).toList().toTypedArray()
+            return (GTValues.ULV..GTValues.MAX).toList().toTypedArray()
         } else {
             return GTValues.ALL_TIERS.toList().toTypedArray()
         }
@@ -46,14 +47,17 @@ object QoLItems {
                 .register() as ItemEntry<Item>
         }.toTypedArray()
 
-        TITANIUM_NANITE = GTMQoLRegistrate.REGISTRATE.item("titanium_nanite", PCBRecipeModifierProviderItem.factory(2, 4))
-            .lang("Titanium Nanite").register()
+        TITANIUM_NANITE =
+            GTMQoLRegistrate.REGISTRATE.item("titanium_nanite", PCBRecipeModifierProviderItem.factory(2, 4))
+                .lang("Titanium Nanite").register()
 
-        OSMIRIDIUM_NANITE = GTMQoLRegistrate.REGISTRATE.item("osmiridium_nanite", PCBRecipeModifierProviderItem.factory(4, 4))
-            .lang("Osmiridium Nanite").register()
+        OSMIRIDIUM_NANITE =
+            GTMQoLRegistrate.REGISTRATE.item("osmiridium_nanite", PCBRecipeModifierProviderItem.factory(4, 4))
+                .lang("Osmiridium Nanite").register()
 
-        NEUTRONIUM_NANITE = GTMQoLRegistrate.REGISTRATE.item("neutronium_nanite", PCBRecipeModifierProviderItem.factory(4, 2))
-            .lang("Neutronium Nanite").register()
+        NEUTRONIUM_NANITE =
+            GTMQoLRegistrate.REGISTRATE.item("neutronium_nanite", PCBRecipeModifierProviderItem.factory(4, 2))
+                .lang("Neutronium Nanite").register()
     }
 
     @JvmStatic
