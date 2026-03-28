@@ -27,12 +27,14 @@ import com.gregtechceu.gtceu.common.data.GTRecipeModifiers
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
 import com.yiran.minecraft.gtmqol.ModUtils
 import com.yiran.minecraft.gtmqol.data.ClientDynamicModelRegisterer
 import com.yiran.minecraft.gtmqol.data.QoLRecipeTypes
 import net.minecraft.client.Minecraft
 import net.minecraft.data.recipes.FinishedRecipe
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraftforge.fml.ModList
@@ -103,7 +105,7 @@ object AddModularMultiblocksLogic {
                             GTBlocks.CASING_STEEL_SOLID.get(),
                             Blocks.GLASS,
                             GTBlocks.CASING_TEMPERED_GLASS.get()
-                        ).setMinGlobalLimited(5).setPreviewCount(100)
+                        ).setPreviewCount(100)
                             .or(Predicates.autoAbilities(*d.recipeTypes))
                             .or(Predicates.autoAbilities(true, false, false))
                             .or(Predicates.any())
@@ -193,6 +195,11 @@ object AddModularMultiblocksLogic {
             QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES!!.recipeBuilder("${entry.namespace}_${entry.simpleName}_convert_to_modular")
                 .inputItems(entry.simpleMachineDefinition.item).outputItems(entry.definition.item)
                 .circuitMeta(5).EUt(VA[LV].toLong()).duration(200).save(provider)
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "hammer_convert_${entry.namespace}_${entry.simpleName}_to_modular",
+                ItemStack(entry.definition.item),
+                "h", "M", 'M', entry.simpleMachineDefinition.item
+            )
         }
     }
 

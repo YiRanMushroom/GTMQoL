@@ -24,6 +24,7 @@
     "GTRecipeTypes$Misc$Mixin",
     "IMachineBuilderAccessor",
     "KJSTieredMachineBuilder$GenDefaultMulti$Mixin",
+    "MachineBuilder$AutoGeneration$Mixin",
     "OverclockingLogic$Misc$Mixin",
     "PredicatesMixin",
     "SaplingBlockMixin",
