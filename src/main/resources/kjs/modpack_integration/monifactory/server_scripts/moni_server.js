@@ -46,4 +46,24 @@ ServerEvents.recipes(event => {
             .CWUt(192)
             .EUt(GTValues.VA[GTValues.UV])
         )
+
+    if (!doHarderProcessing) {
+        event.recipes.gtceu.compressor("easy_omni_prismatic_crucible")
+            .itemInputs("16x monilabs:prismatic_crucible")
+            .itemOutputs("gtceu:omni_prismatic_crucible")
+            .duration(20 * 120 * 600)
+            .EUt(GTValues.VA[GTValues.EV])
+
+        event.recipes.gtceu.compressor("easy_moni_eye_of_harmony")
+            .itemInputs("16x monilabs:hyperbolic_microverse_projector")
+            .itemOutputs("gtceu:moni_eye_of_harmony")
+            .duration(20 * 120 * 600)
+            .EUt(GTValues.VA[GTValues.EV])
+
+        event.recipes.gtceu.compressor("easy_sculk_barrel")
+            .itemInputs("16x monilabs:sculk_vat")
+            .itemOutputs("gtceu:sculk_barrel")
+            .duration(20 * 120 * 600)
+            .EUt(GTValues.VA[GTValues.EV])
+    }
 })
