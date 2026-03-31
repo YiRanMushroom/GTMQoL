@@ -35,6 +35,7 @@
     "applied_energistics.NetworkStorage$HandleSticky$Mixin",
     "applied_energistics.StorageBusPart$AddSticky$Mixin",
     "bug_fix.KubeJsDataGenFixMixin",
+    "eaep.RecipeTypeNameConfig$BetterMatchingLogic$Mixin",
     "gtmthings.WirelessEnergyContainerMixin",
     "gtmthings.WirelessEnergyMonitorMixin",
     "gtmthings.WirelessMachinesMixin",
