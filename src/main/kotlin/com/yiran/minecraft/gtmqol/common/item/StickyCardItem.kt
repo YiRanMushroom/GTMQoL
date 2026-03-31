@@ -40,7 +40,7 @@ class StickyCardItem(properties: Item.Properties) : UpgradeCardItem(properties) 
                 val storageGroup = "group.storage.name"
                 Upgrades.add(QoLItems.STICKY_CARD_ITEM.get(), AEParts.STORAGE_BUS, 1, storageGroup)
 
-                if (LDLib.isModLoaded("extendedae")) {
+                if (LDLib.isModLoaded("expatternprovider")) {
                     Upgrades.add(QoLItems.STICKY_CARD_ITEM.get(), EPPItemAndBlock.MOD_STORAGE_BUS, 1, storageGroup)
                     Upgrades.add(QoLItems.STICKY_CARD_ITEM.get(), EPPItemAndBlock.PRECISE_STORAGE_BUS, 1, storageGroup)
                     Upgrades.add(QoLItems.STICKY_CARD_ITEM.get(), EPPItemAndBlock.TAG_STORAGE_BUS, 1, storageGroup)
