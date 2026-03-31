@@ -21,6 +21,8 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.yiran.minecraft.gtmqol.common.configurator.SmartMultiplierConfigurator;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
+import net.neganote.gtutilities.integration.ae2.machine.ExpandedPatternBufferPartMachine;
+import net.neganote.gtutilities.integration.jade.provider.ExpandedMEPatternBufferProvider;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,7 +37,7 @@ import static com.extendedae_plus.util.smartDoubling.PatternScaler.getComputedMu
         @Condition(value = "extendedae_plus", type = Condition.Type.MOD),
         @Condition(value = "gtmutils", type = Condition.Type.MOD)
 })
-@Mixin(value = {MEPatternBufferPartMachine.class})
+@Mixin(value = {ExpandedPatternBufferPartMachine.class})
 public abstract class ExpandedMEPatternBuffer$AddSmartMultiply$Mixin implements IGridConnectedMachine, ISmartDoublingHolder, ICraftingProvider {
     @Shadow
     @Final
@@ -93,7 +95,7 @@ public abstract class ExpandedMEPatternBuffer$AddSmartMultiply$Mixin implements 
         }
     }
 
-    @Definition(id = "needPatternSync", field = "Lcom/gregtechceu/gtceu/integration/ae2/machine/MEPatternBufferPartMachine;needPatternSync:Z")
+    @Definition(id = "needPatternSync", field = "Lnet/neganote/gtutilities/integration/ae2/machine/ExpandedPatternBufferPartMachine;needPatternSync:Z")
     @Expression("this.needPatternSync = true")
     @Inject(method = "onPatternChange", at = @At(value = "MIXINEXTRAS:EXPRESSION"))
     public void alsoMakeDirty(CallbackInfo ci) {
@@ -105,7 +107,7 @@ public abstract class ExpandedMEPatternBuffer$AddSmartMultiply$Mixin implements 
         qol$updatePatterns();
     }
 
-    @Definition(id = "detailsSlotMap", field = "Lcom/gregtechceu/gtceu/integration/ae2/machine/MEPatternBufferPartMachine;detailsSlotMap:Lcom/google/common/collect/BiMap;")
+    @Definition(id = "detailsSlotMap", field = "Lnet/neganote/gtutilities/integration/ae2/machine/ExpandedPatternBufferPartMachine;detailsSlotMap:Lcom/google/common/collect/BiMap;")
     @Definition(id = "containsKey", method = "Lcom/google/common/collect/BiMap;containsKey(Ljava/lang/Object;)Z")
     @Definition(id = "patternDetails", local = @Local(type = IPatternDetails.class, argsOnly = true))
     @Expression("this.detailsSlotMap.containsKey(patternDetails)")
@@ -122,7 +124,7 @@ public abstract class ExpandedMEPatternBuffer$AddSmartMultiply$Mixin implements 
         return false;
     }
 
-    @Definition(id = "detailsSlotMap", field = "Lcom/gregtechceu/gtceu/integration/ae2/machine/MEPatternBufferPartMachine;detailsSlotMap:Lcom/google/common/collect/BiMap;")
+    @Definition(id = "detailsSlotMap", field = "Lnet/neganote/gtutilities/integration/ae2/machine/ExpandedPatternBufferPartMachine;detailsSlotMap:Lcom/google/common/collect/BiMap;")
     @Definition(id = "get", method = "Lcom/google/common/collect/BiMap;get(Ljava/lang/Object;)Ljava/lang/Object;")
     @Definition(id = "patternDetails", local = @Local(type = IPatternDetails.class, argsOnly = true))
     @Expression("this.detailsSlotMap.get(@(patternDetails))")
