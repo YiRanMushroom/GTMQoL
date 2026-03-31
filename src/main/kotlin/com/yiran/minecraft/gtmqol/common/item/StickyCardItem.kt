@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.Level
+import com.glodblock.github.extendedae.common.EPPItemAndBlock
 
 class StickyCardItem(properties: Item.Properties) : UpgradeCardItem(properties) {
     override fun appendHoverText(
@@ -38,6 +39,12 @@ class StickyCardItem(properties: Item.Properties) : UpgradeCardItem(properties) 
             if (shouldAct()) {
                 val storageGroup = "group.storage.name"
                 Upgrades.add(QoLItems.STICKY_CARD_ITEM.get(), AEParts.STORAGE_BUS, 1, storageGroup)
+
+                if (LDLib.isModLoaded("extendedae")) {
+                    Upgrades.add(QoLItems.STICKY_CARD_ITEM.get(), EPPItemAndBlock.MOD_STORAGE_BUS, 1, storageGroup)
+                    Upgrades.add(QoLItems.STICKY_CARD_ITEM.get(), EPPItemAndBlock.PRECISE_STORAGE_BUS, 1, storageGroup)
+                    Upgrades.add(QoLItems.STICKY_CARD_ITEM.get(), EPPItemAndBlock.TAG_STORAGE_BUS, 1, storageGroup)
+                }
             }
         }
     }

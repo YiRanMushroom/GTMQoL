@@ -3,6 +3,7 @@ package com.yiran.minecraft.gtmqol.mixin.modpack_integration.monifactory;
 import com.yiran.minecraft.gtmqol.functionality.IAppendOnBuildAction;
 import com.yiran.minecraft.gtmqol.integration.monifactory.MoniRecipeTypesExtension;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
+import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import net.neganote.monilabs.gtbridge.MoniRecipeTypes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,7 +11,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MoniRecipeTypes.class)
-@Condition(type = Condition.Type.MOD, value = "monilabs")
+@Restriction(
+        require = @Condition(type = Condition.Type.MOD, value = "monilabs"))
 public class MoniRecipeTypesMixin {
     @Inject(method = "<clinit>", at = @At("RETURN"))
     private static void onStaticInit(CallbackInfo ci) {

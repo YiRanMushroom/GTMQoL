@@ -16,6 +16,7 @@ import com.yiran.minecraft.gtmqol.GTMQoLRegistrate;
 import com.yiran.minecraft.gtmqol.config.ConfigHolder;
 import com.yiran.minecraft.gtmqol.gtmthings.WirelessEnergyAccessor;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
+import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,10 +30,11 @@ import java.util.function.BiFunction;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
-@Condition(
-        value = "gtmthings",
-        type = Condition.Type.MOD
-)
+@Restriction(
+        require = @Condition(
+                value = "gtmthings",
+                type = Condition.Type.MOD
+        ))
 @Mixin(WirelessMachines.class)
 public class WirelessMachinesMixin {
     @Inject(method = "<clinit>", at = @At("RETURN"))

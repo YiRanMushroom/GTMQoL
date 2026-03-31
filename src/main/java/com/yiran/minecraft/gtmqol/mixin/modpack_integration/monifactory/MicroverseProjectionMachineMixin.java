@@ -6,11 +6,13 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.yiran.minecraft.gtmqol.config.ConfigHolder;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
+import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import net.neganote.monilabs.common.machine.multiblock.MicroverseProjectorMachine;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Condition(type = Condition.Type.MOD, value = "monilabs")
+@Restriction(
+        require = @Condition(type = Condition.Type.MOD, value = "monilabs"))
 @Mixin(MicroverseProjectorMachine.class)
 public class MicroverseProjectionMachineMixin {
     @Definition(id = "decayRate", local = @Local(type = int.class, name = "decayRate"))

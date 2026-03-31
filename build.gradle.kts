@@ -186,9 +186,9 @@ dependencies {
     modImplementation("dev.toma.configuration:configuration-forge-1.20.1:2.2.0")
 
     // Conditional Mixin support
-    implementation("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
+    modImplementation("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
     include("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
-    forgeRuntimeLibrary("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
+//    forgeRuntimeLibrary("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
 
     // Kotlin for Forge
     forgeRuntimeLibrary("thedarkcolour:kotlinforforge:${project.property("kff_version")}")
@@ -205,12 +205,12 @@ dependencies {
     modImplementation(files("libs/extendedae_plus-1.5.3.jar"))
     modImplementation(files("libs/gtmutils-2.8.0.jar"))
 
-    implementation("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
+//    implementation("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
 
-    modRuntimeOnly(files("libs/ExtendedAE-1.20-1.4.13-forge.jar"))
+    modImplementation(files("libs/ExtendedAE-1.20-1.4.13-forge.jar"))
     modRuntimeOnly(files("libs/Glodium-1.20-1.5-forge.jar"))
 
-    forgeRuntimeLibrary("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
+//    forgeRuntimeLibrary("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
 }
 
 tasks.processResources {

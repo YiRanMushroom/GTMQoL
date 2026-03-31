@@ -2,6 +2,8 @@ package com.yiran.minecraft.gtmqol.mixin.kjs;
 
 import com.yiran.minecraft.gtmqol.integration.KJSInjector;
 import dev.latvian.mods.kubejs.script.*;
+import me.fallenbreath.conditionalmixin.api.annotation.Condition;
+import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +18,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-@Mixin(value = ScriptManager.class, remap = false)
+@Restriction(
+        require = @Condition(type = Condition.Type.MOD, value = "kubejs"))
+        @Mixin(value = ScriptManager.class, remap = false)
 public abstract class ScriptManagerMixin {
     @Shadow @Final public ScriptType scriptType;
 

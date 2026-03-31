@@ -14,6 +14,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import com.yiran.minecraft.gtmqol.integration.ae2.ISticky;
+import me.fallenbreath.conditionalmixin.api.annotation.Condition;
+import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,6 +24,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Iterator;
 import java.util.List;
 
+@Restriction(
+        require = @Condition(type = Condition.Type.MOD, value = "ae2")
+)
 @Mixin(NetworkStorage.class)
 public class NetworkStorage$HandleSticky$Mixin {
     @Definition(id = "priorityInventory", field = "Lappeng/me/storage/NetworkStorage;priorityInventory:Ljava/util/NavigableMap;")

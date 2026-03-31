@@ -7,6 +7,8 @@ import appeng.parts.storagebus.StorageBusPart;
 import com.yiran.minecraft.gtmqol.common.item.StickyCardItem;
 import com.yiran.minecraft.gtmqol.data.QoLItems;
 import com.yiran.minecraft.gtmqol.integration.ae2.ISticky;
+import me.fallenbreath.conditionalmixin.api.annotation.Condition;
+import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,6 +17,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.lang.reflect.Field;
 
+@Restriction(
+        require = @Condition(type = Condition.Type.MOD, value = "ae2")
+)
 @Mixin(StorageBusPart.class)
 public abstract class StorageBusPart$AddSticky$Mixin extends UpgradeablePart {
     @Unique

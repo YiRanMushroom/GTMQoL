@@ -7,6 +7,8 @@ import com.google.common.base.Suppliers;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.yiran.minecraft.gtmqol.data.QoLItems;
+import me.fallenbreath.conditionalmixin.api.annotation.Condition;
+import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import net.minecraft.world.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -18,6 +20,9 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+@Restriction(
+        require = @Condition(type = Condition.Type.MOD, value = "ae2")
+)
 @Mixin(EncodingHelper.class)
 public class EncodingHelper$PrioritizeUniversalCircuit$Mixin {
     @Unique

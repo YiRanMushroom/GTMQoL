@@ -5,13 +5,15 @@ import com.yiran.minecraft.gtmqol.integration.KJSInjector;
 import com.yiran.minecraft.gtmqol.integration.monifactory.MoniRecipeTypesExtension;
 import com.yiran.minecraft.gtmqol.integration.monifactory.MoniUtils;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
+import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Condition(type = Condition.Type.MOD, value = "monilabs")
+@Restriction(
+        require = @Condition(type = Condition.Type.MOD, value = "monilabs"))
 @Mixin(KJSInjector.class)
 public class KJSInjector$InitMoni$Mixin {
     @Inject(method = "mixinInitInjectionPoint", at = @At("TAIL"))

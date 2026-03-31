@@ -20,6 +20,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.yiran.minecraft.gtmqol.common.configurator.SmartMultiplierConfigurator;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
+import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,7 +31,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static com.extendedae_plus.util.smartDoubling.PatternScaler.getComputedMul;
 
-@Condition(value = "extendedae_plus", type = Condition.Type.MOD)
+@Restriction(
+        require =
+        @Condition(value = "extendedae_plus", type = Condition.Type.MOD))
 @Mixin(value = {MEPatternBufferPartMachine.class})
 public abstract class MEPatternBufferPartMachine$AddSmartMultiply$Mixin implements IGridConnectedMachine, ISmartDoublingHolder, ICraftingProvider {
     @Shadow
