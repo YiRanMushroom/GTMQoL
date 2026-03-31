@@ -1,11 +1,9 @@
 package com.yiran.minecraft.gtmqol.data
 
 import appeng.api.util.AEColor
-import appeng.core.definitions.AEBlocks
 import appeng.core.definitions.AEBlocks.INSCRIBER
 import appeng.core.definitions.AEItems
 import appeng.core.definitions.AEParts
-import com.gregtechceu.gtceu.api.GTValues
 import com.gregtechceu.gtceu.api.GTValues.*
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix
 import com.gregtechceu.gtceu.common.data.GTBlocks
@@ -19,12 +17,12 @@ import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
 import com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.registerMachineRecipe
 import com.yiran.minecraft.gtmqol.ae2PresentedAndIntegrationEnabled
+import com.yiran.minecraft.gtmqol.common.item.StickyCardItem
 import com.yiran.minecraft.gtmqol.common.multiblocks.PCBFactoryMachine
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
 import com.yiran.minecraft.gtmqol.functionality.AddModularMultiblocksLogic
 import com.yiran.minecraft.gtmqol.gtmthingsPresentedAndIntegrationEnabled
 import com.yiran.minecraft.gtmqol.logic.GreenhouseRecipeLogic
-import com.yiran.minecraft.gtmqol.logic.RecipeUtils.itemNotConsumableWithName
 import net.minecraft.data.recipes.FinishedRecipe
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.ItemTags
@@ -50,7 +48,26 @@ object QoLRecipes {
             registerAEMachineRecipes(provider)
             registerCircuitSlicerRecipes(provider)
             registerMEAssemblerRecipes(provider)
-            registerMiscAERecipes(provider);
+            registerMiscAERecipes(provider)
+
+            if (StickyCardItem.shouldAct()) {
+                QoLRecipeTypes.ME_ASSEMBLER_RECIPES!!.recipeBuilder("qol_sticky_card")
+                    .inputItems(AEItems.LOGIC_PROCESSOR.asItem(), 2)
+                    .inputItems(Items.SLIME_BALL)
+                    .inputItems(AEItems.ADVANCED_CARD.asItem())
+                    .outputItems(QoLItems.STICKY_CARD_ITEM.get())
+                    .duration(20)
+                    .EUt(VA[LV].toLong())
+                    .save(provider)
+
+                VanillaRecipeHelper.addShapedRecipe(
+                    provider, "qol_sticky_card_craft", ItemStack(QoLItems.STICKY_CARD_ITEM.get()),
+                    " d ", "S", "LCL",
+                    'S', Items.SLIME_BALL,
+                    'L', AEItems.LOGIC_PROCESSOR.asItem(),
+                    'C', AEItems.ADVANCED_CARD.asItem()
+                )
+            }
         }
 
         registerMiscRecipes(provider)

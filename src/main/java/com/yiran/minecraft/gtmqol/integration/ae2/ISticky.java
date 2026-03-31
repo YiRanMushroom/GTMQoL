@@ -6,9 +6,7 @@ import appeng.api.stacks.AEKey;
 public interface ISticky {
     public boolean isSticky();
 
-    default boolean shouldStick(AEKey key, IActionSource source) {
-        return false;
-    }
+    boolean shouldStick(AEKey key, IActionSource source);
 
     public void setSticky(boolean sticky);
 }
