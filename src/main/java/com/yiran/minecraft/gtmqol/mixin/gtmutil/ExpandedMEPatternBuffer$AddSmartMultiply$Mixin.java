@@ -1,4 +1,4 @@
-package com.yiran.minecraft.gtmqol.mixin;
+package com.yiran.minecraft.gtmqol.mixin.gtmutil;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
@@ -20,6 +20,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.yiran.minecraft.gtmqol.common.configurator.SmartMultiplierConfigurator;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
+import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,9 +31,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static com.extendedae_plus.util.smartDoubling.PatternScaler.getComputedMul;
 
-@Condition(value = "extendedae_plus", type = Condition.Type.MOD)
+@Restriction(require = {
+        @Condition(value = "extendedae_plus", type = Condition.Type.MOD),
+        @Condition(value = "gtmutils", type = Condition.Type.MOD)
+})
 @Mixin(value = {MEPatternBufferPartMachine.class})
-public abstract class MEPatternBufferPartMachine$AddSmartMultiply$Mixin implements IGridConnectedMachine, ISmartDoublingHolder, ICraftingProvider {
+public abstract class ExpandedMEPatternBuffer$AddSmartMultiply$Mixin implements IGridConnectedMachine, ISmartDoublingHolder, ICraftingProvider {
     @Shadow
     @Final
     private BiMap<IPatternDetails, MEPatternBufferPartMachine.InternalSlot> detailsSlotMap;
@@ -131,3 +135,4 @@ public abstract class MEPatternBufferPartMachine$AddSmartMultiply$Mixin implemen
         return original;
     }
 }
+

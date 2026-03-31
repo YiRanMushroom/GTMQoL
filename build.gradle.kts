@@ -203,6 +203,7 @@ dependencies {
     modCompileOnly(files("libs/monilabs-0.20.0.jar"))
 
     modImplementation(files("libs/extendedae_plus-1.5.3.jar"))
+    modImplementation(files("libs/gtmutils-2.8.0.jar"))
 
     implementation("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
 
