@@ -62,7 +62,7 @@ object QoLRecipes {
 
                 VanillaRecipeHelper.addShapedRecipe(
                     provider, "qol_sticky_card_craft", ItemStack(QoLItems.STICKY_CARD_ITEM.get()),
-                    " d ", "S", "LCL",
+                    " d ", " S ", "LCL",
                     'S', Items.SLIME_BALL,
                     'L', AEItems.LOGIC_PROCESSOR.asItem(),
                     'C', AEItems.ADVANCED_CARD.asItem()
