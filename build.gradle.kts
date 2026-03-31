@@ -77,6 +77,8 @@ loom {
     forge {
         mixinConfig("gtmqol.mixins.json")
     }
+
+    accessWidenerPath.set(file("src/main/resources/gtmqol.accesswidener"))
 }
 
 repositories {

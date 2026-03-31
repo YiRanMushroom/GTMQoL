@@ -1,4 +1,4 @@
-package com.yiran.minecraft.gtmqol.common.Item
+package com.yiran.minecraft.gtmqol.common.item
 
 import com.yiran.minecraft.gtmqol.common.multiblocks.PCBFactoryMachine
 import net.minecraft.network.chat.Component
@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.Level
 import java.util.OptionalInt
-import kotlin.properties.Delegates
 
 class PCBRecipeModifierProviderItem(properties: Properties) : Item(properties),
     PCBFactoryMachine.IPCBRecipeModifierProvider {

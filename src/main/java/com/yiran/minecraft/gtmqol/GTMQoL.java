@@ -1,5 +1,6 @@
 package com.yiran.minecraft.gtmqol;
 
+import com.yiran.minecraft.gtmqol.common.item.StickyCardItem;
 import com.yiran.minecraft.gtmqol.config.ConfigHolder;
 import com.yiran.minecraft.gtmqol.data.ClientDynamicModelRegisterer;
 import com.yiran.minecraft.gtmqol.functionality.AddModularMultiblocksLogic;
@@ -50,6 +51,12 @@ public class GTMQoL {
 
         com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates.predicateCodecs
                 .put(JsonTextNBTPredicate.TYPE, JsonTextNBTPredicate::fromJson);
+
+        event.enqueueWork(() -> {
+            StickyCardItem.onCommonSetup();
+
+
+        });
     }
 
     private void onClientSetup(final FMLClientSetupEvent event) {

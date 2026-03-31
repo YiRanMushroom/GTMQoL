@@ -5,7 +5,8 @@ import com.gregtechceu.gtceu.api.GTValues
 import com.gregtechceu.gtceu.data.recipe.CustomTags
 import com.tterrag.registrate.util.entry.ItemEntry
 import com.yiran.minecraft.gtmqol.GTMQoLRegistrate
-import com.yiran.minecraft.gtmqol.common.Item.PCBRecipeModifierProviderItem
+import com.yiran.minecraft.gtmqol.common.item.PCBRecipeModifierProviderItem
+import com.yiran.minecraft.gtmqol.common.item.StickyCardItem
 import net.minecraft.world.item.Item
 import java.util.Locale.ENGLISH
 
@@ -21,6 +22,8 @@ object QoLItems {
     lateinit var TITANIUM_NANITE: ItemEntry<Item>
     lateinit var OSMIRIDIUM_NANITE: ItemEntry<Item>
     lateinit var NEUTRONIUM_NANITE: ItemEntry<Item>
+
+    lateinit var STICKY_CARD_ITEM: ItemEntry<StickyCardItem>
 
     fun circuitTiers(): Array<Int> {
         if (GTCEuAPI.isHighTier()) {
@@ -58,6 +61,11 @@ object QoLItems {
         NEUTRONIUM_NANITE =
             GTMQoLRegistrate.REGISTRATE.item("neutronium_nanite", PCBRecipeModifierProviderItem.factory(4, 2))
                 .lang("Neutronium Nanite").register()
+
+        if (StickyCardItem.shouldAct()) {
+            STICKY_CARD_ITEM = GTMQoLRegistrate.REGISTRATE.item("sticky_card", ::StickyCardItem)
+                .lang("Sticky Card").register()
+        }
     }
 
     @JvmStatic

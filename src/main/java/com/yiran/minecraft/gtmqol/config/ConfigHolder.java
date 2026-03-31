@@ -107,6 +107,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Enable PCB Factory", "Default: true"})
         public boolean enablePCBFactory = true;
+
+        @Configurable
+        @Configurable.Comment({"Enable AE Sticky Card", "Default: true"})
+        public boolean enableAEStickyCard = true;
     }
 
     @Configurable

@@ -7,5 +7,10 @@
   "gtmqol.me_circuit_slicer": "ME电路切割机",
   "gtmqol.magical_assembler": "神奇装配机",
   "gtmqol.electric_implosion_compressor": "电子聚爆压缩机",
-  "gtmqol.multiblock.dimensionally_transcendent_fusion_reactor.tooltip": "只要你有足够的能量输入，就可以运行任何级别的聚变配方。"
+  "gtmqol.multiblock.dimensionally_transcendent_fusion_reactor.tooltip": "只要你有足够的能量输入，就可以运行任何级别的聚变配方。",
+  "item.gtmqol.sticky_card": "粘性卡",
+  "gtmqol.item.sticky_card.tooltip.0": "阻止符合配置条件的内容在无法输入到带有粘性卡的存储位置时被输入到其他优先级更低或相同的存储位置中。",
+  "gtmqol.item.sticky_card.tooltip.1": "效果类似 GTNH 中的粘性卡，但你必须在该存储位置对输入内容进行配置（黑名单或白名单）。",
+  "gtmqol.item.sticky_card.tooltip.2": "不同之处在于存储系统仍会按优先级顺序检查各个存储位置，只有当某个存储总线装有粘性卡、该内容在该存储位置被配置、没有更高优先级的存储位置可以接受该内容、且该内容无法被存储至该位置时，才会停止输入。",
+  "gtmqol.item.sticky_card.tooltip.3": "特别地，如果多个存储位置具有相同优先级，装有粘性卡的存储位置会被优先检查。"
 }
