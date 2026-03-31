@@ -47,7 +47,7 @@ ServerEvents.recipes(event => {
             .EUt(GTValues.VA[GTValues.UV])
         )
 
-    if (!doHarderProcessing) {
+    if (true) {
         event.recipes.gtceu.compressor("easy_omni_prismatic_crucible")
             .itemInputs("16x monilabs:prismatic_crucible")
             .itemOutputs("gtceu:omni_prismatic_crucible")
