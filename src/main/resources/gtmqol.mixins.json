@@ -25,6 +25,7 @@
     "IMachineBuilderAccessor",
     "KJSTieredMachineBuilder$GenDefaultMulti$Mixin",
     "MachineBuilder$AutoGeneration$Mixin",
+    "MEPatternBufferPartMachine$AddSmartMultiply$Mixin",
     "OverclockingLogic$Misc$Mixin",
     "PredicatesMixin",
     "SaplingBlockMixin",

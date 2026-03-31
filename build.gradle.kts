@@ -202,7 +202,12 @@ dependencies {
 
     modCompileOnly(files("libs/monilabs-0.20.0.jar"))
 
+    modImplementation(files("libs/extendedae_plus-1.5.3.jar"))
+
     implementation("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
+
+    modRuntimeOnly(files("libs/ExtendedAE-1.20-1.4.13-forge.jar"))
+    modRuntimeOnly(files("libs/Glodium-1.20-1.5-forge.jar"))
 
     forgeRuntimeLibrary("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:0.6.4")
 }

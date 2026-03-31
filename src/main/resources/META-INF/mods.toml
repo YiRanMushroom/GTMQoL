@@ -47,3 +47,9 @@ This mod provides some QoL(Not really) machines and capabilities, as well as som
         versionRange = "[${mekanism_version},)"
         ordering = "AFTER"
         side = "BOTH"
+    [[dependencies.gtmqol]]
+        modId = "extendedae_plus"
+        mandatory = false
+        versionRange = "[1.0.0,)"
+        ordering = "AFTER"
+        side = "BOTH"

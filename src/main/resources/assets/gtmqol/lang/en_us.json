@@ -20,5 +20,11 @@
   "gtmqol.item.sticky_card.tooltip.0": "Prevents partitioned content from being inserted into other storage locations with equal or lower priority if it can't be inserted into the storage location with the Sticky Card.",
   "gtmqol.item.sticky_card.tooltip.1": "Works similarly to Sticky Card in GTNH, however you MUST partition the inputs in the storage location (blacklist or whitelist).",
   "gtmqol.item.sticky_card.tooltip.2": "The only difference is the storage system still checks storage in priority order, and will only stop inserting when a storage bus has a Sticky Card, the content is partitioned there, no higher priority storage can accept it, and the content cannot be stored in that location.",
-  "gtmqol.item.sticky_card.tooltip.3": "Specifically, if multiple storage locations have the same priority, storage locations with a Sticky Card are checked first."
+  "gtmqol.item.sticky_card.tooltip.3": "Specifically, if multiple storage locations have the same priority, storage locations with a Sticky Card are checked first.",
+  "gtmqol.configurator.smart_multiplier.title": "Smart Multiplier",
+  "gtmqol.gui.title.pattern_buffer.toggle_smart_multiplier": "Smart Multiplier: %s",
+  "gtmqol.gui.yes": "Yes",
+  "gtmqol.gui.no": "No",
+  "gtmqol.gui.title.pattern_buffer.set_smart_multiplier_limit": "Smart Multiplier Limit: %s",
+  "gtmqol.dict.infinite": "Infinite"
 }
