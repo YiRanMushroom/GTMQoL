@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.common.data.models.GTMachineModels
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
 import com.yiran.minecraft.gtmqol.ModUtils
+import com.yiran.minecraft.gtmqol.common.multiblocks.SingleHatchTierSkippingWorkableElectricMachine
 import com.yiran.minecraft.gtmqol.data.ClientDynamicModelRegisterer
 import com.yiran.minecraft.gtmqol.data.QoLRecipeTypes
 import net.minecraft.client.Minecraft
@@ -88,7 +89,7 @@ object AddModularMultiblocksLogic {
         val namespace = registrate.modid
         val modularName = "modular_$simpleMachineName"
 
-        val builder = registrate.multiblock(modularName, ::WorkableElectricMultiblockMachine)
+        val builder = registrate.multiblock(modularName, ::SingleHatchTierSkippingWorkableElectricMachine)
             .rotationState(RotationState.ALL)
             .recipeTypes(*recipeTypes)
             .recipeModifiers(startModifier, baseRecipeModifier, GTRecipeModifiers.BATCH_MODE)
