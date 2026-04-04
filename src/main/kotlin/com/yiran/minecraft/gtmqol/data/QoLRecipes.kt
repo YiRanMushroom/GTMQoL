@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
 import com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.registerMachineRecipe
+import com.yiran.minecraft.gtmqol.GTMQoL
 import com.yiran.minecraft.gtmqol.ae2PresentedAndIntegrationEnabled
 import com.yiran.minecraft.gtmqol.common.item.StickyCardItem
 import com.yiran.minecraft.gtmqol.common.multiblocks.PCBFactoryMachine
@@ -29,6 +30,7 @@ import net.minecraft.tags.ItemTags
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.material.Fluids
 import net.minecraftforge.fluids.FluidStack
 import java.util.function.Consumer
@@ -127,6 +129,10 @@ object QoLRecipes {
     }
 
     private fun registerMiscRecipes(provider: Consumer<FinishedRecipe>) {
+        if (ConfigHolder.instance.addonConfig.enableResourceGenerationRecipes) {
+            registerResourceGenerationRecipes(provider)
+        }
+
         registerMachineRecipe(
             provider, QoLMachines.MAGICAL_ASSEMBLER,
             "PGP", "GMG", "PCP",
@@ -487,11 +493,15 @@ object QoLRecipes {
             .EUt(VA[LV].toLong())
             .save(provider)
 
-//        builder("test_not_consumable_nbt")
-//            .itemNotConsumableWithName(ItemStack(Items.PAPER), "test_not_consumable_nbt")
-//            .outputItems(Items.PAPER)
-//            .duration(100)
-//            .EUt(VA[LV].toLong())
-//            .save(provider)
+    }
+
+    fun registerResourceGenerationRecipes(provider: Consumer<FinishedRecipe>) {
+        GTRecipeTypes.CHEMICAL_RECIPES.recipeBuilder(GTMQoL.id("salt_water_from_water"))
+            .inputFluids(GTMaterials.Water, 1000)
+            .notConsumable(Blocks.SAND.asItem())
+            .outputFluids(FluidStack(GTMaterials.SaltWater.fluid, 1000))
+            .duration(800 * 20)
+            .EUt(VA[ULV].toLong())
+            .save(provider)
     }
 }

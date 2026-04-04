@@ -111,6 +111,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Enable AE Sticky Card", "Default: true"})
         public boolean enableAEStickyCard = true;
+
+        @Configurable
+        @Configurable.Comment({"Enable Resource Generation Recipes", "Default: true"})
+        public boolean enableResourceGenerationRecipes = true;
     }
 
     @Configurable
