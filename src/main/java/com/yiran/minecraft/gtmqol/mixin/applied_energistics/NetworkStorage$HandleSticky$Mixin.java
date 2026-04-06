@@ -74,6 +74,11 @@ public class NetworkStorage$HandleSticky$Mixin {
     @WrapOperation(method = "insert", at = @At(value = "INVOKE", target = "Lappeng/api/storage/MEStorage;insert(Lappeng/api/stacks/AEKey;JLappeng/api/config/Actionable;Lappeng/api/networking/security/IActionSource;)J", ordinal = 1))
     private long checkStickySecond(MEStorage instance, AEKey what, long amount, Actionable mode, IActionSource source, Operation<Long> original, @Share("shouldStopMatching") LocalBooleanRef shouldStopMatching) {
         var returnValue = original.call(instance, what, amount, mode, source);
+
+        if (shouldStopMatching.get()) {
+            return returnValue;
+        }
+
         if (instance instanceof ISticky stickyHandler && stickyHandler.isSticky()) {
             shouldStopMatching.set(stickyHandler.shouldStick(what, source) || shouldStopMatching.get());
         }
@@ -83,8 +88,13 @@ public class NetworkStorage$HandleSticky$Mixin {
     @WrapOperation(method = "insert", at = @At(value = "INVOKE", target = "Lappeng/api/storage/MEStorage;insert(Lappeng/api/stacks/AEKey;JLappeng/api/config/Actionable;Lappeng/api/networking/security/IActionSource;)J", ordinal = 0))
     private long checkStickyFirst(MEStorage instance, AEKey what, long amount, Actionable mode, IActionSource source, Operation<Long> original, @Share("shouldStopMatching") LocalBooleanRef shouldStopMatching) {
         var returnValue = original.call(instance, what, amount, mode, source);
+
+        if (shouldStopMatching.get()) {
+            return returnValue;
+        }
+
         if (instance instanceof ISticky stickyHandler && stickyHandler.isSticky()) {
-            shouldStopMatching.set(stickyHandler.shouldStick(what, source) || shouldStopMatching.get());
+            shouldStopMatching.set(stickyHandler.shouldStick(what, source));
         }
         return returnValue;
     }
