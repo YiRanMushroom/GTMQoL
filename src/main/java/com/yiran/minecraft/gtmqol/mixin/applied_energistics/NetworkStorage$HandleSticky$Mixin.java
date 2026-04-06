@@ -4,7 +4,6 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
-import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.NetworkStorage;
 import com.llamalad7.mixinextras.expression.Definition;
 import com.llamalad7.mixinextras.expression.Expression;
@@ -76,7 +75,7 @@ public class NetworkStorage$HandleSticky$Mixin {
     private long checkStickySecond(MEStorage instance, AEKey what, long amount, Actionable mode, IActionSource source, Operation<Long> original, @Share("shouldStopMatching") LocalBooleanRef shouldStopMatching) {
         var returnValue = original.call(instance, what, amount, mode, source);
         if (instance instanceof ISticky stickyHandler && stickyHandler.isSticky()) {
-            shouldStopMatching.set(stickyHandler.shouldStick(what, source));
+            shouldStopMatching.set(stickyHandler.shouldStick(what, source) || shouldStopMatching.get());
         }
         return returnValue;
     }
@@ -85,7 +84,7 @@ public class NetworkStorage$HandleSticky$Mixin {
     private long checkStickyFirst(MEStorage instance, AEKey what, long amount, Actionable mode, IActionSource source, Operation<Long> original, @Share("shouldStopMatching") LocalBooleanRef shouldStopMatching) {
         var returnValue = original.call(instance, what, amount, mode, source);
         if (instance instanceof ISticky stickyHandler && stickyHandler.isSticky()) {
-            shouldStopMatching.set(stickyHandler.shouldStick(what, source));
+            shouldStopMatching.set(stickyHandler.shouldStick(what, source) || shouldStopMatching.get());
         }
         return returnValue;
     }
