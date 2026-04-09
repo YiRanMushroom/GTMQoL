@@ -17,7 +17,7 @@ class ProbableCertaintyDevice(holder: IMachineBlockEntity) : AbstractRecipeModif
 
     companion object {
         fun modifyOutputContent(value: Content): Content {
-            return Content(modifyRange(value), ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0)
+            return Content(modifyRange(value.content), ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0)
         }
 
         private fun modifyRange(value: Any): Any {
@@ -35,7 +35,7 @@ class ProbableCertaintyDevice(holder: IMachineBlockEntity) : AbstractRecipeModif
             return finishedRecipeCache.getOrPut(recipe) {
                 GTRecipe(
                     recipe.recipeType,
-                    null,
+                    recipe.id.withSuffix("_add_certainty"),
                     recipe.inputs,
                     recipe.outputs.mapValues { (_, value) ->
                         value.map(ProbableCertaintyDevice::modifyOutputContent)

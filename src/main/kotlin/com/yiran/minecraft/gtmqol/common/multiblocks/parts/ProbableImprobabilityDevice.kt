@@ -41,7 +41,7 @@ class ProbableImprobabilityDevice(holder: IMachineBlockEntity) : AbstractRecipeM
             return finishedRecipeCache.getOrPut(recipe) {
                 GTRecipe(
                     recipe.recipeType,
-                    null,
+                    recipe.id.withSuffix("_add_improbability"),
                     recipe.inputs.mapValues { (_, value) ->
                         value.map(ProbableImprobabilityDevice::modifyInputContent)
                     },
