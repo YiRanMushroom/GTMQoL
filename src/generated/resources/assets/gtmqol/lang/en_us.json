@@ -113,6 +113,7 @@
   "block.gtmqol.opv_me_assembler": "§9§lLegendary ME Assembler §r",
   "block.gtmqol.opv_me_circuit_slicer": "§9§lLegendary ME Circuit Slicer §r",
   "block.gtmqol.pcb_factory": "Pcb Factory",
+  "block.gtmqol.probable_certainty_device": "Probable Certainty Device",
   "block.gtmqol.probable_improbability_device": "Probable Improbability Device",
   "block.gtmqol.smart_assembly_factory": "Smart Assembly Factory",
   "block.gtmqol.uev_16384a_laser_source_hatch": "§aUEV§r 16,384§eA§r Laser Source Hatch",

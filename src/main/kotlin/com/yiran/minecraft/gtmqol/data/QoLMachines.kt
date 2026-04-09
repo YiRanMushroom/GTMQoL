@@ -1,6 +1,5 @@
 package com.yiran.minecraft.gtmqol.data
 
-import com.gregtechceu.gtceu.GTCEu
 import com.gregtechceu.gtceu.api.GTValues
 import com.gregtechceu.gtceu.api.data.RotationState
 import com.gregtechceu.gtceu.api.machine.MachineDefinition
@@ -11,9 +10,9 @@ import com.yiran.minecraft.gtmqol.GTMQoL
 import com.yiran.minecraft.gtmqol.GTMQoLRegistrate
 import com.yiran.minecraft.gtmqol.ae2PresentedAndIntegrationEnabled
 import com.yiran.minecraft.gtmqol.api.RecipeModifierPartMachines
+import com.yiran.minecraft.gtmqol.common.multiblocks.parts.ProbableCertaintyDevice
 import com.yiran.minecraft.gtmqol.common.multiblocks.parts.ProbableImprobabilityDevice
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
-import net.minecraft.network.chat.Component
 import java.util.Locale.getDefault
 
 
@@ -35,6 +34,9 @@ object QoLMachines {
 
     @JvmField
     var PROBABLE_IMPROBABILITY_DEVICE: MachineDefinition? = null
+
+    @JvmField
+    var PROBABLE_CERTAINTY_DEVICE: MachineDefinition? = null
 
     fun registerSimpleMachine(
         name: String,
@@ -112,6 +114,18 @@ object QoLMachines {
 //                )
                 .tier(GTValues.IV)
                 .colorOverlayTieredHullModel(GTMQoL.id("block/overlay/machine/probable_improbability_device"))
+                .register()
+
+            PROBABLE_CERTAINTY_DEVICE = GTMQoLRegistrate.REGISTRATE
+                .machine("probable_certainty_device", ::ProbableCertaintyDevice)
+                .langValue("Probable Certainty Device")
+                .rotationState(RotationState.ALL)
+                .abilities(RecipeModifierPartMachines.QOL_RECIPE_MODIFIER)
+//                .tooltips(
+//                    Component.translatable("gtmqol.machine.probable_certainty_device.tooltip"),
+//                )
+                .tier(GTValues.ZPM)
+                .colorOverlayTieredHullModel(GTMQoL.id("block/overlay/machine/probable_certainty_device"))
                 .register()
         }
     }

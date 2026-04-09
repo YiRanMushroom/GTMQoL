@@ -1,7 +1,5 @@
 package com.yiran.minecraft.gtmqol.common.multiblocks.parts
 
-import com.google.common.base.Functions
-import com.google.common.base.Suppliers
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity
 import com.gregtechceu.gtceu.api.recipe.GTRecipe
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic
@@ -12,24 +10,20 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction
 import com.yiran.minecraft.gtmqol.api.AbstractRecipeModifierPartMachine
 import net.minecraft.util.valueproviders.ConstantInt
 
-class ProbableImprobabilityDevice(holder: IMachineBlockEntity) : AbstractRecipeModifierPartMachine(holder) {
+class ProbableCertaintyDevice(holder: IMachineBlockEntity) : AbstractRecipeModifierPartMachine(holder) {
     override fun getRecipeModifier(): ModifierFunction {
-        return ModifierFunction(ProbableImprobabilityDevice::finishedRecipeSupplier)
+        return ModifierFunction(ProbableCertaintyDevice::finishedRecipeSupplier)
     }
 
     companion object {
-        fun modifyInputContent(value: Content): Content {
-            return if (value.chance != ChanceLogic.getMaxChancedValue()) {
-                Content(modifyRange(value.content), 0, ChanceLogic.getMaxChancedValue(), 0)
-            } else {
-                Content(modifyRange(value.content), value.chance, value.maxChance, value.tierChanceBoost)
-            }
+        fun modifyOutputContent(value: Content): Content {
+            return Content(modifyRange(value), ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0)
         }
 
         private fun modifyRange(value: Any): Any {
             return when (value) {
-                is IntProviderIngredient -> IntProviderIngredient.of(value.inner, ConstantInt.of(value.countProvider.minValue))
-                is IntProviderFluidIngredient -> IntProviderFluidIngredient.of(value.inner, ConstantInt.of(value.countProvider.minValue))
+                is IntProviderIngredient -> IntProviderIngredient.of(value.inner, ConstantInt.of(value.countProvider.maxValue))
+                is IntProviderFluidIngredient -> IntProviderFluidIngredient.of(value.inner, ConstantInt.of(value.countProvider.maxValue))
                 else -> value
             }
         }
@@ -42,18 +36,18 @@ class ProbableImprobabilityDevice(holder: IMachineBlockEntity) : AbstractRecipeM
                 GTRecipe(
                     recipe.recipeType,
                     null,
-                    recipe.inputs.mapValues { (_, value) ->
-                        value.map(ProbableImprobabilityDevice::modifyInputContent)
+                    recipe.inputs,
+                    recipe.outputs.mapValues { (_, value) ->
+                        value.map(ProbableCertaintyDevice::modifyOutputContent)
                     },
-                    recipe.outputs,
-                    recipe.tickInputs.mapValues { (_, value) ->
-                        value.map(ProbableImprobabilityDevice::modifyInputContent)
+                    recipe.tickInputs,
+                    recipe.tickOutputs.mapValues { (_, value) ->
+                        value.map(ProbableCertaintyDevice::modifyOutputContent)
                     },
-                    recipe.tickOutputs,
-                    recipe.inputChanceLogics.mapValues { ChanceLogic.OR },
-                    recipe.outputChanceLogics,
-                    recipe.tickInputChanceLogics.mapValues { ChanceLogic.OR },
-                    recipe.tickOutputChanceLogics,
+                    recipe.inputChanceLogics,
+                    recipe.outputChanceLogics.mapValues { ChanceLogic.OR },
+                    recipe.tickInputChanceLogics,
+                    recipe.tickOutputChanceLogics.mapValues { ChanceLogic.OR },
                     recipe.conditions,
                     recipe.ingredientActions,
                     recipe.data,

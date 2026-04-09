@@ -216,6 +216,18 @@ object QoLRecipes {
                 .inputFluids(GTMaterials.Polybenzimidazole, 144 * 4)
                 .outputItems(QoLMachines.PROBABLE_IMPROBABILITY_DEVICE.asNotNull().asStack())
                 .duration(2000)
+                .EUt(VA[IV].toLong())
+                .save(provider)
+
+            QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES.asNotNull()
+                .recipeBuilder("gtmqol:probable_certainty_device")
+                .inputItems(GTMachines.HULL[ZPM])
+                .inputItems(GTItems.FIELD_GENERATOR_ZPM, 16)
+                .inputItems(CustomTags.UV_CIRCUITS, 64)
+                .inputItems(GTItems.FLUID_REGULATOR_ZPM, 4)
+                .inputFluids(GTMaterials.Naquadria, 144 * 4)
+                .outputItems(QoLMachines.PROBABLE_CERTAINTY_DEVICE.asNotNull().asStack())
+                .duration(2000)
                 .EUt(VA[ZPM].toLong())
                 .save(provider)
         }
