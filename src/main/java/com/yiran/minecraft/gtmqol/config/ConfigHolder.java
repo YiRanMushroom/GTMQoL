@@ -115,6 +115,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Enable Resource Generation Recipes", "Default: true"})
         public boolean enableResourceGenerationRecipes = true;
+
+        @Configurable
+        @Configurable.Comment({"Enable Machine Part Modifiers", "Default: true"})
+        public boolean enableMachinePartModifiers = true;
     }
 
     @Configurable

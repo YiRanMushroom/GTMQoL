@@ -26,5 +26,6 @@
   "gtmqol.gui.yes": "Yes",
   "gtmqol.gui.no": "No",
   "gtmqol.gui.title.pattern_buffer.set_smart_multiplier_limit": "Smart Multiplier Limit: %s",
-  "gtmqol.dict.infinite": "Infinite"
+  "gtmqol.dict.infinite": "Infinite",
+  "gtmqol.machine.probable_improbability_device.tooltip": "For any chanced input in a recipe, the content is now guaranteed not to be consumed."
 }

@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.common.data.models.GTMachineModels
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
 import com.yiran.minecraft.gtmqol.ModUtils
+import com.yiran.minecraft.gtmqol.api.RecipeModifierPartMachines
 import com.yiran.minecraft.gtmqol.common.multiblocks.SingleHatchTierSkippingWorkableElectricMachine
 import com.yiran.minecraft.gtmqol.data.ClientDynamicModelRegisterer
 import com.yiran.minecraft.gtmqol.data.QoLRecipeTypes
@@ -109,6 +110,7 @@ object AddModularMultiblocksLogic {
                         ).setPreviewCount(100)
                             .or(Predicates.autoAbilities(*d.recipeTypes))
                             .or(Predicates.autoAbilities(true, false, false))
+                            .or(Predicates.abilities(RecipeModifierPartMachines.QOL_RECIPE_MODIFIER))
                             .or(Predicates.any())
                     )
                     .build()

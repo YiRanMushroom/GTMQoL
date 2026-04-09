@@ -1,14 +1,19 @@
 package com.yiran.minecraft.gtmqol.data
 
+import com.gregtechceu.gtceu.GTCEu
 import com.gregtechceu.gtceu.api.GTValues
 import com.gregtechceu.gtceu.api.data.RotationState
 import com.gregtechceu.gtceu.api.machine.MachineDefinition
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils
+import com.yiran.minecraft.gtmqol.GTMQoL
 import com.yiran.minecraft.gtmqol.GTMQoLRegistrate
 import com.yiran.minecraft.gtmqol.ae2PresentedAndIntegrationEnabled
+import com.yiran.minecraft.gtmqol.api.RecipeModifierPartMachines
+import com.yiran.minecraft.gtmqol.common.multiblocks.parts.ProbableImprobabilityDevice
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
+import net.minecraft.network.chat.Component
 import java.util.Locale.getDefault
 
 
@@ -27,6 +32,9 @@ object QoLMachines {
 
     @JvmField
     var HIGH_AMP_LASERS: HashMap<Int, Pair<Array<MachineDefinition>, Array<MachineDefinition>>>? = null
+
+    @JvmField
+    var PROBABLE_IMPROBABILITY_DEVICE: MachineDefinition? = null
 
     fun registerSimpleMachine(
         name: String,
@@ -92,6 +100,20 @@ object QoLMachines {
         }
 
         MAGICAL_ASSEMBLER = registerSimpleMachine("magical_assembler", QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES!!)
+
+        if (ConfigHolder.instance.addonConfig.enableMachinePartModifiers) {
+            PROBABLE_IMPROBABILITY_DEVICE = GTMQoLRegistrate.REGISTRATE
+                .machine("probable_improbability_device", ::ProbableImprobabilityDevice)
+                .langValue("Probable Improbability Device")
+                .rotationState(RotationState.ALL)
+                .abilities(RecipeModifierPartMachines.QOL_RECIPE_MODIFIER)
+//                .tooltips(
+//                    Component.translatable("gtmqol.machine.probable_improbability_device.tooltip"),
+//                )
+                .tier(GTValues.IV)
+                .colorOverlayTieredHullModel(GTMQoL.id("block/overlay/machine/probable_improbability_device"))
+                .register()
+        }
     }
 
     @JvmStatic
