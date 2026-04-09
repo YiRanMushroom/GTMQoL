@@ -3,10 +3,15 @@ package com.yiran.minecraft.gtmqol.mixin;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import com.yiran.minecraft.gtmqol.api.RecipeModifierPartMachines;
 import com.yiran.minecraft.gtmqol.config.ConfigHolder;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -16,11 +21,16 @@ import java.util.Arrays;
 import java.util.List;
 
 @Mixin(Predicates.class)
-public class PredicatesMixin {
+public abstract class PredicatesMixin {
+
+    @Shadow
+    public static TraceabilityPredicate abilities(PartAbility... abilities) {
+        return null;
+    }
 
     @Inject(method = "abilities", at = @At("HEAD"), remap = false)
     private static void enableMultiHatch(PartAbility[] abilities, CallbackInfoReturnable<TraceabilityPredicate> cir,
-                                            @Local(argsOnly = true) LocalRef<PartAbility[]> abilitiesRef) {
+                                         @Local(argsOnly = true) LocalRef<PartAbility[]> abilitiesRef) {
         if (!ConfigHolder.getInstance().allowMultiAmpHatchesForAllMultiblocks) {
             return;
         }
@@ -76,5 +86,11 @@ public class PredicatesMixin {
         }
 
         abilitiesRef.set(newAbilities.toArray(new PartAbility[0]));
+    }
+
+    @WrapMethod(method = "autoAbilities([Lcom/gregtechceu/gtceu/api/recipe/GTRecipeType;ZZZZZZ)Lcom/gregtechceu/gtceu/api/pattern/TraceabilityPredicate;")
+    private static TraceabilityPredicate qol$inject$modifier$autoAbilities(GTRecipeType[] recipeType, boolean checkEnergyIn, boolean checkEnergyOut, boolean checkItemIn, boolean checkItemOut, boolean checkFluidIn, boolean checkFluidOut, Operation<TraceabilityPredicate> original) {
+        return original.call(recipeType, checkEnergyIn, checkEnergyOut, checkItemIn, checkItemOut, checkFluidIn, checkFluidOut)
+                .or(abilities(RecipeModifierPartMachines.QOL_RECIPE_MODIFIER));
     }
 }
