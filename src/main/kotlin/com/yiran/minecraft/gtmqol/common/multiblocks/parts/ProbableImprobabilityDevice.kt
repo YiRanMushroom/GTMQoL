@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction
 import com.yiran.minecraft.gtmqol.api.AbstractRecipeModifierPartMachine
+import com.yiran.minecraft.gtmqol.logic.RecipeUtils.copyMutableFrom
 import net.minecraft.util.valueproviders.ConstantInt
 
 class ProbableImprobabilityDevice(holder: IMachineBlockEntity) : AbstractRecipeModifierPartMachine(holder) {
@@ -41,7 +42,7 @@ class ProbableImprobabilityDevice(holder: IMachineBlockEntity) : AbstractRecipeM
             return finishedRecipeCache.getOrPut(recipe) {
                 GTRecipe(
                     recipe.recipeType,
-                    recipe.id.withSuffix("_add_improbability"),
+                    recipe.id,
                     recipe.inputs.mapValues { (_, value) ->
                         value.map(ProbableImprobabilityDevice::modifyInputContent)
                     },
@@ -60,7 +61,7 @@ class ProbableImprobabilityDevice(holder: IMachineBlockEntity) : AbstractRecipeM
                     recipe.duration,
                     recipe.recipeCategory,
                     recipe.groupColor
-                )
+                ).copyMutableFrom(recipe)
             }
         }
     }
