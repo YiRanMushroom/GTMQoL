@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.GTValues.*
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTItems
+import com.gregtechceu.gtceu.common.data.GTMachines
 import com.gregtechceu.gtceu.common.data.GTMaterials
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines
@@ -17,6 +18,7 @@ import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
 import com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.registerMachineRecipe
 import com.yiran.minecraft.gtmqol.GTMQoL
+import com.yiran.minecraft.gtmqol.ModUtils.asNotNull
 import com.yiran.minecraft.gtmqol.ae2PresentedAndIntegrationEnabled
 import com.yiran.minecraft.gtmqol.common.item.StickyCardItem
 import com.yiran.minecraft.gtmqol.common.multiblocks.PCBFactoryMachine
@@ -201,6 +203,20 @@ object QoLRecipes {
                 .outputItems(QoLMultiblocks.DIMENSIONALLY_TRANSCENDENT_FUSION_REACTOR!!.asStack())
                 .duration(2000)
                 .EUt(VA[UV].toLong())
+                .save(provider)
+        }
+
+        if (ConfigHolder.instance.addonConfig.enableMachinePartModifiers) {
+            QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES.asNotNull()
+                .recipeBuilder("gtmqol:probable_improbability_device")
+                .inputItems(GTMachines.HULL[IV])
+                .inputItems(GTItems.FIELD_GENERATOR_EV, 16)
+                .inputItems(CustomTags.LuV_CIRCUITS, 64)
+                .inputItems(GTItems.ROBOT_ARM_IV, 4)
+                .inputFluids(GTMaterials.Polybenzimidazole, 144 * 4)
+                .outputItems(QoLMachines.PROBABLE_IMPROBABILITY_DEVICE.asNotNull().asStack())
+                .duration(2000)
+                .EUt(VA[ZPM].toLong())
                 .save(provider)
         }
     }

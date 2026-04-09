@@ -109,7 +109,7 @@ object AddModularMultiblocksLogic {
                             GTBlocks.CASING_TEMPERED_GLASS.get()
                         ).setPreviewCount(100)
                             .or(Predicates.autoAbilities(*d.recipeTypes))
-                            .or(Predicates.autoAbilities(true, false, false))
+                            .or(Predicates.autoAbilities(false, false, true))
                             .or(Predicates.abilities(RecipeModifierPartMachines.QOL_RECIPE_MODIFIER))
                             .or(Predicates.any())
                     )
