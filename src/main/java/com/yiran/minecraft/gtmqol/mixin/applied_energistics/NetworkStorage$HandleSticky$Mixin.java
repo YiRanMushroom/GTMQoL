@@ -35,7 +35,7 @@ public class NetworkStorage$HandleSticky$Mixin {
     @ModifyExpressionValue(method = "insert", at = @At("MIXINEXTRAS:EXPRESSION"))
     private Iterator<List<MEStorage>> modifyOuterIterator(Iterator<List<MEStorage>> original, @Share("shouldStopMatching") LocalBooleanRef shouldStopMatching) {
 
-        return new Iterator<List<MEStorage>>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return !shouldStopMatching.get() && original.hasNext();
@@ -53,7 +53,7 @@ public class NetworkStorage$HandleSticky$Mixin {
     @Expression("this.secondPassInventories.iterator()")
     @ModifyExpressionValue(method = "insert", at = @At("MIXINEXTRAS:EXPRESSION"))
     private Iterator<MEStorage> modifyInnerIterator(Iterator<MEStorage> original, @Share("shouldStopMatching") LocalBooleanRef shouldStopMatching) {
-        return new Iterator<MEStorage>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return !shouldStopMatching.get() && original.hasNext();
