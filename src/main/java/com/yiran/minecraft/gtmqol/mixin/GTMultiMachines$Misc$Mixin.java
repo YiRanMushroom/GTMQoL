@@ -1,9 +1,15 @@
 package com.yiran.minecraft.gtmqol.mixin;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.yiran.minecraft.gtmqol.api.RecipeModifierPartMachines;
 import com.yiran.minecraft.gtmqol.config.ConfigHolder;
 import net.minecraft.world.level.block.Block;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,5 +29,19 @@ public class GTMultiMachines$Misc$Mixin {
         } else {
             return original.call(instance, from, to);
         }
+    }
+
+    @Definition(id = "where", method = "Lcom/gregtechceu/gtceu/api/pattern/FactoryBlockPattern;where(CLcom/gregtechceu/gtceu/api/pattern/TraceabilityPredicate;)Lcom/gregtechceu/gtceu/api/pattern/FactoryBlockPattern;")
+    @Expression("?.where('Z', @(?))")
+    @ModifyExpressionValue(method = "lambda$static$33", at = @At("MIXINEXTRAS:EXPRESSION"))
+    private static TraceabilityPredicate addModifierForDistillationTower(TraceabilityPredicate original) {
+        return original.or(Predicates.abilities(RecipeModifierPartMachines.QOL_RECIPE_MODIFIER));
+    }
+
+    @Definition(id = "where", method = "Lcom/gregtechceu/gtceu/api/pattern/FactoryBlockPattern;where(CLcom/gregtechceu/gtceu/api/pattern/TraceabilityPredicate;)Lcom/gregtechceu/gtceu/api/pattern/FactoryBlockPattern;")
+    @Expression("?.where('Y', @(?))")
+    @ModifyExpressionValue(method = "lambda$static$41", at = @At("MIXINEXTRAS:EXPRESSION"))
+    private static TraceabilityPredicate addModifierForAssemblyLine(TraceabilityPredicate original) {
+        return original.or(Predicates.abilities(RecipeModifierPartMachines.QOL_RECIPE_MODIFIER));
     }
 }

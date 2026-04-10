@@ -80,7 +80,7 @@ public class NetworkStorage$HandleSticky$Mixin {
         }
 
         if (instance instanceof ISticky stickyHandler && stickyHandler.isSticky()) {
-            shouldStopMatching.set(stickyHandler.shouldStick(what, source) || shouldStopMatching.get());
+            shouldStopMatching.set(stickyHandler.shouldStick(what, source));
         }
         return returnValue;
     }

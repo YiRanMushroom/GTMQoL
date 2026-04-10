@@ -3,6 +3,7 @@ package com.yiran.minecraft.gtmqol.integration.monifactory
 import com.gregtechceu.gtceu.api.capability.recipe.IO
 import com.gregtechceu.gtceu.api.gui.GuiTextures
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType
+import com.gregtechceu.gtceu.api.recipe.content.Content
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
 import com.gregtechceu.gtceu.common.data.GTSoundEntries
@@ -110,45 +111,53 @@ object MoniRecipeTypesExtension {
 
     @JvmStatic
     fun onMicroverseRecipeBuild(builder: GTRecipeBuilder, provider: Consumer<FinishedRecipe>) {
-        val universeType =
-            builder.input[MoniRecipeCapabilities.MICROVERSE]?.firstOrNull()?.content.asType<Microverse>()?.key ?: 0
+        val universeType = builder.input[MoniRecipeCapabilities.MICROVERSE]?.firstOrNull()?.content.asType<Microverse>()?.key ?: 0
 
-        val inputItems = builder.input[GTRecipeCapabilities.ITEM] ?: emptyList()
-        val outputItems = builder.output[GTRecipeCapabilities.ITEM] ?: emptyList()
+        val inputCounts = mutableMapOf<Item, Long>()
+        val outputCounts = mutableMapOf<Item, Long>()
 
-        val inputItemSet = inputItems.mapNotNull { getRawItem(it.content) }.toSet()
-
-        val outputItemSet = outputItems.mapNotNull { getRawItem(it.content) }.toSet()
-
-        val sameItems = inputItemSet.intersect(outputItemSet)
-
-        val newOutputItems = outputItems.filter {
-            val item = getRawItem(it.content)
-            item == null || item !in sameItems
+        builder.input[GTRecipeCapabilities.ITEM]?.forEach { content ->
+            (content.content as? Ingredient)?.items?.firstOrNull()?.let { stack ->
+                inputCounts[stack.item] = inputCounts.getOrDefault(stack.item, 0L) + stack.count.toLong()
+            }
         }
 
-        val filteredInputItems = inputItems.filter {
-            val item = getRawItem(it.content)
-            item == null || item !in sameItems
-        }.toMutableList()
+        builder.output[GTRecipeCapabilities.ITEM]?.forEach { content ->
+            (content.content as? Ingredient)?.items?.firstOrNull()?.let { stack ->
+                outputCounts[stack.item] = outputCounts.getOrDefault(stack.item, 0L) + stack.count.toLong()
+            }
+        }
 
         val recipeBuilder = EYE_OF_HARMONY_RECIPE.asNotNull().recipeBuilder(builder.id.path)
             .circuitMeta(universeType)
             .duration(builder.duration)
             .EUt(builder.EUt().totalEU)
 
-        recipeBuilder.apply {
-            sameItems.forEach { item ->
-                this.notConsumable(item)
+        val allItems = inputCounts.keys + outputCounts.keys
+        allItems.forEach { item ->
+            val inCount = inputCounts.getOrDefault(item, 0L)
+            val outCount = outputCounts.getOrDefault(item, 0L)
+
+            when {
+                inCount == 0L -> recipeBuilder.outputItems(item, outCount.toInt())
+                outCount == 0L -> recipeBuilder.inputItems(item, inCount.toInt())
+                inCount == outCount -> recipeBuilder.notConsumable(item)
+                inCount > outCount -> {
+                    recipeBuilder.notConsumable(item)
+                    recipeBuilder.inputItems(item, (inCount - outCount).toInt())
+                }
+                else -> {
+                    recipeBuilder.notConsumable(item)
+                    recipeBuilder.outputItems(item, (outCount - inCount).toInt())
+                }
             }
+        }
 
-            input.computeIfAbsent(GTRecipeCapabilities.ITEM) { mutableListOf() }.addAll(filteredInputItems)
-            output.computeIfAbsent(GTRecipeCapabilities.ITEM) { mutableListOf() }.addAll(newOutputItems)
-
-            input.computeIfAbsent(GTRecipeCapabilities.FLUID) { mutableListOf() }
-                .addAll(builder.input[GTRecipeCapabilities.FLUID] ?: emptyList())
-            output.computeIfAbsent(GTRecipeCapabilities.FLUID) { mutableListOf() }
-                .addAll(builder.output[GTRecipeCapabilities.FLUID] ?: emptyList())
+        builder.input[GTRecipeCapabilities.FLUID]?.let {
+            recipeBuilder.input.computeIfAbsent(GTRecipeCapabilities.FLUID) { ArrayList() }.addAll(it)
+        }
+        builder.output[GTRecipeCapabilities.FLUID]?.let {
+            recipeBuilder.output.computeIfAbsent(GTRecipeCapabilities.FLUID) { ArrayList() }.addAll(it)
         }
 
         recipeBuilder.save(provider)

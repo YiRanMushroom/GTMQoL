@@ -3,6 +3,7 @@ package com.yiran.minecraft.gtmqol.mixin;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -87,12 +88,12 @@ public abstract class PredicatesMixin {
         abilitiesRef.set(newAbilities.toArray(new PartAbility[0]));
     }
 
-    //    @WrapMethod(method = "autoAbilities([Lcom/gregtechceu/gtceu/api/recipe/GTRecipeType;ZZZZZZ)Lcom/gregtechceu/gtceu/api/pattern/TraceabilityPredicate;")
-//    private static TraceabilityPredicate qol$inject$modifier$autoAbilities(GTRecipeType[] recipeType, boolean checkEnergyIn, boolean checkEnergyOut, boolean checkItemIn, boolean checkItemOut, boolean checkFluidIn, boolean checkFluidOut, Operation<TraceabilityPredicate> original) {
-//        return original.call(recipeType, checkEnergyIn, checkEnergyOut, checkItemIn, checkItemOut, checkFluidIn, checkFluidOut)
-//                .or(abilities(RecipeModifierPartMachines.QOL_RECIPE_MODIFIER));
-//    }
-//
+    @WrapMethod(method = "autoAbilities([Lcom/gregtechceu/gtceu/api/recipe/GTRecipeType;ZZZZZZ)Lcom/gregtechceu/gtceu/api/pattern/TraceabilityPredicate;")
+    private static TraceabilityPredicate qol$inject$modifier$autoAbilities(GTRecipeType[] recipeType, boolean checkEnergyIn, boolean checkEnergyOut, boolean checkItemIn, boolean checkItemOut, boolean checkFluidIn, boolean checkFluidOut, Operation<TraceabilityPredicate> original) {
+        return original.call(recipeType, checkEnergyIn, checkEnergyOut, checkItemIn, checkItemOut, checkFluidIn, checkFluidOut)
+                .or(abilities(RecipeModifierPartMachines.QOL_RECIPE_MODIFIER));
+    }
+
 //    @WrapMethod(method = "autoAbilities(ZZZ)Lcom/gregtechceu/gtceu/api/pattern/TraceabilityPredicate;")
 //    private static TraceabilityPredicate qol$inject$modifier$autoAbilitiesNoRecipeType(boolean checkMaintenance, boolean checkMuffler, boolean checkParallel, Operation<TraceabilityPredicate> original) {
 //        if (checkMaintenance || checkParallel) {
@@ -102,15 +103,15 @@ public abstract class PredicatesMixin {
 //
 //        return original.call(checkMaintenance, checkMuffler, checkParallel);
 //    }
-    @WrapMethod(method = "abilities")
-    private static TraceabilityPredicate qol$inject$modifier$abilities(PartAbility[] abilities, Operation<TraceabilityPredicate> original) {
-        if (Arrays.stream(abilities).anyMatch(ability ->
-                ability == PartAbility.IMPORT_ITEMS || ability == PartAbility.EXPORT_ITEMS ||
-                        ability == PartAbility.IMPORT_FLUIDS || ability == PartAbility.EXPORT_FLUIDS)) {
-
-            return original.call((Object) abilities).or(original.call((Object) new PartAbility[]{RecipeModifierPartMachines.QOL_RECIPE_MODIFIER}));
-        } else {
-            return original.call((Object) abilities);
-        }
-    }
+//    @WrapMethod(method = "abilities")
+//    private static TraceabilityPredicate qol$inject$modifier$abilities(PartAbility[] abilities, Operation<TraceabilityPredicate> original) {
+//        if (Arrays.stream(abilities).anyMatch(ability ->
+//                ability == PartAbility.IMPORT_ITEMS || ability == PartAbility.EXPORT_ITEMS ||
+//                        ability == PartAbility.IMPORT_FLUIDS || ability == PartAbility.EXPORT_FLUIDS)) {
+//
+//            return original.call((Object) abilities).or(original.call((Object) new PartAbility[]{RecipeModifierPartMachines.QOL_RECIPE_MODIFIER}));
+//        } else {
+//            return original.call((Object) abilities);
+//        }
+//    }
 }
