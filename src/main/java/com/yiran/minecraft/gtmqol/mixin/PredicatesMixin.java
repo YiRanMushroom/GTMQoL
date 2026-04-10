@@ -104,10 +104,13 @@ public abstract class PredicatesMixin {
 //    }
     @WrapMethod(method = "abilities")
     private static TraceabilityPredicate qol$inject$modifier$abilities(PartAbility[] abilities, Operation<TraceabilityPredicate> original) {
-        if (Arrays.stream(abilities).anyMatch(ability -> ability == PartAbility.IMPORT_ITEMS || ability == PartAbility.EXPORT_ITEMS || ability == PartAbility.IMPORT_FLUIDS || ability == PartAbility.EXPORT_FLUIDS)) {
-            return original.call((Object[]) abilities).or(abilities(RecipeModifierPartMachines.QOL_RECIPE_MODIFIER));
+        if (Arrays.stream(abilities).anyMatch(ability ->
+                ability == PartAbility.IMPORT_ITEMS || ability == PartAbility.EXPORT_ITEMS ||
+                        ability == PartAbility.IMPORT_FLUIDS || ability == PartAbility.EXPORT_FLUIDS)) {
+
+            return original.call((Object) abilities).or(original.call((Object) new PartAbility[]{RecipeModifierPartMachines.QOL_RECIPE_MODIFIER}));
         } else {
-            return original.call((Object[]) abilities);
+            return original.call((Object) abilities);
         }
     }
 }
