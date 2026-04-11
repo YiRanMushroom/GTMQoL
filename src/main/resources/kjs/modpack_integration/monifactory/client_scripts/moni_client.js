@@ -5,6 +5,7 @@ ClientEvents.lang('en_us', event => {
     event.add('block.gtceu.moni_eye_of_harmony', 'Eye of Harmony')
     event.add('gtceu.moni_eye_of_harmony', 'Eye of Harmony')
     event.add('block.gtceu.sculk_barrel', 'Sculk Barrel')
+    event.add('block.gtceu.advanced_discharger', 'Advanced Discharger')
     console.info('[GTMQoL] Added en_us translation for Omni Prismatic Crucible')
 })
 
@@ -15,5 +16,6 @@ ClientEvents.lang('zh_cn', event => {
     event.add('block.gtceu.moni_eye_of_harmony', '鸿萌之眼')
     event.add('gtceu.moni_eye_of_harmony', '鸿萌之眼')
     event.add('block.gtceu.sculk_barrel', '深邃之桶')
+    event.add('block.gtceu.advanced_discharger', '高级放电器')
     console.info('[GTMQoL] Added zh_cn translation for Omni Prismatic Crucible')
 })

@@ -66,4 +66,10 @@ ServerEvents.recipes(event => {
             .duration(20 * 120 * 600)
             .EUt(GTValues.VA[GTValues.EV])
     }
+
+    event.recipes.gtceu.compressor("advanced_discharger")
+        .itemInputs("16x gtceu:discharger")
+        .itemOutputs("gtceu:advanced_discharger")
+        .duration(20 * 600)
+        .EUt(GTValues.VA[GTValues.HV])
 })

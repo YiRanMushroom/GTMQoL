@@ -93,4 +93,42 @@ GTCEuStartupEvents.registry("gtceu:machine", event => {
             .build())
         .workableCasingModel(MoniLabs.id("block/casing/cryolobus"),
             GTCEu.id("block/machines/fermenter"))
+
+    // Discharger
+    event.create("advanced_discharger", "multiblock")
+        .rotationState(RotationState.NON_Y_AXIS)
+        .recipeTypes("discharger")
+        .appearanceBlock(() => Block.getBlock("monilabs:cryolobus_casing"))
+        .recipeModifiers([GTRecipeModifiers.PARALLEL_HATCH])
+        .generator(true)
+        .pattern(definition => FactoryBlockPattern.start()
+            .aisle("#CCCCC#", "#######", "#######", "#######", "#######", "#######", "#CCCCC#")
+            .aisle("CCCCCCC", "#NGGGN#", "#NGGGN#", "#NNNNN#", "#NGGGN#", "#NGGGN#", "CCCCCCC")
+            .aisle("CCCCCCC", "#G   G#", "#G   G#", "#NE EN#", "#G   G#", "#G   G#", "CCCCCCC")
+            .aisle("CCCCCCC", "#G   G#", "#G   G#", "#N   N#", "#G   G#", "#G   G#", "CCCCCCC")
+            .aisle("CCCCCCC", "#G   G#", "#G   G#", "#NE EN#", "#G   G#", "#G   G#", "CCCCCCC")
+            .aisle("CCCCCCC", "#NGGGN#", "#NGGGN#", "#NNNNN#", "#NGGGN#", "#NGGGN#", "CCCCCCC")
+            .aisle("#CC@CC#", "#######", "#######", "#######", "#######", "#######", "#CCCCC#")
+
+
+            .where("@", Predicates.controller(Predicates.blocks(definition.get())))
+            .where("C", Predicates.blocks("monilabs:cryolobus_casing").setMinGlobalLimited(80)
+                .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
+                .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
+                .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1))
+                .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                .or(Predicates.abilities(PartAbility.PARALLEL_HATCH).setMaxGlobalLimited(1))
+            )
+            .where("c", Predicates.blocks("monilabs:cryolobus_casing"))
+            .where("N", Predicates.blocks(GCYMBlocks.CASING_NONCONDUCTING.get()))
+            .where("G", Predicates.blocks(GTBlocks.CASING_LAMINATED_GLASS.get()))
+            .where("S", Predicates.blocks("minecraft:sculk"))
+            .where("T", Predicates.blocks("minecraft:sculk_catalyst"))
+            .where("L", Predicates.blocks("gtceu:black_lamp"))
+            .where("E", Predicates.blocks(GCYMBlocks.ELECTROLYTIC_CELL.get()))
+            .where(" ", Predicates.air())
+            .where("#", Predicates.any())
+            .build())
+        .workableCasingModel("monilabs:block/casing/cryolobus",
+            "gtceu:block/machines/electrolyzer")
 });
