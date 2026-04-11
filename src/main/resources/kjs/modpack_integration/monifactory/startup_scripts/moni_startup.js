@@ -99,7 +99,7 @@ GTCEuStartupEvents.registry("gtceu:machine", event => {
         .rotationState(RotationState.NON_Y_AXIS)
         .recipeTypes("discharger")
         .appearanceBlock(() => Block.getBlock("monilabs:cryolobus_casing"))
-        .recipeModifiers([GTRecipeModifiers.PARALLEL_HATCH])
+        .recipeModifiers([QoLRecipeModifiers.ABSOLUTE_HATCH_PARALLEL])
         .generator(true)
         .pattern(definition => FactoryBlockPattern.start()
             .aisle("#CCCCC#", "#######", "#######", "#######", "#######", "#######", "#CCCCC#")

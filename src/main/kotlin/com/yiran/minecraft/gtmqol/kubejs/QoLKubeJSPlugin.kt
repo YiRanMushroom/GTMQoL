@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.kubejs
 
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema
+import com.yiran.minecraft.gtmqol.api.QoLRecipeModifiers
 import com.yiran.minecraft.gtmqol.integration.monifactory.MoniRecipeTypesExtension
 import dev.latvian.mods.kubejs.KubeJSPlugin
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent
@@ -17,6 +18,6 @@ class QoLKubeJSPlugin : KubeJSPlugin() {
     }
 
     override fun registerBindings(event: BindingsEvent) {
-//        event.add("MoniRecipeTypesExtension", MoniRecipeTypesExtension::class.java)
+        event.add("QoLRecipeModifiers", QoLRecipeModifiers::class.java)
     }
 }
