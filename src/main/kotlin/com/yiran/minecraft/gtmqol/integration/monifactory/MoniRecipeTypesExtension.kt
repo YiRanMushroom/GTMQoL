@@ -3,7 +3,6 @@ package com.yiran.minecraft.gtmqol.integration.monifactory
 import com.gregtechceu.gtceu.api.capability.recipe.IO
 import com.gregtechceu.gtceu.api.gui.GuiTextures
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType
-import com.gregtechceu.gtceu.api.recipe.content.Content
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes
 import com.gregtechceu.gtceu.common.data.GTSoundEntries
@@ -12,6 +11,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture
 import com.yiran.minecraft.gtmqol.GTMQoL
 import com.yiran.minecraft.gtmqol.ModUtils.asNotNull
 import com.yiran.minecraft.gtmqol.ModUtils.asType
+import com.yiran.minecraft.gtmqol.logic.RecipeUtils
 import com.yiran.minecraft.gtmqol.logic.RecipeUtils.itemNotConsumableWithName
 import net.minecraft.data.recipes.FinishedRecipe
 import net.minecraft.world.item.Item
@@ -25,6 +25,7 @@ import net.neganote.monilabs.common.data.MoniSounds
 import net.neganote.monilabs.common.machine.multiblock.Color
 import net.neganote.monilabs.common.machine.multiblock.Microverse
 import java.util.function.Consumer
+import kotlin.collections.mutableListOf
 
 
 object MoniRecipeTypesExtension {
@@ -101,65 +102,44 @@ object MoniRecipeTypesExtension {
             .save(provider)
     }
 
-    fun getRawItem(content: Any?): Item? {
-        return when (content) {
-            is ItemStack -> content.item
-            is Ingredient -> content.items.firstOrNull()?.item
-            else -> null
-        }
-    }
+//    fun getRawItem(content: Any?): Item? {
+//        return when (content) {
+//            is ItemStack -> content.item
+//            is Ingredient -> content.items.firstOrNull()?.item
+//            else -> null
+//        }
+//    }
 
     @JvmStatic
     fun onMicroverseRecipeBuild(builder: GTRecipeBuilder, provider: Consumer<FinishedRecipe>) {
-        val universeType = builder.input[MoniRecipeCapabilities.MICROVERSE]?.firstOrNull()?.content.asType<Microverse>()?.key ?: 0
+        val universe =
+            builder.input[MoniRecipeCapabilities.MICROVERSE]?.firstOrNull()?.content?.asType<Microverse>()?.key ?: 0
 
-        val inputCounts = mutableMapOf<Item, Long>()
-        val outputCounts = mutableMapOf<Item, Long>()
-
-        builder.input[GTRecipeCapabilities.ITEM]?.forEach { content ->
-            (content.content as? Ingredient)?.items?.firstOrNull()?.let { stack ->
-                inputCounts[stack.item] = inputCounts.getOrDefault(stack.item, 0L) + stack.count.toLong()
-            }
-        }
-
-        builder.output[GTRecipeCapabilities.ITEM]?.forEach { content ->
-            (content.content as? Ingredient)?.items?.firstOrNull()?.let { stack ->
-                outputCounts[stack.item] = outputCounts.getOrDefault(stack.item, 0L) + stack.count.toLong()
-            }
-        }
-
-        val recipeBuilder = EYE_OF_HARMONY_RECIPE.asNotNull().recipeBuilder(builder.id.path)
-            .circuitMeta(universeType)
+        val eohBuilder = GTRecipeBuilder(builder.id, EYE_OF_HARMONY_RECIPE.asNotNull())
+            .circuitMeta(universe)
             .duration(builder.duration)
-            .EUt(builder.EUt().totalEU)
+            .EUt(builder.EUt().voltage, builder.EUt().amperage)
 
-        val allItems = inputCounts.keys + outputCounts.keys
-        allItems.forEach { item ->
-            val inCount = inputCounts.getOrDefault(item, 0L)
-            val outCount = outputCounts.getOrDefault(item, 0L)
+        val rawRecipe = builder.buildRawRecipe()
 
-            when {
-                inCount == 0L -> recipeBuilder.outputItems(item, outCount.toInt())
-                outCount == 0L -> recipeBuilder.inputItems(item, inCount.toInt())
-                inCount == outCount -> recipeBuilder.notConsumable(item)
-                inCount > outCount -> {
-                    recipeBuilder.notConsumable(item)
-                    recipeBuilder.inputItems(item, (inCount - outCount).toInt())
-                }
-                else -> {
-                    recipeBuilder.notConsumable(item)
-                    recipeBuilder.outputItems(item, (outCount - inCount).toInt())
-                }
-            }
+        RecipeUtils.ITEM_OPTIMIZER.let { optimizer ->
+            val (newIn, newOut) = optimizer.optimize(
+                rawRecipe.inputs.getOrDefault(GTRecipeCapabilities.ITEM, emptyList()),
+                rawRecipe.outputs.getOrDefault(GTRecipeCapabilities.ITEM, emptyList())
+            )
+            if (newIn.isNotEmpty()) eohBuilder.input.computeIfAbsent(GTRecipeCapabilities.ITEM) { mutableListOf() }.addAll(newIn)
+            if (newOut.isNotEmpty()) eohBuilder.output.computeIfAbsent(GTRecipeCapabilities.ITEM) { mutableListOf() }.addAll(newOut)
         }
 
-        builder.input[GTRecipeCapabilities.FLUID]?.let {
-            recipeBuilder.input.computeIfAbsent(GTRecipeCapabilities.FLUID) { ArrayList() }.addAll(it)
-        }
-        builder.output[GTRecipeCapabilities.FLUID]?.let {
-            recipeBuilder.output.computeIfAbsent(GTRecipeCapabilities.FLUID) { ArrayList() }.addAll(it)
+        RecipeUtils.FLUID_OPTIMIZER.let { optimizer ->
+            val (newIn, newOut) = optimizer.optimize(
+                rawRecipe.inputs.getOrDefault(GTRecipeCapabilities.FLUID, emptyList()),
+                rawRecipe.outputs.getOrDefault(GTRecipeCapabilities.FLUID, emptyList())
+            )
+            if (newIn.isNotEmpty()) eohBuilder.input.computeIfAbsent(GTRecipeCapabilities.FLUID) { mutableListOf() }.addAll(newIn)
+            if (newOut.isNotEmpty()) eohBuilder.output.computeIfAbsent(GTRecipeCapabilities.FLUID) { mutableListOf() }.addAll(newOut)
         }
 
-        recipeBuilder.save(provider)
+        eohBuilder.save(provider)
     }
 }
