@@ -18,6 +18,7 @@
     "GTMultiMachines$InjectMyMultiRegistration$Mixin",
     "GTMultiMachines$Misc$Mixin",
     "GTRecipeBuilderMixin",
+    "GTRecipeModifiers$AbsoluteParallelMachine$Mixin",
     "GTRecipeModifiers$FixMultiSmelterForOC$Mixin",
     "GTRecipeTypeMixin",
     "GTRecipeTypes$InitMyRecipeType$Mixin",

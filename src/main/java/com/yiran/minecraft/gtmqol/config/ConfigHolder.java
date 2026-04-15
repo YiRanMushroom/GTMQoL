@@ -119,6 +119,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Enable Machine Part Modifiers", "Default: true"})
         public boolean enableMachinePartModifiers = true;
+
+        @Configurable
+        @Configurable.Comment({"Parallel Hatches Are Absolute for Machines", "Default: true"})
+        public boolean parallelHatchesAreAbsolute = true;
     }
 
     @Configurable
