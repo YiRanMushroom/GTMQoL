@@ -17,7 +17,7 @@ object QoLRecipeModifiers {
         if (machine is MultiblockControllerMachine && machine.isFormed()) {
             val parallels = machine.parallelHatch
                 .map { hatch: IParallelHatch ->
-                    ParallelLogic.getParallelAmount(
+                    ParallelLogic.getParallelAmountWithoutEU(
                         machine,
                         recipe,
                         hatch.currentParallel
