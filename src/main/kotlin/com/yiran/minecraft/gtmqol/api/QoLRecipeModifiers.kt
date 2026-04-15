@@ -15,18 +15,20 @@ object QoLRecipeModifiers {
     @JvmStatic
     fun absoluteHatchParallel(machine: MetaMachine, recipe: GTRecipe): ModifierFunction {
         if (machine is MultiblockControllerMachine && machine.isFormed()) {
-            val parallels = machine.parallelHatch
+            val parallels : Int = machine.parallelHatch
                 .map { hatch: IParallelHatch ->
-                    ParallelLogic.getParallelAmountWithoutEU(
+                    val parallel : Int = ParallelLogic.getParallelAmountWithoutEU(
                         machine,
                         recipe,
                         hatch.currentParallel
                     )
+                    parallel
                 }
                 .orElse(1)
                 .asNotNull()
 
             if (parallels == 1) return ModifierFunction.IDENTITY
+
             return ModifierFunction.builder()
                 .modifyAllContents(ContentModifier.multiplier(parallels.toDouble()))
                 .parallels(parallels)
