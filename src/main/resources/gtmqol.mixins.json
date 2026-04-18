@@ -49,6 +49,7 @@
   ],
   "plugin": "com.yiran.minecraft.gtmqol.mixin.ModMixinPlugin",
   "client": [
+    "applied_energistics.SetProcessingPatternAmountScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

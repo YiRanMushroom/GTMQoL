@@ -1,8 +1,5 @@
 package com.yiran.minecraft.gtmqol
 
-import com.gregtechceu.gtceu.api.GTCEuAPI
-import com.gregtechceu.gtceu.api.GTValues
-import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils
 import com.lowdragmc.lowdraglib.LDLib
 import com.yiran.minecraft.gtmqol.GTMQoL.LOGGER
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
