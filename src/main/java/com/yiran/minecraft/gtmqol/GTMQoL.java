@@ -1,11 +1,12 @@
 package com.yiran.minecraft.gtmqol;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.yiran.minecraft.gtmqol.common.item.StickyCardItem;
 import com.yiran.minecraft.gtmqol.config.ConfigHolder;
-import com.yiran.minecraft.gtmqol.data.ClientDynamicModelRegisterer;
-import com.yiran.minecraft.gtmqol.functionality.AddModularMultiblocksLogic;
 import com.yiran.minecraft.gtmqol.init.OverclockingPatcher;
 import com.yiran.minecraft.gtmqol.predicates.JsonTextNBTPredicate;
+import com.yiran.minecraft.gtmqol.renderer.DTFRRingRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -32,6 +33,10 @@ public class GTMQoL {
         if (ConfigHolder.getInstance().overclockingConfig.enableOverclockingDurationOverride)
             OverclockingPatcher.init();
 
+        if (GTCEu.isDataGen()) {
+            DynamicRenderManager.register(GTMQoL.id("dtfr_ring"), DTFRRingRenderer.getTYPE());
+        }
+
 //        GTMInit.init();
 
         modBus.addListener(this::onCommonSetup);
@@ -54,12 +59,12 @@ public class GTMQoL {
 
         event.enqueueWork(() -> {
             StickyCardItem.onCommonSetup();
-
-
         });
     }
 
     private void onClientSetup(final FMLClientSetupEvent event) {
         LOGGER.info("{} client setup", MOD_ID);
+
+        DynamicRenderManager.register(GTMQoL.id("dtfr_ring"), DTFRRingRenderer.getTYPE());
     }
 }

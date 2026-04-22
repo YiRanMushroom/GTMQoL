@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.pattern.Predicates
 import com.gregtechceu.gtceu.api.pattern.Predicates.*
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper
 import com.gregtechceu.gtceu.common.data.GTBlocks
 import com.gregtechceu.gtceu.common.data.GTBlocks.CASING_PTFE_INERT
 import com.gregtechceu.gtceu.common.data.GTBlocks.FUSION_GLASS
@@ -26,6 +27,7 @@ import com.yiran.minecraft.gtmqol.GTMQoLRegistrate
 import com.yiran.minecraft.gtmqol.ModUtils.asNotNull
 import com.yiran.minecraft.gtmqol.common.multiblocks.PCBFactoryMachine
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
+import com.yiran.minecraft.gtmqol.renderer.DTFRRingRenderer
 import net.minecraft.network.chat.Component
 import net.minecraft.world.level.block.Blocks
 
@@ -180,7 +182,13 @@ object QoLMultiblocks {
                         )
                         .where('C', casing)
                         .where('K', blocks(FusionReactorMachine.getCoilState(3)))
-                        .where('X', casing.or(abilities(PartAbility.EXPORT_FLUIDS).or(abilities(PartAbility.IMPORT_FLUIDS)).or(autoAbilities(false, false, true))))
+                        .where(
+                            'X',
+                            casing.or(
+                                abilities(PartAbility.EXPORT_FLUIDS).or(abilities(PartAbility.IMPORT_FLUIDS))
+                                    .or(autoAbilities(false, false, true))
+                            )
+                        )
                         .where('A', air())
                         .where('#', any())
                         .build()
@@ -191,8 +199,9 @@ object QoLMultiblocks {
                     createWorkableCasingMachineModel(
                         FusionReactorMachine.getCasingType(GTValues.UV).texture,
                         GTCEu.id("block/multiblock/fusion_reactor")
-                    )
+                    ).andThen{builder -> builder.addDynamicRenderer(::DTFRRingRenderer)}
                 )
+                .hasBER(true)
                 .register()
         }
 
@@ -259,14 +268,24 @@ object QoLMultiblocks {
                 .appearanceBlock(CASING_PTFE_INERT)
                 .pattern { definition ->
                     FactoryBlockPattern.start()
-                        .aisle("XXXXX", "XGGGX", "XG@GX", "XGGGX", "XXXXX")
-                        .aisleRepeatable(5, 5, "XPXPX", "GAAAG", "GAHAG", "GAAAG", "XPXPX")
                         .aisle("XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
+                        .aisle("XPXPX", "GAAAG", "GAHAG", "GAAAG", "XPXPX")
+                        .aisle("XPXPX", "GAAAG", "GAHAG", "GAAAG", "XPXPX")
+                        .aisle("XPXPX", "GAAAG", "GAHAG", "GAAAG", "XPXPX")
+                        .aisle("XPXPX", "GAAAG", "GAHAG", "GAAAG", "XPXPX")
+                        .aisle("XPXPX", "GAAAG", "GAHAG", "GAAAG", "XPXPX")
+                        .aisle("XXXXX", "XGGGX", "XG@GX", "XGGGX", "XXXXX")
                         .where('@', controller(blocks(definition.block)))
-                        .where('X', blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(16)
-                            .or(autoAbilities(*definition.recipeTypes))
-                            .or(autoAbilities(true, false, true))
-                        ).build()
+                        .where(
+                            'X', blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(16)
+                                .or(autoAbilities(*definition.recipeTypes))
+                                .or(autoAbilities(true, false, true))
+                        )
+                        .where('G', blocks(GTBlocks.CASING_TEMPERED_GLASS.get()))
+                        .where('H', heatingCoils())
+                        .where('P', blocks(GTBlocks.CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))
+                        .where('A', air())
+                        .build()
                 }
                 .workableCasingModel(
                     GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),

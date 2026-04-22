@@ -231,6 +231,17 @@ object QoLRecipes {
                 .EUt(VA[ZPM].toLong())
                 .save(provider)
         }
+
+        if (ConfigHolder.instance.addonConfig.additionalGCYMMachinesAndAdditionalRecipes) {
+            QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES.asNotNull()
+                .recipeBuilder("gtmqol:industrial_large_chemical_reactor")
+                .inputItems(GTMultiMachines.LARGE_CHEMICAL_REACTOR.asStack(64))
+                .inputFluids(GTMaterials.Glue, 16000)
+                .outputItems(QoLMultiblocks.INDUSTRIAL_LARGE_CHEMICAL_REACTOR.asNotNull().asStack())
+                .duration(1200)
+                .EUt(VA[HV].toLong())
+                .save(provider)
+        }
     }
 
     private fun registerGreenhouseMachineRecipes(provider: Consumer<FinishedRecipe>) {

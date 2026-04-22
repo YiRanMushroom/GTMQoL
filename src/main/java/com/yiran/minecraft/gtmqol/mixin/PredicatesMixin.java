@@ -91,7 +91,7 @@ public abstract class PredicatesMixin {
     @WrapMethod(method = "autoAbilities([Lcom/gregtechceu/gtceu/api/recipe/GTRecipeType;ZZZZZZ)Lcom/gregtechceu/gtceu/api/pattern/TraceabilityPredicate;")
     private static TraceabilityPredicate qol$inject$modifier$autoAbilities(GTRecipeType[] recipeType, boolean checkEnergyIn, boolean checkEnergyOut, boolean checkItemIn, boolean checkItemOut, boolean checkFluidIn, boolean checkFluidOut, Operation<TraceabilityPredicate> original) {
         return original.call(recipeType, checkEnergyIn, checkEnergyOut, checkItemIn, checkItemOut, checkFluidIn, checkFluidOut)
-                .or(abilities(RecipeModifierPartMachines.QOL_RECIPE_MODIFIER));
+                .or(abilities(RecipeModifierPartMachines.QOL_RECIPE_MODIFIER).setPreviewCount(0));
     }
 
 //    @WrapMethod(method = "autoAbilities(ZZZ)Lcom/gregtechceu/gtceu/api/pattern/TraceabilityPredicate;")
