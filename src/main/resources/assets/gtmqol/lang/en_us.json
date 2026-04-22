@@ -28,5 +28,6 @@
   "gtmqol.gui.title.pattern_buffer.set_smart_multiplier_limit": "Smart Multiplier Limit: %s",
   "gtmqol.dict.infinite": "Infinite",
   "gtmqol.machine.probable_improbability_device.tooltip": "For any chanced input in a recipe, the content is now guaranteed not to be consumed. Ranged input are guaranteed to be consumed at the minimum amount.",
-  "gtmqol.machine.probable_certainty_device.tooltip": "For any chanced output in a recipe, the content is now guaranteed to be produced. Ranged output are guaranteed to be produced at the maximum amount."
+  "gtmqol.machine.probable_certainty_device.tooltip": "For any chanced output in a recipe, the content is now guaranteed to be produced. Ranged output are guaranteed to be produced at the maximum amount.",
+  "gtmqol.multiblock.industrial_large_chemical_reactor.tooltip0": "64x faster than a regular chemical reactor!"
 }

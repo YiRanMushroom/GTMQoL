@@ -31,6 +31,7 @@
     "PredicatesMixin",
     "SaplingBlockMixin",
     "WorkableElectricMultiblock$MultiTierSkip$Mixin",
+    "WorkableElectricMultiblockMachineMixin",
     "applied_energistics.EncodingHelper$PrioritizeUniversalCircuit$Mixin",
     "applied_energistics.MEInventoryHandler$AddSticky$Mixin",
     "applied_energistics.NetworkStorage$HandleSticky$Mixin",

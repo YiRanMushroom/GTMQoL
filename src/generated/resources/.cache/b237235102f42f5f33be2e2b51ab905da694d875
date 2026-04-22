@@ -1,4 +1,4 @@
-// 1.20.1	2026-04-09T15:21:49.7926477	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.20.1	2026-04-22T00:24:10.3080542	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
 a23d8c7ddd4017e9dcb0183492b72508b5b72d04 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
 d7e1fffcf5689a78615a16458861461bd5b8b231 assets/gtmqol/blockstates/electric_implosion_compressor.json
 b62c1106ea0cbfd177de09054dfd98b8bc79a61b assets/gtmqol/blockstates/ev_1024a_laser_source_hatch.json
@@ -40,6 +40,7 @@ d4676ee107b6ae1f203e5cc0f888e2cebd98432f assets/gtmqol/blockstates/hv_65536a_wir
 6ebed215c821edf628720292b11c0c89a1258991 assets/gtmqol/blockstates/hv_magical_assembler.json
 d2937671432b8c428297c538955627092da792b6 assets/gtmqol/blockstates/hv_me_assembler.json
 a09a52fa15944f8f507df721aeca3ed0b32f796b assets/gtmqol/blockstates/hv_me_circuit_slicer.json
+38e90b0c3a88f4f603866c0753805ed2296c0462 assets/gtmqol/blockstates/industrial_large_chemical_reactor.json
 574f4db8fd1b315e2622ea893cbc00b187390c17 assets/gtmqol/blockstates/iv_16384a_laser_source_hatch.json
 78014392660ebb8048b43139e1f45001cbfb76b1 assets/gtmqol/blockstates/iv_16384a_laser_target_hatch.json
 98ffd1a8c968abb8c5cf055d506042adf767f29f assets/gtmqol/blockstates/iv_65536a_laser_source_hatch.json
@@ -174,8 +175,8 @@ ac3da0a88ba93f39b8b05f81bffe4923906c1b92 assets/gtmqol/blockstates/zpm_16384a_la
 d81054eb38b5ad22ea6e470fabf8fec7612ad25f assets/gtmqol/blockstates/zpm_magical_assembler.json
 81519f782630929faed83acb0b72af56e3e7fb89 assets/gtmqol/blockstates/zpm_me_assembler.json
 e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circuit_slicer.json
-c2898420b004fb4e5bfd4ef924b09c903745d125 assets/gtmqol/lang/en_ud.json
-b0f15655a0130d33d9e2f11e5219fdaf868d28f8 assets/gtmqol/lang/en_us.json
+14a5b1e16f82632b0bb83a938199c9932cb71ff1 assets/gtmqol/lang/en_ud.json
+0808182bed878a9d9d894464e657da6e0a6d3653 assets/gtmqol/lang/en_us.json
 0068570044ce9829eadaf33afdcd7a529832ceff assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
 b95d9406d9646792d78cf50448f74f19a01d8e69 assets/gtmqol/models/block/machine/electric_implosion_compressor.json
 6370b7cd5ad6e933a8f1e6b1bb1213a271920139 assets/gtmqol/models/block/machine/ev_1024a_laser_source_hatch.json
@@ -217,6 +218,7 @@ b4b3869050a606a3031e572c4e9dd4ee1c5a7562 assets/gtmqol/models/block/machine/hv_6
 910a2134958927c2fd2de90ce53ffa8684ace535 assets/gtmqol/models/block/machine/hv_magical_assembler.json
 894c4493ffc35f3c88ad4e674c13ca622b04027a assets/gtmqol/models/block/machine/hv_me_assembler.json
 6de55c6f0be5266c34f815b80a16b3cd08ae5c33 assets/gtmqol/models/block/machine/hv_me_circuit_slicer.json
+66fe1c4a849e1af660f344d50b314f67e4977490 assets/gtmqol/models/block/machine/industrial_large_chemical_reactor.json
 9084b6191a3bafb76a81b43c6800ed77fc847bf1 assets/gtmqol/models/block/machine/iv_16384a_laser_source_hatch.json
 f7c6fbad37389bb01f42481fb54822bb91c45666 assets/gtmqol/models/block/machine/iv_16384a_laser_target_hatch.json
 177adfa751627924b04c3e5d4fff53e85127513b assets/gtmqol/models/block/machine/iv_65536a_laser_source_hatch.json
@@ -394,6 +396,7 @@ ef7a3b268c74f5f47d8e18d28d71257f024ed9ee assets/gtmqol/models/item/hv_65536a_wir
 73127533429b3e61d9b00b07d84984a001653571 assets/gtmqol/models/item/hv_me_assembler.json
 8aa7a19b97bc70b3d1f077bf370319edb7c19702 assets/gtmqol/models/item/hv_me_circuit_slicer.json
 d330a83f021992102ccb236f9c246ac9e1471db9 assets/gtmqol/models/item/hv_universal_circuit.json
+d3ebd82ff0e89bc96eda7a6e471183d9326678b2 assets/gtmqol/models/item/industrial_large_chemical_reactor.json
 4e68a88c30cd04e623789da29a134e703dc52115 assets/gtmqol/models/item/iv_16384a_laser_source_hatch.json
 0ba21f5e844380043ef9ae58345ec0482812ed56 assets/gtmqol/models/item/iv_16384a_laser_target_hatch.json
 61f7e0ee6ffce76773435f06d6e003a5b8eb3a8b assets/gtmqol/models/item/iv_65536a_laser_source_hatch.json

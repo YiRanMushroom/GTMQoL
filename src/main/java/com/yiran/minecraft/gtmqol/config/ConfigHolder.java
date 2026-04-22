@@ -28,28 +28,16 @@ public class ConfigHolder {
         public boolean enableOverclockingDurationOverride = true;
 
         @Configurable
-        @Configurable.Comment({"Override overclocking duration for non-perfect machines.", "Default: 0.25"})
-        public double overclockingDurationMultiplier = 0.25;
-
-        @Configurable
-        @Configurable.Comment({"Override overclocking duration for perfect machines.", "Default: 0.125"})
-        public double perfectOverclockingDurationMultiplier = 0.125;
-
-        @Configurable
-        @Configurable.Comment({"Enable subtick parallels for all recipe logics", "Default: true"})
-        public boolean enableSubtickParallelsForAllLogics = true;
-
-        @Configurable
         @Configurable.Comment({"Buff Fusion Reactor Overclocking", "Default: true"})
         public boolean buffFusionReactorOverclocking = true;
 
         @Configurable
-        @Configurable.Comment({"Maximum parallel amount for subtick overclocking(increasing this would significantly impact mstp)", "Default: 1024"})
-        public int maxParallelAmountForSubtickOverclocking = 1024;
-
-        @Configurable
         @Configurable.Comment({"Enable Multi-Tier Skipping for Multiblocks That Can Tier Skip", "Default: true"})
         public boolean enableMultiTierSkipping = true;
+
+        @Configurable
+        @Configurable.Comment({"Single Energy Hatch Tier Skipping for Workable Electric Multiblock Machine", "Default: true"})
+        public boolean singleEnergyHatchTierSkipping = true;
     }
 
     @Configurable
@@ -123,6 +111,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Parallel Hatches Are Absolute for Machines", "Default: true"})
         public boolean parallelHatchesAreAbsolute = true;
+
+        @Configurable
+        @Configurable.Comment({"Add custom GCYM machines and add additional recipe type supports to them", "Default: true"})
+        public boolean additionalGCYMMachinesAndAdditionalRecipes = true;
     }
 
     @Configurable

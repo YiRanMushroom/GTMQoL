@@ -8,6 +8,7 @@ import com.llamalad7.mixinextras.expression.Definition;
 import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.yiran.minecraft.gtmqol.config.ConfigHolder;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -22,6 +23,9 @@ public class WorkableElectricMultiblock$MultiTierSkip$Mixin {
     @Expression("return @(V[?])")
     @WrapOperation(method = "getMaxVoltage", at = @At("MIXINEXTRAS:EXPRESSION"))
     public long getMaxVoltageIfMultiHatch(long[] array, int index, Operation<Long> original) {
+        if (!ConfigHolder.instance.overclockingConfig.enableMultiTierSkipping) {
+            return original.call(array, index);
+        }
         long voltage = this.energyContainer.getInputVoltage();
         long amperage = this.energyContainer.getInputAmperage();
         return amperage == 1L ? GTValues.VEX[GTUtil.getFloorTierByVoltage(voltage)] : voltage;

@@ -12,7 +12,9 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern
 import com.gregtechceu.gtceu.api.pattern.Predicates
 import com.gregtechceu.gtceu.api.pattern.Predicates.*
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction
 import com.gregtechceu.gtceu.common.data.GTBlocks
+import com.gregtechceu.gtceu.common.data.GTBlocks.CASING_PTFE_INERT
 import com.gregtechceu.gtceu.common.data.GTBlocks.FUSION_GLASS
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers.BATCH_MODE
@@ -26,8 +28,6 @@ import com.yiran.minecraft.gtmqol.common.multiblocks.PCBFactoryMachine
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
 import net.minecraft.network.chat.Component
 import net.minecraft.world.level.block.Blocks
-
-import com.yiran.minecraft.gtmqol.data.ClientDynamicModelRegisterer.buildAndRegisterDynamicAssets
 
 object QoLMultiblocks {
     @JvmStatic
@@ -44,6 +44,9 @@ object QoLMultiblocks {
 
     @JvmStatic
     var PCB_FACTORY: MultiblockMachineDefinition? = null
+
+    @JvmStatic
+    var INDUSTRIAL_LARGE_CHEMICAL_REACTOR: MultiblockMachineDefinition? = null
 
     @JvmStatic
     fun init() {
@@ -199,35 +202,78 @@ object QoLMultiblocks {
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(QoLRecipeTypes.GREENHOUSE_RECIPES.asNotNull())
                 .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
-                .pattern {
-                        definition -> FactoryBlockPattern.start()
-                    .aisle("CCC", "CGC", "CGC", "CLC", "CCC")
-                    .aisle("CMC", "G#G", "G#G", "LIL", "COC")
-                    .aisle("CKC", "CGC", "CGC", "CLC", "CNC")
-                    .where('K', controller(blocks(definition.get())))
-                    .where('M', blocks(Blocks.MOSS_BLOCK)
-                        .or(blocks(Blocks.DIRT))
-                        .or(blocks(Blocks.GRASS_BLOCK)))
-                    .where('G', blocks(Blocks.GLASS))
-                    .where('I', blocks(Blocks.GLOWSTONE))
-                    .where('L', blocks(GTBlocks.CASING_GRATE.get()))
-                    .where('C', blocks(GTBlocks.CASING_STEEL_SOLID.get())
-                        .or(autoAbilities(*definition.getRecipeTypes())))
-                    .where('O', abilities(PartAbility.MUFFLER)
-                        .setExactLimit(1))
-                    .where('N', abilities(PartAbility.MAINTENANCE))
-                    .where('#', air())
-                    .build()
+                .pattern { definition ->
+                    FactoryBlockPattern.start()
+                        .aisle("CCC", "CGC", "CGC", "CLC", "CCC")
+                        .aisle("CMC", "G#G", "G#G", "LIL", "COC")
+                        .aisle("CKC", "CGC", "CGC", "CLC", "CNC")
+                        .where('K', controller(blocks(definition.get())))
+                        .where(
+                            'M', blocks(Blocks.MOSS_BLOCK)
+                                .or(blocks(Blocks.DIRT))
+                                .or(blocks(Blocks.GRASS_BLOCK))
+                        )
+                        .where('G', blocks(Blocks.GLASS))
+                        .where('I', blocks(Blocks.GLOWSTONE))
+                        .where('L', blocks(GTBlocks.CASING_GRATE.get()))
+                        .where(
+                            'C', blocks(GTBlocks.CASING_STEEL_SOLID.get())
+                                .or(autoAbilities(*definition.getRecipeTypes()))
+                        )
+                        .where(
+                            'O', abilities(PartAbility.MUFFLER)
+                                .setExactLimit(1)
+                        )
+                        .where('N', abilities(PartAbility.MAINTENANCE))
+                        .where('#', air())
+                        .build()
                 }
                 .workableCasingModel(
                     GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                     GTMQoL.id("block/multiblock/greenhouse")
                 )
-                .buildAndRegisterDynamicAssets()
+                .register()
         }
 
         if (ConfigHolder.instance.addonConfig.enablePCBFactory) {
             PCB_FACTORY = PCBFactoryMachine.createDefinition("pcb_factory")
+        }
+
+        if (ConfigHolder.instance.addonConfig.additionalGCYMMachinesAndAdditionalRecipes) {
+            INDUSTRIAL_LARGE_CHEMICAL_REACTOR = registrate.multiblock(
+                "industrial_large_chemical_reactor",
+                ::WorkableElectricMultiblockMachine
+            )
+                .rotationState(RotationState.ALL)
+                .recipeType(GTRecipeTypes.LARGE_CHEMICAL_RECIPES)
+                .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
+                .tooltips(Component.translatable("gtmqol.multiblock.industrial_large_chemical_reactor.tooltip0"))
+                .tooltips(
+                    Component.translatable(
+                        "gtceu.machine.available_recipe_map_1.tooltip",
+                        Component.translatable("gtceu.large_chemical_reactor")
+                    )
+                )
+                .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, { _, _ ->
+                    ModifierFunction.builder().durationMultiplier(1.0 / 64.0).build()
+                }, GTRecipeModifiers.OC_PERFECT_SUBTICK, BATCH_MODE)
+                .appearanceBlock(CASING_PTFE_INERT)
+                .pattern { definition ->
+                    FactoryBlockPattern.start()
+                        .aisle("XXXXX", "XGGGX", "XG@GX", "XGGGX", "XXXXX")
+                        .aisleRepeatable(5, 5, "XPXPX", "GAAAG", "GAHAG", "GAAAG", "XPXPX")
+                        .aisle("XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
+                        .where('@', controller(blocks(definition.block)))
+                        .where('X', blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(16)
+                            .or(autoAbilities(*definition.recipeTypes))
+                            .or(autoAbilities(true, false, true))
+                        ).build()
+                }
+                .workableCasingModel(
+                    GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),
+                    GTCEu.id("block/multiblock/large_chemical_reactor")
+                )
+                .register()
         }
     }
 }
