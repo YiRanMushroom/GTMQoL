@@ -1,6 +1,5 @@
 package com.yiran.minecraft.gtmqol;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.yiran.minecraft.gtmqol.common.item.StickyCardItem;
 import com.yiran.minecraft.gtmqol.config.ConfigHolder;
@@ -33,9 +32,9 @@ public class GTMQoL {
         if (ConfigHolder.getInstance().overclockingConfig.enableOverclockingDurationOverride)
             OverclockingPatcher.init();
 
-        if (GTCEu.isDataGen()) {
-            DynamicRenderManager.register(GTMQoL.id("dtfr_ring"), DTFRRingRenderer.getTYPE());
-        }
+//        if (GTCEu.isDataGen()) {
+        DynamicRenderManager.register(GTMQoL.id("dtfr_ring"), DTFRRingRenderer.getTYPE());
+//        }
 
 //        GTMInit.init();
 
@@ -65,6 +64,6 @@ public class GTMQoL {
     private void onClientSetup(final FMLClientSetupEvent event) {
         LOGGER.info("{} client setup", MOD_ID);
 
-        DynamicRenderManager.register(GTMQoL.id("dtfr_ring"), DTFRRingRenderer.getTYPE());
+//        DynamicRenderManager.register(GTMQoL.id("dtfr_ring"), DTFRRingRenderer.getTYPE());
     }
 }
