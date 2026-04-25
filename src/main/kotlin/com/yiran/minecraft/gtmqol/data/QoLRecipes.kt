@@ -6,11 +6,7 @@ import appeng.core.definitions.AEItems
 import appeng.core.definitions.AEParts
 import com.gregtechceu.gtceu.api.GTValues.*
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix
-import com.gregtechceu.gtceu.common.data.GTBlocks
-import com.gregtechceu.gtceu.common.data.GTItems
-import com.gregtechceu.gtceu.common.data.GTMachines
-import com.gregtechceu.gtceu.common.data.GTMaterials
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes
+import com.gregtechceu.gtceu.common.data.*
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines
 import com.gregtechceu.gtceu.data.recipe.CustomTags
@@ -128,6 +124,16 @@ object QoLRecipes {
             .duration(200)
             .save(provider)
 
+        QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES.asNotNull().recipeBuilder("gtmqol:overclocked_me_pattern_buffer")
+            .inputItems(GTAEMachines.ME_PATTERN_BUFFER.asStack(4))
+            .inputItems(CustomTags.MV_CIRCUITS, 16)
+            .circuitMeta(24)
+            .inputFluids(GTMaterials.SolderingAlloy, 144 * 4)
+            .inputFluids(GTMaterials.Glue, 4000)
+            .outputItems(QoLMachines.OVERCLOCKED_ME_PATTERN_BUFFER.asNotNull().asStack())
+            .duration(1200)
+            .EUt(VA[MV].toLong())
+            .save(provider)
     }
 
     private fun registerMiscRecipes(provider: Consumer<FinishedRecipe>) {
