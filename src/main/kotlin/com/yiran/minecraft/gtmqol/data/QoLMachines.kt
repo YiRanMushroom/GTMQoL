@@ -1,9 +1,12 @@
 package com.yiran.minecraft.gtmqol.data
 
+import com.gregtechceu.gtceu.GTCEu
 import com.gregtechceu.gtceu.api.GTValues
+import com.gregtechceu.gtceu.api.GTValues.LuV
 import com.gregtechceu.gtceu.api.data.RotationState
 import com.gregtechceu.gtceu.api.machine.MachineDefinition
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils
 import com.yiran.minecraft.gtmqol.GTMQoL
@@ -13,6 +16,9 @@ import com.yiran.minecraft.gtmqol.api.RecipeModifierPartMachines
 import com.yiran.minecraft.gtmqol.common.multiblocks.parts.ProbableCertaintyDevice
 import com.yiran.minecraft.gtmqol.common.multiblocks.parts.ProbableImprobabilityDevice
 import com.yiran.minecraft.gtmqol.config.ConfigHolder
+import com.yiran.minecraft.gtmqol.integration.ae2.AbstractMEPatternBufferPartMachine
+import it.unimi.dsi.fastutil.ints.IntIntImmutablePair
+import net.minecraft.network.chat.Component
 import java.util.Locale.getDefault
 
 
@@ -37,6 +43,9 @@ object QoLMachines {
 
     @JvmField
     var PROBABLE_CERTAINTY_DEVICE: MachineDefinition? = null
+
+    @JvmField
+    var OVERCLOCKED_ME_PATTERN_BUFFER: MachineDefinition? = null
 
     fun registerSimpleMachine(
         name: String,
@@ -128,6 +137,32 @@ object QoLMachines {
                 .colorOverlayTieredHullModel(GTMQoL.id("block/overlay/machine/probable_certainty_device"))
                 .register()
         }
+
+        OVERCLOCKED_ME_PATTERN_BUFFER = GTMQoLRegistrate.REGISTRATE
+            .machine("overclocked_me_pattern_buffer") { args ->
+                object : AbstractMEPatternBufferPartMachine(args) {
+                    override fun getPatternGridSize(): IntIntImmutablePair {
+                        return IntIntImmutablePair.of(12, 18)
+                    }
+                }
+            }
+            .tier(LuV)
+            .rotationState(RotationState.ALL)
+            .abilities(
+                PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS,
+                PartAbility.EXPORT_FLUIDS,
+                PartAbility.EXPORT_ITEMS
+            )
+            .rotationState(RotationState.ALL)
+            .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_buffer_hatch"))
+            .langValue("Overclocked ME Pattern Buffer")
+            .tooltips(
+                Component.translatable("block.gtceu.pattern_buffer.desc.0"),
+                Component.translatable("block.gtceu.pattern_buffer.desc.1"),
+                Component.translatable("block.gtceu.pattern_buffer.desc.2"),
+                Component.translatable("gtceu.part_sharing.enabled")
+            )
+            .register()
     }
 
     @JvmStatic
