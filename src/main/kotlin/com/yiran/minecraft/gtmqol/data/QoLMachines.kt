@@ -3,10 +3,13 @@ package com.yiran.minecraft.gtmqol.data
 import com.gregtechceu.gtceu.GTCEu
 import com.gregtechceu.gtceu.api.GTValues
 import com.gregtechceu.gtceu.api.GTValues.LuV
+import com.gregtechceu.gtceu.api.capability.recipe.IO
 import com.gregtechceu.gtceu.api.data.RotationState
 import com.gregtechceu.gtceu.api.machine.MachineDefinition
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils
 import com.yiran.minecraft.gtmqol.GTMQoL
@@ -143,6 +146,14 @@ object QoLMachines {
                 object : AbstractMEPatternBufferPartMachine(args) {
                     override fun getPatternGridSize(): IntIntImmutablePair {
                         return IntIntImmutablePair.of(12, 18)
+                    }
+
+                    override fun createSharedFluidTank(): NotifiableFluidTank {
+                        return NotifiableFluidTank(this, 4, Integer.MAX_VALUE, IO.IN, IO.NONE)
+                    }
+
+                    override fun createSharedItemStackHandler(): NotifiableItemStackHandler {
+                        return NotifiableItemStackHandler(this, 4, IO.IN, IO.NONE)
                     }
                 }
             }

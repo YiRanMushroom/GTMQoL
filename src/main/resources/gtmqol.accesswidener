@@ -1,9 +1,0 @@
-accessWidener v2 named
-
-accessible field net/minecraft/world/level/block/SaplingBlock treeGrower Lnet/minecraft/world/level/block/grower/AbstractTreeGrower;
-
-accessible method net/minecraft/world/level/block/grower/AbstractTreeGrower getConfiguredFeature (Lnet/minecraft/util/RandomSource;Z)Lnet/minecraft/resources/ResourceKey;
-
-accessible field net/minecraft/world/level/levelgen/feature/stateproviders/SimpleStateProvider state Lnet/minecraft/world/level/block/state/BlockState;
-
-#accessible class appeng/parts/storagebus/StorageBusPart$StorageBusInventory
