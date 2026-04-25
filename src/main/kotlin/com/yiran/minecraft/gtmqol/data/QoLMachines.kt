@@ -148,13 +148,13 @@ object QoLMachines {
                         return IntIntImmutablePair.of(12, 18)
                     }
 
-                    override fun createSharedFluidTank(): NotifiableFluidTank {
-                        return NotifiableFluidTank(this, 4, Integer.MAX_VALUE, IO.IN, IO.NONE)
-                    }
-
-                    override fun createSharedItemStackHandler(): NotifiableItemStackHandler {
-                        return NotifiableItemStackHandler(this, 4, IO.IN, IO.NONE)
-                    }
+//                    override fun createSharedFluidTank(): NotifiableFluidTank {
+//                        return NotifiableFluidTank(this, 4, Integer.MAX_VALUE, IO.IN, IO.NONE)
+//                    }
+//
+//                    override fun createSharedItemStackHandler(): NotifiableItemStackHandler {
+//                        return NotifiableItemStackHandler(this, 4, IO.IN, IO.NONE)
+//                    }
                 }
             }
             .tier(LuV)
