@@ -36,7 +36,6 @@ public abstract class RecipeDBMixin {
         List<MetaMachine> indexToMachineList = new ArrayList<>();
         Map<MetaMachine, List<Integer>> machineToIndices = new IdentityHashMap<>();
 
-        // 【核心修改 1】：按机器记录 Distinct 状态，而不是按槽位
         Set<MetaMachine> distinctMachines = Collections.newSetFromMap(new IdentityHashMap<>());
         MetaMachine fallbackMachine = holder instanceof MetaMachine mm ? mm : null;
 
@@ -50,7 +49,6 @@ public abstract class RecipeDBMixin {
 
                 if (handler instanceof NotifiableRecipeHandlerTrait<?> trait) {
                     machine = trait.getMachine();
-                    // 只要机器被设置了 Distinct，就把这台机器记下来
                     if (machine != null && trait.isDistinct()) {
                         distinctMachines.add(machine);
                     }
@@ -77,19 +75,16 @@ public abstract class RecipeDBMixin {
 
         MetaMachine[] machineArr = indexToMachineList.toArray(new MetaMachine[0]);
 
-        // 【核心修改 2】：根据机器的 Distinct 状态，分配查找空间
         Map<MetaMachine, int[]> finalMachineLookup = new IdentityHashMap<>();
         List<Integer> normalPoolList = new ArrayList<>();
 
         for (int i = 0; i < currentIndex; i++) {
             MetaMachine m = machineArr[i];
-            // 如果机器不是 Distinct，或者没有归属机器，全部扔进普通池
             if (m == null || !distinctMachines.contains(m)) {
                 normalPoolList.add(i);
             }
         }
 
-        // 只有开启了 Distinct 的机器，才拥有自己的私有查找表
         for (MetaMachine m : distinctMachines) {
             if (machineToIndices.containsKey(m)) {
                 finalMachineLookup.put(m, machineToIndices.get(m).stream().mapToInt(i -> i).toArray());
@@ -164,11 +159,9 @@ public abstract class RecipeDBMixin {
 
                             MetaMachine curMachine = this.indexToMachine[curIndex];
 
-                            // 【核心修改 3】：直接判断这台机器是不是 Distinct
                             boolean isMachineDistinct = curMachine != null && this.distinctMachines != null && this.distinctMachines.contains(curMachine);
 
                             if (isMachineDistinct) {
-                                // 如果这台机器是独立的，只能在这台机器的专属列表里找
                                 int[] targets = this.machineLookup.get(curMachine);
                                 if (targets != null) {
                                     for (int i = targets.length - 1; i >= 0; i--) {
@@ -176,7 +169,6 @@ public abstract class RecipeDBMixin {
                                     }
                                 }
                             } else {
-                                // 如果机器是普通的（或者没归属），只能在普通池里找
                                 if (this.normalPool != null) {
                                     for (int i = this.normalPool.length - 1; i >= 0; i--) {
                                         this.stack.push(RecipeDBStatic.searchFrameConstructor.newInstance(this.normalPool[i], nextBranch));
