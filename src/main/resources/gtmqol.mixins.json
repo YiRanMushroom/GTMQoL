@@ -6,6 +6,7 @@
   "mixins": [
     "BushBlockMixin",
     "CleanroomConditionMixin",
+    "DualHatchPartMachineMixin",
     "ForgeCommonEventListener$AttachEnergyProxy$Mixin",
     "FusionReactor$ChangeOverclockingLogic$Mixin",
     "GCYMMachines$Misc$Mixin",
@@ -24,6 +25,10 @@
     "GTRecipeTypes$InitMyRecipeType$Mixin",
     "GTRecipeTypes$Misc$Mixin",
     "IMachineBuilderAccessor",
+    "InternalSlotRecipeHandlerMixin",
+    "InternalSlotRecipeHandlerMixin$SlotFluidRecipeHandler$SlotFluidRecipeHandlerMixin",
+    "InternalSlotRecipeHandlerMixin$SlotItemRecipeHandler$SlotItemRecipeHandlerMixin",
+    "InternalSlotRecipeHandlerMixin$SlotRHLMixin",
     "ItemBusPartMachineMixin",
     "KJSTieredMachineBuilder$GenDefaultMulti$Mixin",
     "MachineBuilder$AutoGeneration$Mixin",

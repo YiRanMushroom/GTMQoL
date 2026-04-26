@@ -32,11 +32,15 @@ public abstract class RecipeDBMixin {
 
     @Unique
     private static boolean qol$isFluidOrItemAbstractMapIngredient(AbstractMapIngredient ingredient) {
-        return ingredient instanceof CustomMapIngredient || ingredient instanceof FluidStackMapIngredient
-                || ingredient instanceof FluidTagMapIngredient || ingredient instanceof IntersectionMapIngredient
-                || ingredient instanceof ItemStackMapIngredient || ingredient instanceof ItemTagMapIngredient
-                || ingredient instanceof NBTPredicateItemStackMapIngredient || ingredient instanceof StrictNBTItemStackMapIngredient
-                || ingredient instanceof PartialNBTItemStackMapIngredient;
+        return ingredient instanceof ItemStackMapIngredient
+                || ingredient instanceof FluidStackMapIngredient
+                || ingredient instanceof ItemTagMapIngredient
+                || ingredient instanceof FluidTagMapIngredient
+                || ingredient instanceof IntersectionMapIngredient
+                || ingredient instanceof StrictNBTItemStackMapIngredient
+                || ingredient instanceof PartialNBTItemStackMapIngredient
+                || ingredient instanceof NBTPredicateItemStackMapIngredient
+                || ingredient instanceof CustomMapIngredient;
     }
 
     /**
@@ -48,14 +52,16 @@ public abstract class RecipeDBMixin {
         var handlerMap = holder.getCapabilitiesFlat().getOrDefault(IO.IN, Collections.emptyMap());
         if (handlerMap.isEmpty()) return null;
 
-        List<List<AbstractMapIngredient>> resultList = new ObjectArrayList<>(handlerMap.size() * 8);
+        int estimatedSize = handlerMap.size() * 8;
+        List<List<AbstractMapIngredient>> resultList = new ObjectArrayList<>(estimatedSize);
 
-        List<IRecipeHandler<?>> handlers = new ArrayList<>();
-        List<MetaMachine> machines = new ArrayList<>();
-        List<Boolean> isDistincts = new ArrayList<>();
-        List<Boolean> isCatalysts = new ArrayList<>();
-        List<Boolean> isPhysicals = new ArrayList<>();
+        List<MetaMachine> machines = new ArrayList<>(estimatedSize);
+        List<Object> groups = new ArrayList<>(estimatedSize);
+        List<Boolean> rawIsDistincts = new ArrayList<>(estimatedSize);
+        List<Boolean> rawIsCatalysts = new ArrayList<>(estimatedSize);
+        List<Boolean> isPhysicals = new ArrayList<>(estimatedSize);
 
+        Set<MetaMachine> distinctMachines = Collections.newSetFromMap(new IdentityHashMap<>());
         MetaMachine fallbackMachine = holder instanceof MetaMachine mm ? mm : null;
 
         int currentIndex = 0;
@@ -63,17 +69,32 @@ public abstract class RecipeDBMixin {
             RecipeCapability<?> cap = entry.getKey();
             if (!cap.isRecipeSearchFilter()) continue;
 
+            Set<IRecipeHandler<?>> seenHandlers = Collections.newSetFromMap(new IdentityHashMap<>());
+
             for (IRecipeHandler<?> handler : entry.getValue()) {
+                if (handler == null || !seenHandlers.add(handler)) {
+                    continue;
+                }
+
                 MetaMachine machine = fallbackMachine;
                 boolean isDistinct = false;
                 boolean isCatalyst = false;
+                Object matchingGroup = handler;
 
                 if (handler instanceof NotifiableRecipeHandlerTrait<?> trait) {
                     var hint = (ISlotHint) trait;
                     machine = trait.getMachine();
+                    isDistinct = trait.isDistinct();
                     isCatalyst = hint.qol$isCatalystSlot();
 
-                    isDistinct = isCatalyst || trait.isDistinct();
+                    Object customGroup = hint.qol$getMatchingGroup();
+                    if (customGroup != null) {
+                        matchingGroup = customGroup;
+                    }
+
+                    if (machine != null && isDistinct) {
+                        distinctMachines.add(machine);
+                    }
                 }
 
                 var compressed = cap.compressIngredients(handler.getContents());
@@ -81,10 +102,10 @@ public abstract class RecipeDBMixin {
                     List<AbstractMapIngredient> mapIngs = MapIngredientTypeManager.getFrom(ingredient, cap);
                     resultList.add(mapIngs);
 
-                    handlers.add(handler);
                     machines.add(machine);
-                    isDistincts.add(isDistinct);
-                    isCatalysts.add(isCatalyst);
+                    groups.add(matchingGroup);
+                    rawIsDistincts.add(isDistinct);
+                    rawIsCatalysts.add(isCatalyst);
 
                     boolean isPhys = !mapIngs.isEmpty() && qol$isFluidOrItemAbstractMapIngredient(mapIngs.get(0));
                     isPhysicals.add(isPhys);
@@ -96,32 +117,50 @@ public abstract class RecipeDBMixin {
 
         if (resultList.isEmpty()) return null;
 
-        // 构建机器内的隔离映射关系
-        Map<IRecipeHandler<?>, List<Integer>> handlerToPhysicals = new IdentityHashMap<>();
+        Map<Object, List<Integer>> groupToPhysicals = new IdentityHashMap<>();
         Map<MetaMachine, List<Integer>> machineToCatalysts = new IdentityHashMap<>();
         Map<MetaMachine, List<Integer>> machineToAllPhysicalDistincts = new IdentityHashMap<>();
         List<Integer> normalPhysicalPool = new ArrayList<>();
         List<Integer> nonPhysicalPool = new ArrayList<>();
 
+        List<Boolean> finalIsDistincts = new ArrayList<>(currentIndex);
+        List<Boolean> finalIsCatalysts = new ArrayList<>(currentIndex);
+
         for (int i = 0; i < currentIndex; i++) {
+            MetaMachine m = machines.get(i);
+            boolean isCat = rawIsCatalysts.get(i);
+            boolean isDist = rawIsDistincts.get(i);
+
+            boolean isMachineDistinct = (m != null && distinctMachines.contains(m));
+
+            if (!isMachineDistinct) {
+                isCat = false;
+                isDist = false;
+            } else {
+                if (isCat) {
+                    isDist = true;
+                }
+            }
+
+            finalIsDistincts.add(isDist);
+            finalIsCatalysts.add(isCat);
+
             if (!isPhysicals.get(i)) {
                 nonPhysicalPool.add(i);
                 continue;
             }
 
-            if (!isDistincts.get(i)) {
+            if (!isDist) {
                 normalPhysicalPool.add(i);
             } else {
-                MetaMachine m = machines.get(i);
-                IRecipeHandler<?> h = handlers.get(i);
-
-                if (h != null) {
-                    handlerToPhysicals.computeIfAbsent(h, k -> new ArrayList<>()).add(i);
+                Object g = groups.get(i);
+                if (g != null) {
+                    groupToPhysicals.computeIfAbsent(g, k -> new ArrayList<>()).add(i);
                 }
 
                 if (m != null) {
                     machineToAllPhysicalDistincts.computeIfAbsent(m, k -> new ArrayList<>()).add(i);
-                    if (isCatalysts.get(i)) {
+                    if (isCat) {
                         machineToCatalysts.computeIfAbsent(m, k -> new ArrayList<>()).add(i);
                     }
                 }
@@ -135,15 +174,15 @@ public abstract class RecipeDBMixin {
             allowed.addAll(normalPhysicalPool);
 
             MetaMachine m = machines.get(i);
-            if (m != null && isDistincts.get(i)) {
-                if (isCatalysts.get(i)) {
+            if (m != null && finalIsDistincts.get(i)) {
+                if (finalIsCatalysts.get(i)) {
                     if (machineToAllPhysicalDistincts.containsKey(m)) {
                         allowed.addAll(machineToAllPhysicalDistincts.get(m));
                     }
                 } else {
-                    IRecipeHandler<?> h = handlers.get(i);
-                    if (handlerToPhysicals.containsKey(h)) {
-                        allowed.addAll(handlerToPhysicals.get(h));
+                    Object g = groups.get(i);
+                    if (groupToPhysicals.containsKey(g)) {
+                        allowed.addAll(groupToPhysicals.get(g));
                     }
                     if (machineToCatalysts.containsKey(m)) {
                         allowed.addAll(machineToCatalysts.get(m));
@@ -151,10 +190,18 @@ public abstract class RecipeDBMixin {
                 }
             }
 
-            targetLookup[i] = allowed.stream().mapToInt(x -> x).toArray();
+            int[] arr = new int[allowed.size()];
+            int idx = 0;
+            for (Integer val : allowed) {
+                arr[idx++] = val;
+            }
+            targetLookup[i] = arr;
         }
 
-        int[] nonPhysicalTargets = nonPhysicalPool.stream().mapToInt(x -> x).toArray();
+        int[] nonPhysicalTargets = new int[nonPhysicalPool.size()];
+        for (int i = 0; i < nonPhysicalPool.size(); i++) {
+            nonPhysicalTargets[i] = nonPhysicalPool.get(i);
+        }
 
         RecipeDBStatic.TARGET_LOOKUP.set(targetLookup);
         RecipeDBStatic.NON_PHYSICAL_TARGETS.set(nonPhysicalTargets);
