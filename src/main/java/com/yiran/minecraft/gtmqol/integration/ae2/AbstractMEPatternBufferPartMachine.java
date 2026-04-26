@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.yiran.minecraft.gtmqol.api.NotifiableCatalystFluidTank;
+import com.yiran.minecraft.gtmqol.api.NotifiableItemStackCatalystHandler;
 import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
@@ -36,10 +38,10 @@ public abstract class AbstractMEPatternBufferPartMachine extends MEPatternBuffer
     }
 
     public NotifiableFluidTank createSharedFluidTank() {
-        return new NotifiableFluidTank(this, 25, Integer.MAX_VALUE, IO.IN, IO.NONE);
+        return new NotifiableCatalystFluidTank(this, 25, Integer.MAX_VALUE, IO.IN, IO.NONE);
     }
 
     public NotifiableItemStackHandler createSharedItemStackHandler() {
-        return new NotifiableItemStackHandler(this, 25, IO.IN, IO.NONE);
+        return new NotifiableItemStackCatalystHandler(this, 25, IO.IN, IO.NONE);
     }
 }

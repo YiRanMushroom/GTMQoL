@@ -10,7 +10,11 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidStackMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidTagMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.mojang.datafixers.util.Either;
+import com.yiran.minecraft.gtmqol.api.ISlotHint;
 import com.yiran.minecraft.gtmqol.mixin_helper.RecipeDBStatic;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +30,19 @@ import java.util.function.Predicate;
 @Mixin(value = RecipeDB.class, remap = false)
 public abstract class RecipeDBMixin {
 
+    @Unique
+    private static boolean qol$isFluidOrItemAbstractMapIngredient(AbstractMapIngredient ingredient) {
+        return ingredient instanceof CustomMapIngredient || ingredient instanceof FluidStackMapIngredient
+                || ingredient instanceof FluidTagMapIngredient || ingredient instanceof IntersectionMapIngredient
+                || ingredient instanceof ItemStackMapIngredient || ingredient instanceof ItemTagMapIngredient
+                || ingredient instanceof NBTPredicateItemStackMapIngredient || ingredient instanceof StrictNBTItemStackMapIngredient
+                || ingredient instanceof PartialNBTItemStackMapIngredient;
+    }
+
+    /**
+     * @author
+     * @reason
+     */
     @Overwrite
     private @Nullable List<List<AbstractMapIngredient>> fromHolder(@NotNull IRecipeCapabilityHolder holder) {
         var handlerMap = holder.getCapabilitiesFlat().getOrDefault(IO.IN, Collections.emptyMap());
@@ -33,10 +50,12 @@ public abstract class RecipeDBMixin {
 
         List<List<AbstractMapIngredient>> resultList = new ObjectArrayList<>(handlerMap.size() * 8);
 
-        List<MetaMachine> indexToMachineList = new ArrayList<>();
-        Map<MetaMachine, List<Integer>> machineToIndices = new IdentityHashMap<>();
+        List<IRecipeHandler<?>> handlers = new ArrayList<>();
+        List<MetaMachine> machines = new ArrayList<>();
+        List<Boolean> isDistincts = new ArrayList<>();
+        List<Boolean> isCatalysts = new ArrayList<>();
+        List<Boolean> isPhysicals = new ArrayList<>();
 
-        Set<MetaMachine> distinctMachines = Collections.newSetFromMap(new IdentityHashMap<>());
         MetaMachine fallbackMachine = holder instanceof MetaMachine mm ? mm : null;
 
         int currentIndex = 0;
@@ -46,26 +65,30 @@ public abstract class RecipeDBMixin {
 
             for (IRecipeHandler<?> handler : entry.getValue()) {
                 MetaMachine machine = fallbackMachine;
+                boolean isDistinct = false;
+                boolean isCatalyst = false;
 
                 if (handler instanceof NotifiableRecipeHandlerTrait<?> trait) {
+                    var hint = (ISlotHint) trait;
                     machine = trait.getMachine();
-                    if (machine != null && trait.isDistinct()) {
-                        distinctMachines.add(machine);
-                    }
-                }
+                    isCatalyst = hint.qol$isCatalystSlot();
 
-                if (machine != null) {
-                    machineToIndices.putIfAbsent(machine, new ArrayList<>());
+                    isDistinct = isCatalyst || trait.isDistinct();
                 }
 
                 var compressed = cap.compressIngredients(handler.getContents());
                 for (Object ingredient : compressed) {
-                    resultList.add(MapIngredientTypeManager.getFrom(ingredient, cap));
-                    indexToMachineList.add(machine);
+                    List<AbstractMapIngredient> mapIngs = MapIngredientTypeManager.getFrom(ingredient, cap);
+                    resultList.add(mapIngs);
 
-                    if (machine != null) {
-                        machineToIndices.get(machine).add(currentIndex);
-                    }
+                    handlers.add(handler);
+                    machines.add(machine);
+                    isDistincts.add(isDistinct);
+                    isCatalysts.add(isCatalyst);
+
+                    boolean isPhys = !mapIngs.isEmpty() && qol$isFluidOrItemAbstractMapIngredient(mapIngs.get(0));
+                    isPhysicals.add(isPhys);
+
                     currentIndex++;
                 }
             }
@@ -73,30 +96,68 @@ public abstract class RecipeDBMixin {
 
         if (resultList.isEmpty()) return null;
 
-        MetaMachine[] machineArr = indexToMachineList.toArray(new MetaMachine[0]);
-
-        Map<MetaMachine, int[]> finalMachineLookup = new IdentityHashMap<>();
-        List<Integer> normalPoolList = new ArrayList<>();
+        // 构建机器内的隔离映射关系
+        Map<IRecipeHandler<?>, List<Integer>> handlerToPhysicals = new IdentityHashMap<>();
+        Map<MetaMachine, List<Integer>> machineToCatalysts = new IdentityHashMap<>();
+        Map<MetaMachine, List<Integer>> machineToAllPhysicalDistincts = new IdentityHashMap<>();
+        List<Integer> normalPhysicalPool = new ArrayList<>();
+        List<Integer> nonPhysicalPool = new ArrayList<>();
 
         for (int i = 0; i < currentIndex; i++) {
-            MetaMachine m = machineArr[i];
-            if (m == null || !distinctMachines.contains(m)) {
-                normalPoolList.add(i);
+            if (!isPhysicals.get(i)) {
+                nonPhysicalPool.add(i);
+                continue;
+            }
+
+            if (!isDistincts.get(i)) {
+                normalPhysicalPool.add(i);
+            } else {
+                MetaMachine m = machines.get(i);
+                IRecipeHandler<?> h = handlers.get(i);
+
+                if (h != null) {
+                    handlerToPhysicals.computeIfAbsent(h, k -> new ArrayList<>()).add(i);
+                }
+
+                if (m != null) {
+                    machineToAllPhysicalDistincts.computeIfAbsent(m, k -> new ArrayList<>()).add(i);
+                    if (isCatalysts.get(i)) {
+                        machineToCatalysts.computeIfAbsent(m, k -> new ArrayList<>()).add(i);
+                    }
+                }
             }
         }
 
-        for (MetaMachine m : distinctMachines) {
-            if (machineToIndices.containsKey(m)) {
-                finalMachineLookup.put(m, machineToIndices.get(m).stream().mapToInt(i -> i).toArray());
+        int[][] targetLookup = new int[currentIndex][];
+        for (int i = 0; i < currentIndex; i++) {
+            Set<Integer> allowed = new LinkedHashSet<>();
+
+            allowed.addAll(normalPhysicalPool);
+
+            MetaMachine m = machines.get(i);
+            if (m != null && isDistincts.get(i)) {
+                if (isCatalysts.get(i)) {
+                    if (machineToAllPhysicalDistincts.containsKey(m)) {
+                        allowed.addAll(machineToAllPhysicalDistincts.get(m));
+                    }
+                } else {
+                    IRecipeHandler<?> h = handlers.get(i);
+                    if (handlerToPhysicals.containsKey(h)) {
+                        allowed.addAll(handlerToPhysicals.get(h));
+                    }
+                    if (machineToCatalysts.containsKey(m)) {
+                        allowed.addAll(machineToCatalysts.get(m));
+                    }
+                }
             }
+
+            targetLookup[i] = allowed.stream().mapToInt(x -> x).toArray();
         }
 
-        int[] normalPoolArr = normalPoolList.stream().mapToInt(i -> i).toArray();
+        int[] nonPhysicalTargets = nonPhysicalPool.stream().mapToInt(x -> x).toArray();
 
-        RecipeDBStatic.DISTINCT_MACHINES.set(distinctMachines);
-        RecipeDBStatic.INDEX_TO_MACHINE.set(machineArr);
-        RecipeDBStatic.MACHINE_LOOKUP.set(finalMachineLookup);
-        RecipeDBStatic.NORMAL_POOL.set(normalPoolArr);
+        RecipeDBStatic.TARGET_LOOKUP.set(targetLookup);
+        RecipeDBStatic.NON_PHYSICAL_TARGETS.set(nonPhysicalTargets);
 
         return resultList;
     }
@@ -107,24 +168,22 @@ public abstract class RecipeDBMixin {
         @Shadow @Final private Predicate<GTRecipe> predicate;
         @Shadow @Final private Deque<Object> stack;
 
-        @Unique private Set<MetaMachine> distinctMachines;
-        @Unique private MetaMachine[] indexToMachine;
-        @Unique private Map<MetaMachine, int[]> machineLookup;
-        @Unique private int[] normalPool;
+        @Unique private int[][] targetLookup;
+        @Unique private int[] nonPhysicalTargets;
 
         @Inject(method = "<init>", at = @At("RETURN"))
         private void onInit(RecipeDB db, List ingredients, Predicate predicate, CallbackInfo ci) {
-            this.distinctMachines = RecipeDBStatic.DISTINCT_MACHINES.get();
-            this.indexToMachine = RecipeDBStatic.INDEX_TO_MACHINE.get();
-            this.machineLookup = RecipeDBStatic.MACHINE_LOOKUP.get();
-            this.normalPool = RecipeDBStatic.NORMAL_POOL.get();
+            this.targetLookup = RecipeDBStatic.TARGET_LOOKUP.get();
+            this.nonPhysicalTargets = RecipeDBStatic.NON_PHYSICAL_TARGETS.get();
 
-            RecipeDBStatic.DISTINCT_MACHINES.remove();
-            RecipeDBStatic.INDEX_TO_MACHINE.remove();
-            RecipeDBStatic.MACHINE_LOOKUP.remove();
-            RecipeDBStatic.NORMAL_POOL.remove();
+            RecipeDBStatic.TARGET_LOOKUP.remove();
+            RecipeDBStatic.NON_PHYSICAL_TARGETS.remove();
         }
 
+        /**
+         * @author
+         * @reason
+         */
         @Overwrite
         public GTRecipe next() {
             try {
@@ -157,23 +216,13 @@ public abstract class RecipeDBMixin {
                         if (result.right().isPresent()) {
                             Object nextBranch = result.right().get();
 
-                            MetaMachine curMachine = this.indexToMachine[curIndex];
+                            for (int i = this.nonPhysicalTargets.length - 1; i >= 0; i--) {
+                                this.stack.push(RecipeDBStatic.searchFrameConstructor.newInstance(this.nonPhysicalTargets[i], nextBranch));
+                            }
 
-                            boolean isMachineDistinct = curMachine != null && this.distinctMachines != null && this.distinctMachines.contains(curMachine);
-
-                            if (isMachineDistinct) {
-                                int[] targets = this.machineLookup.get(curMachine);
-                                if (targets != null) {
-                                    for (int i = targets.length - 1; i >= 0; i--) {
-                                        this.stack.push(RecipeDBStatic.searchFrameConstructor.newInstance(targets[i], nextBranch));
-                                    }
-                                }
-                            } else {
-                                if (this.normalPool != null) {
-                                    for (int i = this.normalPool.length - 1; i >= 0; i--) {
-                                        this.stack.push(RecipeDBStatic.searchFrameConstructor.newInstance(this.normalPool[i], nextBranch));
-                                    }
-                                }
+                            int[] physicalTargets = this.targetLookup[curIndex];
+                            for (int i = physicalTargets.length - 1; i >= 0; i--) {
+                                this.stack.push(RecipeDBStatic.searchFrameConstructor.newInstance(physicalTargets[i], nextBranch));
                             }
                         }
                     }

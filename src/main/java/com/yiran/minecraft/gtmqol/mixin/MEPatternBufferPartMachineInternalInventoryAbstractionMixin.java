@@ -15,6 +15,8 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.yiran.minecraft.gtmqol.api.NotifiableCatalystFluidTank;
+import com.yiran.minecraft.gtmqol.api.NotifiableItemStackCatalystHandler;
 import com.yiran.minecraft.gtmqol.integration.ae2.AbstractMEPatternBufferPartMachine;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
@@ -93,7 +95,7 @@ public abstract class MEPatternBufferPartMachineInternalInventoryAbstractionMixi
     @WrapOperation(method = "<init>", at = @At("MIXINEXTRAS:EXPRESSION"))
     private NotifiableItemStackHandler initSharedInventory(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO, Operation<NotifiableItemStackHandler> original) {
         if (!(machine instanceof AbstractMEPatternBufferPartMachine apbm)) {
-            return original.call(machine, slots, handlerIO, capabilityIO);
+            return new NotifiableItemStackCatalystHandler(machine, slots, handlerIO, capabilityIO);
         }
 
         return apbm.createSharedItemStackHandler();
@@ -104,7 +106,7 @@ public abstract class MEPatternBufferPartMachineInternalInventoryAbstractionMixi
     @WrapOperation(method = "<init>", at = @At("MIXINEXTRAS:EXPRESSION"))
     private NotifiableFluidTank initSharedTank(MetaMachine machine, int slots, int capacity, IO io, IO capabilityIO, Operation<NotifiableFluidTank> original) {
         if (!(machine instanceof AbstractMEPatternBufferPartMachine apbm)) {
-            return original.call(machine, slots, capacity, io, capabilityIO);
+            return new NotifiableCatalystFluidTank(machine, slots, capacity, io, capabilityIO);
         }
 
         return apbm.createSharedFluidTank();

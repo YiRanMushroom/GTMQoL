@@ -7,7 +7,11 @@ import com.extendedae_plus.api.crafting.ScaledProcessingPattern;
 import com.extendedae_plus.api.smartDoubling.ISmartDoublingAwarePattern;
 import com.extendedae_plus.api.smartDoubling.ISmartDoublingHolder;
 import com.google.common.collect.BiMap;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.llamalad7.mixinextras.expression.Definition;
@@ -18,11 +22,12 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.yiran.minecraft.gtmqol.api.NotifiableCatalystFluidTank;
+import com.yiran.minecraft.gtmqol.api.NotifiableItemStackCatalystHandler;
 import com.yiran.minecraft.gtmqol.common.configurator.SmartMultiplierConfigurator;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import net.neganote.gtutilities.integration.ae2.machine.ExpandedPatternBufferPartMachine;
-import net.neganote.gtutilities.integration.jade.provider.ExpandedMEPatternBufferProvider;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -135,6 +140,20 @@ public abstract class ExpandedMEPatternBuffer$AddSmartMultiply$Mixin implements 
         }
 
         return original;
+    }
+
+    @Definition(id = "shareInventory", field = "Lnet/neganote/gtutilities/integration/ae2/machine/ExpandedPatternBufferPartMachine;shareInventory:Lcom/gregtechceu/gtceu/api/machine/trait/NotifiableItemStackHandler;")
+    @Expression("this.shareInventory = @(?)")
+    @WrapOperation(method = "<init>", at = @At("MIXINEXTRAS:EXPRESSION"))
+    private NotifiableItemStackHandler initSharedInventory(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO, Operation<NotifiableItemStackHandler> original) {
+        return new NotifiableItemStackCatalystHandler(machine, slots, handlerIO, capabilityIO);
+    }
+
+    @Definition(id = "shareTank", field = "Lnet/neganote/gtutilities/integration/ae2/machine/ExpandedPatternBufferPartMachine;shareTank:Lcom/gregtechceu/gtceu/api/machine/trait/NotifiableFluidTank;")
+    @Expression("this.shareTank = @(?)")
+    @WrapOperation(method = "<init>", at = @At("MIXINEXTRAS:EXPRESSION"))
+    private NotifiableFluidTank initSharedTank(MetaMachine machine, int slots, int capacity, IO io, IO capabilityIO, Operation<NotifiableFluidTank> original) {
+        return new NotifiableCatalystFluidTank(machine, slots, capacity, io, capabilityIO);
     }
 }
 
