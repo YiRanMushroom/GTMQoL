@@ -34,10 +34,6 @@ public class GCYMMachines$Misc$Mixin {
     @WrapOperation(method = "<clinit>", at = @At("MIXINEXTRAS:EXPRESSION"))
     private static MachineBuilder addModifierForBlastRecipes(MultiblockMachineBuilder instance, GTRecipeType gtRecipeType, Operation<MachineBuilder> original) {
         return instance.recipeTypes(GTRecipeTypes.BLAST_RECIPES, GCYMRecipeTypes.ALLOY_BLAST_RECIPES);
-
-        /*
-
-        * */
     }
 
     @Definition(id = "translatableS", method = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;)Lnet/minecraft/network/chat/MutableComponent;")
@@ -50,5 +46,12 @@ public class GCYMMachines$Misc$Mixin {
     private static MachineBuilder addTooltipForBlastRecipes(MultiblockMachineBuilder instance, Component[] components, Operation<MachineBuilder> original) {
         return instance.tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
                 Component.translatable("gtceu.electric_blast_furnace"), Component.translatable("gtceu.alloy_blast_smelter")));
+    }
+
+    @Definition(id = "where", method = "Lcom/gregtechceu/gtceu/api/pattern/FactoryBlockPattern;where(CLcom/gregtechceu/gtceu/api/pattern/TraceabilityPredicate;)Lcom/gregtechceu/gtceu/api/pattern/FactoryBlockPattern;")
+    @Expression("?.where('Y', @(?))")
+    @ModifyExpressionValue(method = "lambda$static$40", at = @At("MIXINEXTRAS:EXPRESSION"))
+    private static TraceabilityPredicate addModifierForAssemblyLine(TraceabilityPredicate original) {
+        return original.or(Predicates.abilities(RecipeModifierPartMachines.QOL_RECIPE_MODIFIER));
     }
 }
