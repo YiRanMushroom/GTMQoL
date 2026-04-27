@@ -67,12 +67,12 @@ object QoLRecipeTypes {
         }
 
         MAGICAL_ASSEMBLER_RECIPES = GTRecipeTypes.register("gtmqol:magical_assembler", "electric")
-            .setMaxIOSize(6, 3, 3, 3)
+            .setMaxIOSize(16, 1, 4, 1)
             .setEUIO(IO.IN)
             .prepareBuilder { recipeBuilder ->
                 recipeBuilder.EUt(GTValues.VA[1].toLong())
             }
-            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, ProgressTexture.FillDirection.LEFT_TO_RIGHT)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ASSEMBLER, ProgressTexture.FillDirection.LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.SCIENCE)
 
         if (ConfigHolder.instance.addonConfig.enableElectricImplosionRecipes) {

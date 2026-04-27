@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix
 import com.gregtechceu.gtceu.common.data.*
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines
+import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines
 import com.gregtechceu.gtceu.data.recipe.CustomTags
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
@@ -83,6 +84,47 @@ object QoLRecipes {
         if (ConfigHolder.instance.addonConfig.enablePCBFactory) {
             PCBFactoryMachine.registerDefaultRecipes(provider)
         }
+
+        if (ConfigHolder.instance.addonConfig.addRecipesForOverpoweredItems) {
+            registerOPItemRecipes(provider)
+        }
+    }
+
+    private fun registerOPItemRecipes(provider: Consumer<FinishedRecipe>) {
+        QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES.asNotNull().recipeBuilder("gtmqol:produce_creative_data_access_hatch")
+            .inputItems(GTResearchMachines.RESEARCH_STATION)
+            .inputItems(GTResearchMachines.DATA_BANK, 4)
+            .inputItems(GTResearchMachines.NETWORK_SWITCH, 16)
+            .inputItems(GTResearchMachines.HIGH_PERFORMANCE_COMPUTING_ARRAY, 64)
+            .inputItems(GTResearchMachines.HPCA_BRIDGE_COMPONENT, 64)
+            .inputItems(GTResearchMachines.HPCA_ADVANCED_COMPUTATION_COMPONENT, 64)
+            .inputItems(GTResearchMachines.HPCA_ADVANCED_COMPUTATION_COMPONENT, 64)
+            .inputItems(GTResearchMachines.HPCA_COMPUTATION_COMPONENT, 64)
+            .inputItems(GTResearchMachines.HPCA_ACTIVE_COOLER_COMPONENT, 64)
+            .inputItems(GTResearchMachines.HPCA_ACTIVE_COOLER_COMPONENT, 64)
+            .inputItems(GTResearchMachines.HPCA_ACTIVE_COOLER_COMPONENT, 64)
+            .inputItems(GTResearchMachines.HPCA_ACTIVE_COOLER_COMPONENT, 64)
+            .inputItems(GTResearchMachines.HPCA_ACTIVE_COOLER_COMPONENT, 64)
+            .inputItems(GTResearchMachines.ADVANCED_DATA_ACCESS_HATCH)
+            .inputFluids(GTMaterials.Lubricant, 1000 * 64)
+            .inputFluids(GTMaterials.PCBCoolant, 1000 * 64)
+            .inputFluids(GTMaterials.Polybenzimidazole, 144 * 64)
+            .inputFluids(GTMaterials.Tritanium, 144 * 64)
+            .outputItems(GTResearchMachines.CREATIVE_DATA_ACCESS_HATCH)
+            .duration(20 * 60 * 20)
+            .EUt(VA[ZPM].toLong())
+            .save(provider)
+
+        QoLRecipeTypes.MAGICAL_ASSEMBLER_RECIPES.asNotNull().recipeBuilder("gtmqol:copy_creative_data_access_hatch")
+            .notConsumable(GTResearchMachines.CREATIVE_DATA_ACCESS_HATCH.asStack())
+            .inputItems(GTResearchMachines.ADVANCED_DATA_ACCESS_HATCH)
+            .outputItems(GTResearchMachines.CREATIVE_DATA_ACCESS_HATCH)
+            .circuitMeta(10)
+            .duration(20 * 20)
+            .EUt(VA[ZPM].toLong())
+            .save(provider)
+
+
     }
 
     private fun registerMiscAERecipes(provider: Consumer<FinishedRecipe>) {

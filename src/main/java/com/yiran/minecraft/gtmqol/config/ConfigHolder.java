@@ -115,6 +115,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Add custom GCYM machines and add additional recipe type supports to them", "Default: true"})
         public boolean additionalGCYMMachinesAndAdditionalRecipes = true;
+
+        @Configurable
+        @Configurable.Comment({"Add recipes for overpowered items/machines", "Default: true"})
+        public boolean addRecipesForOverpoweredItems = true;
     }
 
     @Configurable
