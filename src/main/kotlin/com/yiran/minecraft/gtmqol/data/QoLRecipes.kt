@@ -4,6 +4,7 @@ import appeng.api.util.AEColor
 import appeng.core.definitions.AEBlocks.INSCRIBER
 import appeng.core.definitions.AEItems
 import appeng.core.definitions.AEParts
+import com.extendedae_plus.ExtendedAEPlus
 import com.gregtechceu.gtceu.api.GTValues.*
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix
 import com.gregtechceu.gtceu.common.data.*
@@ -14,6 +15,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
 import com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.registerMachineRecipe
+import com.lowdragmc.lowdraglib.LDLib
 import com.yiran.minecraft.gtmqol.GTMQoL
 import com.yiran.minecraft.gtmqol.ModUtils.asNotNull
 import com.yiran.minecraft.gtmqol.ae2PresentedAndIntegrationEnabled
@@ -176,6 +178,17 @@ object QoLRecipes {
             .duration(1200)
             .EUt(VA[MV].toLong())
             .save(provider)
+
+        if (LDLib.isModLoaded("extendedae_plus")) {
+            QoLRecipeTypes.ELECTRIC_IMPLOSION_RECIPES.asNotNull().recipeBuilder("gtmqol:oblivion_singularity")
+                .inputItems(AEItems.SINGULARITY.asItem())
+                .inputItems(TagPrefix.gem, GTMaterials.NetherStar)
+                .inputItems(TagPrefix.block, GTMaterials.Netherite)
+                .outputItems(com.extendedae_plus.init.ModItems.OBLIVION_SINGULARITY)
+                .duration(1)
+                .EUt(VA[UV].toLong())
+                .save(provider)
+        }
     }
 
     private fun registerMiscRecipes(provider: Consumer<FinishedRecipe>) {
