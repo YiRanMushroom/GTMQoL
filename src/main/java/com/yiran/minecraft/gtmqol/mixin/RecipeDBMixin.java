@@ -43,10 +43,6 @@ public abstract class RecipeDBMixin {
                 || ingredient instanceof CustomMapIngredient;
     }
 
-    /**
-     * @author
-     * @reason
-     */
     @Overwrite
     private @Nullable List<List<AbstractMapIngredient>> fromHolder(@NotNull IRecipeCapabilityHolder holder) {
         var handlerMap = holder.getCapabilitiesFlat().getOrDefault(IO.IN, Collections.emptyMap());
@@ -227,10 +223,6 @@ public abstract class RecipeDBMixin {
             RecipeDBStatic.NON_PHYSICAL_TARGETS.remove();
         }
 
-        /**
-         * @author
-         * @reason
-         */
         @Overwrite
         public GTRecipe next() {
             try {
