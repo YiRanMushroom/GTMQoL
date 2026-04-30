@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
+import com.lowdragmc.lowdraglib.Platform
 import com.yiran.minecraft.gtmqol.ModUtils
 import com.yiran.minecraft.gtmqol.api.RecipeModifierPartMachines
 import com.yiran.minecraft.gtmqol.common.multiblocks.SingleHatchTierSkippingWorkableElectricMachine
@@ -207,6 +208,8 @@ object AddModularMultiblocksLogic {
     }
 
     init {
-        ClientDynamicModelRegisterer.onGTCEuClientSetup(::runAllClientSetup)
+        if (Platform.isClient()) {
+            ClientDynamicModelRegisterer.onGTCEuClientSetup(::runAllClientSetup)
+        }
     }
 }
