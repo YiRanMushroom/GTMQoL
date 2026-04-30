@@ -419,7 +419,7 @@ class PCBFactoryMachine(holder: IMachineBlockEntity) :
                 .where("a", Predicates.controller(Predicates.blocks(definition.get())))
                 .where(
                     "j", Predicates.blocks(GCYMBlocks.CASING_WATERTIGHT.get()).setMinGlobalLimited(50)
-                        .or(Predicates.autoAbilities(*definition.getRecipeTypes()))
+                        .or(Predicates.autoAbilities(*definition.recipeTypes))
                         .or(Predicates.autoAbilities(true, false, false))
                 )
                 .where("b", Predicates.blocks(GTBlocks.CASING_STAINLESS_CLEAN.get()))
@@ -471,6 +471,7 @@ class PCBFactoryMachine(holder: IMachineBlockEntity) :
                 .outputItems(GTItems.BASIC_CIRCUIT_BOARD, 16)
                 .duration(10 * 20 * 4)
                 .EUt(VA[LV].toLong())
+                .circuitMeta(1)
                 .save(provider)
 
             listOf(GTMaterials.Iron3Chloride, GTMaterials.SodiumPersulfate).forEach { material ->
@@ -490,6 +491,7 @@ class PCBFactoryMachine(holder: IMachineBlockEntity) :
                     .outputItems(GTItems.GOOD_CIRCUIT_BOARD, 16)
                     .duration(15 * 20 * 4)
                     .EUt(VA[LV].toLong())
+                    .circuitMeta(1)
                     .save(provider)
 
                 listOf(
@@ -506,6 +508,7 @@ class PCBFactoryMachine(holder: IMachineBlockEntity) :
                         .outputItems(GTItems.PLASTIC_CIRCUIT_BOARD, outputMultiplier * 16)
                         .duration(30 * 20 * 4)
                         .EUt(VA[LV].toLong())
+                        .circuitMeta(1)
                         .save(provider)
                 }
 
@@ -518,6 +521,7 @@ class PCBFactoryMachine(holder: IMachineBlockEntity) :
                     .outputItems(GTItems.ADVANCED_CIRCUIT_BOARD, 16)
                     .duration(45 * 20 * 4)
                     .EUt(VA[LV].toLong())
+                    .circuitMeta(1)
                     .save(provider)
 
                 PCBRecipeType.recipeBuilder("fiber_reinforced_circuit_board_from_${material.name}")
@@ -526,9 +530,10 @@ class PCBFactoryMachine(holder: IMachineBlockEntity) :
                     .inputItems(TagPrefix.foil, GTMaterials.AnnealedCopper, 32)
                     .inputItems(TagPrefix.foil, GTMaterials.AnnealedCopper, 48)
                     .applyFluidInput(material, 4000)
-                    .outputItems(GTItems.ELITE_CIRCUIT_BOARD, 16)
+                    .outputItems(GTItems.EXTREME_CIRCUIT_BOARD, 16)
                     .duration(60 * 20 * 4)
                     .EUt(VA[LV].toLong())
+                    .circuitMeta(1)
                     .save(provider)
 
                 PCBRecipeType.recipeBuilder("multilayer_fiber_reinforced_circuit_board_from_${material.name}")
@@ -539,9 +544,10 @@ class PCBFactoryMachine(holder: IMachineBlockEntity) :
                     .inputFluids(GTMaterials.SulfuricAcid, 2000)
                     .inputItems(TagPrefix.foil, GTMaterials.Platinum, 32)
                     .applyFluidInput(material, 2000)
-                    .outputItems(GTItems.EXTREME_CIRCUIT_BOARD, 16)
+                    .outputItems(GTItems.ELITE_CIRCUIT_BOARD, 16)
                     .duration(75 * 20 * 4)
                     .EUt(VA[LV].toLong())
+                    .circuitMeta(2)
                     .save(provider)
             }
 
@@ -555,21 +561,6 @@ class PCBFactoryMachine(holder: IMachineBlockEntity) :
                     .inputItems(TagPrefix.foil, GTMaterials.NiobiumTitanium, 4)
                     .inputFluids(GTMaterials.SterileGrowthMedium, 1000)
                     .outputItems(GTItems.WETWARE_CIRCUIT_BOARD, 16)
-                    .duration(25 * 20 * 4)
-                    .EUt(VA[LV].toLong())
-                    .save(provider)
-
-                PCBRecipeType.recipeBuilder("neuro_circuit_board")
-                    .inputItems(TagPrefix.plate, GTMaterials.ReinforcedEpoxyResin, 8)
-                    .inputItems(TagPrefix.plate, GTMaterials.AnnealedCopper, 16)
-                    .inputFluids(GTMaterials.SulfuricAcid, 1000)
-                    .inputItems(TagPrefix.plate, GTMaterials.Palladium, 8)
-                    .inputFluids(GTMaterials.SulfuricAcid, 2000)
-                    .inputItems(TagPrefix.plate, GTMaterials.NiobiumTitanium, 4)
-                    .inputItems(GTItems.STEM_CELLS, 16)
-                    .inputItems(TagPrefix.plate, GTMaterials.Electrum, 16)
-                    .inputFluids(GTMaterials.SterileGrowthMedium, 1500)
-                    .outputItems(GTItems.NEURO_PROCESSOR, 16)
                     .duration(25 * 20 * 4)
                     .EUt(VA[LV].toLong())
                     .save(provider)

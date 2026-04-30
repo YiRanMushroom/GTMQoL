@@ -9,6 +9,7 @@ ServerEvents.recipes(event => {
         .inputFluids("gtceu:sterilized_growth_medium 1000")
         .itemOutputs("16x gtceu:wetware_printed_circuit_board")
         .duration(25 * 20 * 4)
+        .circuitMeta(1)
         .EUt(30)
 
     event.recipes.gtceu["gtmqol_pcb_factory"]("wetware_circuit_board_hexafluorosilicic_acid")
@@ -21,6 +22,7 @@ ServerEvents.recipes(event => {
         .inputFluids("gtceu:sterilized_growth_medium 1000")
         .itemOutputs("16x gtceu:wetware_printed_circuit_board")
         .duration(25 * 20 * 4)
+        .circuitMeta(1)
         .EUt(30)
 
     event.recipes.gtceu["gtmqol_pcb_factory"]("carbon_mesh_reinforced_printed_circuit_board_oxalic_acid")

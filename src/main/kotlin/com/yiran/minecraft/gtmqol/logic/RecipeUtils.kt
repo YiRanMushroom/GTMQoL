@@ -39,7 +39,7 @@ object RecipeUtils {
     }
 
     fun GTRecipe.copyMutableFrom(source: GTRecipe): GTRecipe {
-        val copied = source.copy()
+        val copied = this.copy()
         copied.parallels = source.parallels
         copied.subtickParallels = source.subtickParallels
         copied.ocLevel = source.ocLevel
