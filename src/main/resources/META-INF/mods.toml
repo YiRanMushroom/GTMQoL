@@ -30,6 +30,6 @@ side = "BOTH"
 [[dependencies.gtmqol]]
 modId = "gtceu"
 mandatory = true
-versionRange = "[${gtceu_version},)"
+versionRange = "[${gtceu_min_version},)"
 ordering = "AFTER"
 side = "BOTH"

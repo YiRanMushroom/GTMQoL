@@ -1,0 +1,93 @@
+# 编码原则
+
+这是个人非严肃项目，不是生产系统。
+
+## 优先复用，而非重造轮子
+
+- 遇到常见问题（解析、验证、重试、缓存等），先看有没有现成库，再考虑自己写
+- 引入新依赖前，先看一眼它的实现/源码，理解它是怎么做的，再决定怎么用
+- 除非这个库明显不合适（性能、维护状态、API 设计问题），否则不要绕过它自己写一套
+
+## 抽象由我主导
+
+- 不要主动抽取「通用」接口或框架层
+- 如果你（Claude）认为某处需要抽象，先提出来、说明理由，等我确认后再做
+- 默认保持具体、直给的实现，除非我明确要求抽象
+
+## 可以尝试，但 hacky 的东西要报备
+
+- 可以用一些取巧/实验性的写法
+- 但凡是你会称之为 "hacky" 的做法（猴子补丁、绕过类型系统、依赖未公开行为等），
+  必须先说明，我确认「思考过后没有问题」才能用
+- 默认不要在没有告知的情况下引入 hacky 方案
+
+## 找不到答案时，去跑，而不是到处翻
+
+- 不要靠大面积 grep / 读文件来猜问题在哪。让我跑一遍（见下面「客户端由我来跑」，
+  Claude 自己不跑 Gradle），用报错告诉你真正的症结，再针对性地去读那一处源码
+- 编译器和运行日志是最可靠的信息源；推断出的 API 要请我构建一次来验证
+- 一次只推进一个错误，不要为了「可能也缺」而预先堆依赖或加代码
+
+## 客户端由我来跑
+
+- **Claude 不要跑任何 Gradle 任务**，包括 `compileJava`、`build`，除非我明确要求你跑。
+- 尤其**不要运行 Minecraft 客户端/服务端/数据生成**（`runClient`、`runServer`、`runData` 及任何启动游戏的任务）。我自己跑。
+- 不要为了「看看有哪些任务/依赖」去跑 `tasks`、`dependencies` 等任务；需要信息时让我跑完把报错贴回来。
+- 需要验证游戏内行为时，告诉我要看什么（日志关键字、物品/方块、JEI 条目），
+  由我跑完把日志或现象贴回来。
+
+# 构建环境
+
+Loom 1.13 要求 Gradle JVM ≥ 21，而 Minecraft 1.20.1 必须跑 Java 17，两者不能是同一个 JDK。
+IDEA 自带的 JBR 是 25，Gradle 8.12 不支持（表现为 `Could not create task ':test'`）。
+
+```powershell
+$env:JAVA_HOME="$env:USERPROFILE\.jdks\corretto-23.0.2"   # 跑 Gradle
+$env:JDK17="$env:USERPROFILE\.jdks\ms-17.0.20.1"          # toolchain 取它跑客户端
+$env:Path="$env:JAVA_HOME\bin;$env:Path"
+.\gradlew.bat runClient
+```
+
+`JDK17` 这个环境变量由 `gradle.properties` 里的 `org.gradle.java.installations.fromEnv` 读取。
+
+## `Waiting for lock to be released...`（fabric-loom cache）
+
+Loom 在配置阶段持有全局 `~/.gradle/caches/fabric-loom` 锁。IDEA 打开项目会自动 Gradle sync，
+依赖变动后 sync 要重新 remap，耗时较长；这期间再启动任何 Gradle 任务都会卡在等锁。
+重启 IDEA 会再次触发 sync，所以「重启也一样」。
+
+- 先等 IDEA 的 sync 跑完再点运行
+- 若持锁 pid 已不存在（`Get-Process -Id <pid>` 无结果），锁文件
+  `~/.gradle/caches/fabric-loom/.<hash>.lock` 是残留，可以删掉
+- Claude 不要在后台起 Gradle 任务后不管，也会占这把锁
+
+## GTCEu v8 依赖
+
+所有依赖问题都是同一个根因，两层叠加：
+
+1. GTCEu 用 ModDevGradle（legacyForge）构建，依赖都声明在 `modApi`/`modImplementation`（重映射配置）
+   和 `jarJar` 里，这些不会写进发布的 `.pom`/`.module`，所以 Gradle 不会自动下载任何东西。
+2. GTCEu 把运行时需要的库都 jar-in-jar 进了自己的 jar（玩家那边没问题），但 Loom 的 dev 环境
+   **不加载依赖模组的内嵌 jar**，所以开发时要逐个显式声明。
+
+**以 GTCEu jar 里的 `META-INF/jarjar/metadata.json` 为准**（v8 snapshot 时是这四个），换版本时重新对一遍：
+
+- `com.tterrag.registrate:Registrate` — 也出现在 GTCEu 公开 API 里，所以是 `modImplementation`
+- `dev.toma.configuration:configuration-1.20.1` — 需 `transitive = false`（pom 泄露了未发布的 forge 坐标）
+- `brachy.modularui:modularui-mc1.20.1`（maven.gtceu.com）— 它在 dev 环境（`!FMLLoader.isProduction()`）
+  会注册测试物品，其中 `TestCurioItem` 依赖 Curios，所以 dev 还要 `modLocalRuntime` Curios
+  （`top.theillusivec4.curios:curios-forge`，maven.theillusivec4.top；GTCEu 自己的 dev 也带着）。
+  缺了表现为 `Failed to create mod instance. ModID: modularui` + `NoClassDefFoundError: .../ICurioItem`
+- `io.github.llamalad7:mixinextras-forge` — 本模组用 `include` 打进 jar（测试/发布都自带）；
+  `-forge` 只是外壳，真正的类在 `-common`，所以 `-common` 也要上 classpath
+
+`gtceu_version` 固定在某个带时间戳的 snapshot 构建上，由我手动升级，不要改回 `8.0.0-SNAPSHOT`。
+`mods.toml` 的下限另用 `gtceu_min_version`：GTCEu 运行时自报的版本是 `8.0.0-SNAPSHOT+<commit>`，
+比带时间戳的坐标小，两者共用一个值会让 Forge 报版本过低。
+
+v8 已经不用 LDLib，不要加。看内嵌列表时注意 Gradle 缓存里可能同时有 7.x 和 8.x 的 jar，别拿错。
+
+依赖源码看 GitHub `GregTechCEu/GregTech-Modern` 的 `1.20.1` 分支：`dependencies.gradle`、
+`src/main/templates/META-INF/mods.toml`；迁移说明在 `docs/content/Modpacks/Changes/v8.0.0.md`。
+
+查 GTCEu 真实 API 时，解包它的 sources jar 比猜快得多（`.gtceu-src/`，已 gitignore）。
