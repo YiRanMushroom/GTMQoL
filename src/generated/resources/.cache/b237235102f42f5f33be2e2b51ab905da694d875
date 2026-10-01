@@ -1,0 +1,15 @@
+// 1.20.1	2026-10-01T16:37:40.1445033	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+aca98a7ff66b618550bdf4c3a5b261136fbad1fd assets/gtmqol/blockstates/wireless_steam_accessor.json
+2e82ada2357009506766303d34385202c9872a49 assets/gtmqol/blockstates/wireless_steam_input_hatch.json
+80a5694e31e07cc22f73fade3f7028d3c0d51723 assets/gtmqol/blockstates/wireless_steam_monitor.json
+1be154f64bcad9a5372991552010f834e32719ae assets/gtmqol/blockstates/wireless_steam_output_hatch.json
+4ee3d59ac26f97fbf692e84ea5ff49d322dbb8c0 assets/gtmqol/lang/en_ud.json
+ca8692f8ff53442dd0b1dd6097e09b9875d7c0c3 assets/gtmqol/lang/en_us.json
+2d8b6f2bfa6d15a2aac4ea4762e74f6d5d7f0d80 assets/gtmqol/models/block/machine/wireless_steam_accessor.json
+6d968bdb44048c1ee2200c9df5c113ca8d157fb3 assets/gtmqol/models/block/machine/wireless_steam_input_hatch.json
+8c344632fcce697932293a6128bb28014963beb5 assets/gtmqol/models/block/machine/wireless_steam_monitor.json
+6bbca41102a6e455a488ba436d6592f4eac8141b assets/gtmqol/models/block/machine/wireless_steam_output_hatch.json
+b4cdcc16dc19259982b49c597744d496d7bd45ed assets/gtmqol/models/item/wireless_steam_accessor.json
+334e9df826bed680b16aa63e06dfd19306b1fb47 assets/gtmqol/models/item/wireless_steam_input_hatch.json
+0615c0fd6256625555591f7c6426eae85b6c6797 assets/gtmqol/models/item/wireless_steam_monitor.json
+71bf00343ace13462831d3cb1ef096bf8c1eb7c4 assets/gtmqol/models/item/wireless_steam_output_hatch.json

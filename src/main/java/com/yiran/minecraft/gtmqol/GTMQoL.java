@@ -7,6 +7,8 @@ import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.integration.IntegrationTests;
 import com.yiran.minecraft.gtmqol.integration.KubeJSDataGenFix;
+import com.yiran.minecraft.gtmqol.wireless.WirelessNetworks;
+import com.yiran.minecraft.gtmqol.wireless.steam.WirelessSteamMachines;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -25,7 +27,9 @@ public final class GTMQoL {
 
     public GTMQoL(FMLJavaModLoadingContext context) {
         IEventBus modBus = context.getModEventBus();
+        GTMQoLAddon.registrate().registerEventListeners(modBus);
         GTMQoLConfig.init();
+        WirelessNetworks.init();
         modBus.addGenericListener(MachineDefinition.class, this::onRegisterMachines);
         modBus.addListener(this::onRegisterDynamicResources);
 
@@ -38,9 +42,12 @@ public final class GTMQoL {
      * GTCEu posts this at the end of {@code GTMachines.init()}, right before it freezes the machine
      * registry. {@code IGTAddon.initializeAddon()} runs after that, so machines registered there fail with
      * "registry gtceu:machine has been frozen".
+     *
      */
     private void onRegisterMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
-        if (GTMQoLConfig.INSTANCE.integrationTests.enabled) {
+        WirelessSteamMachines.init();
+        // do not run integration tests in data generation, They are only for testing in a running game.
+        if (GTMQoLConfig.INSTANCE.integrationTests.enabled && !FMLLoader.getLaunchHandler().isData()) {
             IntegrationTests.registerExampleMachines();
         }
     }

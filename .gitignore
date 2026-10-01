@@ -54,3 +54,5 @@ bin/
 /.gtceu-src
 /.registrate-src
 /runclient.log
+/.gtmthings-src
+/.modularui-src
