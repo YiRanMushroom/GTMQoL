@@ -1,0 +1,131 @@
+plugins {
+    id 'dev.architectury.loom' version '1.13.467'
+    id 'maven-publish'
+}
+
+base {
+    archivesName = project.archives_base_name
+}
+
+version = project.mod_version
+group = project.maven_group
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    withSourcesJar()
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ['src/main/java']
+    }
+}
+
+loom {
+    silentMojangMappingsLicense()
+
+    runs {
+        client {
+            programArgs '--width', '1280', '--height', '720'
+            ideConfigGenerated true
+            runDir 'run'
+        }
+        server {
+            ideConfigGenerated true
+            runDir 'run'
+        }
+    }
+
+    mods {
+        gtmqol {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name = 'GTCEu'
+        url = 'https://maven.gtceu.com'
+        content {
+            includeGroup 'com.gregtechceu.gtceu'
+        }
+    }
+    maven {
+        name = 'Parchment'
+        url = 'https://maven.parchmentmc.org'
+    }
+    maven {
+        name = 'LDLib'
+        url = 'https://maven.firstdarkdev.xyz/snapshots/'
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    forge "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
+
+    mappings loom.layered {
+        officialMojangMappings {
+            nameSyntheticMembers = false
+        }
+        parchment "org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchment_mappings}@zip"
+    }
+
+    modImplementation "com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtceu_version}"
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    def properties = [
+        mod_license: project.mod_license,
+        mod_id: project.mod_id,
+        version: project.version,
+        mod_name: project.mod_name,
+        mod_url: project.mod_url,
+        mod_author: project.mod_author,
+        forge_version: project.forge_version.split('\\.')[0],
+        minecraft_version: project.minecraft_version,
+        gtceu_version: project.gtceu_version
+    ]
+    inputs.properties properties
+
+    filesMatching('META-INF/mods.toml') {
+        expand properties
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
+
+jar {
+    manifest {
+        attributes([
+            'Specification-Title': project.mod_id,
+            'Specification-Vendor': project.mod_author,
+            'Specification-Version': '1',
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version,
+            'Implementation-Vendor': project.mod_author,
+            'Implementation-Timestamp': System.currentTimeMillis().toString()
+        ])
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+tasks.named('sourcesJar') {
+    exclude { it.file.absolutePath.contains('generated') }
+}
