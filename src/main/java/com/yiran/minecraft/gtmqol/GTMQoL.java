@@ -3,6 +3,7 @@ package com.yiran.minecraft.gtmqol;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.integration.IntegrationTests;
@@ -25,6 +26,8 @@ public final class GTMQoL {
     public static final String MOD_ID = "gtmqol";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
+    private static final ResourceLocation TEMPLATE_LOCATION = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
+
     public GTMQoL(FMLJavaModLoadingContext context) {
         IEventBus modBus = context.getModEventBus();
         GTMQoLAddon.registrate().registerEventListeners(modBus);
@@ -36,6 +39,28 @@ public final class GTMQoL {
         if (FMLLoader.getLaunchHandler().isData() && ModList.get().isLoaded("kubejs")) {
             KubeJSDataGenFix.apply();
         }
+    }
+
+    /**
+     * Same as {@code GTCEu.id}: {@code "ns:path"} is parsed as is, anything else goes under {@code gtmqol},
+     * with camelCase converted to snake_case.
+     */
+    public static ResourceLocation id(String path) {
+        if (path.isBlank()) {
+            return TEMPLATE_LOCATION;
+        }
+
+        int i = path.indexOf(':');
+        if (i > 0) {
+            return ResourceLocation.parse(path);
+        } else if (i == 0) {
+            path = path.substring(i + 1);
+        }
+        // only convert it to camel_case if it has any uppercase to begin with
+        if (FormattingUtil.hasUpperCase(path)) {
+            path = FormattingUtil.toLowerCaseUnderscore(path);
+        }
+        return TEMPLATE_LOCATION.withPath(path);
     }
 
     /**
