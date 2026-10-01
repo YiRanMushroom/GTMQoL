@@ -6,10 +6,12 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
+import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.wireless.WirelessBindingTrait;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.IS_FORMED;
 
@@ -20,6 +22,8 @@ public final class WirelessSteamMachines {
     private static final String HATCH_OUTPUT_TOOLTIP_KEY = "gtmqol.wireless.tooltip.steam_output_hatch";
     private static final String ACCESSOR_TOOLTIP_KEY = "gtmqol.wireless.tooltip.steam_accessor";
     private static final String MONITOR_TOOLTIP_KEY = "gtmqol.wireless.tooltip.steam_monitor";
+
+    private static final ResourceLocation WIRELESS_OVERLAY = GTMQoL.id("block/overlay/machine/overlay_wireless");
 
     public static MachineDefinition STEAM_INPUT_HATCH;
     public static MachineDefinition STEAM_OUTPUT_HATCH;
@@ -34,7 +38,7 @@ public final class WirelessSteamMachines {
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.STEAM)
                 .modelProperty(IS_FORMED, false)
-                .colorOverlaySteamHullModel(GTCEu.id("block/overlay/machine/overlay_fluid_hatch_input"),
+                .colorOverlaySteamHullModel(WIRELESS_OVERLAY,
                         GTCEu.id("block/overlay/machine/overlay_pipe"),
                         GTCEu.id("block/overlay/machine/overlay_pipe_in_emissive"))
                 .themeId(GTGuiTheme.BRONZE.getId())
@@ -49,7 +53,7 @@ public final class WirelessSteamMachines {
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.EXPORT_FLUIDS)
                 .modelProperty(IS_FORMED, false)
-                .colorOverlaySteamHullModel(GTCEu.id("block/overlay/machine/overlay_fluid_hatch_output"),
+                .colorOverlaySteamHullModel(WIRELESS_OVERLAY,
                         GTCEu.id("block/overlay/machine/overlay_pipe"),
                         GTCEu.id("block/overlay/machine/overlay_pipe_out_emissive"))
                 .themeId(GTGuiTheme.BRONZE.getId())

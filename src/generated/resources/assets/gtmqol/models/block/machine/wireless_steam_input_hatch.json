@@ -13,7 +13,7 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
         "textures": {
           "bottom": "gtceu:block/casings/steam/bronze/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+          "overlay": "gtmqol:block/overlay/machine/overlay_wireless",
           "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
           "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe",
           "side": "gtceu:block/casings/steam/bronze/side",
@@ -26,7 +26,7 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
         "textures": {
           "bottom": "gtceu:block/casings/steam/bronze/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+          "overlay": "gtmqol:block/overlay/machine/overlay_wireless",
           "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
           "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe",
           "side": "gtceu:block/casings/steam/bronze/side",
