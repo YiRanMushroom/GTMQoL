@@ -16,6 +16,8 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
 
+import com.google.gson.JsonObject;
+
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.FRONT;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.RIGHT;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.UP;
@@ -70,12 +72,12 @@ public final class IntegrationTests {
                 singleBlock.getId(), multiblock.getId());
     }
 
-    public static void generateExampleAssets() {
+    public static void generateExampleAssets(JsonObject lang) {
         if (singleBlock == null || multiblock == null) {
             throw new IllegalStateException("Runtime example machines were not registered");
         }
-        RuntimeGeneration.generateMachineAssets(singleBlockBuilder, singleBlock);
-        RuntimeGeneration.generateMachineAssets(multiblockBuilder, multiblock);
+        RuntimeGeneration.generateMachineAssets(singleBlockBuilder, singleBlock, lang);
+        RuntimeGeneration.generateMachineAssets(multiblockBuilder, multiblock, lang);
         GTMQoL.LOGGER.info("Integration example assets generated through GTCEu's machine model builders");
     }
 }
