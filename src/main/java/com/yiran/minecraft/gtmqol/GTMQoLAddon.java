@@ -22,7 +22,7 @@ public final class GTMQoLAddon implements IGTAddon {
     @Override
     public void initializeAddon() {
         // GTRegistrate.create already hooked our mod event bus, so there is nothing else to register.
-        if (GTMQoLConfig.ENABLE_INTEGRATION_TESTS.get()) {
+        if (GTMQoLConfig.INSTANCE.integrationTests.enabled) {
             IntegrationTests.registerExampleMachines();
         }
     }

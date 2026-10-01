@@ -149,19 +149,24 @@ dependencies {
         parchment "org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchment_mappings}@zip"
     }
 
-    modImplementation "com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtceu_version}"
+    // :slim is the same jar without the jar-in-jars, as used by GTCEu's official addon templates.
+    modImplementation "com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtceu_version}:slim"
 
-    // gtceu jar-in-jars everything it needs (see META-INF/jarjar/metadata.json in its jar), so players
-    // are fine. But its maven metadata lists no dependencies, and Loom does not load a dependency's
-    // nested jars in dev, so the same set is declared here explicitly, matching gtceu's jarjar list.
+    // gtceu jar-in-jars everything it needs (see META-INF/jarjar/metadata.json in its full jar), so
+    // players are fine. But its maven metadata lists no dependencies, and Loom drops the jarjar metadata
+    // when remapping, so FML can't unpack them in dev. The same set is declared here explicitly instead.
     // Registrate also shows up in gtceu's public API (GTRegistrate, MachineBuilder), hence on compile.
     modImplementation "com.tterrag.registrate:Registrate:${project.registrate_version}"
-    // Its pom leaks a dev-only forge coordinate (1.20.1-47.3.0_mapped_official_1.20.1) that is not
-    // published anywhere, so take the jar alone.
-    modRuntimeOnly("dev.toma.configuration:configuration-${project.minecraft_version}:${project.configuration_version}") {
+    // Also our own config library (see GTMQoLConfig). Its pom leaks a dev-only forge coordinate
+    // (1.20.1-47.3.0_mapped_official_1.20.1) that is not published anywhere, so take the jar alone.
+    modImplementation("dev.toma.configuration:configuration-${project.minecraft_version}:${project.configuration_version}") {
         transitive = false
     }
     modRuntimeOnly "brachy.modularui:modularui-mc${project.minecraft_version}:${project.modularui_version}"
+    // Second level of the same problem: ModularUI jar-in-jars EvalEx, which gtceu itself uses (PipeBlock)
+    // but only declares compileOnly. It's a plain library, not a mod, so it goes through
+    // forgeRuntimeLibrary to land on the module layer the mods can see.
+    runtimeOnly(forgeRuntimeLibrary("com.ezylang:EvalEx:${project.evalex_version}"))
     // ModularUI registers test items when !FMLLoader.isProduction(), one of which implements a Curios
     // interface, so every dev run needs Curios. gtceu's own dev setup has it as modLocalRuntime too.
     modLocalRuntime "top.theillusivec4.curios:curios-forge:${project.curios_version}"
@@ -169,6 +174,8 @@ dependencies {
     // Dev-only mods so the test client has recipe viewing, ME networks and KubeJS (GTCEu's optional deps).
     modLocalRuntime "mezz.jei:jei-${project.minecraft_version}-forge:${project.jei_version}"
     modLocalRuntime "dev.latvian.mods:kubejs-forge:${project.kubejs_version}"
+    // Compile-only for KubeJSDataGenFix; still not a runtime dependency of ours.
+    modCompileOnly "dev.latvian.mods:kubejs-forge:${project.kubejs_version}"
     modLocalRuntime "appeng:appliedenergistics2-forge:${project.ae2_version}"
 
     // gtceu's mixins use @WrapOperation and need MixinExtras. Ship it jar-in-jar in our own mod so

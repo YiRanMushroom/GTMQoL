@@ -3,11 +3,13 @@ package com.yiran.minecraft.gtmqol;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.integration.IntegrationTests;
+import com.yiran.minecraft.gtmqol.integration.KubeJSDataGenFix;
 
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,8 +21,12 @@ public final class GTMQoL {
 
     public GTMQoL(FMLJavaModLoadingContext context) {
         IEventBus modBus = context.getModEventBus();
-        context.registerConfig(ModConfig.Type.COMMON, GTMQoLConfig.SPEC);
+        GTMQoLConfig.init();
         modBus.addListener(this::onRegisterDynamicResources);
+
+        if (FMLLoader.getLaunchHandler().isData() && ModList.get().isLoaded("kubejs")) {
+            KubeJSDataGenFix.apply();
+        }
     }
 
     /**
@@ -28,7 +34,7 @@ public final class GTMQoL {
      * baked. This is the only point where adding to {@code GTDynamicResourcePack} still has effect.
      */
     private void onRegisterDynamicResources(RegisterDynamicResourcesEvent event) {
-        if (GTMQoLConfig.ENABLE_INTEGRATION_TESTS.get()) {
+        if (GTMQoLConfig.INSTANCE.integrationTests.enabled) {
             IntegrationTests.generateExampleAssets();
         }
     }
