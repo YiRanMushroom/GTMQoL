@@ -61,23 +61,41 @@ Loom 在配置阶段持有全局 `~/.gradle/caches/fabric-loom` 锁。IDEA 打�
   `~/.gradle/caches/fabric-loom/.<hash>.lock` 是残留，可以删掉
 - Claude 不要在后台起 Gradle 任务后不管，也会占这把锁
 
+## datagen 跑完不退出
+
+KubeJS 用 `ModLoader.isDataGenRunning()` 判断 datagen，但 Forge 47 从不把它设为 true，于是 KubeJS
+起了非守护的 `KubeJSBackgroundThread`，JVM 退不出。`integration/KubeJSDataGenFix` 在 datagen 时把
+`KubeJSBackgroundThread.running` 置 false 解决（日志里看到 `Capturing errors for startup scripts enabled`
+说明 KubeJS 走了非 datagen 分支，这是正常的，修复只管让线程退出）。
+
 ## GTCEu v8 依赖
 
 所有依赖问题都是同一个根因，两层叠加：
 
 1. GTCEu 用 ModDevGradle（legacyForge）构建，依赖都声明在 `modApi`/`modImplementation`（重映射配置）
    和 `jarJar` 里，这些不会写进发布的 `.pom`/`.module`，所以 Gradle 不会自动下载任何东西。
-2. GTCEu 把运行时需要的库都 jar-in-jar 进了自己的 jar（玩家那边没问题），但 Loom 的 dev 环境
-   **不加载依赖模组的内嵌 jar**，所以开发时要逐个显式声明。
+2. GTCEu 把运行时需要的库都 jar-in-jar 进了自己的 jar（玩家那边没问题），但 Loom 重映射依赖模组时
+   **删掉了 `META-INF/jarjar/metadata.json`**（内嵌 jar 本身还留着），FML 的 `JarInJarDependencyLocator`
+   在 dev 里照常运行，却读不到清单，于是什么都不解。推测是有意的（未看 Loom 源码确认）：内嵌模组是 SRG 名，Loom 只重映射外层 jar，
+   直接加载会坏。所以开发时要逐个显式声明——GTCEu 官方的 1.20.1 / 1.21.1 addon 模板也是这么做的。
 
-**以 GTCEu jar 里的 `META-INF/jarjar/metadata.json` 为准**（v8 snapshot 时是这四个），换版本时重新对一遍：
+决定：不做自动解析，手动声明；GTCEu 本身用 `:slim`（不含内嵌 jar，和官方模板一致）。
+
+**以 GTCEu 完整 jar（非 slim）里的 `META-INF/jarjar/metadata.json` 为准**（v8 snapshot 时是这四个），换版本时重新对一遍：
 
 - `com.tterrag.registrate:Registrate` — 也出现在 GTCEu 公开 API 里，所以是 `modImplementation`
-- `dev.toma.configuration:configuration-1.20.1` — 需 `transitive = false`（pom 泄露了未发布的 forge 坐标）
+- `dev.toma.configuration:configuration-1.20.1` — 需 `transitive = false`（pom 泄露了未发布的 forge 坐标）。
+  本模组的配置也用它（`modImplementation`）：GTCEu 在 CONSTRUCT 末尾调 `initializeAddon()`，
+  此时 Forge 的 COMMON 配置还没加载，读 `ForgeConfigSpec` 会抛 `Cannot get config value before config is loaded`；
+  toma 的 `Configuration.registerConfig` 注册时就同步读文件，不受这个限制
 - `brachy.modularui:modularui-mc1.20.1`（maven.gtceu.com）— 它在 dev 环境（`!FMLLoader.isProduction()`）
   会注册测试物品，其中 `TestCurioItem` 依赖 Curios，所以 dev 还要 `modLocalRuntime` Curios
   （`top.theillusivec4.curios:curios-forge`，maven.theillusivec4.top；GTCEu 自己的 dev 也带着）。
-  缺了表现为 `Failed to create mod instance. ModID: modularui` + `NoClassDefFoundError: .../ICurioItem`
+  缺了表现为 `Failed to create mod instance. ModID: modularui` + `NoClassDefFoundError: .../ICurioItem`。
+  **内嵌是递归的**：ModularUI 自己又 jarjar 了 `com.ezylang:EvalEx`（GTCEu 的 `PipeBlock` 用它，但 GTCEu 只
+  `compileOnly`），所以也要显式加；它是普通库不是模组，走 `forgeRuntimeLibrary`。缺了表现为
+  `NoClassDefFoundError: com/ezylang/evalex/...` 后跟一串 `Registry entry not present: gtceu:..._wire`。
+  对内嵌列表时，每个内嵌模组的 `metadata.json` 也要看
 - `io.github.llamalad7:mixinextras-forge` — 本模组用 `include` 打进 jar（测试/发布都自带）；
   `-forge` 只是外壳，真正的类在 `-common`，所以 `-common` 也要上 classpath
 
