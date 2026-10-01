@@ -3,9 +3,8 @@ package com.yiran.minecraft.gtmqol;
 import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import net.minecraft.data.recipes.FinishedRecipe;
-
-import java.util.function.Consumer;
+import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
+import com.yiran.minecraft.gtmqol.integration.IntegrationTests;
 
 @GTAddon
 public final class GTMQoLAddon implements IGTAddon {
@@ -22,7 +21,10 @@ public final class GTMQoLAddon implements IGTAddon {
 
     @Override
     public void initializeAddon() {
-        REGISTRATE.registerRegistrate();
+        // GTRegistrate.create already hooked our mod event bus, so there is nothing else to register.
+        if (GTMQoLConfig.ENABLE_INTEGRATION_TESTS.get()) {
+            IntegrationTests.registerExampleMachines();
+        }
     }
 
     @Override
@@ -30,8 +32,4 @@ public final class GTMQoLAddon implements IGTAddon {
         return GTMQoL.MOD_ID;
     }
 
-    @Override
-    public void addRecipes(Consumer<FinishedRecipe> provider) {
-        RuntimeGeneration.beginRecipes(provider);
-    }
 }

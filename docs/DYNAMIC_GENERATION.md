@@ -71,6 +71,8 @@ The active source tree currently contains only:
 
 - `GTMQoL`: the Forge mod entry point;
 - `GTMQoLAddon`: the GTCEu addon and recipe callback;
-- `RuntimeGeneration`: the first client resource and recipe API.
+- `config/GTMQoLConfig`: configuration definitions;
+- `generation/RuntimeGeneration`: the first client resource and recipe API;
+- `integration/IntegrationTests`: opt-in runtime integration checks.
 
-The next implementation step is a minimal test machine with all client JSON emitted through `RuntimeGeneration`, followed by a generic server-data writer and a multiblock adapter.
+The integration example currently demonstrates both a single-block machine and a multiblock controller. Their assets are emitted by GTCEu's model builders through `RuntimeGeneration`, while the multiblock pattern remains Java code.

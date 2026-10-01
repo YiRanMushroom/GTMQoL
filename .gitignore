@@ -49,3 +49,8 @@ bin/
 /build
 
 /.idea
+
+### Unpacked dependency sources, kept locally for API lookups
+/.gtceu-src
+/.registrate-src
+/runclient.log
