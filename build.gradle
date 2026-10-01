@@ -28,6 +28,13 @@ sourceSets {
 loom {
     silentMojangMappingsLicense()
 
+    // Adds a 'data' run (runData) with --all/--mod/--output filled in; --existing goes on the run below.
+    forge {
+        dataGen {
+            mod project.mod_id
+        }
+    }
+
     runs {
         client {
             programArgs '--width', '1280', '--height', '720'
@@ -37,6 +44,11 @@ loom {
         server {
             ideConfigGenerated true
             runDir 'run'
+        }
+        data {
+            programArgs '--existing', file('src/main/resources').absolutePath
+            programArgs '--existing-mod', 'gtceu'
+            ideConfigGenerated true
         }
     }
 
@@ -59,6 +71,7 @@ repositories {
         url = 'https://maven.gtceu.com'
         content {
             includeGroup 'com.gregtechceu.gtceu'
+            includeGroup 'brachy.modularui'
         }
     }
     maven {
@@ -72,6 +85,49 @@ repositories {
     maven {
         name = 'tterrag'
         url = 'https://maven.tterrag.com/'
+    }
+    maven {
+        name = 'Curios'
+        url = 'https://maven.theillusivec4.top/'
+        content {
+            includeGroup 'top.theillusivec4.curios'
+        }
+    }
+    maven {
+        name = 'BlameJared'
+        url = 'https://maven.blamejared.com/'
+        content {
+            includeGroup 'mezz.jei'
+        }
+    }
+    maven {
+        name = 'ModMaven'
+        url = 'https://modmaven.dev/'
+        content {
+            includeGroup 'appeng'
+        }
+    }
+    maven {
+        name = 'SAPS'
+        url = 'https://maven.saps.dev/releases'
+        content {
+            includeGroup 'dev.latvian.mods'
+        }
+    }
+    maven {
+        // Rhino (KubeJS's script engine) is only published here, not on SAPS
+        name = 'Latvian'
+        url = 'https://maven.latvian.dev/releases'
+        content {
+            includeGroup 'dev.latvian.mods'
+        }
+    }
+    maven {
+        name = 'Architectury'
+        url = 'https://maven.architectury.dev/'
+        content {
+            includeGroup 'dev.architectury'
+        }
     }
     maven {
         name = 'Toma'
@@ -95,17 +151,31 @@ dependencies {
 
     modImplementation "com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtceu_version}"
 
-    // GTCEu publishes no transitive dependencies, but its public API (GTRegistrate, MachineBuilder,
-    // GTBlockstateProvider) exposes Registrate types. GTCEu jar-in-jars Registrate at runtime.
-    modCompileOnly "com.tterrag.registrate:Registrate:${project.registrate_version}"
-
-    // gtceu declares this mandatory and jar-in-jars it, but Loom does not unpack a dependency's
-    // nested jars, so the dev client needs it on the mod classpath explicitly.
+    // gtceu jar-in-jars everything it needs (see META-INF/jarjar/metadata.json in its jar), so players
+    // are fine. But its maven metadata lists no dependencies, and Loom does not load a dependency's
+    // nested jars in dev, so the same set is declared here explicitly, matching gtceu's jarjar list.
+    // Registrate also shows up in gtceu's public API (GTRegistrate, MachineBuilder), hence on compile.
+    modImplementation "com.tterrag.registrate:Registrate:${project.registrate_version}"
     // Its pom leaks a dev-only forge coordinate (1.20.1-47.3.0_mapped_official_1.20.1) that is not
     // published anywhere, so take the jar alone.
     modRuntimeOnly("dev.toma.configuration:configuration-${project.minecraft_version}:${project.configuration_version}") {
         transitive = false
     }
+    modRuntimeOnly "brachy.modularui:modularui-mc${project.minecraft_version}:${project.modularui_version}"
+    // ModularUI registers test items when !FMLLoader.isProduction(), one of which implements a Curios
+    // interface, so every dev run needs Curios. gtceu's own dev setup has it as modLocalRuntime too.
+    modLocalRuntime "top.theillusivec4.curios:curios-forge:${project.curios_version}"
+
+    // Dev-only mods so the test client has recipe viewing, ME networks and KubeJS (GTCEu's optional deps).
+    modLocalRuntime "mezz.jei:jei-${project.minecraft_version}-forge:${project.jei_version}"
+    modLocalRuntime "dev.latvian.mods:kubejs-forge:${project.kubejs_version}"
+    modLocalRuntime "appeng:appliedenergistics2-forge:${project.ae2_version}"
+
+    // gtceu's mixins use @WrapOperation and need MixinExtras. Ship it jar-in-jar in our own mod so
+    // neither the dev runs nor players have to install it separately. Setup per the MixinExtras wiki
+    // (Forge + Architectury Loom): common on the classpath, forge jar on the classpath and included.
+    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${project.mixinextras_version}"))
+    implementation(include("io.github.llamalad7:mixinextras-forge:${project.mixinextras_version}"))
 }
 
 processResources {
@@ -120,7 +190,7 @@ processResources {
         mod_author: project.mod_author,
         forge_version: project.forge_version.split('\\.')[0],
         minecraft_version: project.minecraft_version,
-        gtceu_version: project.gtceu_version
+        gtceu_min_version: project.gtceu_min_version
     ]
     inputs.properties properties
 
