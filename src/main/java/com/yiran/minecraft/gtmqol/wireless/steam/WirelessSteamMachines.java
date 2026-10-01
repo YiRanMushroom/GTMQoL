@@ -38,9 +38,7 @@ public final class WirelessSteamMachines {
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.STEAM)
                 .modelProperty(IS_FORMED, false)
-                .colorOverlaySteamHullModel(WIRELESS_OVERLAY,
-                        GTCEu.id("block/overlay/machine/overlay_pipe"),
-                        GTCEu.id("block/overlay/machine/overlay_pipe_in_emissive"))
+                .colorOverlaySteamHullModel(WIRELESS_OVERLAY)
                 .themeId(GTGuiTheme.BRONZE.getId())
                 .allowCoverOnFront(true)
                 .langValue("Wireless Steam Input Hatch")
@@ -53,9 +51,7 @@ public final class WirelessSteamMachines {
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.EXPORT_FLUIDS)
                 .modelProperty(IS_FORMED, false)
-                .colorOverlaySteamHullModel(WIRELESS_OVERLAY,
-                        GTCEu.id("block/overlay/machine/overlay_pipe"),
-                        GTCEu.id("block/overlay/machine/overlay_pipe_out_emissive"))
+                .colorOverlaySteamHullModel(WIRELESS_OVERLAY)
                 .themeId(GTGuiTheme.BRONZE.getId())
                 .allowCoverOnFront(true)
                 .langValue("Wireless Steam Output Hatch")
