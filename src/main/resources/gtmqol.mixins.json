@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.yiran.minecraft.gtmqol.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "MachineBuilderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

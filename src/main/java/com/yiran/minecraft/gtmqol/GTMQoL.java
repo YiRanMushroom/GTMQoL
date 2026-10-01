@@ -15,7 +15,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
 
-import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,11 +50,6 @@ public final class GTMQoL {
      * baked. This is the only point where adding to {@code GTDynamicResourcePack} still has effect.
      */
     private void onRegisterDynamicResources(RegisterDynamicResourcesEvent event) {
-        JsonObject lang = new JsonObject();
-        lang.addProperty(GTMQoLAddon.MAIN_TAB_TITLE_KEY, "GTM Quality of Life");
-        if (GTMQoLConfig.INSTANCE.integrationTests.enabled) {
-            IntegrationTests.generateExampleAssets(lang);
-        }
-        RuntimeGeneration.addLanguage("en_us", lang);
+        RuntimeGeneration.generateAll();
     }
 }

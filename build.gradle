@@ -33,6 +33,8 @@ loom {
         dataGen {
             mod project.mod_id
         }
+        // Adds MixinConfigs to the jar manifest and passes the config to the dev runs.
+        mixinConfig 'gtmqol.mixins.json'
     }
 
     runs {
