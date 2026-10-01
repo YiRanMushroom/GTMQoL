@@ -52,7 +52,7 @@ public final class IntegrationTests {
                                         .setMinGlobalLimited(1)
                                         .setMaxGlobalLimited(2)))
                         .where('#', Predicates.air())
-                        .where('Y', Predicates.controller(Predicates.blocks(definition.getBlock())))
+                        .where('Y', Predicates.controller(definition))
                         .build())
                 .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                         GTCEu.id("block/multiblock/electric_blast_furnace"))

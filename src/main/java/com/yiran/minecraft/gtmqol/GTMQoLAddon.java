@@ -22,7 +22,10 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 
 @GTAddon
 public final class GTMQoLAddon implements IGTAddon {
-    private static final GTRegistrate REGISTRATE = GTRegistrate.create(GTMQoL.MOD_ID);
+    // GTCEu instantiates addons while constructing itself, so this runs under GTCEu's mod loading context.
+    // Registrate hooks GatherDataEvent onto FMLJavaModLoadingContext.get()'s bus, i.e. GTCEu's, and datagen
+    // for gtmqol produces nothing. Listeners are registered from the GTMQoL constructor instead.
+    private static final GTRegistrate REGISTRATE = GTRegistrate.create(GTMQoL.MOD_ID, false);
 
     private static final String MAIN_TAB_TITLE_KEY = "itemGroup." + GTMQoL.MOD_ID + ".main";
 

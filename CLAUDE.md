@@ -109,3 +109,9 @@ v8 已经不用 LDLib，不要加。看内嵌列表时注意 Gradle 缓存里可
 `src/main/templates/META-INF/mods.toml`；迁移说明在 `docs/content/Modpacks/Changes/v8.0.0.md`。
 
 查 GTCEu 真实 API 时，解包它的 sources jar 比猜快得多（`.gtceu-src/`，已 gitignore）。
+
+# FTB Teams（可选依赖）
+
+编译期 `modCompileOnly`，dev 运行时 `modLocalRuntime`（连同 FTB Library、Architectury，都 `transitive = false`），
+不写进 `mods.toml`。Maven 上的 sources jar 只有 forge 胶水层；API/事件源码看 GitHub `FTBTeam/FTB-Teams`
+的 `1.20.1/dev` 分支（`common/src/main/java/dev/ftb/mods/ftbteams/`）。个人队伍的 id 就是玩家 UUID。

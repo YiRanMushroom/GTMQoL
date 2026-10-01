@@ -22,6 +22,7 @@ java {
 sourceSets {
     main {
         java.srcDirs = ['src/main/java']
+        resources.srcDir 'src/generated/resources'
     }
 }
 
@@ -138,6 +139,13 @@ repositories {
             includeGroup 'dev.toma.configuration'
         }
     }
+    maven {
+        name = 'FTB'
+        url = 'https://maven.ftb.dev/releases'
+        content {
+            includeGroup 'dev.ftb.mods'
+        }
+    }
 }
 
 dependencies {
@@ -164,7 +172,8 @@ dependencies {
     modImplementation("dev.toma.configuration:configuration-${project.minecraft_version}:${project.configuration_version}") {
         transitive = false
     }
-    modRuntimeOnly "brachy.modularui:modularui-mc${project.minecraft_version}:${project.modularui_version}"
+    // Also on compile: machine UIs (IMuiMachine.buildMainUI) are built from ModularUI widgets.
+    modImplementation "brachy.modularui:modularui-mc${project.minecraft_version}:${project.modularui_version}"
     // Second level of the same problem: ModularUI jar-in-jars EvalEx, which gtceu itself uses (PipeBlock)
     // but only declares compileOnly. It's a plain library, not a mod, so it goes through
     // forgeRuntimeLibrary to land on the module layer the mods can see.
@@ -179,6 +188,25 @@ dependencies {
     // Compile-only for KubeJSDataGenFix; still not a runtime dependency of ours.
     modCompileOnly "dev.latvian.mods:kubejs-forge:${project.kubejs_version}"
     modLocalRuntime "appeng:appliedenergistics2-forge:${project.ae2_version}"
+    // Optional: wireless networks are shared per FTB team when it is installed. We compile against
+    // FTB Teams and Architectury (its events are Architectury Events) but never require them; the dev
+    // runs include them, plus FTB Library, so teams can be tested. Dependencies are listed by hand
+    // because the poms pin older versions of each other.
+    modCompileOnly("dev.ftb.mods:ftb-teams-forge:${project.ftbteams_version}") {
+        transitive = false
+    }
+    modCompileOnly("dev.architectury:architectury-forge:${project.architectury_version}") {
+        transitive = false
+    }
+    modLocalRuntime("dev.ftb.mods:ftb-teams-forge:${project.ftbteams_version}") {
+        transitive = false
+    }
+    modLocalRuntime("dev.ftb.mods:ftb-library-forge:${project.ftblibrary_version}") {
+        transitive = false
+    }
+    modLocalRuntime("dev.architectury:architectury-forge:${project.architectury_version}") {
+        transitive = false
+    }
 
     // gtceu's mixins use @WrapOperation and need MixinExtras. Ship it jar-in-jar in our own mod so
     // neither the dev runs nor players have to install it separately. Setup per the MixinExtras wiki
