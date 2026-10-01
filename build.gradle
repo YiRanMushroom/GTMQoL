@@ -11,8 +11,11 @@ version = project.mod_version
 group = project.maven_group
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    // Minecraft 1.20.1 / Forge 47 must run on Java 17, but Architectury Loom 1.13 requires the
+    // Gradle JVM itself to be 21+. A toolchain keeps javac and the runClient/runServer launcher on 17.
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
     withSourcesJar()
 }
 
@@ -48,6 +51,10 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
+        name = 'Fabric'
+        url = 'https://maven.fabricmc.net/'
+    }
+    maven {
         name = 'GTCEu'
         url = 'https://maven.gtceu.com'
         content {
@@ -61,6 +68,17 @@ repositories {
     maven {
         name = 'LDLib'
         url = 'https://maven.firstdarkdev.xyz/snapshots/'
+    }
+    maven {
+        name = 'tterrag'
+        url = 'https://maven.tterrag.com/'
+    }
+    maven {
+        name = 'Toma'
+        url = 'https://repo.repsy.io/mvn/toma/public/'
+        content {
+            includeGroup 'dev.toma.configuration'
+        }
     }
 }
 
@@ -76,6 +94,18 @@ dependencies {
     }
 
     modImplementation "com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtceu_version}"
+
+    // GTCEu publishes no transitive dependencies, but its public API (GTRegistrate, MachineBuilder,
+    // GTBlockstateProvider) exposes Registrate types. GTCEu jar-in-jars Registrate at runtime.
+    modCompileOnly "com.tterrag.registrate:Registrate:${project.registrate_version}"
+
+    // gtceu declares this mandatory and jar-in-jars it, but Loom does not unpack a dependency's
+    // nested jars, so the dev client needs it on the mod classpath explicitly.
+    // Its pom leaks a dev-only forge coordinate (1.20.1-47.3.0_mapped_official_1.20.1) that is not
+    // published anywhere, so take the jar alone.
+    modRuntimeOnly("dev.toma.configuration:configuration-${project.minecraft_version}:${project.configuration_version}") {
+        transitive = false
+    }
 }
 
 processResources {
@@ -102,6 +132,13 @@ processResources {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release = 17
+}
+
+// Loom's run tasks default to the Gradle JVM (21+), which Minecraft 1.20.1 cannot use.
+tasks.withType(JavaExec).configureEach {
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 jar {
