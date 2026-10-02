@@ -116,6 +116,13 @@ v8 已经不用 LDLib，不要加。看内嵌列表时注意 Gradle 缓存里可
 
 查 GTCEu 真实 API 时，解包它的 sources jar 比猜快得多（`.gtceu-src/`，已 gitignore）。
 
+# 映射：`nameSyntheticMembers = true`
+
+`build.gradle` 里 `officialMojangMappings { nameSyntheticMembers = true }`。为 false 时，内部类的
+`this$0` 等合成成员在 dev 里不叫这个名字，而其他模组的 mixin 会 `@Shadow` 这些名字。表现为
+Jade 的 `StringRenderOutputMixin`：`@Shadow field this$0 was not located in the target class
+net.minecraft.client.gui.Font$StringRenderOutput`。改这个值会让 Loom 重新映射所有东西，sync 会很久。
+
 # FTB Teams（可选依赖）
 
 编译期 `modCompileOnly`，dev 运行时 `modLocalRuntime`（连同 FTB Library、Architectury，都 `transitive = false`），

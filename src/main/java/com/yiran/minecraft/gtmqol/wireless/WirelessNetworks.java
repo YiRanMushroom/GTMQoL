@@ -2,6 +2,10 @@ package com.yiran.minecraft.gtmqol.wireless;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.yiran.minecraft.gtmqol.wireless.energy.DefaultAmperageCommand;
+import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergyAccessorMachine;
+import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergyHatchPartMachine;
+import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergySavedData;
 import com.yiran.minecraft.gtmqol.wireless.steam.WirelessSteamSavedData;
 
 import net.minecraft.world.entity.player.Player;
@@ -34,18 +38,21 @@ public final class WirelessNetworks {
         }
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, WirelessNetworks::onEntityPlace);
         MinecraftForge.EVENT_BUS.addListener(WirelessNetworks::onServerTick);
+        MinecraftForge.EVENT_BUS.addListener(DefaultAmperageCommand::register);
     }
 
     private static void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         int tick = event.getServer().getTickCount();
-        if (tick % WirelessSteamSavedData.IOStats.SAMPLE_INTERVAL == 0) {
+        if (tick % IOStats.SAMPLE_INTERVAL == 0) {
             WirelessSteamSavedData.get().sampleStats(tick);
+            WirelessEnergySavedData.get().sampleStats(tick);
         }
     }
 
     /**
-     * Binds wireless machines to the player who placed them. Forge only posts this for entities, after
+     * Binds wireless machines to the player who placed them, and gives energy ones that player's default
+     * amperage. Forge only posts this for entities, after
      * {@code setPlacedBy}; other placers (Building Gadgets, fake players) leave the machine unbound.
      */
     private static void onEntityPlace(BlockEvent.EntityPlaceEvent event) {
@@ -55,6 +62,12 @@ public final class WirelessNetworks {
         WirelessBindingTrait binding = machine.getTrait(WirelessBindingTrait.class);
         if (binding != null) {
             binding.bind(player.getUUID(), false);
+        }
+        int amperage = WirelessEnergySavedData.get().getDefaultAmperage(player.getUUID());
+        if (machine instanceof WirelessEnergyHatchPartMachine hatch) {
+            hatch.applySettings(amperage, hatch.isOverclocked());
+        } else if (machine instanceof WirelessEnergyAccessorMachine accessor) {
+            accessor.setAmperage(amperage);
         }
     }
 

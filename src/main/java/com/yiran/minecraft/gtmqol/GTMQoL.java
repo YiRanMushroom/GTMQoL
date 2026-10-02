@@ -9,6 +9,7 @@ import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.integration.IntegrationTests;
 import com.yiran.minecraft.gtmqol.integration.KubeJSDataGenFix;
 import com.yiran.minecraft.gtmqol.wireless.WirelessNetworks;
+import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.wireless.steam.WirelessSteamMachines;
 
 import net.minecraft.resources.ResourceLocation;
@@ -71,6 +72,7 @@ public final class GTMQoL {
      */
     private void onRegisterMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
         WirelessSteamMachines.init();
+        WirelessEnergyMachines.init();
         // do not run integration tests in data generation, They are only for testing in a running game.
         if (GTMQoLConfig.INSTANCE.integrationTests.enabled && !FMLLoader.getLaunchHandler().isData()) {
             IntegrationTests.registerExampleMachines();

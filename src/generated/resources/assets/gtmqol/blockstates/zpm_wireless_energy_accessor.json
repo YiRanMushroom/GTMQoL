@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtmqol:block/machine/zpm_wireless_energy_accessor",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtmqol:block/machine/zpm_wireless_energy_accessor",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtmqol:block/machine/zpm_wireless_energy_accessor"
+    },
+    "facing=south": {
+      "model": "gtmqol:block/machine/zpm_wireless_energy_accessor",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtmqol:block/machine/zpm_wireless_energy_accessor",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtmqol:block/machine/zpm_wireless_energy_accessor",
+      "y": 270
+    }
+  }
+}
