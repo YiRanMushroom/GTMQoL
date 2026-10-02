@@ -416,7 +416,14 @@ reference clone at `E:\code\Minecraft\gtnl-ref`, outside the repo), not a copy.
   Names overlap Mekanism's basic/advanced/elite control circuits (display only, different ids).
   The whole project is LGPL-3.0 like GTNL/GTNH (`LICENSE`, text copied from GTNL, also packed into the jar;
   authors "Yiran, Frosty").
-- Risk: `MagicalAssemblerUI` lays out 4 fluid slots; the steam single block has none.
+- `MagicalAssemblerUI` builds the 4-slot fluid column from the first IN fluid handler. On a steam machine that
+  handler is `SteamMachine.steamTank` (1 slot), so indexing slots 1–3 threw and the UI did not open on right
+  click; the column is now skipped when the handler is the steam tank (the steam one has no recipe fluid input).
+- Ghost circuit on steam: `SimpleSteamMachineMixin` attaches `ProgrammableCircuitSlotTrait` (as "circuit", like
+  `SimpleTieredMachine`) to every steam single block, GTCEu's included; `GTSingleblockMachinePanelsMixin` turns
+  trait configurators back on for the steam panel (`defaultSteamMachinePanelBuilder` disables them) so the slot
+  shows; `SteamItemBusPartMachineMixin` re-enables the bus circuit slot GTCEu turns off (input bus only), which
+  gives steam multis ghost circuits through their input bus.
 
 ## RecipeDB grouped search (`recipedb/`, `mixin/recipedb/`)
 
