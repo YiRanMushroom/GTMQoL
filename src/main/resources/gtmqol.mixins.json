@@ -16,7 +16,9 @@
     "WorkableElectricMultiblockMachineMixin",
     "gtceufix.EmiCallWrapperMixin",
     "gtceufix.GameDataMixin",
-    "gtceufix.GTMuiWidgetsMixin"
+    "gtceufix.GTRecipeCategoryMixin",
+    "gtceufix.GTMuiWidgetsMixin",
+    "gtceufix.MEPatternBufferInternalSlotMixin"
   ],
   "client": [
     "gtceufix.BaseSchemaRendererMixin"
