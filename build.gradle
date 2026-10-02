@@ -10,6 +10,11 @@ base {
 version = project.mod_version
 group = project.maven_group
 
+// Jar names: gtmqol-<mod version>-<mc version>.jar (also remapJar). project.version stays plain, it goes into mods.toml.
+tasks.withType(AbstractArchiveTask).configureEach {
+    archiveVersion = "${project.mod_version}-${project.minecraft_version}"
+}
+
 java {
     // Minecraft 1.20.1 / Forge 47 must run on Java 17, but Architectury Loom 1.13 requires the
     // Gradle JVM itself to be 21+. A toolchain keeps javac and the runClient/runServer launcher on 17.

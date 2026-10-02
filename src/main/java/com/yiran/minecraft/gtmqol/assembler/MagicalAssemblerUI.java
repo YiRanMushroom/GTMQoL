@@ -3,6 +3,7 @@ package com.yiran.minecraft.gtmqol.assembler;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
@@ -70,7 +71,9 @@ final class MagicalAssemblerUI {
         }
 
         var fluidHandlers = FluidRecipeCapability.CAP.getCapabilityHandlers(machine, io);
-        if (!fluidHandlers.isEmpty() && fluidHandlers.get(0) != null) {
+        // A steam machine's steam tank is an IN fluid tank as well, but it is not a recipe input and has one slot.
+        if (!fluidHandlers.isEmpty() && fluidHandlers.get(0) != null &&
+                !(machine instanceof SteamMachine steam && fluidHandlers.get(0) == steam.steamTank)) {
             var fluidTank = fluidHandlers.get(0);
             row.child(SlotGroupWidget.builder()
                     .matrix(FLUID_GRID)

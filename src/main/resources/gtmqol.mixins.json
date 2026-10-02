@@ -9,10 +9,16 @@
     "GTMultiMachinesMixin",
     "GTRecipeModifiersMixin",
     "GTRecipeViewerWidgetMixin",
+    "GTSingleblockMachinePanelsMixin",
     "MachineBuilderMixin",
     "MEPatternBufferPartMachineMixin",
     "OverclockingLogicMixin",
+    "SimpleSteamMachineMixin",
+    "SteamItemBusPartMachineMixin",
     "WorkableElectricMultiblockMachineMixin"
+  ],
+  "client": [
+    "gtceufix.BaseSchemaRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
