@@ -24,7 +24,7 @@ src/main/java/com/yiran/minecraft/gtmqol/
 │                          addRecipes
 ├── ae2/                   pattern buffer abstraction, overclocked buffer, EAP smart doubling (AE2 only)
 ├── assembler/MagicalAssembler.java  recipe type, tiered machines, its own recipes
-├── circuit/               UniversalCircuits (items), CircuitTags (GT ↔ Mekanism tags, datagen)
+├── circuit/               UniversalCircuits, ControlCircuits (items), CircuitTags (GT ↔ Mekanism tags, datagen)
 ├── client/                client-only init and renders (DTFR ring)
 ├── config/GTMQoLConfig.java
 ├── fe/FEInputProvider.java  FE input for every GT machine and cable
@@ -38,6 +38,7 @@ src/main/java/com/yiran/minecraft/gtmqol/
 ├── multiblock/            Smart Assembly Factory, DTFR
 ├── overclock/             replacement OC logics
 ├── recipedb/              non-mixin side of the grouped search, RecipeDBMixinPlugin
+├── steam/                 advanced steam multiblocks, steam parallel hatch, steam magical assembler
 └── wireless/
     ├── WirelessBindingTrait.java, WirelessNetworks.java, NetworkId.java, FTBTeamsCompat.java, IOStats.java
     ├── WirelessCovers.java  cover definitions and items
@@ -290,6 +291,44 @@ Registered in `onRegisterMachines`, lang/models datagen'd, recipes in the magica
   accept substation/laser hatches (new vs 7.x). Ring: `client/DTFRRingRender` (gtceu's `FusionRingRender`
   without bloom, white), registered as `gtmqol:dtfr_ring` in `GTMQoLClient.init()` from the constructor
   on the client dist.
+
+## Advanced steam multiblocks (`steam/`, `circuit/ControlCircuits`)
+
+Written, not built or tested yet. Modelled on GTNL's steam multis (GTNH addon, LGPL-3.0, credited in README;
+reference clone at `E:\code\Minecraft\gtnl-ref`, outside the repo), not a copy.
+
+- `AdvancedSteamMultiMachine extends SteamParallelMultiblockMachine` (the user's "advanced_steam_multi"),
+  `maxRecipeTier` per machine (default MV). `recipeModifier`: reject above the tier; non-perfect OC (×4 EU/t,
+  ÷2 duration) from `max(tier, LV)` up to it (ULV one OC less, as GTCEu), stops at 1 tick; then duration ×0.8,
+  EU/t ×0.75 (steam = EU × 2 mB, from the superclass). Parallels: 16, or the `SteamParallelHatchPartMachine`
+  found in `formStructure` (16–256, default 256, GTCEu parallel hatch UI with ÷2/×2, own `PartAbility`
+  `steam_parallel_hatch`, max one, not shareable).
+- `AdvancedSteamMachines`: `gtmqol:large_steam_<x>` for 21 recipe types (circuit assembler MV so it makes the
+  ULV–HV control circuits; magical assembler LV as the user asked). All bronze (user: GTCEu steam multis
+  have no steel tier), bronze theme, bronze plated bricks appearance, GTCEu's single-block overlay.
+  Hatch casing `X`: steam buses + `autoAbilities` buses/hatches of any tier, one steam hatch, at most one
+  parallel hatch, at least half of the `X` positions must be casings.
+  Also `lp_/hp_steam_magical_assembler` (`registerSteamMachines` + `SimpleSteamMachine`, our magical
+  assembler overlay; HP keeps GTCEu's steel theme like other HP single blocks). Recipes: LP steam magical
+  assembler shaped (bronze hull, crafting tables); HP like GTCEu's steel upgrades; each multi in the magical
+  assembler (4 HP steam machines or 1 LV electric machine + 4 bronze gearbox + 8 bronze bricks + bronze
+  plates/gears + 4 ULV circuits, ULV EU/t, so the steam one can make them); parallel hatch from a steam
+  hatch + 2 bronze gearboxes + 4 LV circuits.
+- `AdvancedSteamShapes`: generated once by a Python script from GTNL's `assets/sciencenotleisure/multiblock/
+  large_steam_*.mbs` (format: `MBS1`, string table of int length + UTF-8, then rows of int indices;
+  `shape[row top→bottom][slice front→back]`, strings along X, `~` controller, space any). Rows reversed to
+  bottom-up for `MultiblockPatternBuilder.start()` (BACK, UP, RIGHT). Every GTNL letter is remapped to one
+  shared symbol set (documented on the class): GT5 bronze casings → GTCEu bronze casings, GTNL/GT++ decorative
+  casings → bronze hull / bronze brick hull / plated bricks, potin → bronze block, glass → `forge:glass`.
+  The assembler and magical assembler have no GTNL large steam shape and use `steam_manufacturer`. Possibly
+  mirrored relative to GTNL (char direction), harmless.
+- `ControlCircuits`: GTNL's MetaItem 21–25 (very simple … elite, ULV–EV), textures from GTNL, tagged
+  `gtceu:circuits/<tier>`. Recipes ported from GTNL's `CircuitAssemblerRecipes` with GTCEu substitutes
+  (cast iron → wrought iron; GT5 circuits → NAND chip / electronic / integrated circuits as not-consumed).
+  Names overlap Mekanism's basic/advanced/elite control circuits (display only, different ids).
+  The whole project is LGPL-3.0 like GTNL/GTNH (`LICENSE`, text copied from GTNL, also packed into the jar;
+  authors "Yiran, Frosty").
+- Risk: `MagicalAssemblerUI` lays out 4 fluid slots; the steam single block has none.
 
 ## RecipeDB grouped search (`recipedb/`, `mixin/recipedb/`)
 

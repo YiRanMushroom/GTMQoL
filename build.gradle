@@ -282,13 +282,16 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 // Loom's run tasks default to the Gradle JVM (21+), which Minecraft 1.20.1 cannot use.
-tasks.withType(JavaExec).configureEach {
+// Only Loom's own tasks: IDEA's generated run configs are JavaExec too, but set `executable` to the JRE
+// chosen in the run config, and Gradle fails if that differs from the toolchain launcher.
+tasks.withType(net.fabricmc.loom.task.AbstractRunTask).configureEach {
     javaLauncher = javaToolchains.launcherFor {
         languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
 jar {
+    from('LICENSE')
     manifest {
         attributes([
             'Specification-Title': project.mod_id,

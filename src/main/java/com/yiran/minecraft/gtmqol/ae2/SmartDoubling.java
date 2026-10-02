@@ -58,13 +58,10 @@ public final class SmartDoubling {
                         .child(Flow.col()
                                 .coverChildren()
                                 .child(Text.lang(TITLE_KEY).asWidget())
-                                .child(Flow.row()
-                                        .coverChildren()
-                                        .marginTop(4)
-                                        .child(GTMuiWidgets.createToggleButton(holder::eap$getSmartDoubling,
-                                                holder::eap$setSmartDoubling, GTGuiTextures.BUTTON_BATCH[0],
-                                                GTGuiTextures.BUTTON_BATCH[1], TOGGLE_KEY))
-                                        .child(Text.lang(TOGGLE_KEY).asWidget().marginLeft(4)))
+                                // On/off shows in the button background and its tooltip (TOGGLE_KEY.enabled/.disabled).
+                                .child(GTMuiWidgets.createToggleButton(holder::eap$getSmartDoubling,
+                                        holder::eap$setSmartDoubling, GTGuiTextures.BUTTON_BATCH[0],
+                                        GTGuiTextures.BUTTON_BATCH[1], TOGGLE_KEY).marginTop(4))
                                 .child(Text.lang(LIMIT_KEY).asWidget().marginTop(4))
                                 .child(new TextFieldWidget()
                                         .size(90, 14)

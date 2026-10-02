@@ -14,6 +14,8 @@ import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.yiran.minecraft.gtmqol.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
+import com.yiran.minecraft.gtmqol.circuit.ControlCircuits;
+import com.yiran.minecraft.gtmqol.steam.AdvancedSteamMachines;
 import com.yiran.minecraft.gtmqol.generation.GTMQoLMachineBuilder;
 import com.yiran.minecraft.gtmqol.generation.GTMQoLMultiblockBuilder;
 import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
@@ -92,6 +94,8 @@ public final class GTMQoLAddon implements IGTAddon {
         WirelessRecipes.addRecipes(provider);
         ModularMachines.addRecipes(provider);
         GTMQoLMultiblocks.addRecipes(provider);
+        AdvancedSteamMachines.addRecipes(provider);
+        ControlCircuits.addRecipes(provider);
         if (GTCEu.Mods.isAE2Loaded()) {
             AE2Machines.addRecipes(provider);
         }
