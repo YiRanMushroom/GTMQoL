@@ -23,6 +23,37 @@ public final class GTMQoLConfig {
     }
 
     @Configurable
+    @Configurable.Comment("Multiblock versions of tiered single-block machines")
+    public ModularMachines modularMachines = new ModularMachines();
+
+    public static class ModularMachines {
+
+        @Configurable
+        @Configurable.Comment({ "Register a 3x3x3 modular multiblock for every tiered single-block machine", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean enabled = true;
+    }
+
+    @Configurable
+    @Configurable.Comment("Overclocking changes for specific multiblocks")
+    public Overclocking overclocking = new Overclocking();
+
+    public static class Overclocking {
+
+        @Configurable
+        @Configurable.Comment({ "Fusion reactors use perfect sub-tick overclocking, their full hatch voltage and accept substation and laser hatches",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean buffFusionReactor = true;
+
+        @Configurable
+        @Configurable.Comment({ "Enable multi-tier skipping for multiblocks that can tier skip (multiple energy hatches)",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean enableMultiTierSkipping = true;
+    }
+
+    @Configurable
     @Configurable.Comment("Development and integration test settings")
     public IntegrationTests integrationTests = new IntegrationTests();
 

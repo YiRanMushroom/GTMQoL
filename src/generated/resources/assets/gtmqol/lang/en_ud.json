@@ -1,4 +1,5 @@
 {
+  "block.gtmqol.dimensionally_transcendent_fusion_reactor": "ɹoʇɔɐǝᴚ uoısnℲ ʇuǝpuǝɔsuɐɹ⟘ ʎןןɐuoısuǝɯıᗡ",
   "block.gtmqol.ev_magical_assembler": "ɹ§III ɹǝןqɯǝssⱯ ןɐɔıbɐW pǝɔuɐʌpⱯϛ§",
   "block.gtmqol.ev_wireless_energy_accessor": "ɹossǝɔɔⱯ ʎbɹǝuƎ ssǝןǝɹıM ΛƎϛ§",
   "block.gtmqol.ev_wireless_energy_input_hatch": "ɥɔʇɐH ʎbɹǝuƎ ssǝןǝɹıM ΛƎϛ§",
@@ -30,6 +31,7 @@
   "block.gtmqol.opv_wireless_energy_accessor": "ɹossǝɔɔⱯ ʎbɹǝuƎ ssǝןǝɹıM ΛdOן§6§",
   "block.gtmqol.opv_wireless_energy_input_hatch": "ɥɔʇɐH ʎbɹǝuƎ ssǝןǝɹıM ΛdOן§6§",
   "block.gtmqol.opv_wireless_energy_output_hatch": "ɥɔʇɐH oɯɐuʎᗡ ssǝןǝɹıM ΛdOן§6§",
+  "block.gtmqol.smart_assembly_factory": "ʎɹoʇɔɐℲ ʎןqɯǝssⱯ ʇɹɐɯS",
   "block.gtmqol.uev_magical_assembler": "ɹ§II ɹǝןqɯǝssⱯ ןɐɔıbɐW ɔıdƎɐ§",
   "block.gtmqol.uev_wireless_energy_accessor": "ɹossǝɔɔⱯ ʎbɹǝuƎ ssǝןǝɹıM ΛƎ∩ɐ§",
   "block.gtmqol.uev_wireless_energy_input_hatch": "ɥɔʇɐH ʎbɹǝuƎ ssǝןǝɹıM ΛƎ∩ɐ§",
@@ -65,6 +67,7 @@
   "gtmqol.command.default_amperage.set": "Ɐ%s ɥʇıʍ ʇɹɐʇs ʍou ǝɔɐןd noʎ sǝuıɥɔɐɯ ʎbɹǝuǝ ssǝןǝɹıM",
   "gtmqol.command.default_amperage.show": "Ɐ%s ɥʇıʍ pǝɔɐןd ǝɹɐ sǝuıɥɔɐɯ ʎbɹǝuǝ ssǝןǝɹıʍ ɹnoʎ",
   "gtmqol.magical_assembler": "ɹǝןqɯǝssⱯ ןɐɔıbɐW",
+  "gtmqol.multiblock.dimensionally_transcendent_fusion_reactor.tooltip": "˙sʇnduı ʎbɹǝuǝ ɥbnouǝ ǝʌɐɥ noʎ sɐ buoן sɐ 'ɹǝıʇ ʎuɐ ɟo sǝdıɔǝɹ uoısnɟ unɹ uɐƆ",
   "gtmqol.wireless.amperage": "Ɐ%s :ǝbɐɹǝdɯⱯ",
   "gtmqol.wireless.amperage.tooltip": "ᄅ÷ / ᄅ× :ןɹʇƆ '9Ɩ÷ / 9Ɩ× :ʇɟıɥS 'ㄣ÷ / ㄣ× :suoʇʇnᗺ",
   "gtmqol.wireless.auto_output.disabled": "ɟɟo :ʇuoɹɟ oʇ ʇndʇno oʇnⱯ",

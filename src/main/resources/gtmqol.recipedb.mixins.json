@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.yiran.minecraft.gtmqol.mixin.recipedb",
+  "plugin": "com.yiran.minecraft.gtmqol.recipedb.RecipeDBMixinPlugin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "MEPatternBufferPartMachineAccessor",
+    "MEPatternBufferWorkerAccessor",
+    "RecipeDBMixin",
+    "RecipeIteratorMixin",
+    "SearchFrameAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixinextras": {
+    "minVersion": "0.5.5"
+  }
+}

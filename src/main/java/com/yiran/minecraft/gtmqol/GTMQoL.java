@@ -9,11 +9,13 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.circuit.CircuitTags;
 import com.yiran.minecraft.gtmqol.circuit.UniversalCircuits;
+import com.yiran.minecraft.gtmqol.client.GTMQoLClient;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.fe.FEInputProvider;
 import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.integration.IntegrationTests;
 import com.yiran.minecraft.gtmqol.integration.KubeJSDataGenFix;
+import com.yiran.minecraft.gtmqol.multiblock.GTMQoLMultiblocks;
 import com.yiran.minecraft.gtmqol.wireless.WirelessCovers;
 import com.yiran.minecraft.gtmqol.wireless.WirelessNetworks;
 import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergyMachines;
@@ -24,6 +26,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
 
 import org.apache.logging.log4j.LogManager;
@@ -48,6 +51,10 @@ public final class GTMQoL {
         modBus.addGenericListener(CoverDefinition.class, this::onRegisterCovers);
         modBus.addGenericListener(MachineDefinition.class, this::onRegisterMachines);
         modBus.addListener(this::onRegisterDynamicResources);
+
+        if (FMLEnvironment.dist.isClient()) {
+            GTMQoLClient.init();
+        }
 
         if (FMLLoader.getLaunchHandler().isData() && ModList.get().isLoaded("kubejs")) {
             KubeJSDataGenFix.apply();
@@ -96,6 +103,7 @@ public final class GTMQoL {
      */
     private void onRegisterMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
         MagicalAssembler.initMachines();
+        GTMQoLMultiblocks.init();
         WirelessSteamMachines.init();
         WirelessEnergyMachines.init();
         // do not run integration tests in data generation, They are only for testing in a running game.
