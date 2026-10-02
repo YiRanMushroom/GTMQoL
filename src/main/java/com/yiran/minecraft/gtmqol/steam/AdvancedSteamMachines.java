@@ -28,6 +28,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
@@ -64,6 +65,11 @@ public final class AdvancedSteamMachines {
 
     private static final List<Entry> MULTIBLOCKS = new ArrayList<>();
 
+    private record SteamMachine(Pair<MachineEntry<MachineDefinition>, MachineEntry<MachineDefinition>> machine,
+                                Object key) {}
+
+    private static final List<SteamMachine> STEAM_MACHINES = new ArrayList<>();
+
     private AdvancedSteamMachines() {}
 
     /** After {@link MagicalAssembler#initMachines()}, which this uses the recipe type of. */
@@ -94,48 +100,56 @@ public final class AdvancedSteamMachines {
                         .register());
 
         register("macerator", MACERATOR_RECIPES, MV, gtOverlay("macerator"),
-                hp(GTMachines.STEAM_MACERATOR), AdvancedSteamShapes.MACERATOR);
+                lp(GTMachines.STEAM_MACERATOR), AdvancedSteamShapes.MACERATOR);
         register("compressor", COMPRESSOR_RECIPES, MV, gtOverlay("compressor"),
-                hp(GTMachines.STEAM_COMPRESSOR), AdvancedSteamShapes.COMPRESSOR);
+                lp(GTMachines.STEAM_COMPRESSOR), AdvancedSteamShapes.COMPRESSOR);
         register("forge_hammer", FORGE_HAMMER_RECIPES, MV, gtOverlay("forge_hammer"),
-                hp(GTMachines.STEAM_HAMMER), AdvancedSteamShapes.FORGE_HAMMER);
+                lp(GTMachines.STEAM_HAMMER), AdvancedSteamShapes.FORGE_HAMMER);
         register("extractor", EXTRACTOR_RECIPES, MV, gtOverlay("extractor"),
-                hp(GTMachines.STEAM_EXTRACTOR), AdvancedSteamShapes.EXTRACTOR);
+                lp(GTMachines.STEAM_EXTRACTOR), AdvancedSteamShapes.EXTRACTOR);
         register("alloy_smelter", ALLOY_SMELTER_RECIPES, MV, gtOverlay("alloy_smelter"),
-                hp(GTMachines.STEAM_ALLOY_SMELTER), AdvancedSteamShapes.ALLOY_SMELTER);
+                lp(GTMachines.STEAM_ALLOY_SMELTER), AdvancedSteamShapes.ALLOY_SMELTER);
         register("furnace", FURNACE_RECIPES, MV, gtOverlay("furnace"),
-                hp(GTMachines.STEAM_FURNACE), AdvancedSteamShapes.FURNACE);
+                lp(GTMachines.STEAM_FURNACE), AdvancedSteamShapes.FURNACE);
         register("bender", BENDER_RECIPES, MV, gtOverlay("bender"),
-                lv(GTMachines.BENDER), AdvancedSteamShapes.BENDER);
+                lp(steamMachine("bender", BENDER_RECIPES, CustomTags.PISTONS)), AdvancedSteamShapes.BENDER);
         register("wiremill", WIREMILL_RECIPES, MV, gtOverlay("wiremill"),
-                lv(GTMachines.WIREMILL), AdvancedSteamShapes.WIREMILL);
+                lp(steamMachine("wiremill", WIREMILL_RECIPES, new MaterialEntry(gear, Bronze))),
+                AdvancedSteamShapes.WIREMILL);
         register("lathe", LATHE_RECIPES, MV, gtOverlay("lathe"),
-                lv(GTMachines.LATHE), AdvancedSteamShapes.LATHE);
+                lp(steamMachine("lathe", LATHE_RECIPES, new MaterialEntry(gem, Diamond))), AdvancedSteamShapes.LATHE);
         register("cutter", CUTTER_RECIPES, MV, gtOverlay("cutter"),
-                lv(GTMachines.CUTTER), AdvancedSteamShapes.CUTTER);
+                lp(steamMachine("cutter", CUTTER_RECIPES, Blocks.STONECUTTER)), AdvancedSteamShapes.CUTTER);
         register("extruder", EXTRUDER_RECIPES, MV, gtOverlay("extruder"),
-                lv(GTMachines.EXTRUDER), AdvancedSteamShapes.EXTRUDER);
+                lp(steamMachine("extruder", EXTRUDER_RECIPES, new MaterialEntry(pipeNormalFluid, Bronze))),
+                AdvancedSteamShapes.EXTRUDER);
         register("forming_press", FORMING_PRESS_RECIPES, MV, gtOverlay("forming_press"),
-                lv(GTMachines.FORMING_PRESS), AdvancedSteamShapes.FORMING_PRESS);
+                lp(steamMachine("forming_press", FORMING_PRESS_RECIPES, Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE)),
+                AdvancedSteamShapes.FORMING_PRESS);
         register("mixer", MIXER_RECIPES, MV, gtOverlay("mixer"),
-                lv(GTMachines.MIXER), AdvancedSteamShapes.MIXER);
+                lp(steamMachine("mixer", MIXER_RECIPES, new MaterialEntry(rotor, Bronze))), AdvancedSteamShapes.MIXER);
         register("centrifuge", CENTRIFUGE_RECIPES, MV, gtOverlay("centrifuge"),
-                lv(GTMachines.CENTRIFUGE), AdvancedSteamShapes.CENTRIFUGE);
+                lp(steamMachine("centrifuge", CENTRIFUGE_RECIPES, new MaterialEntry(gearSmall, Bronze))),
+                AdvancedSteamShapes.CENTRIFUGE);
         register("thermal_centrifuge", THERMAL_CENTRIFUGE_RECIPES, MV, gtOverlay("thermal_centrifuge"),
-                lv(GTMachines.THERMAL_CENTRIFUGE), AdvancedSteamShapes.THERMAL_CENTRIFUGE);
+                lp(steamMachine("thermal_centrifuge", THERMAL_CENTRIFUGE_RECIPES, Blocks.BLAST_FURNACE)),
+                AdvancedSteamShapes.THERMAL_CENTRIFUGE);
         register("ore_washer", ORE_WASHER_RECIPES, MV, gtOverlay("ore_washer"),
-                lv(GTMachines.ORE_WASHER), AdvancedSteamShapes.ORE_WASHER);
+                lp(steamMachine("ore_washer", ORE_WASHER_RECIPES, Blocks.CAULDRON)), AdvancedSteamShapes.ORE_WASHER);
         register("chemical_bath", CHEMICAL_BATH_RECIPES, MV, gtOverlay("chemical_bath"),
-                lv(GTMachines.CHEMICAL_BATH), AdvancedSteamShapes.CHEMICAL_BATH);
+                lp(steamMachine("chemical_bath", CHEMICAL_BATH_RECIPES, Items.GLASS_BOTTLE)),
+                AdvancedSteamShapes.CHEMICAL_BATH);
         register("sifter", SIFTER_RECIPES, MV, gtOverlay("sifter"),
-                lv(GTMachines.SIFTER), AdvancedSteamShapes.SIFTER);
+                lp(steamMachine("sifter", SIFTER_RECIPES, Blocks.IRON_BARS)), AdvancedSteamShapes.SIFTER);
         register("assembler", ASSEMBLER_RECIPES, MV, gtOverlay("assembler"),
-                lv(GTMachines.ASSEMBLER), AdvancedSteamShapes.MANUFACTURER);
+                lp(steamMachine("assembler", ASSEMBLER_RECIPES, Blocks.CRAFTING_TABLE)),
+                AdvancedSteamShapes.MANUFACTURER);
         // MV makes the ULV-HV control circuits (see ControlCircuits).
         register("circuit_assembler", CIRCUIT_ASSEMBLER_RECIPES, MV, gtOverlay("circuit_assembler"),
-                lv(GTMachines.CIRCUIT_ASSEMBLER), AdvancedSteamShapes.CIRCUIT_ASSEMBLER);
+                lp(steamMachine("circuit_assembler", CIRCUIT_ASSEMBLER_RECIPES, CustomTags.LV_CIRCUITS)),
+                AdvancedSteamShapes.CIRCUIT_ASSEMBLER);
         register("magical_assembler", MagicalAssembler.RECIPE_TYPE, LV,
-                GTMQoL.id("block/machines/magical_assembler"), hp(STEAM_MAGICAL_ASSEMBLER),
+                GTMQoL.id("block/machines/magical_assembler"), lp(STEAM_MAGICAL_ASSEMBLER),
                 AdvancedSteamShapes.MANUFACTURER);
 
         GTMQoLAddon.registrate().addRawLang(TIER_TOOLTIP_KEY,
@@ -152,12 +166,16 @@ public final class AdvancedSteamMachines {
         return GTCEu.id("block/machines/" + machine);
     }
 
-    private static Supplier<ItemStack> hp(Pair<MachineEntry<MachineDefinition>, MachineEntry<MachineDefinition>> steamMachine) {
-        return () -> steamMachine.right().asStack(4);
+    private static Supplier<ItemStack> lp(Pair<MachineEntry<MachineDefinition>, MachineEntry<MachineDefinition>> steamMachine) {
+        return () -> steamMachine.left().asStack();
     }
 
-    private static Supplier<ItemStack> lv(MachineEntry<MachineDefinition>[] machines) {
-        return () -> machines[LV].asStack();
+    /** A steam single block GTCEu doesn't have; {@code key} is what sets its crafting recipe apart. */
+    private static Pair<MachineEntry<MachineDefinition>, MachineEntry<MachineDefinition>> steamMachine(
+            String name, Supplier<GTRecipeType> recipeType, Object key) {
+        var machine = GTMachineUtils.registerSimpleSteamMachines(GTMQoLAddon.registrate(), name, recipeType);
+        STEAM_MACHINES.add(new SteamMachine(machine, key));
+        return machine;
     }
 
     /** {@code shape} is one of {@link AdvancedSteamShapes}. */
@@ -226,14 +244,31 @@ public final class AdvancedSteamMachines {
                 'W', new MaterialEntry(plate, WroughtIron),
                 'P', new MaterialEntry(pipeSmallFluid, TinAlloy));
 
+        // Same layouts as GTCEu's own steam machines: bronze hull for low pressure, a steel plate on top for high.
+        for (SteamMachine steam : STEAM_MACHINES) {
+            MachineEntry<MachineDefinition> lp = steam.machine().left();
+            MachineEntry<MachineDefinition> hp = steam.machine().right();
+            VanillaRecipeHelper.addShapedRecipe(provider, true, GTMQoL.id(lp.getId().getPath()),
+                    lp.asStack(), "PCP", "XMX", "PXP",
+                    'M', BRONZE_HULL.asStack(),
+                    'C', steam.key(),
+                    'P', new MaterialEntry(plate, Bronze),
+                    'X', new MaterialEntry(pipeSmallFluid, Bronze));
+            VanillaRecipeHelper.addShapedRecipe(provider, true, GTMQoL.id(hp.getId().getPath()),
+                    hp.asStack(), "WSW", "PMP", "WWW",
+                    'M', lp.asStack(),
+                    'S', new MaterialEntry(plate, Steel),
+                    'W', new MaterialEntry(plate, WroughtIron),
+                    'P', new MaterialEntry(pipeSmallFluid, TinAlloy));
+        }
+
         for (Entry entry : MULTIBLOCKS) {
             MagicalAssembler.RECIPE_TYPE.recipeBuilder(GTMQoL.id(entry.machine().getId().getPath()))
                     .inputItems(entry.base().get())
-                    .inputItems(CASING_BRONZE_GEARBOX.asItem(), 4)
-                    .inputItems(CASING_BRONZE_BRICKS.asItem(), 8)
-                    .inputItems(plate, Bronze, 16)
-                    .inputItems(gear, Bronze, 4)
-                    .inputItems(CustomTags.ULV_CIRCUITS, 4)
+                    .inputItems(CASING_BRONZE_GEARBOX.asItem(), 2)
+                    .inputItems(CASING_BRONZE_BRICKS.asItem(), 4)
+                    .inputItems(plate, Bronze, 8)
+                    .inputItems(gear, Bronze, 2)
                     .outputItems(entry.machine())
                     .duration(400)
                     .EUt(VA[ULV])
