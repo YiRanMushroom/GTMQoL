@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -23,12 +24,12 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
 
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 
 import it.unimi.dsi.fastutil.Pair;
 
@@ -55,11 +56,11 @@ public final class AdvancedSteamMachines {
 
     public static final PartAbility STEAM_PARALLEL = new PartAbility("steam_parallel_hatch");
 
-    public static MachineDefinition STEAM_PARALLEL_HATCH;
-    public static Pair<MachineDefinition, MachineDefinition> STEAM_MAGICAL_ASSEMBLER;
+    public static MachineEntry<MachineDefinition> STEAM_PARALLEL_HATCH;
+    public static Pair<MachineEntry<MachineDefinition>, MachineEntry<MachineDefinition>> STEAM_MAGICAL_ASSEMBLER;
 
     /** Multiblock and the machine it is made from in the magical assembler. */
-    private record Entry(MultiblockMachineDefinition machine, Supplier<ItemStack> base) {}
+    private record Entry(MachineEntry<MultiblockMachineDefinition> machine, Supplier<ItemStack> base) {}
 
     private static final List<Entry> MULTIBLOCKS = new ArrayList<>();
 
@@ -151,18 +152,18 @@ public final class AdvancedSteamMachines {
         return GTCEu.id("block/machines/" + machine);
     }
 
-    private static Supplier<ItemStack> hp(Pair<MachineDefinition, MachineDefinition> steamMachine) {
+    private static Supplier<ItemStack> hp(Pair<MachineEntry<MachineDefinition>, MachineEntry<MachineDefinition>> steamMachine) {
         return () -> steamMachine.right().asStack(4);
     }
 
-    private static Supplier<ItemStack> lv(MachineDefinition[] machines) {
+    private static Supplier<ItemStack> lv(MachineEntry<MachineDefinition>[] machines) {
         return () -> machines[LV].asStack();
     }
 
     /** {@code shape} is one of {@link AdvancedSteamShapes}. */
-    private static void register(String name, GTRecipeType recipeType, int maxRecipeTier, ResourceLocation overlay,
+    private static void register(String name, Supplier<GTRecipeType> recipeType, int maxRecipeTier, ResourceLocation overlay,
                                  Supplier<ItemStack> base, String[][] shape) {
-        MultiblockMachineDefinition machine = GTMQoLAddon
+        MachineEntry<MultiblockMachineDefinition> machine = GTMQoLAddon
                 .multiblock("large_steam_" + name, info -> new AdvancedSteamMultiMachine(info, maxRecipeTier))
                 .rotationState(RotationState.ALL)
                 .appearanceBlock(CASING_BRONZE_BRICKS)
@@ -199,7 +200,7 @@ public final class AdvancedSteamMachines {
                             .where('H', blocks(BRONZE_HULL.get()))
                             .where('K', blocks(BRONZE_BRICKS_HULL.get()))
                             .where('Z', blocks(ChemicalHelper.getBlock(block, Bronze)))
-                            .where('L', blockTag(Tags.Blocks.GLASS))
+                            .where('L', blockTag(Tags.Blocks.GLASS_BLOCKS))
                             .where('I', blocks(Blocks.IRON_BLOCK))
                             .where('D', blocks(Blocks.DIAMOND_BLOCK))
                             .where('T', blocks(Blocks.STONE_BRICKS))
@@ -211,7 +212,7 @@ public final class AdvancedSteamMachines {
         MULTIBLOCKS.add(new Entry(machine, base));
     }
 
-    public static void addRecipes(Consumer<FinishedRecipe> provider) {
+    public static void addRecipes(RecipeOutput provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, GTMQoL.id("lp_steam_magical_assembler"),
                 STEAM_MAGICAL_ASSEMBLER.left().asStack(), "PXP", "CMC", "PXP",
                 'M', BRONZE_HULL.asStack(),
@@ -226,7 +227,7 @@ public final class AdvancedSteamMachines {
                 'P', new MaterialEntry(pipeSmallFluid, TinAlloy));
 
         for (Entry entry : MULTIBLOCKS) {
-            MagicalAssembler.RECIPE_TYPE.recipeBuilder(GTMQoL.id(entry.machine().getName()))
+            MagicalAssembler.RECIPE_TYPE.recipeBuilder(GTMQoL.id(entry.machine().getId().getPath()))
                     .inputItems(entry.base().get())
                     .inputItems(CASING_BRONZE_GEARBOX.asItem(), 4)
                     .inputItems(CASING_BRONZE_BRICKS.asItem(), 8)

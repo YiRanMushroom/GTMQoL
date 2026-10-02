@@ -27,7 +27,7 @@ public final class IntegrationTests {
     private IntegrationTests() {}
 
     public static void registerExampleMachines() {
-        MachineDefinition singleBlock = GTMQoLAddon
+        var singleBlock = GTMQoLAddon
                 .machine("runtime_single_block", info -> new SimpleTieredMachine(info, GTValues.LV))
                 .tier(GTValues.LV)
                 .rotationState(RotationState.NON_Y_AXIS)
@@ -37,8 +37,9 @@ public final class IntegrationTests {
                 .dynamicallyGenerated(true)
                 .register();
 
-        MachineDefinition multiblock = GTMQoLAddon
+        var multiblock = GTMQoLAddon
                 .multiblock("runtime_multiblock", WorkableElectricMultiblockMachine::new)
+                .dynamicallyGenerated(true)
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
                 .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
@@ -57,7 +58,6 @@ public final class IntegrationTests {
                 .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                         GTCEu.id("block/multiblock/electric_blast_furnace"))
                 .langValue("Runtime Multiblock")
-                .dynamicallyGenerated(true)
                 .register();
 
         GTMQoL.LOGGER.info("Integration examples registered: {} and {}",

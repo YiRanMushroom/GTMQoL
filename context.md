@@ -15,6 +15,46 @@ shaped this way, and what is pending.
 - The old implementation is archived under `reference/` as research material. Do not migrate it wholesale
   and do not modify it.
 
+## 1.21.1 port (branch `port/1.21.1`)
+
+- Branched from `87a49de` (GTNL steam machines). The plan is two long-lived branches kept in sync with
+  cherry-picks. A multi-version tool such as Stonecutter is only an idea for now and has not been agreed.
+- Build setup:
+  - ModDevGradle 2.0.141 on NeoForge 21.1.248 with Java 21.
+  - Dev-only mods go in a `localRuntime` configuration.
+  - Mixin configs are listed in `neoforge.mods.toml`.
+  - Mixin `compatibilityLevel` is `JAVA_21` and `pack_format` is 34.
+  - Versions follow gtceu's 1.21 branch (`gradle/libs.versions.toml`, `forge.versions.toml`).
+- `compileJava` passes. Not run in game yet.
+- Code differences from master (keep these in mind when cherry-picking):
+  - gtceu 1.21 registers everything as deferred Registrate entries. Machine, cover and recipe type fields
+    are `MachineEntry` / `Holder<CoverDefinition>` / `GTRecipeTypeEntry`, not definitions. Content is
+    declared in the `GTMQoL` constructor (recipe types first). `IGTAddon` has no `initializeAddon`.
+  - Builders are in `api.registry.registrate.builder`. `register()` returns `MachineEntry`, and the
+    properties live behind `properties()`. `RuntimeGeneration` keeps the builder and the entry.
+  - `ModularMachines`: `GTMachineUtilsMixin` only queues the tiered entries and the builder's recipe type
+    suppliers (`@Share` between the `BiFunction.apply` wrap and the RETURN inject; read through
+    `MachineBuilderAccessor`). The multiblocks are declared at the start of the `gtceu:machine`
+    `RegisterEvent`, at NORMAL priority. That is before our registrate's LOW `onRegister` and after
+    recipe types exist. The config is readable by then.
+  - `FEInputProvider` registers `Capabilities.EnergyStorage.BLOCK` in `RegisterCapabilitiesEvent` for
+    every `MetaMachineBlock` / `CableBlock`. gtceu registers first, so its own FE storages win.
+  - Data stick binding uses `DataComponents.CUSTOM_DATA` / `CUSTOM_NAME`. SavedData uses
+    `SavedData.Factory` plus `HolderLookup.Provider`.
+  - `CircuitTags` uses `c:` (Mekanism 1.21: `c:circuits/<tier>`, `c:alloys/advanced`).
+  - The dev recipe viewer is EMI, not JEI. That matches gtceu's 1.21 dev setup. With JEI, this gtceu snapshot
+    crashes in `GTRecipeCategories.<clinit>`: `CategoryIcon` calls `GTJEIPlugin.getRuntime()` during mod
+    construction, and it is still null there.
+  - EAP is pinned by Modrinth version id, because the Forge and NeoForge builds share version numbers. The
+    NeoForge EAP's `ISmartDoublingHolder` only has the limit, so the smart doubling on/off is our own
+    mixin method, passed to `SmartDoubling.addConfigurator`.
+  - The AE2 dev runtime is 19.2.18, because EAP 1.6.3 needs `AEBaseMenu.clicked`. gtceu builds against 19.2.8.
+  - The mixin configs' `mixinextras.minVersion` is 0.5.3, the version NeoForge 21.1.248 bundles. It is 0.5.5 on master.
+  - `KubeJSDataGenFix` is removed, since NeoForge's `DatagenModLoader` sets the flag correctly.
+    Check that datagen exits.
+- Mixin targets were checked statically against the 1.21 sources and all match. Runtime still unverified.
+- `src/generated/resources` still has the 1.20 layout (`data/forge/tags/items`). Regenerate it with `runData`.
+
 ## Source layout
 
 ```text

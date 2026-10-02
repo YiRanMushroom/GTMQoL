@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[47,)"
+loaderVersion = "[4,)"
 license = "${mod_license}"
 issueTrackerURL = "https://github.com/YiRanMushroom/GTMQoL"
 
@@ -13,23 +13,35 @@ description = '''
 Runtime resource and data generation utilities for GTCEu.
 '''
 
+# NeoForge reads mixin configs from here (Forge took them from the jar manifest).
+# gtmqol.recipedb.mixins.json is gated by RecipeDBMixinPlugin (config/gtmqol-early.properties),
+# gtmqol.eap.mixins.json by EAPMixinPlugin (only with ExtendedAE Plus installed).
+[[mixins]]
+config = "gtmqol.mixins.json"
+
+[[mixins]]
+config = "gtmqol.recipedb.mixins.json"
+
+[[mixins]]
+config = "gtmqol.eap.mixins.json"
+
 [[dependencies.gtmqol]]
-modId = "forge"
-mandatory = true
-versionRange = "[${forge_version},)"
+modId = "neoforge"
+type = "required"
+versionRange = "[${neoforge_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.gtmqol]]
 modId = "minecraft"
-mandatory = true
+type = "required"
 versionRange = "[${minecraft_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.gtmqol]]
 modId = "gtceu"
-mandatory = true
+type = "required"
 versionRange = "[${gtceu_min_version},)"
 ordering = "AFTER"
 side = "BOTH"

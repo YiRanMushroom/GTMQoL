@@ -20,7 +20,10 @@ import com.extendedae_plus.api.smartDoubling.ISmartDoublingAwarePattern;
 import com.extendedae_plus.api.smartDoubling.ISmartDoublingHolder;
 import com.extendedae_plus.util.smartDoubling.PatternScaler;
 import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.BooleanSupplier;
 
 /**
  * ExtendedAE Plus smart doubling on GTCEu's pattern buffer, used by {@code mixin.eap.MEPatternBufferSmartDoublingMixin}.
@@ -50,17 +53,21 @@ public final class SmartDoubling {
         return pattern instanceof ScaledProcessingPattern scaled ? scaled.getOriginal() : pattern;
     }
 
-    /** Adds a button to the left configurators that opens the smart doubling settings. */
+    /**
+     * Adds a button to the left configurators that opens the smart doubling settings. The on/off switch is
+     * ours: the NeoForge build of EAP has no toggle in {@link ISmartDoublingHolder}, only the limit.
+     */
     public static MachineUIPanelBuilder addConfigurator(MachineUIPanelBuilder builder, PanelSyncManager syncManager,
-                                                        ISmartDoublingHolder holder) {
+                                                        ISmartDoublingHolder holder, BooleanSupplier enabled,
+                                                        BooleanConsumer setEnabled) {
         IPanelHandler panelHandler = syncManager.syncedPanel("gtmqol_smart_doubling", true,
                 (syncManager1, handler) -> PopupPanel.createPopupPanel("gtmqol_smart_doubling_panel", 140, 70)
                         .child(Flow.col()
                                 .coverChildren()
                                 .child(Text.lang(TITLE_KEY).asWidget())
                                 // On/off shows in the button background and its tooltip (TOGGLE_KEY.enabled/.disabled).
-                                .child(GTMuiWidgets.createToggleButton(holder::eap$getSmartDoubling,
-                                        holder::eap$setSmartDoubling, GTGuiTextures.BUTTON_BATCH[0],
+                                .child(GTMuiWidgets.createToggleButton(enabled,
+                                        setEnabled, GTGuiTextures.BUTTON_BATCH[0],
                                         GTGuiTextures.BUTTON_BATCH[1], TOGGLE_KEY).marginTop(4))
                                 .child(Text.lang(LIMIT_KEY).asWidget().marginTop(4))
                                 .child(new TextFieldWidget()

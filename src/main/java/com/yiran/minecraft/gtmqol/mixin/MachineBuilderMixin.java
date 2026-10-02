@@ -1,7 +1,7 @@
 package com.yiran.minecraft.gtmqol.mixin;
 
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.yiran.minecraft.gtmqol.generation.IDynamicGenerationHandler;
 import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
 
@@ -27,10 +27,11 @@ public abstract class MachineBuilderMixin implements IDynamicGenerationHandler {
         return gtmqol$dynamicGenerated;
     }
 
-    // Full descriptor: there is also a synthetic register()Ljava/lang/Object; bridge from BuilderBase.
-    // MultiblockMachineBuilder.register() calls super.register(), so multiblocks land here too.
-    @Inject(method = "register()Lcom/gregtechceu/gtceu/api/machine/MachineDefinition;", at = @At("RETURN"))
-    private void gtmqol$queueDynamicGeneration(CallbackInfoReturnable<MachineDefinition> cir) {
+    // Full descriptor: there is also a synthetic bridge from Registrate's AbstractBuilder.register().
+    // MultiblockMachineBuilder doesn't override register(), so multiblocks land here too.
+    @Inject(method = "register()Lcom/gregtechceu/gtceu/api/registry/registrate/entry/MachineEntry;",
+            at = @At("RETURN"))
+    private void gtmqol$queueDynamicGeneration(CallbackInfoReturnable<MachineEntry<?>> cir) {
         if (gtmqol$dynamicGenerated) {
             RuntimeGeneration.addMachine((MachineBuilder<?, ?, ?>) (Object) this, cir.getReturnValue());
         }

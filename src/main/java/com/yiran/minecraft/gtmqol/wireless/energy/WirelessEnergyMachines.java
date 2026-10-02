@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.GTMQoL;
@@ -37,10 +38,13 @@ public final class WirelessEnergyMachines {
 
     private static final ResourceLocation WIRELESS_OVERLAY = GTMQoL.id("block/overlay/machine/overlay_wireless");
 
-    public static MachineDefinition[] ENERGY_INPUT_HATCH = new MachineDefinition[TIER_COUNT];
-    public static MachineDefinition[] ENERGY_OUTPUT_HATCH = new MachineDefinition[TIER_COUNT];
-    public static MachineDefinition[] ENERGY_ACCESSOR = new MachineDefinition[TIER_COUNT];
-    public static MachineDefinition ENERGY_MONITOR;
+    @SuppressWarnings("unchecked")
+    public static MachineEntry<MachineDefinition>[] ENERGY_INPUT_HATCH = new MachineEntry[TIER_COUNT];
+    @SuppressWarnings("unchecked")
+    public static MachineEntry<MachineDefinition>[] ENERGY_OUTPUT_HATCH = new MachineEntry[TIER_COUNT];
+    @SuppressWarnings("unchecked")
+    public static MachineEntry<MachineDefinition>[] ENERGY_ACCESSOR = new MachineEntry[TIER_COUNT];
+    public static MachineEntry<MachineDefinition> ENERGY_MONITOR;
 
     private WirelessEnergyMachines() {}
 

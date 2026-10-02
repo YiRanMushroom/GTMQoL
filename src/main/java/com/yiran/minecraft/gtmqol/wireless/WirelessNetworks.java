@@ -9,12 +9,12 @@ import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergySavedData;
 import com.yiran.minecraft.gtmqol.wireless.steam.WirelessSteamSavedData;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.UsernameCache;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.UsernameCache;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.bus.api.EventPriority;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -36,13 +36,12 @@ public final class WirelessNetworks {
         if (GTCEu.Mods.isFTBTeamsLoaded()) {
             FTBTeamsCompat.registerEvents();
         }
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, WirelessNetworks::onEntityPlace);
-        MinecraftForge.EVENT_BUS.addListener(WirelessNetworks::onServerTick);
-        MinecraftForge.EVENT_BUS.addListener(DefaultAmperageCommand::register);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, WirelessNetworks::onEntityPlace);
+        NeoForge.EVENT_BUS.addListener(WirelessNetworks::onServerTick);
+        NeoForge.EVENT_BUS.addListener(DefaultAmperageCommand::register);
     }
 
-    private static void onServerTick(TickEvent.ServerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
+    private static void onServerTick(ServerTickEvent.Post event) {
         int tick = event.getServer().getTickCount();
         if (tick % IOStats.SAMPLE_INTERVAL == 0) {
             WirelessSteamSavedData.get().sampleStats(tick);

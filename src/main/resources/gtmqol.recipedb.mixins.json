@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "com.yiran.minecraft.gtmqol.mixin.recipedb",
   "plugin": "com.yiran.minecraft.gtmqol.recipedb.RecipeDBMixinPlugin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MEPatternBufferPartMachineAccessor",
     "MEPatternBufferWorkerAccessor",
@@ -15,6 +15,6 @@
     "defaultRequire": 1
   },
   "mixinextras": {
-    "minVersion": "0.5.5"
+    "minVersion": "0.5.3"
   }
 }

@@ -8,7 +8,9 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergySavedData;
 import com.yiran.minecraft.gtmqol.wireless.steam.WirelessSteamSavedData;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -199,8 +201,8 @@ public class WirelessBindingTrait extends MachineTrait {
                 binding.putBoolean("private", privateNetwork);
                 CompoundTag tag = new CompoundTag();
                 tag.put(STICK_TAG, binding);
-                dataStick.setTag(tag);
-                dataStick.setHoverName(Component.translatable(STICK_NAME_KEY, getBoundPlayerName()));
+                dataStick.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+                dataStick.set(DataComponents.CUSTOM_NAME, Component.translatable(STICK_NAME_KEY, getBoundPlayerName()));
                 player.displayClientMessage(Component.translatable(COPIED_KEY), true);
             } else {
                 player.displayClientMessage(Component.translatable(NOT_ALLOWED_KEY, getBoundPlayerName()), true);
@@ -211,8 +213,8 @@ public class WirelessBindingTrait extends MachineTrait {
 
     public InteractionResult onDataStickUse(Player player, ItemStack dataStick) {
         if (!isRemote()) {
-            CompoundTag tag = dataStick.getTag();
-            if (tag != null && tag.contains(STICK_TAG)) {
+            CompoundTag tag = dataStick.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+            if (tag.contains(STICK_TAG)) {
                 pasteBinding(player, tag.getCompound(STICK_TAG));
             } else if (boundPlayer == null) {
                 bind(player.getUUID(), false);

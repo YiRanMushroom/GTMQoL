@@ -6,7 +6,7 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -58,7 +58,7 @@ public final class ControlCircuits {
                 .register();
     }
 
-    public static void addRecipes(Consumer<FinishedRecipe> provider) {
+    public static void addRecipes(RecipeOutput provider) {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder(GTMQoL.id("very_simple_control_circuit"))
                 .notConsumable(GTItems.NAND_CHIP_ULV.asStack())
                 .inputItems(plate, Steel)
@@ -126,7 +126,7 @@ public final class ControlCircuits {
         }
 
         @Override
-        public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+        public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
                                     TooltipFlag isAdvanced) {
             tooltipComponents.addAll(List.of(tooltip));
         }

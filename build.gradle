@@ -1,6 +1,8 @@
 plugins {
-    id 'dev.architectury.loom' version '1.13.467'
+    id 'java-library'
     id 'maven-publish'
+    // Same plugin and version as gtceu's 1.21 branch and its 1.21.1 addon template.
+    id 'net.neoforged.moddev' version '2.0.141'
 }
 
 base {
@@ -11,66 +13,62 @@ version = project.mod_version
 group = project.maven_group
 
 java {
-    // Minecraft 1.20.1 / Forge 47 must run on Java 17, but Architectury Loom 1.13 requires the
-    // Gradle JVM itself to be 21+. A toolchain keeps javac and the runClient/runServer launcher on 17.
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
     withSourcesJar()
 }
 
 sourceSets {
     main {
-        java.srcDirs = ['src/main/java']
         resources.srcDir 'src/generated/resources'
     }
 }
 
-loom {
-    silentMojangMappingsLicense()
+neoForge {
+    version = project.neoforge_version
 
-    // Adds a 'data' run (runData) with --all/--mod/--output filled in; --existing goes on the run below.
-    forge {
-        dataGen {
-            mod project.mod_id
-        }
-        // Adds MixinConfigs to the jar manifest and passes the config to the dev runs.
-        // gtmqol.recipedb.mixins.json is gated by RecipeDBMixinPlugin (config/gtmqol-early.properties),
-        // gtmqol.eap.mixins.json by EAPMixinPlugin (only with ExtendedAE Plus installed).
-        mixinConfig 'gtmqol.mixins.json', 'gtmqol.recipedb.mixins.json', 'gtmqol.eap.mixins.json'
+    parchment {
+        minecraftVersion = project.parchment_minecraft_version
+        mappingsVersion = project.parchment_mappings
     }
 
     runs {
         client {
-            programArgs '--width', '1280', '--height', '720'
-            ideConfigGenerated true
-            runDir 'run'
+            client()
+            programArguments.addAll('--width', '1280', '--height', '720')
+            gameDirectory = file('run')
         }
         server {
-            ideConfigGenerated true
-            runDir 'run'
+            server()
+            gameDirectory = file('run')
         }
         data {
-            programArgs '--existing', file('src/main/resources').absolutePath
-            programArgs '--existing-mod', 'gtceu'
-            ideConfigGenerated true
+            data()
+            gameDirectory = file('run/data')
+            programArguments.addAll('--mod', project.mod_id, '--all',
+                    '--output', file('src/generated/resources/').absolutePath,
+                    '--existing', file('src/main/resources/').absolutePath,
+                    '--existing-mod', 'gtceu')
         }
     }
 
     mods {
-        gtmqol {
+        "${project.mod_id}" {
             sourceSet sourceSets.main
         }
     }
 }
 
+configurations {
+    // Mods only in the dev runs, never a dependency of ours (MDG has no modLocalRuntime).
+    localRuntime
+    runtimeClasspath.extendsFrom localRuntime
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
-    maven {
-        name = 'Fabric'
-        url = 'https://maven.fabricmc.net/'
-    }
     maven {
         name = 'GTCEu'
         url = 'https://maven.gtceu.com'
@@ -80,16 +78,12 @@ repositories {
         }
     }
     maven {
-        name = 'Parchment'
-        url = 'https://maven.parchmentmc.org'
-    }
-    maven {
-        name = 'LDLib'
-        url = 'https://maven.firstdarkdev.xyz/snapshots/'
-    }
-    maven {
-        name = 'tterrag'
-        url = 'https://maven.tterrag.com/'
+        // Registrate for 1.21 is only published here
+        name = 'devOS'
+        url = 'https://mvn.devos.one/snapshots/'
+        content {
+            includeGroup 'com.tterrag.registrate'
+        }
     }
     maven {
         name = 'Curios'
@@ -99,38 +93,39 @@ repositories {
         }
     }
     maven {
-        name = 'BlameJared'
-        url = 'https://maven.blamejared.com/'
+        name = 'TerraformersMC'
+        url = 'https://maven.terraformersmc.com/'
         content {
-            includeGroup 'mezz.jei'
+            includeGroup 'dev.emi'
         }
     }
     maven {
         name = 'ModMaven'
         url = 'https://modmaven.dev/'
         content {
-            includeGroup 'appeng'
+            includeGroup 'org.appliedenergistics'
             includeGroup 'mekanism'
         }
     }
     maven {
-        name = 'SAPS'
-        url = 'https://maven.saps.dev/releases'
-        content {
-            includeGroup 'dev.latvian.mods'
-        }
-    }
-    maven {
-        // Rhino (KubeJS's script engine) is only published here, not on SAPS
         name = 'Latvian'
         url = 'https://maven.latvian.dev/releases'
         content {
             includeGroup 'dev.latvian.mods'
+            includeGroup 'dev.latvian.apps'
+        }
+    }
+    maven {
+        // KubeJS's gif library is only published here
+        name = 'JitPack'
+        url = 'https://jitpack.io'
+        content {
+            includeGroup 'com.github.rtyley'
         }
     }
     maven {
         name = 'Architectury'
-        url = 'https://maven.architectury.dev/'
+        url = 'https://maven.shedaniel.me/'
         content {
             includeGroup 'dev.architectury'
         }
@@ -159,100 +154,74 @@ repositories {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    forge "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
-
-    mappings loom.layered {
-        // Named like Forge's own dev environment (e.g. `this$0`); mods' mixins shadow those names, and
-        // with false Jade's StringRenderOutputMixin fails to apply in dev.
-        officialMojangMappings {
-            nameSyntheticMembers = true
-        }
-        parchment "org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchment_mappings}@zip"
-    }
-
-    // :slim is the same jar without the jar-in-jars, as used by GTCEu's official addon templates.
-    modImplementation "com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtceu_version}:slim"
-
-    // gtceu jar-in-jars everything it needs (see META-INF/jarjar/metadata.json in its full jar), so
-    // players are fine. But its maven metadata lists no dependencies, and Loom drops the jarjar metadata
-    // when remapping, so FML can't unpack them in dev. The same set is declared here explicitly instead.
-    // Registrate also shows up in gtceu's public API (GTRegistrate, MachineBuilder), hence on compile.
-    modImplementation "com.tterrag.registrate:Registrate:${project.registrate_version}"
-    // Also our own config library (see GTMQoLConfig). Its pom leaks a dev-only forge coordinate
-    // (1.20.1-47.3.0_mapped_official_1.20.1) that is not published anywhere, so take the jar alone.
-    modImplementation("dev.toma.configuration:configuration-${project.minecraft_version}:${project.configuration_version}") {
+    // Same setup as gtceu's 1.21.1 addon template: gtceu without its pom dependencies, and the libraries it
+    // jar-in-jars declared by hand (Registrate and ModularUI are also in gtceu's public API). NeoForge runs
+    // on Mojang names, so nothing is remapped and the jars stay as published.
+    implementation("com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtceu_version}") {
         transitive = false
     }
-    // Also on compile: machine UIs (IMuiMachine.buildMainUI) are built from ModularUI widgets.
-    modImplementation "brachy.modularui:modularui-mc${project.minecraft_version}:${project.modularui_version}"
-    // Second level of the same problem: ModularUI jar-in-jars EvalEx, which gtceu itself uses (PipeBlock)
-    // but only declares compileOnly. It's a plain library, not a mod, so it goes through
-    // forgeRuntimeLibrary to land on the module layer the mods can see.
-    runtimeOnly(forgeRuntimeLibrary("com.ezylang:EvalEx:${project.evalex_version}"))
-    // ModularUI registers test items when !FMLLoader.isProduction(), one of which implements a Curios
-    // interface, so every dev run needs Curios. gtceu's own dev setup has it as modLocalRuntime too.
-    modLocalRuntime "top.theillusivec4.curios:curios-forge:${project.curios_version}"
+    implementation "com.tterrag.registrate:Registrate:${project.registrate_version}"
+    // Also our own config library (see GTMQoLConfig).
+    implementation("dev.toma.configuration:configuration-${project.minecraft_version}:${project.configuration_version}") {
+        transitive = false
+    }
+    implementation "brachy.modularui:modularui-mc${project.minecraft_version}:${project.modularui_version}"
+    // ModularUI registers test items in dev, one of which implements a Curios interface (as on 1.20.1).
+    // gtceu's own dev setup has it as localRuntime too.
+    localRuntime "top.theillusivec4.curios:curios-neoforge:${project.curios_version}"
 
     // Dev-only mods so the test client has recipe viewing, ME networks and KubeJS (GTCEu's optional deps).
-    modLocalRuntime "mezz.jei:jei-${project.minecraft_version}-forge:${project.jei_version}"
-    modLocalRuntime "dev.latvian.mods:kubejs-forge:${project.kubejs_version}"
-    // Compile-only for KubeJSDataGenFix; still not a runtime dependency of ours.
-    modCompileOnly "dev.latvian.mods:kubejs-forge:${project.kubejs_version}"
-    modLocalRuntime "appeng:appliedenergistics2-forge:${project.ae2_version}"
+    localRuntime "dev.emi:emi-neoforge:${project.emi_version}"
+    localRuntime "dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}"
     // Compile-only for recipedb/PatternBufferIngredients (gtceu's pattern buffer implements AE2 interfaces);
     // only used when AE2 is loaded, still not a runtime dependency of ours.
-    modCompileOnly "appeng:appliedenergistics2-forge:${project.ae2_version}"
+    compileOnly "org.appliedenergistics:appliedenergistics2:${project.ae2_version}"
+    localRuntime "org.appliedenergistics:appliedenergistics2:${project.ae2_version}"
     // Optional: ExtendedAE Plus smart doubling on gtceu's pattern buffer. Compile against its API, never
-    // require it. Its mods.toml requires ExtendedAE, which in turn requires GuideMe and Glodium; all from
-    // Modrinth, listed by hand.
-    modCompileOnly("maven.modrinth:extendedae-plus:${project.eap_version}") {
+    // require it. It requires ExtendedAE, which in turn requires GuideMe and Glodium; all from Modrinth,
+    // listed by hand.
+    compileOnly("maven.modrinth:extendedae-plus:${project.eap_version}") {
         transitive = false
     }
-    modLocalRuntime("maven.modrinth:extendedae-plus:${project.eap_version}") {
+    localRuntime("maven.modrinth:extendedae-plus:${project.eap_version}") {
         transitive = false
     }
-    modLocalRuntime("maven.modrinth:extended-ae:${project.extendedae_version}") {
+    localRuntime("maven.modrinth:extended-ae:${project.extendedae_version}") {
         transitive = false
     }
-    modLocalRuntime("maven.modrinth:glodium:${project.glodium_version}") {
+    localRuntime("maven.modrinth:glodium:${project.glodium_version}") {
         transitive = false
     }
-    modLocalRuntime("maven.modrinth:guideme:${project.guideme_version}") {
+    localRuntime("maven.modrinth:guideme:${project.guideme_version}") {
         transitive = false
     }
-    // Optional: GT circuit tags and Mekanism's forge:circuits/* tags are merged (see CircuitTags). That is
-    // plain tag data, so nothing is compiled against Mekanism; it's only in the dev runs for testing.
-    modLocalRuntime("mekanism:Mekanism:${project.minecraft_version}-${project.mekanism_version}") {
+    // Optional: GT circuit tags and Mekanism's circuit tags are merged (see CircuitTags). That is plain tag
+    // data, so nothing is compiled against Mekanism; it's only in the dev runs for testing.
+    localRuntime("mekanism:Mekanism:${project.minecraft_version}-${project.mekanism_version}") {
         transitive = false
     }
     // Block info overlay; GTCEu has its own Jade plugin (recipe progress, energy).
-    modLocalRuntime "maven.modrinth:jade:${project.jade_version}"
+    localRuntime "maven.modrinth:jade:${project.jade_version}"
     // Optional: wireless networks are shared per FTB team when it is installed. We compile against
     // FTB Teams and Architectury (its events are Architectury Events) but never require them; the dev
-    // runs include them, plus FTB Library, so teams can be tested. Dependencies are listed by hand
-    // because the poms pin older versions of each other.
-    modCompileOnly("dev.ftb.mods:ftb-teams-forge:${project.ftbteams_version}") {
+    // runs include them, plus FTB Library, so teams can be tested.
+    compileOnly("dev.ftb.mods:ftb-teams-neoforge:${project.ftbteams_version}") {
         transitive = false
     }
-    modCompileOnly("dev.architectury:architectury-forge:${project.architectury_version}") {
+    compileOnly("dev.architectury:architectury-neoforge:${project.architectury_version}") {
         transitive = false
     }
-    modLocalRuntime("dev.ftb.mods:ftb-teams-forge:${project.ftbteams_version}") {
+    localRuntime("dev.ftb.mods:ftb-teams-neoforge:${project.ftbteams_version}") {
         transitive = false
     }
-    modLocalRuntime("dev.ftb.mods:ftb-library-forge:${project.ftblibrary_version}") {
+    localRuntime("dev.ftb.mods:ftb-library-neoforge:${project.ftblibrary_version}") {
         transitive = false
     }
-    modLocalRuntime("dev.architectury:architectury-forge:${project.architectury_version}") {
+    localRuntime("dev.architectury:architectury-neoforge:${project.architectury_version}") {
         transitive = false
     }
 
-    // gtceu's mixins use @WrapOperation and need MixinExtras. Ship it jar-in-jar in our own mod so
-    // neither the dev runs nor players have to install it separately. Setup per the MixinExtras wiki
-    // (Forge + Architectury Loom): common on the classpath, forge jar on the classpath and included.
-    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${project.mixinextras_version}"))
-    implementation(include("io.github.llamalad7:mixinextras-forge:${project.mixinextras_version}"))
+    // MixinExtras ships with NeoForge, nothing to add.
 }
 
 processResources {
@@ -265,29 +234,20 @@ processResources {
         mod_name: project.mod_name,
         mod_url: project.mod_url,
         mod_author: project.mod_author,
-        forge_version: project.forge_version.split('\\.')[0],
+        neoforge_version: project.neoforge_version.substring(0, project.neoforge_version.lastIndexOf('.')),
         minecraft_version: project.minecraft_version,
         gtceu_min_version: project.gtceu_min_version
     ]
     inputs.properties properties
 
-    filesMatching('META-INF/mods.toml') {
+    filesMatching('META-INF/neoforge.mods.toml') {
         expand properties
     }
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    options.release = 17
-}
-
-// Loom's run tasks default to the Gradle JVM (21+), which Minecraft 1.20.1 cannot use.
-// Only Loom's own tasks: IDEA's generated run configs are JavaExec too, but set `executable` to the JRE
-// chosen in the run config, and Gradle fails if that differs from the toolchain launcher.
-tasks.withType(net.fabricmc.loom.task.AbstractRunTask).configureEach {
-    javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
+    options.release = 21
 }
 
 jar {

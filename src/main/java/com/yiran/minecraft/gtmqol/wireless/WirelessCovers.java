@@ -16,6 +16,7 @@ import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergyHatchPartMachine
 import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.wireless.steam.WirelessSteamCover;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -42,10 +43,12 @@ public final class WirelessCovers {
 
     private static final ResourceLocation WIRELESS_OVERLAY = GTMQoL.id("block/overlay/machine/overlay_wireless");
 
-    public static CoverDefinition[] ENERGY_INPUT = new CoverDefinition[TIER_COUNT];
-    public static CoverDefinition[] ENERGY_OUTPUT = new CoverDefinition[TIER_COUNT];
-    public static CoverDefinition STEAM_INPUT;
-    public static CoverDefinition STEAM_OUTPUT;
+    @SuppressWarnings("unchecked")
+    public static Holder<CoverDefinition>[] ENERGY_INPUT = new Holder[TIER_COUNT];
+    @SuppressWarnings("unchecked")
+    public static Holder<CoverDefinition>[] ENERGY_OUTPUT = new Holder[TIER_COUNT];
+    public static Holder<CoverDefinition> STEAM_INPUT;
+    public static Holder<CoverDefinition> STEAM_OUTPUT;
 
     @SuppressWarnings("unchecked")
     public static ItemEntry<ComponentItem>[] ENERGY_INPUT_ITEM = new ItemEntry[TIER_COUNT];
@@ -87,11 +90,11 @@ public final class WirelessCovers {
         addLang(COVER_BINDING_TOOLTIP_KEY, "Bound to whoever attaches it; screwdriver or shift-right-click with an empty hand opens the settings");
     }
 
-    private static CoverDefinition register(String id, CoverDefinition.CoverBehaviourProvider behavior) {
-        return GTCovers.register(GTMQoL.id(id), behavior, () -> () -> new SimpleCoverRenderer(WIRELESS_OVERLAY));
+    private static Holder<CoverDefinition> register(String id, CoverDefinition.CoverBehaviourProvider behavior) {
+        return GTMQoLAddon.registrate().cover(id, behavior, () -> () -> new SimpleCoverRenderer(WIRELESS_OVERLAY));
     }
 
-    private static ItemEntry<ComponentItem> energyItem(String name, String lang, CoverDefinition cover,
+    private static ItemEntry<ComponentItem> energyItem(String name, String lang, Holder<CoverDefinition> cover,
                                                        String tooltipKey, int tier) {
         return item(name, lang, cover, Component.translatable(tooltipKey),
                 Component.translatable(ENERGY_RATE_TOOLTIP_KEY, FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
@@ -99,10 +102,10 @@ public final class WirelessCovers {
                         WirelessEnergyHatchPartMachine.DEFAULT_AMPERAGE));
     }
 
-    private static ItemEntry<ComponentItem> item(String name, String lang, CoverDefinition cover,
+    private static ItemEntry<ComponentItem> item(String name, String lang, Holder<CoverDefinition> cover,
                                                  Component... tooltips) {
         return GTMQoLAddon.registrate()
-                .item(name, ComponentItem::create)
+                .item(name, ComponentItem::new)
                 .lang(lang)
                 .model((ctx, prov) -> prov.generated(ctx, WIRELESS_OVERLAY))
                 .onRegister(attach(new TooltipBehavior(lines -> {
