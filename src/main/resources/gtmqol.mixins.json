@@ -18,6 +18,9 @@
     "gtceufix.GameDataMixin",
     "gtceufix.GTMuiWidgetsMixin"
   ],
+  "client": [
+    "gtceufix.BaseSchemaRendererMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },

@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.yiran.minecraft.gtmqol.mixin.gtceufix.jei",
+  "plugin": "com.yiran.minecraft.gtmqol.integration.JeiRecipeSlotFixPlugin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "JeiRecipeSlotMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixinextras": {
+    "minVersion": "0.5.3"
+  }
+}

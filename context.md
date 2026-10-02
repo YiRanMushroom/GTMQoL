@@ -73,6 +73,19 @@ shaped this way, and what is pending.
     When the slot is empty the count is 0, which gives an empty stack, so the ghost circuit can never be set.
     The mixin clamps the count to ≥1. 1.20 uses `stack(v)`, so master doesn't need it. Remove the mixin once
     upstream fixes this.
+  - `gtceufix/BaseSchemaRendererMixin` (in `client`, **on both branches**) works around a ModularUI bug: when
+    `BaseSchemaRenderer.draw` computes the GL viewport it only uses MUI's own `transformX/Y`. The recipe UI that
+    EMI/JEI embeds is translated through `PoseStack`, so the multiblock preview gets drawn at the screen's top-left.
+    The mixin WrapOperations `Viewport.calculateOpenGLViewportFromRectangle` and computes the origin from
+    `context.getLastGraphicsPose()` instead. In a normal MUI screen the pose is exactly MUI's matrix, so nothing
+    changes there.
+  - `gtmqol.jeifix.mixins.json` (`gtceufix/jei/JeiRecipeSlotMixin`, gated by `integration/JeiRecipeSlotFixPlugin`;
+    1.21 only, since master's JEI is pinned to 15.20): JEI 19.46+ dropped the `RecipeSlot.allIngredients/
+    displayIngredients` fields (replaced by `RecipeSlotIngredients`), and ModularUI's `jei.RecipeSlotAccessor` (in a
+    required config) still targets them. So `RecipeSlot` fails to load and every recipe that goes through JEMI in EMI
+    breaks (ATM10's JEI 19.57; Create shows nothing). The mixin adds the two fields back (priority 500, applied before
+    MUI's accessor). JEI doesn't read them, and MUI only writes them for its own JEI categories. The plugin applies the
+    mixin only when JEI is present and the fields are missing (it reads the class through MixinService's bytecode provider).
   - `KubeJSDataGenFix` is removed, since NeoForge's `DatagenModLoader` sets the flag correctly.
     Check that datagen exits.
 - Mixin targets were checked statically against the 1.21 sources and all match. Runtime still unverified.
