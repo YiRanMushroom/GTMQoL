@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.ae2.AE2Machines;
@@ -40,6 +41,7 @@ public final class GTMQoL {
     private static final ResourceLocation TEMPLATE_LOCATION = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
 
     public GTMQoL(IEventBus modBus, ModContainer container) {
+        ConfigHolder.INSTANCE.recipes.disableManualCompression = false;
         GTMQoLAddon.registrate().registerEventListeners(modBus);
         GTMQoLConfig.init();
         WirelessNetworks.init();
