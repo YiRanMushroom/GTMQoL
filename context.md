@@ -50,6 +50,9 @@ shaped this way, and what is pending.
     mixin method, passed to `SmartDoubling.addConfigurator`.
   - The AE2 dev runtime is 19.2.18, because EAP 1.6.3 needs `AEBaseMenu.clicked`. gtceu builds against 19.2.8.
   - The mixin configs' `mixinextras.minVersion` is 0.5.3, the version NeoForge 21.1.248 bundles. It is 0.5.5 on master.
+  - `GTMQoLAddon` calls `defaultCreativeTab((ResourceKey) null)`, same as gtceu's `GTRegistration`. Registrate's
+    default tab is SEARCH, so otherwise every item adds itself to it a second time and NeoForge throws
+    `already exists in the tab's list`.
   - `KubeJSDataGenFix` is removed, since NeoForge's `DatagenModLoader` sets the flag correctly.
     Check that datagen exits.
 - Mixin targets were checked statically against the 1.21 sources and all match. Runtime still unverified.

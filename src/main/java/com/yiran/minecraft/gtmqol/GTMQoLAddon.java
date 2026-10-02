@@ -25,6 +25,7 @@ import com.yiran.minecraft.gtmqol.wireless.WirelessRecipes;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
@@ -33,6 +34,13 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 public final class GTMQoLAddon implements IGTAddon {
     // Listeners are registered from the GTMQoL constructor, on our own mod bus.
     private static final GTRegistrate REGISTRATE = GTRegistrate.create(GTMQoL.MOD_ID, false);
+
+    static {
+        // Registrate's default tab is SEARCH: every item would add itself there through the tab contents event,
+        // on top of the search tab already listing every tab's items, and NeoForge throws on the duplicate.
+        // Same as gtceu's GTRegistration.
+        REGISTRATE.defaultCreativeTab((ResourceKey<CreativeModeTab>) null);
+    }
 
     private static final String MAIN_TAB_TITLE_KEY = "itemGroup." + GTMQoL.MOD_ID + ".main";
 
