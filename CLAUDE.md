@@ -123,6 +123,11 @@ v8 已经不用 LDLib，不要加。看内嵌列表时注意 Gradle 缓存里可
 Jade 的 `StringRenderOutputMixin`：`@Shadow field this$0 was not located in the target class
 net.minecraft.client.gui.Font$StringRenderOutput`。改这个值会让 Loom 重新映射所有东西，sync 会很久。
 
+# Mekanism（可选，仅 dev 运行时）
+
+只通过 tag 数据和它联动（`circuit/CircuitTags`），不编译依赖它，所以只有 `modLocalRuntime`（modmaven，
+`mekanism:Mekanism:<mc>-<version>`），不写进 `mods.toml`。
+
 # FTB Teams（可选依赖）
 
 编译期 `modCompileOnly`，dev 运行时 `modLocalRuntime`（连同 FTB Library、Architectury，都 `transitive = false`），

@@ -11,14 +11,19 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.generation.GTMQoLMachineBuilder;
 import com.yiran.minecraft.gtmqol.generation.GTMQoLMultiblockBuilder;
 import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
+import com.yiran.minecraft.gtmqol.wireless.WirelessRecipes;
 
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
+
+import java.util.function.Consumer;
 
 @GTAddon
 public final class GTMQoLAddon implements IGTAddon {
@@ -74,6 +79,13 @@ public final class GTMQoLAddon implements IGTAddon {
     @Override
     public void initializeAddon() {
         // Too late for machines (registry already frozen), see GTMQoL.onRegisterMachines.
+    }
+
+    /** GTCEu generates these into its runtime data pack along with its own recipes. */
+    @Override
+    public void addRecipes(Consumer<FinishedRecipe> provider) {
+        MagicalAssembler.addRecipes(provider);
+        WirelessRecipes.addRecipes(provider);
     }
 
     @Override

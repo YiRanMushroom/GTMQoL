@@ -3,6 +3,7 @@ package com.yiran.minecraft.gtmqol.wireless;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergySavedData;
 import com.yiran.minecraft.gtmqol.wireless.steam.WirelessSteamSavedData;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.math.BigInteger;
 import java.util.UUID;
+import java.util.function.BooleanSupplier;
 
 /**
  * Which player a wireless machine is bound to, and whether it uses their private or team network.
@@ -27,6 +29,10 @@ import java.util.UUID;
  * <p>Data stick: shift-right-click copies the binding onto the stick (bound player only); right-click
  * pastes it (only by that same player, onto machines that are unbound or already theirs). With a stick that
  * holds no binding, right-click binds an unbound machine to the clicking player.</p>
+ *
+ * <p>Covers have no machine to attach a trait to, so they hold one created with
+ * {@link #WirelessBindingTrait(ISyncManaged, BooleanSupplier)} as a sync field, like GTCEu's {@code FilterHandler}.
+ * Only the methods of this class work then; the {@link MachineTrait} ones that need a machine throw.</p>
  */
 public class WirelessBindingTrait extends MachineTrait {
 
@@ -48,6 +54,43 @@ public class WirelessBindingTrait extends MachineTrait {
     @SaveField
     @SyncToClient
     private boolean privateNetwork;
+
+    private final @Nullable ISyncManaged owner;
+    private final @Nullable BooleanSupplier ownerRemote;
+
+    public WirelessBindingTrait() {
+        this.owner = null;
+        this.ownerRemote = null;
+    }
+
+    /**
+     * Not attached to a machine; for covers.
+     */
+    public WirelessBindingTrait(ISyncManaged owner, BooleanSupplier isRemote) {
+        this.owner = owner;
+        this.ownerRemote = isRemote;
+    }
+
+    @Override
+    public @Nullable ISyncManaged getParentSyncObject() {
+        return owner != null ? owner : super.getParentSyncObject();
+    }
+
+    @Override
+    public boolean isRemote() {
+        return ownerRemote != null ? ownerRemote.getAsBoolean() : super.isRemote();
+    }
+
+    @Override
+    public void markAsChanged() {
+        if (owner == null) {
+            super.markAsChanged();
+            return;
+        }
+        // ISyncManaged's default, which MachineTrait overrides.
+        owner.markAsChanged();
+        owner.getSyncDataHolder().setHasDirtyChildSyncObject(true);
+    }
 
     public @Nullable UUID getBoundPlayer() {
         return boundPlayer;

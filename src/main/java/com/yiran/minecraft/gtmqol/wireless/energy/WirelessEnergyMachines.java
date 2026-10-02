@@ -26,7 +26,7 @@ import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelPropertie
 public final class WirelessEnergyMachines {
 
     private static final String NETWORK_TOOLTIP_KEY = "gtmqol.wireless.tooltip.energy_network";
-    private static final String AMPERAGE_TOOLTIP_KEY = "gtmqol.wireless.tooltip.adjustable_amperage";
+    public static final String AMPERAGE_TOOLTIP_KEY = "gtmqol.wireless.tooltip.adjustable_amperage";
     private static final String OVERCLOCK_TOOLTIP_KEY = "gtmqol.wireless.tooltip.overclock";
     private static final String HATCH_INPUT_TOOLTIP_KEY = "gtmqol.wireless.tooltip.energy_input_hatch";
     private static final String HATCH_OUTPUT_TOOLTIP_KEY = "gtmqol.wireless.tooltip.energy_output_hatch";

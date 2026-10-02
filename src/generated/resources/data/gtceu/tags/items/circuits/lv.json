@@ -1,0 +1,9 @@
+{
+  "values": [
+    "gtmqol:lv_universal_circuit",
+    {
+      "id": "mekanism:basic_control_circuit",
+      "required": false
+    }
+  ]
+}
