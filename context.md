@@ -442,6 +442,8 @@ reference clone at `E:\code\Minecraft\gtnl-ref`, outside the repo), not a copy.
   `require = 2`). `steam/EarlyGameRecipes`: ULV/LV machine casing + chest = bus, + glass = hatch, chest/glass on
   top = input, below = output. `RecipeRemovalMixin` keeps `minecraft:glass` (sand smelting) out of gtceu's
   `hardGlassRecipes` removals. Magical assembler: any sapling + sticky resin → rubber sapling.
+  The `GTMQoL` constructor forces GTCEu's `recipes.disableManualCompression = false` (ConfigHolder is loaded in
+  GTCEu's constructor, read only at recipe load), so 3x3/2x2 block/ingot/nugget crafting stays; overrides the file.
 
 ## RecipeDB grouped search (`recipedb/`, `mixin/recipedb/`)
 
