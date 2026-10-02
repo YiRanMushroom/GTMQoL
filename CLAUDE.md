@@ -99,6 +99,10 @@ KubeJS 用 `ModLoader.isDataGenRunning()` 判断 datagen，但 Forge 47 从不�
 - `io.github.llamalad7:mixinextras-forge` — 本模组用 `include` 打进 jar（测试/发布都自带）；
   `-forge` 只是外壳，真正的类在 `-common`，所以 `-common` 也要上 classpath
 
+ModularUI 的版本要和 GTCEu 构建时用的一致：看 GTCEu 对应 commit 的 `gradle/forge.versions.toml` 里的 `mui`。
+GTCEu 用的是 `3.3.1-SNAPSHOT`，它和 `3.3.1` 正式版 API 不同（`ModularPanel.onCloseAction` 参数从 `Runnable`
+变成 `Consumer`），用正式版时运行期报 `NoSuchMethodError`（例如 terminal 右键自动搭建结构）。所以同样固定到带时间戳的 snapshot 构建。
+
 `gtceu_version` 固定在某个带时间戳的 snapshot 构建上，由我手动升级，不要改回 `8.0.0-SNAPSHOT`。
 `mods.toml` 的下限另用 `gtceu_min_version`：GTCEu 运行时自报的版本是 `8.0.0-SNAPSHOT+<commit>`，
 比带时间戳的坐标小，两者共用一个值会让 Forge 报版本过低。
