@@ -36,23 +36,31 @@ public interface OverclockingLogicMixin {
         if (EUt == 0) return ModifierFunction.IDENTITY;
 
         int OCs = GTUtil.getOCTierByVoltage(maxVoltage) - GTUtil.getTierByVoltage(EUt);
-        if (OCs <= 0) return ModifierFunction.IDENTITY;
+        if (OCs == 0) return ModifierFunction.IDENTITY;
 
         OverclockingLogic logic = Overclocking.replace((OverclockingLogic) (Object) this);
         int maxParallels;
         if (!shouldParallel) {
             maxParallels = 1;
-        } else if (Overclocking.isReplacement(logic)) {
-            // 4x speed per OC: up to 4^OCs / duration parallels once at 1 tick, with x16 headroom
-            int power = Math.max(0, OCs * 2 - IntMath.log2(Math.max(1, recipe.duration), RoundingMode.FLOOR) + 4);
-            int limit = power > 30 ? 2_000_000_000 : (1 << power) + 1;
+        } else if (logic == Overclocking.PERFECT) {
+            int effectiveBoostPower = OCs * 2 - IntMath.log2(Math.max(1, recipe.duration), RoundingMode.FLOOR) + 4;
+            int limit = effectiveBoostPower > 30 ? 2_000_000_000 : (1 << effectiveBoostPower) + 1;
             maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, limit);
+        } else if (logic == Overclocking.STANDARD) {
+            maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe,
+                    Math.max((int) Math.min(maxVoltage / recipe.duration, 2_000_000_000), 1));
         } else {
             maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, 2_000_000_000);
         }
 
         var params = new OverclockingLogic.OCParams(EUt, recipe.duration, OCs, maxParallels);
-        return logic.runOverclockingLogic(params, maxVoltage).toModifier();
+        var result = logic.runOverclockingLogic(params, maxVoltage);
+        // TODO(debug): remove once the EBF parallel issue is found
+        com.yiran.minecraft.gtmqol.GTMQoL.LOGGER.info(
+                "[OC-DEBUG] {} EUt={} dur={} maxV={} OCs={} replacement={} maxParallels={} -> eut x{} dur x{} oc={} parallel={}",
+                recipe.id, EUt, recipe.duration, maxVoltage, OCs, Overclocking.isReplacement(logic), maxParallels,
+                result.eutMultiplier(), result.durationMultiplier(), result.ocLevel(), result.parallels());
+        return result.toModifier();
     }
 
     /**

@@ -12,6 +12,11 @@ base {
 version = project.mod_version
 group = project.maven_group
 
+// Jar names: gtmqol-<mod version>-<mc version>.jar. project.version stays plain, it goes into neoforge.mods.toml.
+tasks.withType(AbstractArchiveTask).configureEach {
+    archiveVersion = "${project.mod_version}-${project.minecraft_version}"
+}
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)

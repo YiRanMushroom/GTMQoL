@@ -79,6 +79,18 @@ shaped this way, and what is pending.
     The mixin WrapOperations `Viewport.calculateOpenGLViewportFromRectangle` and computes the origin from
     `context.getLastGraphicsPose()` instead. In a normal MUI screen the pose is exactly MUI's matrix, so nothing
     changes there.
+  - `gtceufix/GTRecipeCategoryMixin`: in 1.21, `GTRecipeCategory.getLanguageKey()` is
+    `recipe_category.<ns>.<path>`, but Registrate only generates `recipe_type.<ns>.<path>` for recipe types. gtceu's
+    own lang has no `recipe_category.*` either, so every category name in EMI/JEI shows as the raw key. For a default
+    category (id == recipe type id), the mixin returns the recipe type's key instead. Extra categories (KubeJS,
+    `GTRegistrate.recipeCategory`) are unchanged. 1.21 only (the user reported this on 1.21).
+  - `gtceufix/MEPatternBufferInternalSlotMixin`: a pattern buffer `InternalSlot` stores contents keyed by count-1
+    stacks (`AEItemKey.toStack()`, `AEFluidKey.toStack(1)`), with the real amount kept in a long. In 1.21,
+    `handleItemInternal`/`handleFluidInternal` match with NeoForge's `SizedIngredient.test` /
+    `SizedFluidIngredient.test`, which also require `count >= ingredient count`. So any ingredient needing more than 1
+    fails: with parallel, even a one-in/one-out recipe from a single pattern shows "insufficient item". The
+    parallel count itself (`getMaxByInput`) is computed correctly. The mixin only tests the item/fluid. The 1.20.1
+    gtceu `SizedIngredient.test` ignores the count, so this is 1.21 only.
   - `gtmqol.jeifix.mixins.json` (`gtceufix/jei/JeiRecipeSlotMixin`, gated by `integration/JeiRecipeSlotFixPlugin`;
     1.21 only, since master's JEI is pinned to 15.20): JEI 19.46+ dropped the `RecipeSlot.allIngredients/
     displayIngredients` fields (replaced by `RecipeSlotIngredients`), and ModularUI's `jei.RecipeSlotAccessor` (in a
@@ -453,6 +465,10 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
 - Open question: should the accessor also use the rainbow overlay?
 - AE2 pattern encoding preferring universal circuits (old `EncodingHelper` mixin) — needs a mixin, waiting
   for the user's go-ahead.
+- Done: jar naming is `gtmqol-<mod version>-<mc version>.jar` (currently `gtmqol-2.0.0-1.21.1.jar`).
+  `archives_base_name=gtmqol`; `build.gradle` sets `archiveVersion` on every `AbstractArchiveTask`.
+  `project.version` stays `mod_version` (2.0.0), which is what goes into `neoforge.mods.toml`. More naming
+  details to be added later.
 
 ## User preferences not covered by `CLAUDE.md`
 
