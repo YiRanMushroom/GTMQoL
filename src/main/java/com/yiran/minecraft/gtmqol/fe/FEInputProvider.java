@@ -1,74 +1,77 @@
 package com.yiran.minecraft.gtmqol.fe;
 
-import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.utils.GTMath;
-import com.yiran.minecraft.gtmqol.GTMQoL;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Lets every GT machine and cable that takes EU on a side also take FE there, converted at GTCEu's
  * {@code feToEuRatio}. The other direction needs nothing: GTCEu already gives FE blocks an EU capability
  * ({@code EUToFEProvider}, {@code nativeEUToFE}), so EU outputs push into them.
  *
- * <p>The machine's energy container is looked up without the attached capabilities
- * ({@link MetaMachine#getCapability(MetaMachine, Capability, Direction)}, {@link CableBlockEntity#getEnergyContainer}),
- * otherwise this and GTCEu's provider would ask each other forever on sides without one.</p>
+ * <p>Registered after gtceu's own providers, so a machine that has its own FE storage keeps it. The energy
+ * container is found the same way gtceu's {@code MetaMachineBlock#attachCapabilities} does, not through the
+ * capability lookup, otherwise this and gtceu's {@code EUToFEProvider} would ask each other forever on sides
+ * without one.</p>
  */
-public final class FEInputProvider implements ICapabilityProvider {
+public final class FEInputProvider {
 
-    private final BlockEntity blockEntity;
-
-    private FEInputProvider(BlockEntity blockEntity) {
-        this.blockEntity = blockEntity;
-    }
+    private FEInputProvider() {}
 
     /**
      * Call from the mod constructor.
      */
-    public static void init() {
-        MinecraftForge.EVENT_BUS.addGenericListener(BlockEntity.class, FEInputProvider::onAttachCapabilities);
+    public static void init(IEventBus modBus) {
+        modBus.addListener(FEInputProvider::onRegisterCapabilities);
     }
 
-    private static void onAttachCapabilities(AttachCapabilitiesEvent<BlockEntity> event) {
-        BlockEntity blockEntity = event.getObject();
-        if (blockEntity instanceof MetaMachine || blockEntity instanceof CableBlockEntity) {
-            event.addCapability(GTMQoL.id("fe_input"), new FEInputProvider(blockEntity));
+    private static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
+        for (Block block : BuiltInRegistries.BLOCK) {
+            if (block instanceof MetaMachineBlock || block instanceof CableBlock) {
+                event.registerBlock(Capabilities.EnergyStorage.BLOCK, (level, pos, state, blockEntity, side) -> {
+                    IEnergyContainer container = energyContainer(blockEntity, side);
+                    return container != null ? new Storage(container, side) : null;
+                }, block);
+            }
         }
     }
 
-    private @Nullable IEnergyContainer energyContainer(@Nullable Direction side) {
+    private static @Nullable IEnergyContainer energyContainer(@Nullable BlockEntity blockEntity,
+                                                              @Nullable Direction side) {
         if (blockEntity instanceof CableBlockEntity cable) {
             return cable.getEnergyContainer(side);
         }
         if (blockEntity instanceof MetaMachine machine) {
-            return MetaMachine.getCapability(machine, GTCapability.CAPABILITY_ENERGY_CONTAINER, side)
-                    .resolve().orElse(null);
+            if (machine instanceof IEnergyContainer container) return container;
+            List<IEnergyContainer> list = new ArrayList<>();
+            for (MachineTrait trait : machine.getTraitHolder().getAllTraits()) {
+                if (trait.hasCapability(side) && trait instanceof IEnergyContainer container) {
+                    list.add(container);
+                }
+            }
+            if (!list.isEmpty()) return list.size() == 1 ? list.getFirst() : new EnergyContainerList(list);
         }
         return null;
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap != ForgeCapabilities.ENERGY) return LazyOptional.empty();
-        IEnergyContainer container = energyContainer(side);
-        if (container == null) return LazyOptional.empty();
-        return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> new Storage(container, side)));
     }
 
     private record Storage(IEnergyContainer container, @Nullable Direction side) implements IEnergyStorage {

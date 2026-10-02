@@ -96,7 +96,6 @@
   "gtmqol.gui.pattern_buffer.smart_doubling.toggle.disabled": "Smart doubling: off",
   "gtmqol.gui.pattern_buffer.smart_doubling.toggle.enabled": "Smart doubling: on",
   "gtmqol.machine.steam_parallel_hatch.tooltip": "Sets the parallels of an advanced steam multiblock, from %s to %s",
-  "gtmqol.magical_assembler": "Magical Assembler",
   "gtmqol.multiblock.advanced_steam.tooltip.modifier": "Recipes take 80%% of the time and 75%% of the steam per tick",
   "gtmqol.multiblock.advanced_steam.tooltip.parallel": "%s parallels, up to %s with a Steam Parallel Control Hatch",
   "gtmqol.multiblock.advanced_steam.tooltip.tier": "Runs recipes up to %s, non-perfectly overclocked to that tier",
@@ -208,5 +207,6 @@
   "item.gtmqol.wireless_steam_output_cover": "Wireless Steam Output Cover",
   "item.gtmqol.zpm_universal_circuit": "ZPM Universal Circuit",
   "item.gtmqol.zpm_wireless_energy_input_cover": "§cZPM Wireless Energy Input Cover",
-  "item.gtmqol.zpm_wireless_energy_output_cover": "§cZPM Wireless Energy Output Cover"
+  "item.gtmqol.zpm_wireless_energy_output_cover": "§cZPM Wireless Energy Output Cover",
+  "recipe_type.gtmqol.magical_assembler": "Magical Assembler"
 }

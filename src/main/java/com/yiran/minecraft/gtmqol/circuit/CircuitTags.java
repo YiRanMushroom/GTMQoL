@@ -11,17 +11,17 @@ import net.minecraft.world.item.Item;
 import com.tterrag.registrate.providers.ProviderType;
 
 /**
- * Makes GT circuits and Mekanism control circuits interchangeable, tier by tier: {@code forge:circuits/basic}
+ * Makes GT circuits and Mekanism control circuits interchangeable, tier by tier: {@code c:circuits/basic}
  * includes {@code #gtceu:circuits/lv}, and {@code gtceu:circuits/lv} includes Mekanism's basic control circuit
  * (optional, so the tag still loads without Mekanism). Including each tag in the other would be a cycle,
  * which the tag loader rejects, hence one tag reference plus one item.
  * <p>
- * ULV pairs with infused alloy the same way, through {@code forge:alloys/advanced} (Mekanism's
+ * ULV pairs with infused alloy the same way, through {@code c:alloys/advanced} (Mekanism's
  * {@code mekanism:alloys/infused} includes that tag).
  */
 public final class CircuitTags {
 
-    private record Pair(TagKey<Item> gt, String forgeTag, String mekanismItem) {}
+    private record Pair(TagKey<Item> gt, String commonTag, String mekanismItem) {}
 
     private static final Pair[] PAIRS = {
             new Pair(CustomTags.ULV_CIRCUITS, "alloys/advanced", "alloy_infused"),
@@ -36,7 +36,7 @@ public final class CircuitTags {
     public static void init() {
         GTMQoLAddon.registrate().addDataGenerator(ProviderType.ITEM_TAGS, prov -> {
             for (Pair pair : PAIRS) {
-                prov.addTag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", pair.forgeTag)))
+                prov.addTag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", pair.commonTag)))
                         .addTag(pair.gt);
                 prov.addTag(pair.gt)
                         .addOptional(ResourceLocation.fromNamespaceAndPath("mekanism", pair.mekanismItem));

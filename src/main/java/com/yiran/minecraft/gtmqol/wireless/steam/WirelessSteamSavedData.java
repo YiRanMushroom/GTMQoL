@@ -3,11 +3,12 @@ package com.yiran.minecraft.gtmqol.wireless.steam;
 import com.yiran.minecraft.gtmqol.wireless.IOStats;
 import com.yiran.minecraft.gtmqol.wireless.NetworkId;
 import com.yiran.minecraft.gtmqol.wireless.WirelessNetworks;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +35,7 @@ public final class WirelessSteamSavedData extends SavedData {
 
     public static WirelessSteamSavedData get() {
         return ServerLifecycleHooks.getCurrentServer().overworld().getDataStorage()
-                .computeIfAbsent(WirelessSteamSavedData::load, WirelessSteamSavedData::new, NAME);
+                .computeIfAbsent(new SavedData.Factory<>(WirelessSteamSavedData::new, WirelessSteamSavedData::load), NAME);
     }
 
     public BigInteger getStored(NetworkId network) {
@@ -91,7 +92,7 @@ public final class WirelessSteamSavedData extends SavedData {
         setDirty();
     }
 
-    private static WirelessSteamSavedData load(CompoundTag tag) {
+    private static WirelessSteamSavedData load(CompoundTag tag, HolderLookup.Provider registries) {
         WirelessSteamSavedData data = new WirelessSteamSavedData();
         ListTag networks = tag.getList("networks", Tag.TAG_COMPOUND);
         for (int i = 0; i < networks.size(); i++) {
@@ -103,7 +104,7 @@ public final class WirelessSteamSavedData extends SavedData {
     }
 
     @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag tag) {
+    public @NotNull CompoundTag save(@NotNull CompoundTag tag, HolderLookup.Provider registries) {
         ListTag networks = new ListTag();
         steam.forEach((id, amount) -> {
             if (amount.signum() == 0) return;

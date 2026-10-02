@@ -96,7 +96,6 @@
   "gtmqol.gui.pattern_buffer.smart_doubling.toggle.disabled": "ɟɟo :buıןqnop ʇɹɐɯS",
   "gtmqol.gui.pattern_buffer.smart_doubling.toggle.enabled": "uo :buıןqnop ʇɹɐɯS",
   "gtmqol.machine.steam_parallel_hatch.tooltip": "%s oʇ %s ɯoɹɟ 'ʞɔoןqıʇןnɯ ɯɐǝʇs pǝɔuɐʌpɐ uɐ ɟo sןǝןןɐɹɐd ǝɥʇ sʇǝS",
-  "gtmqol.magical_assembler": "ɹǝןqɯǝssⱯ ןɐɔıbɐW",
   "gtmqol.multiblock.advanced_steam.tooltip.modifier": "ʞɔıʇ ɹǝd ɯɐǝʇs ǝɥʇ ɟo %%ϛㄥ puɐ ǝɯıʇ ǝɥʇ ɟo %%08 ǝʞɐʇ sǝdıɔǝᴚ",
   "gtmqol.multiblock.advanced_steam.tooltip.parallel": "ɥɔʇɐH ןoɹʇuoƆ ןǝןןɐɹɐԀ ɯɐǝʇS ɐ ɥʇıʍ %s oʇ dn 'sןǝןןɐɹɐd %s",
   "gtmqol.multiblock.advanced_steam.tooltip.tier": "ɹǝıʇ ʇɐɥʇ oʇ pǝʞɔoןɔɹǝʌo ʎןʇɔǝɟɹǝd-uou '%s oʇ dn sǝdıɔǝɹ sunᴚ",
@@ -208,5 +207,6 @@
   "item.gtmqol.wireless_steam_output_cover": "ɹǝʌoƆ ʇndʇnO ɯɐǝʇS ssǝןǝɹıM",
   "item.gtmqol.zpm_universal_circuit": "ʇınɔɹıƆ ןɐsɹǝʌıu∩ WԀZ",
   "item.gtmqol.zpm_wireless_energy_input_cover": "ɹǝʌoƆ ʇnduI ʎbɹǝuƎ ssǝןǝɹıM WԀZɔ§",
-  "item.gtmqol.zpm_wireless_energy_output_cover": "ɹǝʌoƆ ʇndʇnO ʎbɹǝuƎ ssǝןǝɹıM WԀZɔ§"
+  "item.gtmqol.zpm_wireless_energy_output_cover": "ɹǝʌoƆ ʇndʇnO ʎbɹǝuƎ ssǝןǝɹıM WԀZɔ§",
+  "recipe_type.gtmqol.magical_assembler": "ɹǝןqɯǝssⱯ ןɐɔıbɐW"
 }

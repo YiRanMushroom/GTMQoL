@@ -1,19 +1,12 @@
 package com.yiran.minecraft.gtmqol.generation;
 
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import com.tterrag.registrate.builders.BuilderCallback;
 
 /**
  * {@link MachineBuilder} with a chainable {@link #dynamicallyGenerated(boolean)}. Every chained GTCEu
@@ -22,12 +15,9 @@ import java.util.function.Function;
 public class GTMQoLMachineBuilder<D extends MachineDefinition, M extends MetaMachine>
         extends MachineBuilder<D, M, GTMQoLMachineBuilder<D, M>> {
 
-    public GTMQoLMachineBuilder(GTRegistrate registrate, String name,
-                                Function<ResourceLocation, D> definition,
-                                BiFunction<BlockBehaviour.Properties, D, MetaMachineBlock> blockFactory,
-                                BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+    public GTMQoLMachineBuilder(GTRegistrate registrate, String name, BuilderCallback callback,
                                 MachineInstanceFactory<M> instanceFactory) {
-        super(registrate, name, definition, blockFactory, itemFactory, instanceFactory);
+        super(registrate, name, callback, instanceFactory);
     }
 
     public GTMQoLMachineBuilder<D, M> dynamicallyGenerated(boolean dynamicGenerated) {

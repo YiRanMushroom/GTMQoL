@@ -16,7 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import org.lwjgl.opengl.GL11;
 
 import static net.minecraft.util.FastColor.ARGB32.*;
@@ -24,7 +24,7 @@ import static net.minecraft.util.FastColor.ARGB32.*;
 /** gtceu's {@code FusionRingRender} without the bloom, in white. */
 public class DTFRRingRender extends DynamicRender<DTFRMachine, DTFRRingRender> {
 
-    public static final Codec<DTFRRingRender> CODEC = Codec.unit(DTFRRingRender::new);
+    public static final MapCodec<DTFRRingRender> CODEC = MapCodec.unit(DTFRRingRender::new);
     public static final DynamicRenderType<DTFRMachine, DTFRRingRender> TYPE = new DynamicRenderType<>(CODEC);
 
     private static final float FADEOUT = 60;
@@ -62,7 +62,7 @@ public class DTFRRingRender extends DynamicRender<DTFRMachine, DTFRRingRender> {
             alpha = machine.delta / FADEOUT;
             machine.lastColor = color(Mth.floor(alpha * 255), red(machine.lastColor), green(machine.lastColor),
                     blue(machine.lastColor));
-            machine.delta -= Minecraft.getInstance().getDeltaFrameTime();
+            machine.delta -= Minecraft.getInstance().getTimer().getGameTimeDeltaTicks();
         }
 
         final var lerpFactor = Math.abs((Math.abs(machine.getOffsetTimer() % 50) + partialTicks) - 25) / 25;

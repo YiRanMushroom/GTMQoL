@@ -1,29 +1,22 @@
 package com.yiran.minecraft.gtmqol.generation;
 
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-
-import java.util.function.BiFunction;
+import com.tterrag.registrate.builders.BuilderCallback;
 
 /**
- * Multiblock counterpart of {@link GTMQoLMachineBuilder}. Java has no multiple inheritance, hence the copy.
+ * Multiblock counterpart of {@link GTMQoLMachineBuilder}. On 1.21 {@link MultiblockMachineBuilder} fixes its
+ * {@code SELF} type, so every chained call returns the plain builder: call {@link #dynamicallyGenerated}
+ * first in the chain.
  */
-public class GTMQoLMultiblockBuilder<M extends MultiblockControllerMachine>
-        extends MultiblockMachineBuilder<MultiblockMachineDefinition, M, GTMQoLMultiblockBuilder<M>> {
+public class GTMQoLMultiblockBuilder<M extends MultiblockControllerMachine> extends MultiblockMachineBuilder<M> {
 
-    public GTMQoLMultiblockBuilder(GTRegistrate registrate, String name,
-                                   BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
-                                   BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+    public GTMQoLMultiblockBuilder(GTRegistrate registrate, String name, BuilderCallback callback,
                                    MachineInstanceFactory<M> blockEntityFactory) {
-        super(registrate, name, blockFactory, itemFactory, blockEntityFactory);
+        super(registrate, name, callback, blockEntityFactory);
     }
 
     public GTMQoLMultiblockBuilder<M> dynamicallyGenerated(boolean dynamicGenerated) {

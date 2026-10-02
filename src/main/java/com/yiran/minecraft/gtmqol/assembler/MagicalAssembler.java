@@ -2,7 +2,8 @@ package com.yiran.minecraft.gtmqol.assembler;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
@@ -12,10 +13,8 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.circuit.UniversalCircuits;
 
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
-
-import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -27,29 +26,28 @@ import static com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.regist
  */
 public final class MagicalAssembler {
 
-    public static GTRecipeType RECIPE_TYPE;
-    public static MachineDefinition[] MACHINES;
+    public static GTRecipeTypeEntry RECIPE_TYPE;
+    public static MachineEntry<MachineDefinition>[] MACHINES;
 
     private MagicalAssembler() {}
 
-    /** From GTCEu's recipe type {@code RegisterEvent}. */
     public static void initRecipeType() {
-        RECIPE_TYPE = GTRecipeTypes.register(GTMQoL.id("magical_assembler"), GTRecipeTypes.ELECTRIC)
+        RECIPE_TYPE = GTMQoLAddon.registrate().recipeType("magical_assembler", GTRecipeTypes.ELECTRIC)
                 .setMaxIOSize(16, 1, 4, 1)
                 .setEUIO(IO.IN)
                 .prepareBuilder(builder -> builder.EUt(VA[LV]))
                 .UI(MagicalAssemblerUI::apply)
-                .setSound(GTSoundEntries.SCIENCE);
-        GTMQoLAddon.registrate().addRawLang(RECIPE_TYPE.registryName.toLanguageKey(), "Magical Assembler");
+                .setSound(GTSoundEntries.SCIENCE)
+                .lang("Magical Assembler")
+                .register();
     }
 
-    /** From GTCEu's machine {@code RegisterEvent}. */
     public static void initMachines() {
         MACHINES = new GTMachineUtils.SimpleMachineBuilder(GTMQoLAddon.registrate(), "magical_assembler",
                 RECIPE_TYPE).register();
     }
 
-    public static void addRecipes(Consumer<FinishedRecipe> provider) {
+    public static void addRecipes(RecipeOutput provider) {
         registerMachineRecipe(provider, MACHINES,
                 "PGP", "GMG", "PCP",
                 'M', HULL,

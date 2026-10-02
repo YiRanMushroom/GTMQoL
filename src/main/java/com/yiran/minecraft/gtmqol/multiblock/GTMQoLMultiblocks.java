@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -18,7 +19,7 @@ import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.client.DTFRRingRender;
 
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
@@ -37,8 +38,8 @@ public final class GTMQoLMultiblocks {
 
     private static final String DTFR_TOOLTIP_KEY = "gtmqol.multiblock.dimensionally_transcendent_fusion_reactor.tooltip";
 
-    public static MultiblockMachineDefinition SMART_ASSEMBLY_FACTORY;
-    public static MultiblockMachineDefinition DIMENSIONALLY_TRANSCENDENT_FUSION_REACTOR;
+    public static MachineEntry<MultiblockMachineDefinition> SMART_ASSEMBLY_FACTORY;
+    public static MachineEntry<MultiblockMachineDefinition> DIMENSIONALLY_TRANSCENDENT_FUSION_REACTOR;
 
     private GTMQoLMultiblocks() {}
 
@@ -123,7 +124,7 @@ public final class GTMQoLMultiblocks {
                 "Can run fusion recipes of any tier, as long as you have enough energy inputs.");
     }
 
-    public static void addRecipes(Consumer<FinishedRecipe> provider) {
+    public static void addRecipes(RecipeOutput provider) {
         MagicalAssembler.RECIPE_TYPE.recipeBuilder(GTMQoL.id("smart_assembly_factory"))
                 .inputItems(GTMultiMachines.ASSEMBLY_LINE, 16)
                 .inputItems(CustomTags.UV_CIRCUITS, 8)

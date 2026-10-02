@@ -8,7 +8,7 @@ import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.wireless.steam.WirelessSteamMachines;
 
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -25,7 +25,7 @@ public final class WirelessRecipes {
 
     private WirelessRecipes() {}
 
-    public static void addRecipes(Consumer<FinishedRecipe> provider) {
+    public static void addRecipes(RecipeOutput provider) {
         var assembler = MagicalAssembler.RECIPE_TYPE;
 
         for (int tier : GTMachineUtils.ALL_TIERS) {

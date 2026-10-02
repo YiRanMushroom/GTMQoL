@@ -17,7 +17,7 @@ import com.yiran.minecraft.gtmqol.wireless.WirelessBindingTrait;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.util.FakePlayer;
 
 import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.UISettings;

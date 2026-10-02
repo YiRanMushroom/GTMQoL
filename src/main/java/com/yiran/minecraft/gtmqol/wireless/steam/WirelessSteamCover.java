@@ -15,11 +15,11 @@ import com.yiran.minecraft.gtmqol.wireless.WirelessBindingTrait;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 
 import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -49,7 +49,7 @@ public class WirelessSteamCover extends CoverBehavior implements IMuiCover {
 
     private @Nullable IFluidHandler getFluidHandler() {
         return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide)
-                .resolve().orElse(null);
+                .orElse(null);
     }
 
     @Override

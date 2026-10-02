@@ -52,7 +52,10 @@ bin/
 
 ### Unpacked dependency sources, kept locally for API lookups
 /.gtceu-src
+/.gtceu-src-1.21
+/.neoforge-src
 /.registrate-src
+/.registrate-src-1.21
 /runclient.log
 /.gtmthings-src
 /.modularui-src

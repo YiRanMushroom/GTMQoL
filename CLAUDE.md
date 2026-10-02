@@ -42,6 +42,14 @@ claude.ai 的 Atlassian 和 Microsoft 365 连接器我不用、也不连接。�
 
 # 构建环境
 
+**`port/1.21.1` 分支**（NeoForge 21.1，Minecraft 1.21.1）和下面不同：
+- 用 ModDevGradle（`net.neoforged.moddev`，和 GTCEu 1.21 分支、官方 1.21.1 addon 模板一致），不用 Loom。
+  依赖不重映射，没有 `mod*` 配置，dev-only 模组用自建的 `localRuntime`。
+- Java 21 一套就够（Gradle 和客户端都行）；toolchain 从 `JDK21` 环境变量找，找不到就让 foojay 下载。
+- 依赖版本以 GTCEu `1.21` 分支的 `gradle/forge.versions.toml` / `libs.versions.toml` 为准。
+- 元数据是 `META-INF/neoforge.mods.toml`，mixin config 写在里面的 `[[mixins]]`。MixinExtras 由 NeoForge 自带。
+- 下面关于 Loom / 重映射 / `nameSyntheticMembers` / Java 17 的内容只适用于 1.20.1。
+
 Loom 1.13 要求 Gradle JVM ≥ 21，而 Minecraft 1.20.1 必须跑 Java 17，两者不能是同一个 JDK。
 IDEA 自带的 JBR 是 25，Gradle 8.12 不支持（表现为 `Could not create task ':test'`）。
 

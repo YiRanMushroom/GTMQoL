@@ -1,7 +1,8 @@
 package com.yiran.minecraft.gtmqol.generation;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
@@ -28,7 +29,7 @@ import java.util.Map;
  */
 public final class RuntimeGeneration {
 
-    private record MachineAssets(MachineBuilder<?, ?, ?> builder, MachineDefinition definition) {}
+    private record MachineAssets(MachineBuilder<?, ?, ?> builder, MachineEntry<?> entry) {}
 
     private static final List<MachineAssets> MACHINES = new ArrayList<>();
     private static final List<Runnable> CALLBACKS = new ArrayList<>();
@@ -40,8 +41,8 @@ public final class RuntimeGeneration {
     /**
      * Called from {@code MachineBuilderMixin} when a builder marked as dynamically generated registers.
      */
-    public static void addMachine(MachineBuilder<?, ?, ?> builder, MachineDefinition definition) {
-        MACHINES.add(new MachineAssets(builder, definition));
+    public static void addMachine(MachineBuilder<?, ?, ?> builder, MachineEntry<?> entry) {
+        MACHINES.add(new MachineAssets(builder, entry));
     }
 
     /**
@@ -69,7 +70,7 @@ public final class RuntimeGeneration {
 
         RuntimeBlockstateProvider provider = RuntimeBlockstateProvider.INSTANCE;
         for (MachineAssets machine : MACHINES) {
-            generateMachine(provider, machine.builder(), machine.definition());
+            generateMachine(provider, machine.builder(), machine.entry().get());
         }
         provider.run();
 
@@ -88,10 +89,11 @@ public final class RuntimeGeneration {
 
         // Same dispatch GTCEu uses in MachineBuilder.KJSCallWrapper#generateAssetJsons for a null
         // generator. We cannot call that method because its signature needs a KubeJS type.
-        if (builder.blockModel() != null) {
-            builder.blockModel().accept(context, provider);
-        } else if (builder.model() != null) {
-            GTMachineModels.createMachineModel(builder.model()).accept(context, provider);
+        var properties = builder.properties();
+        if (properties.blockModel() != null) {
+            properties.blockModel().accept(context, provider);
+        } else if (properties.model() != null) {
+            GTMachineModels.createMachineModel(properties.model()).accept(context, provider);
         }
 
         // The provider belongs to GTCEu's registrate, so a bare name would land in the gtceu namespace;

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
@@ -26,10 +27,10 @@ public final class WirelessSteamMachines {
 
     private static final ResourceLocation WIRELESS_OVERLAY = GTMQoL.id("block/overlay/machine/overlay_wireless");
 
-    public static MachineDefinition STEAM_INPUT_HATCH;
-    public static MachineDefinition STEAM_OUTPUT_HATCH;
-    public static MachineDefinition STEAM_ACCESSOR;
-    public static MachineDefinition STEAM_MONITOR;
+    public static MachineEntry<MachineDefinition> STEAM_INPUT_HATCH;
+    public static MachineEntry<MachineDefinition> STEAM_OUTPUT_HATCH;
+    public static MachineEntry<MachineDefinition> STEAM_ACCESSOR;
+    public static MachineEntry<MachineDefinition> STEAM_MONITOR;
 
     private WirelessSteamMachines() {}
 

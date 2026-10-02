@@ -49,13 +49,13 @@ public abstract class MEPatternBufferSmartDoublingMixin implements ISmartDoublin
     @Unique
     private @Nullable IPatternDetails gtmqol$pushedPattern;
 
-    @Override
-    public boolean eap$getSmartDoubling() {
+    @Unique
+    private boolean gtmqol$getSmartDoubling() {
         return gtmqol$smartDoubling;
     }
 
-    @Override
-    public void eap$setSmartDoubling(boolean enabled) {
+    @Unique
+    private void gtmqol$setSmartDoubling(boolean enabled) {
         gtmqol$smartDoubling = enabled;
         gtmqol$self().getSyncDataHolder().markClientSyncFieldDirty("gtmqol$smartDoubling");
         gtmqol$applySmartDoubling();
@@ -113,6 +113,7 @@ public abstract class MEPatternBufferSmartDoublingMixin implements ISmartDoublin
     @ModifyReturnValue(method = "getPanelBuilder", at = @At("RETURN"))
     private MachineUIPanelBuilder gtmqol$addSmartDoublingConfigurator(MachineUIPanelBuilder builder,
                                                                       @Local(argsOnly = true) PanelSyncManager syncManager) {
-        return SmartDoubling.addConfigurator(builder, syncManager, this);
+        return SmartDoubling.addConfigurator(builder, syncManager, this, this::gtmqol$getSmartDoubling,
+                this::gtmqol$setSmartDoubling);
     }
 }

@@ -4,13 +4,14 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
 
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
@@ -22,7 +23,7 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.SolderingAlloy;
 /** AE2 machines. Only touch this class when AE2 is loaded ({@code GTCEu.Mods.isAE2Loaded()}). */
 public final class AE2Machines {
 
-    public static MachineDefinition OVERCLOCKED_ME_PATTERN_BUFFER;
+    public static MachineEntry<MachineDefinition> OVERCLOCKED_ME_PATTERN_BUFFER;
 
     private AE2Machines() {}
 
@@ -62,7 +63,7 @@ public final class AE2Machines {
         GTMQoLAddon.registrate().addRawLang(key, value);
     }
 
-    public static void addRecipes(Consumer<FinishedRecipe> provider) {
+    public static void addRecipes(RecipeOutput provider) {
         MagicalAssembler.RECIPE_TYPE.recipeBuilder(GTMQoL.id("overclocked_me_pattern_buffer"))
                 .inputItems(GTAEMachines.ME_PATTERN_BUFFER, 4)
                 .inputItems(CustomTags.MV_CIRCUITS, 16)
