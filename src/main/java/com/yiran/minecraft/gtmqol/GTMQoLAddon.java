@@ -17,6 +17,7 @@ import com.yiran.minecraft.gtmqol.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.circuit.ControlCircuits;
 import com.yiran.minecraft.gtmqol.steam.AdvancedSteamMachines;
+import com.yiran.minecraft.gtmqol.steam.EarlyGameRecipes;
 import com.yiran.minecraft.gtmqol.generation.GTMQoLMachineBuilder;
 import com.yiran.minecraft.gtmqol.generation.GTMQoLMultiblockBuilder;
 import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
@@ -95,6 +96,7 @@ public final class GTMQoLAddon implements IGTAddon {
         GTMQoLMultiblocks.addRecipes(provider);
         AdvancedSteamMachines.addRecipes(provider);
         ControlCircuits.addRecipes(provider);
+        EarlyGameRecipes.addRecipes(provider);
         if (GTCEu.Mods.isAE2Loaded()) {
             AE2Machines.addRecipes(provider);
             AEProcessing.addRecipes(provider);

@@ -423,7 +423,13 @@ reference clone at `E:\code\Minecraft\gtnl-ref`, outside the repo), not a copy.
   `SimpleTieredMachine`) to every steam single block, GTCEu's included; `GTSingleblockMachinePanelsMixin` turns
   trait configurators back on for the steam panel (`defaultSteamMachinePanelBuilder` disables them) so the slot
   shows; `SteamItemBusPartMachineMixin` re-enables the bus circuit slot GTCEu turns off (input bus only), which
-  gives steam multis ghost circuits through their input bus.
+  gives steam multis ghost circuits through their input bus. The constructor inject must be `<init>*`: plain
+  `<init>` only matched one of `SimpleSteamMachine`'s two constructors.
+- Early game (steam before LV): `GTMachineUtilsMixin` makes the large boiler's muffler and maintenance hatch
+  optional (the two `setExactLimit` in the `registerLargeBoiler` pattern lambda → `setMaxGlobalLimited`,
+  `require = 2`). `steam/EarlyGameRecipes`: ULV/LV machine casing + chest = bus, + glass = hatch, chest/glass on
+  top = input, below = output. `RecipeRemovalMixin` keeps `minecraft:glass` (sand smelting) out of gtceu's
+  `hardGlassRecipes` removals. Magical assembler: any sapling + sticky resin → rubber sapling.
 
 ## RecipeDB grouped search (`recipedb/`, `mixin/recipedb/`)
 

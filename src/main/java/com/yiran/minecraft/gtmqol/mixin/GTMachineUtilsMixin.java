@@ -2,6 +2,7 @@ package com.yiran.minecraft.gtmqol.mixin;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
@@ -38,6 +39,17 @@ public class GTMachineUtilsMixin {
             recipeTypes.set(((MachineBuilderAccessor) builder).gtmqol$getUnresolvedRecipeTypes());
         }
         return original.call(function, tier, builder);
+    }
+
+    // Large boilers: the muffler and the maintenance hatch (the only two setExactLimit calls in the pattern lambda)
+    // become optional, so the large boilers can be built before LV.
+    @WrapOperation(method = "/^lambda\\$registerLargeBoiler\\$/",
+                   at = @At(value = "INVOKE",
+                            target = "Lcom/gregtechceu/gtceu/api/multiblock/MultiPredicate;setExactLimit(I)Lcom/gregtechceu/gtceu/api/multiblock/MultiPredicate;"),
+                   require = 2)
+    private static MultiPredicate gtmqol$optionalBoilerParts(MultiPredicate predicate, int limit,
+                                                             Operation<MultiPredicate> original) {
+        return predicate.setMaxGlobalLimited(limit);
     }
 
     @Inject(method = "registerTieredMachines", at = @At("RETURN"))
