@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.circuit.CircuitTags;
+import com.yiran.minecraft.gtmqol.circuit.ControlCircuits;
 import com.yiran.minecraft.gtmqol.circuit.UniversalCircuits;
 import com.yiran.minecraft.gtmqol.client.GTMQoLClient;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
@@ -18,6 +19,7 @@ import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.integration.IntegrationTests;
 import com.yiran.minecraft.gtmqol.integration.KubeJSDataGenFix;
 import com.yiran.minecraft.gtmqol.multiblock.GTMQoLMultiblocks;
+import com.yiran.minecraft.gtmqol.steam.AdvancedSteamMachines;
 import com.yiran.minecraft.gtmqol.wireless.WirelessCovers;
 import com.yiran.minecraft.gtmqol.wireless.WirelessNetworks;
 import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergyMachines;
@@ -48,6 +50,7 @@ public final class GTMQoL {
         WirelessNetworks.init();
         FEInputProvider.init();
         UniversalCircuits.init();
+        ControlCircuits.init();
         CircuitTags.init();
         modBus.addGenericListener(GTRecipeType.class, this::onRegisterRecipeTypes);
         modBus.addGenericListener(CoverDefinition.class, this::onRegisterCovers);
@@ -106,6 +109,7 @@ public final class GTMQoL {
     private void onRegisterMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
         MagicalAssembler.initMachines();
         GTMQoLMultiblocks.init();
+        AdvancedSteamMachines.init();
         WirelessSteamMachines.init();
         WirelessEnergyMachines.init();
         if (GTCEu.Mods.isAE2Loaded()) {

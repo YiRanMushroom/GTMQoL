@@ -1,6 +1,7 @@
 {
   "values": [
     "gtmqol:mv_universal_circuit",
+    "gtmqol:basic_control_circuit",
     {
       "id": "mekanism:advanced_control_circuit",
       "required": false

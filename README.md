@@ -59,6 +59,20 @@ generators use their own overclock.
 - **Dimensionally Transcendent Fusion Reactor**: runs fusion recipes of any tier, without the start energy
   requirement.
 
+### Advanced steam multiblocks
+
+- Large steam versions of 21 machines (macerator, compressor, forge hammer, extractor, alloy smelter,
+  furnace, bender, wiremill, lathe, cutter, extruder, forming press, mixer, centrifuge, thermal centrifuge,
+  ore washer, chemical bath, sifter, assembler, circuit assembler, magical assembler). The structures are
+  GTNL's large steam multiblocks built from bronze blocks (the assembler and the magical assembler use GTNL's
+  steam manufacturer). One steam hatch; steam buses or regular buses and hatches of any tier.
+- Recipes up to MV (the magical assembler: LV) run as if overclocked (non-perfect) to that tier, then take
+  80% of the time and 75% of the steam per tick.
+- 16 parallels. A Steam Parallel Control Hatch sets it anywhere from 16 to 256.
+- A low/high pressure steam magical assembler, which makes all of these.
+- Control circuits, ULV to EV, made cheaply in the circuit assembler. The large steam circuit assembler can
+  make ULV to HV.
+
 ### Recipe lookup performance
 
 GTCEu's recipe search tries every combination of a machine's inputs. With many distinct buses or pattern
@@ -92,9 +106,17 @@ None are required.
 - AE2: splits pattern buffers by pattern in the grouped recipe search.
 - Mekanism: merges circuit tags.
 
+## License
+
+Copyright (C) 2026 Yiran, Frosty. Licensed under the GNU Lesser General Public License v3.0, see
+[LICENSE](LICENSE).
+
 ## Credits
 
 - The wireless network (storage shared per player or team, data stick binding, the monitor) is inspired by
   [GTMThings](https://github.com/liansishen/GTMThings).
 - The animated rainbow overlay on the wireless hatches (`overlay_wireless.png`) is taken from GTMThings'
   `overlay_energy_on_wireless`, which originally comes from GregTech: New Horizons.
+- The advanced steam multiblocks and the control circuits (items and recipes) are based on
+  [GT Not Leisure](https://github.com/Darknight2333/GT-Not-Leisure1) (GTNL), a GregTech: New Horizons
+  addon. The control circuit textures are taken from GTNL and are licensed under LGPL-3.0.
