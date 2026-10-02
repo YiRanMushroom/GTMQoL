@@ -33,6 +33,9 @@ src/main/java/com/yiran/minecraft/gtmqol/
 ├── mixin/                 MachineBuilder, GTMachineUtils, OverclockingLogic, GTRecipeViewerWidget,
 │   │                      fusion, multi smelter, tier skipping
 │   ├── recipedb/          RecipeDB grouped search (own config gtmqol.recipedb.mixins.json)
+│   ├── gtceufix/          workarounds for upstream bugs; delete once fixed upstream. BaseSchemaRendererMixin: MUI
+│   │                      computes the multiblock preview's GL viewport from MUI's own transform only, so in
+│   │                      EMI/JEI (pose-translated) it is drawn at the screen's top-left; now uses the graphics pose
 │   └── eap/               ExtendedAE Plus smart doubling (own config gtmqol.eap.mixins.json)
 ├── modular/               modular multiblock versions of single-block machines
 ├── multiblock/            Smart Assembly Factory, DTFR
@@ -328,7 +331,14 @@ reference clone at `E:\code\Minecraft\gtnl-ref`, outside the repo), not a copy.
   Names overlap Mekanism's basic/advanced/elite control circuits (display only, different ids).
   The whole project is LGPL-3.0 like GTNL/GTNH (`LICENSE`, text copied from GTNL, also packed into the jar;
   authors "Yiran, Frosty").
-- Risk: `MagicalAssemblerUI` lays out 4 fluid slots; the steam single block has none.
+- `MagicalAssemblerUI` builds the 4-slot fluid column from the first IN fluid handler. On a steam machine that
+  handler is `SteamMachine.steamTank` (1 slot), so indexing slots 1–3 threw and the UI did not open on right
+  click; the column is now skipped when the handler is the steam tank (the steam one has no recipe fluid input).
+- Ghost circuit on steam: `SimpleSteamMachineMixin` attaches `ProgrammableCircuitSlotTrait` (as "circuit", like
+  `SimpleTieredMachine`) to every steam single block, GTCEu's included; `GTSingleblockMachinePanelsMixin` turns
+  trait configurators back on for the steam panel (`defaultSteamMachinePanelBuilder` disables them) so the slot
+  shows; `SteamItemBusPartMachineMixin` re-enables the bus circuit slot GTCEu turns off (input bus only), which
+  gives steam multis ghost circuits through their input bus.
 
 ## RecipeDB grouped search (`recipedb/`, `mixin/recipedb/`)
 
@@ -358,6 +368,14 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
 - `AE2Machines`: `gtmqol:overclocked_me_pattern_buffer`, 12 columns × 18 rows = 216, LuV; recipe in the
   magical assembler (4 ME pattern buffers, 16 MV circuits, circuit 24, 576 soldering alloy, 4000 glue, 1200 t,
   MV), as in the old `QoLMachines.kt`.
+- `AEProcessing` (port of the v7 ME machines, AE2 only): recipe types and SimpleTieredMachines
+  `gtmqol:me_assembler` (6/1/3/0) and `gtmqol:me_circuit_slicer` (1/1/0/0), the four silicon chip items, and the
+  v7 recipes: machine crafting (AE2 inscriber in the middle), wafer → chips (8/16/32/64), AE2 materials → prints,
+  chip + print + silicon print (or 4 copper foil) + 144 redstone → processors ×chip multiplier, GTCEu ME
+  buses/hatches/pattern buffer (+proxy) from AE2 parts, and wiremill/polarizer/mixer AE recipes. Items in the
+  constructor, recipe types / machines from the GTCEu register events. Not ported: the sticky card and the
+  oblivion singularity (electric implosion is gone). Machine names come from `SimpleMachineBuilder`'s
+  `toEnglishName`, so they read "Me Assembler".
 - Smart doubling (ExtendedAE Plus, optional): `gtmqol.eap.mixins.json`, gated by `ae2/EAPMixinPlugin`
   (`LoadingModList` has `extendedae_plus`). `mixin/eap/MEPatternBufferSmartDoublingMixin` on GTCEu's buffer
   (so ours too) implements `ISmartDoublingHolder`, `@SaveField` toggle (default on) and limit (0 = none),
@@ -377,6 +395,10 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
 - Open question: should the accessor also use the rainbow overlay?
 - AE2 pattern encoding preferring universal circuits (old `EncodingHelper` mixin) — needs a mixin, waiting
   for the user's go-ahead.
+- Done: jar naming is `gtmqol-<mod version>-<mc version>.jar` (currently `gtmqol-2.0.0-1.20.1.jar`).
+  `archives_base_name=gtmqol`; `build.gradle` sets `archiveVersion` on every `AbstractArchiveTask`
+  (including Loom's `remapJar`). `project.version` stays `mod_version` (2.0.0), which is what goes into
+  `mods.toml`. More naming details to be added later.
 
 ## User preferences not covered by `CLAUDE.md`
 

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.ae2.AE2Machines;
+import com.yiran.minecraft.gtmqol.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.circuit.CircuitTags;
 import com.yiran.minecraft.gtmqol.circuit.ControlCircuits;
@@ -52,6 +53,9 @@ public final class GTMQoL {
         UniversalCircuits.init();
         ControlCircuits.init();
         CircuitTags.init();
+        if (GTCEu.Mods.isAE2Loaded()) {
+            AEProcessing.initItems();
+        }
         modBus.addGenericListener(GTRecipeType.class, this::onRegisterRecipeTypes);
         modBus.addGenericListener(CoverDefinition.class, this::onRegisterCovers);
         modBus.addGenericListener(MachineDefinition.class, this::onRegisterMachines);
@@ -90,6 +94,9 @@ public final class GTMQoL {
 
     private void onRegisterRecipeTypes(GTCEuAPI.RegisterEvent<ResourceLocation, GTRecipeType> event) {
         MagicalAssembler.initRecipeType();
+        if (GTCEu.Mods.isAE2Loaded()) {
+            AEProcessing.initRecipeTypes();
+        }
     }
 
     /**
@@ -114,6 +121,7 @@ public final class GTMQoL {
         WirelessEnergyMachines.init();
         if (GTCEu.Mods.isAE2Loaded()) {
             AE2Machines.init();
+            AEProcessing.initMachines();
         }
         // do not run integration tests in data generation, They are only for testing in a running game.
         if (GTMQoLConfig.INSTANCE.integrationTests.enabled && !FMLLoader.getLaunchHandler().isData()) {
