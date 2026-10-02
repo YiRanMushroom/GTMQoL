@@ -15,6 +15,7 @@
     "OverclockingLogicMixin",
     "WorkableElectricMultiblockMachineMixin",
     "gtceufix.EmiCallWrapperMixin",
+    "gtceufix.GameDataMixin",
     "gtceufix.GTMuiWidgetsMixin"
   ],
   "injectors": {

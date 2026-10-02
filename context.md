@@ -58,6 +58,16 @@ shaped this way, and what is pending.
     private `EmiApi.setPages` through `EmiApiAccessor`. That invoker is never applied to `EmiApi`, so the click
     throws `NoSuchMethodError`. The mixin switches it to the public `EmiApi.displayRecipeCategory(machineCategory)`,
     which no longer shows the other categories of the same recipe type as tabs. Because of this, EMI is now `compileOnly`.
+  - `gtceufix/GameDataMixin`: `GTRegistries` adds `gtceu:recipe_type` to the load order, and gtceu's own
+    `GameDataMixin` maps it to the vanilla recipe type registry. That means vanilla `recipe_type` gets posted a
+    second time (under a gtceu key, only to make KubeJS registration easier). Mods that handle the event by
+    `event.getRegistry()` (Core Lib, CyclopsCore) then throw duplicate-registration errors, and the ATM10 pack
+    fails to load. The mixin WrapOperations `ModLoader.postEventWrapContainerInModOrder` so that this duplicate
+    event only goes to gtceu and kubejs. ModernFix @Redirects the same call; that is why it's a WrapOperation.
+    gtceu also moves its own registries and `recipe_type` ahead of `attribute`. CyclopsCore assumes ATTRIBUTE is
+    the first event and queues every entry at that point, so it throws `Tried registering ... after its
+    registration event`, and the cascade leaves `neoforge:swim_speed` unbound. `getRegistrationOrder` is now
+    `@ModifyReturnValue`d to put ATTRIBUTE back at the front.
   - `gtceufix/GTMuiWidgetsMixin` works around a gtceu 1.21 bug: in
     `GTMuiWidgets.createCircuitSlotSyncValue`, the setter calls `IntCircuitBehaviour.stack(v, current.getCount())`.
     When the slot is empty the count is 0, which gives an empty stack, so the ghost circuit can never be set.
