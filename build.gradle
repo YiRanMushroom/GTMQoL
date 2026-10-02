@@ -140,6 +140,13 @@ repositories {
         }
     }
     maven {
+        name = 'Modrinth'
+        url = 'https://api.modrinth.com/maven'
+        content {
+            includeGroup 'maven.modrinth'
+        }
+    }
+    maven {
         name = 'FTB'
         url = 'https://maven.ftb.dev/releases'
         content {
@@ -153,8 +160,10 @@ dependencies {
     forge "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
     mappings loom.layered {
+        // Named like Forge's own dev environment (e.g. `this$0`); mods' mixins shadow those names, and
+        // with false Jade's StringRenderOutputMixin fails to apply in dev.
         officialMojangMappings {
-            nameSyntheticMembers = false
+            nameSyntheticMembers = true
         }
         parchment "org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchment_mappings}@zip"
     }
@@ -188,6 +197,8 @@ dependencies {
     // Compile-only for KubeJSDataGenFix; still not a runtime dependency of ours.
     modCompileOnly "dev.latvian.mods:kubejs-forge:${project.kubejs_version}"
     modLocalRuntime "appeng:appliedenergistics2-forge:${project.ae2_version}"
+    // Block info overlay; GTCEu has its own Jade plugin (recipe progress, energy).
+    modLocalRuntime "maven.modrinth:jade:${project.jade_version}"
     // Optional: wireless networks are shared per FTB team when it is installed. We compile against
     // FTB Teams and Architectury (its events are Architectury Events) but never require them; the dev
     // runs include them, plus FTB Library, so teams can be tested. Dependencies are listed by hand

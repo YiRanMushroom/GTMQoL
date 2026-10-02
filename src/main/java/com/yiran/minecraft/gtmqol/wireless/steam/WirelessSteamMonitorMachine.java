@@ -26,7 +26,7 @@ import brachy.modularui.widgets.TextWidget;
 
 /**
  * Shows the bound network's stored steam plus its input, output and net rates
- * (see {@link WirelessSteamSavedData.IOStats}).
+ * (see {@link com.yiran.minecraft.gtmqol.wireless.IOStats}).
  */
 public class WirelessSteamMonitorMachine extends MetaMachine implements IMuiMachine, IDataStickInteractable {
 

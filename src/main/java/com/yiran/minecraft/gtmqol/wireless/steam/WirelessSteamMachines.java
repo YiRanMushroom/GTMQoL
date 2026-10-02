@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
+import com.yiran.minecraft.gtmqol.wireless.IOStats;
 import com.yiran.minecraft.gtmqol.wireless.WirelessBindingTrait;
 
 import net.minecraft.network.chat.Component;
@@ -94,17 +95,17 @@ public final class WirelessSteamMachines {
         addLang(WirelessSteamUI.BIND_KEY, "Bind");
         addLang(WirelessSteamUI.UNBIND_KEY, "Unbind");
         addLang(WirelessSteamUI.MOVE_TO_TEAM_KEY, "To team");
-        addLang(WirelessSteamUI.MOVE_TO_TEAM_TOOLTIP_KEY, "Move all steam in your private network into your team's network and switch this machine to team mode");
+        addLang(WirelessSteamUI.MOVE_TO_TEAM_TOOLTIP_KEY, "Move all steam and EU in your private network into your team's network and switch this machine to team mode");
         addLang(WirelessSteamAccessorMachine.AUTO_OUTPUT_ON_KEY, "Auto output to front: on");
         addLang(WirelessSteamAccessorMachine.AUTO_OUTPUT_OFF_KEY, "Auto output to front: off");
         addLang(WirelessSteamMonitorMachine.INPUT_RATE_KEY, "Input: %s mB/t");
         addLang(WirelessSteamMonitorMachine.OUTPUT_RATE_KEY, "Output: %s mB/t");
-        addLang(WirelessSteamMonitorMachine.NET_RATE_KEY, "Net: %s mB/t (" + WirelessSteamSavedData.IOStats.SAMPLES + " s avg)");
+        addLang(WirelessSteamMonitorMachine.NET_RATE_KEY, "Net: %s mB/t (" + IOStats.SAMPLES + " s avg)");
         addLang(WirelessBindingTrait.BOUND_KEY, "Bound to %s");
         addLang(WirelessBindingTrait.UNBOUND_KEY, "Unbound");
         addLang(WirelessBindingTrait.ALREADY_BOUND_KEY, "Already bound to %s");
         addLang(WirelessBindingTrait.NOT_ALLOWED_KEY, "Only the bound player (%s) can do that");
-        addLang(WirelessBindingTrait.MOVED_TO_TEAM_KEY, "Moved %s mB of private steam to %s");
+        addLang(WirelessBindingTrait.MOVED_TO_TEAM_KEY, "Moved %s mB of steam and %s EU from your private network to %s");
         addLang(WirelessBindingTrait.COPIED_KEY, "Wireless binding copied to the data stick");
         addLang(WirelessBindingTrait.STICK_OTHER_PLAYER_KEY, "This data stick holds %s's binding");
         addLang(WirelessBindingTrait.STICK_NAME_KEY, "Wireless Binding (%s)");

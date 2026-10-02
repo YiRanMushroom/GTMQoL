@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.wireless;
 
 import com.yiran.minecraft.gtmqol.GTMQoL;
+import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergySavedData;
 import com.yiran.minecraft.gtmqol.wireless.steam.WirelessSteamSavedData;
 
 import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
@@ -57,8 +58,9 @@ final class FTBTeamsCompat {
         UUID player = event.getPlayer().getUUID();
         UUID party = event.getTeam().getId();
         GTMQoL.LOGGER.info("Wireless: {} joined team {}, moving their team network into it", player, party);
-        WirelessSteamSavedData.get().moveAll(NetworkId.ofTeam(event.getPreviousTeam().getId()),
-                NetworkId.ofTeam(party));
+        NetworkId from = NetworkId.ofTeam(event.getPreviousTeam().getId());
+        WirelessSteamSavedData.get().moveAll(from, NetworkId.ofTeam(party));
+        WirelessEnergySavedData.get().moveAll(from, NetworkId.ofTeam(party));
     }
 
     /**
@@ -69,7 +71,8 @@ final class FTBTeamsCompat {
         if (!event.getTeamDeleted()) return;
         UUID party = event.getTeam().getId();
         GTMQoL.LOGGER.info("Wireless: team {} disbanded, moving its network to {}", party, event.getPlayerId());
-        WirelessSteamSavedData.get().moveAll(NetworkId.ofTeam(party),
-                NetworkId.ofTeam(event.getPlayerTeam().getId()));
+        NetworkId to = NetworkId.ofTeam(event.getPlayerTeam().getId());
+        WirelessSteamSavedData.get().moveAll(NetworkId.ofTeam(party), to);
+        WirelessEnergySavedData.get().moveAll(NetworkId.ofTeam(party), to);
     }
 }

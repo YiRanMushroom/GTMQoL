@@ -6,8 +6,9 @@ shaped this way, and what is pending.
 
 ## State
 
-- Branch `migrate/gtceu-v8-runtime-generation`. All work is committed.
-- Builds, datagen and the dev client all work. Everything below has been tested in game by the user.
+- Branch `migrate/gtceu-v8-runtime-generation`. The wireless EU network is uncommitted.
+- Builds, datagen and the dev client all work. Everything below except the EU network has been tested in
+  game by the user.
 - Minecraft 1.20.1, Forge 47.4.1, GTCEu v8 snapshot (pinned, see `gradle.properties`), Java 17 target,
   Architectury Loom 1.13. Java only; no Kotlin.
 - The old implementation is archived under `reference/` as research material. Do not migrate it wholesale
@@ -24,8 +25,9 @@ src/main/java/com/yiran/minecraft/gtmqol/
 ├── integration/           IntegrationTests (example machines), KubeJSDataGenFix
 ├── mixin/MachineBuilderMixin.java
 └── wireless/
-    ├── WirelessBindingTrait.java, WirelessNetworks.java, NetworkId.java, FTBTeamsCompat.java   (generic)
-    └── steam/             everything steam specific
+    ├── WirelessBindingTrait.java, WirelessNetworks.java, NetworkId.java, FTBTeamsCompat.java, IOStats.java
+    ├── steam/             everything steam specific
+    └── energy/            everything EU specific
 ```
 
 Generated resources are committed under `src/generated/resources` (on the resources source set).
@@ -50,6 +52,14 @@ Datagen gotcha, already fixed: GTCEu instantiates addons while it is itself bein
 onto GTCEu's mod bus (`AbstractRegistrate.getModEventBus()` is `FMLJavaModLoadingContext.get()`), and
 datagen wrote nothing. Now it is `create(MOD_ID, false)` plus `registerEventListeners(modBus)` as the
 first line of the `GTMQoL` constructor.
+
+Datagen gotcha, recurring: `MultipleArgumentsForOptionException: Found multiple arguments for option
+output` when running the IDEA "Minecraft Data" config. Loom puts `--all --mod --output` (from
+`forge.dataGen`) into `.gradle/loom-cache/launch.cfg` under `dataArgs`; an old
+`.idea/runConfigurations/Minecraft_Data.xml` that also has them in `PROGRAM_PARAMETERS` passes them twice.
+Loom didn't overwrite that file on sync. Fix: delete the XML and re-sync, then check its
+`PROGRAM_PARAMETERS` only has the `--existing...` args from `build.gradle`; or just use
+`.\gradlew.bat runData`, which doesn't go through the XML.
 
 Machines must register in `GTMQoL.onRegisterMachines` (GTCEu's `RegisterEvent<ResourceLocation,
 MachineDefinition>`), not in `IGTAddon.initializeAddon()`, which runs after the registry is frozen.
@@ -105,18 +115,42 @@ A global steam pool per network, inspired by GTMThings' wireless energy.
   output hatches look identical. The accessor uses GTCEu's `steam_hatch` model; the monitor uses GTCEu's
   screen overlay. Credits are in `README.md`.
 
+## Wireless EU network (`wireless/energy/`) — written, NOT yet compiled or tested
+
+The user chose concrete code in parallel with steam rather than a generic per-resource storage:
+`WirelessEnergySavedData` (same shape as the steam one), and `FTBTeamsCompat`, `movePrivateToTeam` and
+`WirelessNetworks.onServerTick` each call both. `IOStats` moved up to `wireless/` and is shared.
+
+- Machines (`WirelessEnergyMachines`), one per tier in `GTMachineUtils.ALL_TIERS` (ULV..UHV, or ..MAX with
+  GTCEu's high-tier config), names like `lv_wireless_energy_input_hatch`:
+  - Input hatch: `INPUT_ENERGY`, `SUBSTATION_INPUT_ENERGY`, `INPUT_LASER`. Overclock toggle (tiers below
+    MAX): one tier higher voltage, each EU costs 4 from the pool (16× energy for 4× voltage).
+  - Output hatch: `OUTPUT_ENERGY`, `SUBSTATION_OUTPUT_ENERGY`, `OUTPUT_LASER`. No overclock.
+  - Accessor: front emits at its tier; other sides accept any voltage (user's choice), still limited to
+    its amperage per tick. Always ticking.
+  - `wireless_energy_monitor`: a single machine (LV hull), EU stored and rates in EU/t.
+- Amperage per machine, 1..`MAX_AMPERAGE` (2^24, user's choice), default 4 (`DEFAULT_AMPERAGE`). UI: a text
+  field plus ×/÷ buttons (plain 4, Shift 16, Ctrl 2), `WirelessEnergyUI.amperageRow`.
+- Per-player default: `/gtmqol default_amperage [amperage]` (`DefaultAmperageCommand`, any player, for
+  themselves), saved in `WirelessEnergySavedData`. Applied in `WirelessNetworks.onEntityPlace` to hatches
+  and accessors the player places; other placers get 4.
+- The hatch Save button is ModularUI's `GuiTextures.SAVE` (floppy) icon, label in the tooltip.
+- `WirelessEnergyContainer` (hatches) reports a **per-tick budget** of V × A as stored/capacity, not the
+  pool: the power substation drains `getEnergyStored()` every tick, and `EnergyContainerList` sums all
+  hatches, so reporting the pool would be counted once per hatch.
+- Hatch settings (amperage, overclock) are edited in the UI and applied by the Save button or on UI close
+  (`applySettings`). Multiblocks snapshot voltage/amperage/tier when they form, so applying re-forms every
+  formed controller the GTCEu way (`checkStructurePattern` hits the cache, then `formStructure`), same as
+  `PatternState.onBlockStateChanged`. User approved. The accessor's amperage applies immediately.
+- `WirelessEnergyContainer` overrides `getTotalContentAmount()` to return `getEnergyStored()`: the base
+  returns its raw `energyStored` field (always 0 here), and `RecipeHandlerList.handleRecipe` skips input
+  handlers whose total is 0, so without it recipes report insufficient inputs.
+- Known limitation: GTCEu sums hatches in longs; one MAX hatch at full amperage is 2^55 EU/t, so it takes
+  about 256 such hatches on one multiblock to overflow.
+- The EU UI reuses the steam binding lang keys (registered in `WirelessSteamMachines`).
+
 ## Pending / open
 
-- **Abstraction for a future EU network: proposed, not confirmed, not implemented.** The idea:
-  - A generic wireless storage keyed by resource type (steam, EU), each with `Map<NetworkId, BigInteger>`
-    plus `IOStats`.
-  - `FTBTeamsCompat`, "To team" and stats sampling iterate over all resource types. This also removes the
-    current wrong-direction dependency of `wireless/` on `wireless/steam`
-    (`WirelessBindingTrait.movePrivateToTeam`, `WirelessNetworks.onServerTick`, `FTBTeamsCompat`).
-  - The shared UI parameterized by the stored-amount getter and unit text.
-  - No base machine class.
-
-  Per `CLAUDE.md`, ask the user before doing any of this.
 - Open question: should the accessor also use the rainbow overlay?
 
 ## User preferences not covered by `CLAUDE.md`

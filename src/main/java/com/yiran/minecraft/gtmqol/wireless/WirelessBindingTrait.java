@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergySavedData;
 import com.yiran.minecraft.gtmqol.wireless.steam.WirelessSteamSavedData;
 
 import net.minecraft.nbt.CompoundTag;
@@ -125,19 +126,24 @@ public class WirelessBindingTrait extends MachineTrait {
     }
 
     /**
-     * Moves the bound player's whole private network into their current team network and switches this
-     * machine to team mode.
+     * Moves the bound player's whole private network (steam and EU) into their current team network and
+     * switches this machine to team mode.
      */
     public void movePrivateToTeam(Player player) {
         if (boundPlayer == null || !checkConfigure(player)) return;
-        var data = WirelessSteamSavedData.get();
         NetworkId from = NetworkId.ofPrivate(boundPlayer);
-        BigInteger amount = data.getStored(from);
-        data.moveAll(from, WirelessNetworks.networkId(boundPlayer, false));
+        NetworkId to = WirelessNetworks.networkId(boundPlayer, false);
+        var steam = WirelessSteamSavedData.get();
+        BigInteger steamAmount = steam.getStored(from);
+        steam.moveAll(from, to);
+        var energy = WirelessEnergySavedData.get();
+        BigInteger energyAmount = energy.getStored(from);
+        energy.moveAll(from, to);
         this.privateNetwork = false;
         syncDataHolder.markClientSyncFieldDirty("privateNetwork");
         player.displayClientMessage(Component.translatable(MOVED_TO_TEAM_KEY,
-                FormattingUtil.formatNumbers(amount), getNetworkName()), true);
+                FormattingUtil.formatNumbers(steamAmount), FormattingUtil.formatNumbers(energyAmount),
+                getNetworkName()), true);
     }
 
     public InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {

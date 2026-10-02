@@ -1,5 +1,6 @@
 package com.yiran.minecraft.gtmqol.wireless.steam;
 
+import com.yiran.minecraft.gtmqol.wireless.IOStats;
 import com.yiran.minecraft.gtmqol.wireless.NetworkId;
 import com.yiran.minecraft.gtmqol.wireless.WirelessNetworks;
 import net.minecraft.nbt.CompoundTag;
@@ -11,7 +12,6 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
-import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,50 +26,9 @@ public final class WirelessSteamSavedData extends SavedData {
 
     private final Map<NetworkId, BigInteger> steam = new HashMap<>();
     /**
-     * Input/output rates per network, for the monitor. Not saved, so they restart from zero with the server.
+     * Input/output rates (mB/t) per network, for the monitor. {@link #moveAll} doesn't count.
      */
     private final Map<NetworkId, IOStats> stats = new HashMap<>();
-
-    /**
-     * Counts every insert/extract ({@link #moveAll} doesn't count) and samples the totals every
-     * {@link #SAMPLE_INTERVAL} ticks; rates are averaged over the last {@link #SAMPLES} samples.
-     */
-    public static final class IOStats {
-
-        public static final int SAMPLE_INTERVAL = 20;
-        public static final int SAMPLES = 10;
-
-        private long inserted, extracted;
-        /**
-         * {tick, inserted, extracted}, oldest first.
-         */
-        private final ArrayDeque<long[]> samples = new ArrayDeque<>();
-        private double inputRate, outputRate;
-
-        private void sample(long tick) {
-            samples.addLast(new long[] { tick, inserted, extracted });
-            while (samples.size() > SAMPLES + 1) samples.removeFirst();
-            long[] first = samples.getFirst(), last = samples.getLast();
-            long ticks = last[0] - first[0];
-            if (ticks <= 0) return;
-            inputRate = (double) (last[1] - first[1]) / ticks;
-            outputRate = (double) (last[2] - first[2]) / ticks;
-        }
-
-        /**
-         * mB/t
-         */
-        public double inputRate() {
-            return inputRate;
-        }
-
-        /**
-         * mB/t
-         */
-        public double outputRate() {
-            return outputRate;
-        }
-    }
 
     private WirelessSteamSavedData() {}
 
@@ -103,7 +62,7 @@ public final class WirelessSteamSavedData extends SavedData {
     public void insert(NetworkId network, long amount) {
         if (amount <= 0) return;
         steam.merge(network, BigInteger.valueOf(amount), BigInteger::add);
-        getStats(network).inserted += amount;
+        getStats(network).recordInsert(amount);
         setDirty();
     }
 
@@ -115,7 +74,7 @@ public final class WirelessSteamSavedData extends SavedData {
         int extracted = Math.min(max, getStoredInt(network));
         if (extracted > 0 && !simulate) {
             steam.put(network, getStored(network).subtract(BigInteger.valueOf(extracted)));
-            getStats(network).extracted += extracted;
+            getStats(network).recordExtract(extracted);
             setDirty();
         }
         return extracted;
