@@ -47,7 +47,12 @@ claude.ai 的 Atlassian 和 Microsoft 365 连接器我不用、也不连接。�
   依赖不重映射，没有 `mod*` 配置，dev-only 模组用自建的 `localRuntime`。
 - Java 21 一套就够（Gradle 和客户端都行）；toolchain 从 `JDK21` 环境变量找，找不到就让 foojay 下载。
 - 依赖版本以 GTCEu `1.21` 分支的 `gradle/forge.versions.toml` / `libs.versions.toml` 为准。
-- 元数据是 `META-INF/neoforge.mods.toml`，mixin config 写在里面的 `[[mixins]]`。MixinExtras 由 NeoForge 自带。
+- 元数据是 `META-INF/neoforge.mods.toml`，mixin config 写在里面的 `[[mixins]]`。MixinExtras 由 NeoForge 自带
+  （21.1.248 是 0.5.3，所以 mixin config 的 `mixinextras.minVersion` 不能高于它）。
+- dev 的配方查看器必须是 EMI，不要换回 JEI（和 GTCEu 1.21 自己的 dev 一致）。装 JEI 时 GTCEu 在模组构造期
+  `GTRecipeCategories.<clinit>` → `CategoryIcon` 调 `GTJEIPlugin.getRuntime()` 得到 null，直接崩。
+- Modrinth 上 Forge 和 NeoForge 构建常用同一个版本号（例如 EAP），按版本号会拿到 Forge jar
+  （`is for Minecraft Forge or an older version of NeoForge`），这时改用 Modrinth 版本 ID。
 - 下面关于 Loom / 重映射 / `nameSyntheticMembers` / Java 17 的内容只适用于 1.20.1。
 
 Loom 1.13 要求 Gradle JVM ≥ 21，而 Minecraft 1.20.1 必须跑 Java 17，两者不能是同一个 JDK。
