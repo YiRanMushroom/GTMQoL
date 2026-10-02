@@ -13,7 +13,9 @@
     "MachineBuilderMixin",
     "MEPatternBufferPartMachineMixin",
     "OverclockingLogicMixin",
-    "WorkableElectricMultiblockMachineMixin"
+    "WorkableElectricMultiblockMachineMixin",
+    "gtceufix.EmiCallWrapperMixin",
+    "gtceufix.GTMuiWidgetsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

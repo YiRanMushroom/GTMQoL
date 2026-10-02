@@ -53,6 +53,16 @@ shaped this way, and what is pending.
   - `GTMQoLAddon` calls `defaultCreativeTab((ResourceKey) null)`, same as gtceu's `GTRegistration`. Registrate's
     default tab is SEARCH, so otherwise every item adds itself to it a second time and NeoForge throws
     `already exists in the tab's list`.
+  - Workarounds for gtceu 1.21 bugs live in `mixin/gtceufix/` (1.21 only). Delete each one once upstream fixes it:
+  - `gtceufix/EmiCallWrapperMixin`: when you click the recipe type button in a machine UI, gtceu calls the
+    private `EmiApi.setPages` through `EmiApiAccessor`. That invoker is never applied to `EmiApi`, so the click
+    throws `NoSuchMethodError`. The mixin switches it to the public `EmiApi.displayRecipeCategory(machineCategory)`,
+    which no longer shows the other categories of the same recipe type as tabs. Because of this, EMI is now `compileOnly`.
+  - `gtceufix/GTMuiWidgetsMixin` works around a gtceu 1.21 bug: in
+    `GTMuiWidgets.createCircuitSlotSyncValue`, the setter calls `IntCircuitBehaviour.stack(v, current.getCount())`.
+    When the slot is empty the count is 0, which gives an empty stack, so the ghost circuit can never be set.
+    The mixin clamps the count to ≥1. 1.20 uses `stack(v)`, so master doesn't need it. Remove the mixin once
+    upstream fixes this.
   - `KubeJSDataGenFix` is removed, since NeoForge's `DatagenModLoader` sets the flag correctly.
     Check that datagen exits.
 - Mixin targets were checked statically against the 1.21 sources and all match. Runtime still unverified.
