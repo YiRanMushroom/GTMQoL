@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
@@ -14,6 +16,7 @@ import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.circuit.UniversalCircuits;
 
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -96,6 +99,14 @@ public final class MagicalAssembler {
                 .circuitMeta(10)
                 .duration(20 * 20)
                 .EUt(VA[ZPM])
+                .save(provider);
+
+        RECIPE_TYPE.recipeBuilder(GTMQoL.id("rubber_sapling"))
+                .inputItems(ItemTags.SAPLINGS)
+                .inputItems(GTItems.STICKY_RESIN)
+                .outputItems(GTBlocks.RUBBER_SAPLING.asItem())
+                .duration(100)
+                .EUt(VA[ULV])
                 .save(provider);
     }
 }
