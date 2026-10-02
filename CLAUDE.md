@@ -145,6 +145,7 @@ net.minecraft.client.gui.Font$StringRenderOutput`。改这个值会让 Loom 重�
 - mixin config 在任何模组构造前加载，toma 的 `GTMQoLConfig` 这时还读不到。启动期开关放
   `config/gtmqol-early.properties`，用 `java.util.Properties` 读（和 GTCEu 的 `GTMixinPlugin` / `gtceu-early.properties` 一样）。
   `@Overwrite` 之类不能运行时关的改动，要么做成这样的启动期开关，要么就不给开关。
+- 绕过 GTCEu 自身 bug 的 mixin 放 `mixin/gtceufix/`，和功能 mixin 分开，上游修了就删。
 - mixin 包（config 里的 `package`）下只能放 mixin 类，非 mixin 的辅助代码放外面（例如 `recipedb/`），否则加载时报错。
 - 私有/包私有类型：`@Accessor` 按字段描述符匹配，返回类型不能用 `Object` 代替不可见的类型。对象本身可以先转成
   `Object` 再强转成 accessor 接口（`@Mixin(targets = "...$Inner")`）。
