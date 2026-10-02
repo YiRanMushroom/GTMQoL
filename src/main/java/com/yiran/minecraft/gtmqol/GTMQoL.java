@@ -1,11 +1,13 @@
 package com.yiran.minecraft.gtmqol;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.yiran.minecraft.gtmqol.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.circuit.CircuitTags;
 import com.yiran.minecraft.gtmqol.circuit.UniversalCircuits;
@@ -106,6 +108,9 @@ public final class GTMQoL {
         GTMQoLMultiblocks.init();
         WirelessSteamMachines.init();
         WirelessEnergyMachines.init();
+        if (GTCEu.Mods.isAE2Loaded()) {
+            AE2Machines.init();
+        }
         // do not run integration tests in data generation, They are only for testing in a running game.
         if (GTMQoLConfig.INSTANCE.integrationTests.enabled && !FMLLoader.getLaunchHandler().isData()) {
             IntegrationTests.registerExampleMachines();

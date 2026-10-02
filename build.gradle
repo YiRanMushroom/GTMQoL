@@ -35,8 +35,9 @@ loom {
             mod project.mod_id
         }
         // Adds MixinConfigs to the jar manifest and passes the config to the dev runs.
-        // gtmqol.recipedb.mixins.json is gated by RecipeDBMixinPlugin (config/gtmqol-early.properties).
-        mixinConfig 'gtmqol.mixins.json', 'gtmqol.recipedb.mixins.json'
+        // gtmqol.recipedb.mixins.json is gated by RecipeDBMixinPlugin (config/gtmqol-early.properties),
+        // gtmqol.eap.mixins.json by EAPMixinPlugin (only with ExtendedAE Plus installed).
+        mixinConfig 'gtmqol.mixins.json', 'gtmqol.recipedb.mixins.json', 'gtmqol.eap.mixins.json'
     }
 
     runs {
@@ -202,6 +203,24 @@ dependencies {
     // Compile-only for recipedb/PatternBufferIngredients (gtceu's pattern buffer implements AE2 interfaces);
     // only used when AE2 is loaded, still not a runtime dependency of ours.
     modCompileOnly "appeng:appliedenergistics2-forge:${project.ae2_version}"
+    // Optional: ExtendedAE Plus smart doubling on gtceu's pattern buffer. Compile against its API, never
+    // require it. Its mods.toml requires ExtendedAE, which in turn requires GuideMe and Glodium; all from
+    // Modrinth, listed by hand.
+    modCompileOnly("maven.modrinth:extendedae-plus:${project.eap_version}") {
+        transitive = false
+    }
+    modLocalRuntime("maven.modrinth:extendedae-plus:${project.eap_version}") {
+        transitive = false
+    }
+    modLocalRuntime("maven.modrinth:extended-ae:${project.extendedae_version}") {
+        transitive = false
+    }
+    modLocalRuntime("maven.modrinth:glodium:${project.glodium_version}") {
+        transitive = false
+    }
+    modLocalRuntime("maven.modrinth:guideme:${project.guideme_version}") {
+        transitive = false
+    }
     // Optional: GT circuit tags and Mekanism's forge:circuits/* tags are merged (see CircuitTags). That is
     // plain tag data, so nothing is compiled against Mekanism; it's only in the dev runs for testing.
     modLocalRuntime("mekanism:Mekanism:${project.minecraft_version}-${project.mekanism_version}") {

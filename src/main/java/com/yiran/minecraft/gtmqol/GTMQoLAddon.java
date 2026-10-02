@@ -1,5 +1,6 @@
 package com.yiran.minecraft.gtmqol;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
@@ -11,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.yiran.minecraft.gtmqol.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.generation.GTMQoLMachineBuilder;
 import com.yiran.minecraft.gtmqol.generation.GTMQoLMultiblockBuilder;
@@ -90,6 +92,9 @@ public final class GTMQoLAddon implements IGTAddon {
         WirelessRecipes.addRecipes(provider);
         ModularMachines.addRecipes(provider);
         GTMQoLMultiblocks.addRecipes(provider);
+        if (GTCEu.Mods.isAE2Loaded()) {
+            AE2Machines.addRecipes(provider);
+        }
     }
 
     @Override

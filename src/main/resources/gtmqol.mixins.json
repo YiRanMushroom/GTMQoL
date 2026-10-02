@@ -10,6 +10,7 @@
     "GTRecipeModifiersMixin",
     "GTRecipeViewerWidgetMixin",
     "MachineBuilderMixin",
+    "MEPatternBufferPartMachineMixin",
     "OverclockingLogicMixin",
     "WorkableElectricMultiblockMachineMixin"
   ],
