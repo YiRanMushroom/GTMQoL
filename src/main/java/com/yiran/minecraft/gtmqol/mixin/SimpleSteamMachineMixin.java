@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class SimpleSteamMachineMixin {
 
     // Both constructors call super(...), not this(...), so this runs once per machine.
-    @Inject(method = "<init>", at = @At("RETURN"))
+    @Inject(method = "<init>*", at = @At("RETURN"))
     private void gtmqol$attachCircuitSlot(CallbackInfo ci) {
         ((MetaMachine) (Object) this).attachPersistentTrait("circuit", new ProgrammableCircuitSlotTrait());
     }

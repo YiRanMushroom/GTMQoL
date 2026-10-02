@@ -453,6 +453,13 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
 - `AE2Machines`: `gtmqol:overclocked_me_pattern_buffer`, 12 columns × 18 rows = 216, LuV; recipe in the
   magical assembler (4 ME pattern buffers, 16 MV circuits, circuit 24, 576 soldering alloy, 4000 glue, 1200 t,
   MV), as in the old `QoLMachines.kt`.
+- `AEProcessing` (port of the v7 ME machines, AE2 only): recipe types and SimpleTieredMachines
+  `gtmqol:me_assembler` (6/1/3/0) and `gtmqol:me_circuit_slicer` (1/1/0/0), the four silicon chip items, and the
+  v7 recipes: machine crafting (AE2 inscriber in the middle), wafer → chips (8/16/32/64), AE2 materials → prints,
+  chip + print + silicon print (or 4 copper foil) + 144 redstone → processors ×chip multiplier, GTCEu ME
+  buses/hatches/pattern buffer (+proxy) from AE2 parts, and wiremill/polarizer/mixer AE recipes. Not ported:
+  the sticky card and the oblivion singularity (electric implosion is gone). Machine names come from
+  `SimpleMachineBuilder`'s `toEnglishName`, so they read "Me Assembler".
 - Smart doubling (ExtendedAE Plus, optional): `gtmqol.eap.mixins.json`, gated by `ae2/EAPMixinPlugin`
   (`LoadingModList` has `extendedae_plus`). `mixin/eap/MEPatternBufferSmartDoublingMixin` on GTCEu's buffer
   (so ours too) implements `ISmartDoublingHolder`, `@SaveField` toggle (default on) and limit (0 = none),
