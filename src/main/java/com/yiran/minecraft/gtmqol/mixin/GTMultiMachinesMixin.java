@@ -1,6 +1,9 @@
 package com.yiran.minecraft.gtmqol.mixin;
 
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 
@@ -40,5 +43,16 @@ public class GTMultiMachinesMixin {
         all.addAll(PartAbility.SUBSTATION_INPUT_ENERGY.getBlockRange(from, to));
         all.addAll(PartAbility.INPUT_LASER.getBlockRange(from, to));
         return all;
+    }
+
+    /** The steam grinder and steam oven keep all of a recipe's outputs, see {@code GTMachinesMixin}. */
+    @SuppressWarnings("rawtypes")
+    @WrapOperation(method = "<clinit>",
+                   at = @At(value = "INVOKE",
+                            target = "Lcom/gregtechceu/gtceu/api/registry/registrate/builder/MultiblockMachineBuilder;addOutputLimit(Lcom/gregtechceu/gtceu/api/capability/recipe/RecipeCapability;I)Lcom/gregtechceu/gtceu/api/registry/registrate/builder/MachineBuilder;"),
+                   require = 2)
+    private static MachineBuilder gtmqol$noOutputLimit(MultiblockMachineBuilder builder, RecipeCapability<?> cap,
+                                                       int limit, Operation<MachineBuilder> original) {
+        return builder;
     }
 }

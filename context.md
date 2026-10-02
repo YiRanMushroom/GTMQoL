@@ -399,9 +399,20 @@ reference clone at `E:\code\Minecraft\gtnl-ref`, outside the repo), not a copy.
   Also `lp_/hp_steam_magical_assembler` (`registerSteamMachines` + `SimpleSteamMachine`, our magical
   assembler overlay; HP keeps GTCEu's steel theme like other HP single blocks). Recipes: LP steam magical
   assembler shaped (bronze hull, crafting tables); HP like GTCEu's steel upgrades; each multi in the magical
-  assembler (4 HP steam machines or 1 LV electric machine + 4 bronze gearbox + 8 bronze bricks + bronze
-  plates/gears + 4 ULV circuits, ULV EU/t, so the steam one can make them); parallel hatch from a steam
-  hatch + 2 bronze gearboxes + 4 LV circuits.
+  assembler (1 LP steam single block + 2 bronze gearbox + 4 bronze bricks + 8 bronze plates + 2 bronze gears,
+  no circuits, ULV EU/t, so the steam one can make them); parallel hatch from a steam hatch + 2 bronze
+  gearboxes + 4 LV circuits (user: no LV machines or circuits in the large steam multis).
+  The 14 bases GTCEu has no steam version of (bender … circuit assembler) get `gtmqol:lp_/hp_steam_<x>` via
+  `GTMachineUtils.registerSimpleSteamMachines` (GTCEu's overlay). LP: `PCP/XMX/PXP` (bronze plates, small bronze
+  pipes, bronze hull, `C` a per-machine key item; the circuit assembler's key is 1 LV circuit, the only
+  circuit, as the user asked); HP: GTCEu's steel upgrade layout `WSW/PMP/WWW`.
+- Steam single blocks have full IO: `SimpleSteamMachineMixin` also attaches persistent fluid tanks sized by the
+  recipe type (8 B, like LV). The input tank refuses steam (`setFilter`) and is attached with trait priority 2,
+  above the steam tank (also an IN `NotifiableFluidTank`): GTCEu's machine UI uses the first IN fluid handler
+  as the recipe slots and `getTraits` is sorted by priority, otherwise it drew the steam tank (and a 2-input
+  mixer would index past its one slot). `GTMachinesMixin` / `GTMultiMachinesMixin` drop every
+  `addOutputLimit` in GTCEu's registration (steam macerator, LV–HV macerators, steam grinder, steam oven;
+  user wants byproducts everywhere). Generator output limits (in `GTMachineUtils`) are untouched.
 - `AdvancedSteamShapes`: generated once by a Python script from GTNL's `assets/sciencenotleisure/multiblock/
   large_steam_*.mbs` (format: `MBS1`, string table of int length + UTF-8, then rows of int indices;
   `shape[row top→bottom][slice front→back]`, strings along X, `~` controller, space any). Rows reversed to
@@ -418,7 +429,8 @@ reference clone at `E:\code\Minecraft\gtnl-ref`, outside the repo), not a copy.
   authors "Yiran, Frosty").
 - `MagicalAssemblerUI` builds the 4-slot fluid column from the first IN fluid handler. On a steam machine that
   handler is `SteamMachine.steamTank` (1 slot), so indexing slots 1–3 threw and the UI did not open on right
-  click; the column is now skipped when the handler is the steam tank (the steam one has no recipe fluid input).
+  click; the column is now skipped when the handler is the steam tank. With the mixin's input tank first, the
+  steam magical assembler now shows and uses the fluid column; the steam tank check is only a fallback.
 - Ghost circuit on steam: `SimpleSteamMachineMixin` attaches `ProgrammableCircuitSlotTrait` (as "circuit", like
   `SimpleTieredMachine`) to every steam single block, GTCEu's included; `GTSingleblockMachinePanelsMixin` turns
   trait configurators back on for the steam panel (`defaultSteamMachinePanelBuilder` disables them) so the slot
