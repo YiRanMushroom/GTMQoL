@@ -6,9 +6,10 @@ shaped this way, and what is pending.
 
 ## State
 
-- Branch `migrate/gtceu-v8-runtime-generation`. The wireless EU network is uncommitted.
-- Builds, datagen and the dev client all work. Everything below except the EU network has been tested in
-  game by the user.
+- Branch `migrate/gtceu-v8-runtime-generation`. Committed up to wireless covers and FE. Modular machines,
+  overclocking, the Smart Assembly Factory/DTFR, the circuit/alloy tags and the RecipeDB search are staged
+  but not committed yet.
+- Builds, datagen and the dev client all work. Everything below has been tested in game by the user.
 - Minecraft 1.20.1, Forge 47.4.1, GTCEu v8 snapshot (pinned, see `gradle.properties`), Java 17 target,
   Architectury Loom 1.13. Java only; no Kotlin.
 - The old implementation is archived under `reference/` as research material. Do not migrate it wholesale
@@ -23,11 +24,18 @@ src/main/java/com/yiran/minecraft/gtmqol/
 │                          addRecipes
 ├── assembler/MagicalAssembler.java  recipe type, tiered machines, its own recipes
 ├── circuit/               UniversalCircuits (items), CircuitTags (GT ↔ Mekanism tags, datagen)
+├── client/                client-only init and renders (DTFR ring)
 ├── config/GTMQoLConfig.java
 ├── fe/FEInputProvider.java  FE input for every GT machine and cable
 ├── generation/            runtime (dynamic) resource generation, opt-in per machine
 ├── integration/           IntegrationTests (example machines), KubeJSDataGenFix
-├── mixin/MachineBuilderMixin.java
+├── mixin/                 MachineBuilder, GTMachineUtils, OverclockingLogic, GTRecipeViewerWidget,
+│   │                      fusion, multi smelter, tier skipping
+│   └── recipedb/          RecipeDB grouped search (own config gtmqol.recipedb.mixins.json)
+├── modular/               modular multiblock versions of single-block machines
+├── multiblock/            Smart Assembly Factory, DTFR
+├── overclock/             replacement OC logics
+├── recipedb/              non-mixin side of the grouped search, RecipeDBMixinPlugin
 └── wireless/
     ├── WirelessBindingTrait.java, WirelessNetworks.java, NetworkId.java, FTBTeamsCompat.java, IOStats.java
     ├── WirelessCovers.java  cover definitions and items
@@ -50,7 +58,7 @@ Two mechanisms exist; use datagen by default.
 - **Runtime generation (opt-in).** `GTMQoLAddon.machine(...)` returns `GTMQoLMachineBuilder`, which has
   `.dynamicallyGenerated(true)`. `MachineBuilderMixin` then queues the builder in `RuntimeGeneration`,
   which writes models/lang into GTCEu's `GTDynamicResourcePack` on every `RegisterDynamicResourcesEvent`.
-  Only the integration-test machines use it now. Background in `docs/DYNAMIC_GENERATION.md` and
+  Used by the modular machines and the integration-test machines. Background in `docs/DYNAMIC_GENERATION.md` and
   `docs/INTEGRATION_TESTS.md` (written early on; may be partly out of date).
 
 Datagen gotcha, already fixed: GTCEu instantiates addons while it is itself being constructed, so a
@@ -73,10 +81,16 @@ MachineDefinition>`), not in `IGTAddon.initializeAddon()`, which runs after the 
 ## Config
 
 `GTMQoLConfig` uses toma's `Configuration` library (YAML, `config/gtmqol.yaml`), not `ForgeConfigSpec`,
-because values are needed during CONSTRUCT. Only option: `integrationTests.enabled` (default false); it
-registers `gtmqol:runtime_single_block` and `gtmqol:runtime_multiblock`, never during datagen.
+because values are needed during CONSTRUCT. Options: `modularMachines.enabled` (default true),
+`overclocking.*` (see Overclocking) and
+`integrationTests.enabled` (default false); the latter registers `gtmqol:runtime_single_block` and
+`gtmqol:runtime_multiblock`, never during datagen.
 
-## Wireless steam network (the current feature)
+Mixin-time options can't use it (mixin configs load before mods). They go in
+`config/gtmqol-early.properties`, read by `recipedb/RecipeDBMixinPlugin` with `java.util.Properties`
+(same approach as GTCEu's `gtceu-early.properties`): `recipeDB.groupedSearch` (default true).
+
+## Wireless steam network
 
 A global steam pool per network, inspired by GTMThings' wireless energy.
 
@@ -121,7 +135,7 @@ A global steam pool per network, inspired by GTMThings' wireless energy.
   output hatches look identical. The accessor uses GTCEu's `steam_hatch` model; the monitor uses GTCEu's
   screen overlay. Credits are in `README.md`.
 
-## Wireless EU network (`wireless/energy/`) — written, NOT yet compiled or tested
+## Wireless EU network (`wireless/energy/`)
 
 The user chose concrete code in parallel with steam rather than a generic per-resource storage:
 `WirelessEnergySavedData` (same shape as the steam one), and `FTBTeamsCompat`, `movePrivateToTeam` and
@@ -155,7 +169,7 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   about 256 such hatches on one multiblock to overflow.
 - The EU UI reuses the steam binding lang keys (registered in `WirelessSteamMachines`).
 
-## Wireless covers (`wireless/WirelessCovers.java`) — written, NOT yet compiled or tested
+## Wireless covers (`wireless/WirelessCovers.java`)
 
 - Registered from GTCEu's `RegisterEvent<ResourceLocation, CoverDefinition>` (`GTMQoL.onRegisterCovers`;
   `IGTAddon.registerCovers` is deprecated). Cover items are made in the same call through our registrate.
@@ -172,7 +186,7 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   stick support on covers.
 - All four use the rainbow `overlay_wireless` texture for the cover and the item, so they look the same.
 
-## EU ↔ FE (`fe/FEInputProvider.java`) — written, NOT yet compiled or tested
+## EU ↔ FE (`fe/FEInputProvider.java`)
 
 - The user wanted every EU input to accept FE and every EU output to give FE.
 - FE → EU: an `AttachCapabilitiesEvent<BlockEntity>` provider on every `MetaMachine` and `CableBlockEntity`
@@ -184,7 +198,7 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   capability, so outputs and cables push into them. Pull-based FE pipes can't extract from GT machines.
 - No config toggle (the old implementation had `enableFEToEUConversion`).
 
-## Recipes, magical assembler, circuits — written, NOT yet compiled or tested
+## Recipes, magical assembler, circuits
 
 - Recipes go through `IGTAddon.addRecipes` (`GTMQoLAddon`), which GTCEu runs into its runtime data pack
   together with its own recipes, so no recipe JSON is datagen'd.
@@ -192,8 +206,9 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   registered from GTCEu's `RegisterEvent<…, GTRecipeType>`; machines via GTCEu's `SimpleMachineBuilder`
   (electric tiers), textures copied from `reference/`. Ported recipes from the old `QoLRecipes.kt`: the
   machine's crafting recipe (`PGP/GMG/PCP`), circuit → universal circuit (circuit 5, 1 tick, 1 EU/t), produce
-  and copy creative data access hatch. Skipped because their outputs don't exist any more: overclocked ME
-  pattern buffer, smart assembly factory, DTFR, probable (im)probability devices, industrial LCR.
+  and copy creative data access hatch. The Smart Assembly Factory and DTFR recipes live in
+  `GTMQoLMultiblocks.addRecipes`. Not ported (outputs don't exist any more): overclocked ME pattern buffer,
+  probable (im)probability devices, industrial LCR.
 - `UniversalCircuits`: `<tier>_universal_circuit` for every `GTValues.ALL_TIERS` tier, tagged
   `gtceu:circuits/<tier>`, old textures.
 - `CircuitTags` (datagen, item tags): `forge:circuits/{basic,advanced,elite,ultimate}` includes
@@ -213,6 +228,79 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   wireless hatch + circuit 5 → 4 covers of the same direction; GT output hatch + 4 input covers →
   accessor; screen cover + LV input cover → monitor. Steam is the same from GT's `STEAM_HATCH` (output
   hatch uses circuit 6, as GT has no steam output hatch).
+
+## Modular machines (`modular/`)
+
+- `GTMachineUtilsMixin` injects at RETURN of `GTMachineUtils.registerTieredMachines`, which every tiered
+  single-block machine goes through (gtceu's, our magical assembler, other addons'). `ModularMachines.register`
+  then registers `gtmqol:modular_<name>` (other addons: `modular_<ns>_<name>`) through our registrate, with
+  `dynamicallyGenerated(true)` (models and en_us lang at runtime, nothing datagen'd; skipped during datagen).
+- Port of the old `AddModularMultiblocksLogic.kt`: skip machines without recipe types, with `DUMMY_RECIPES`, or
+  mixing generator and non-generator types. 3×3×3, controller at front centre, any block allowed (casing/glass
+  preview, auto abilities; no parallel hatch, the user only wants subtick parallels). Modifiers: duration ×0.125 (generators ×8), then `OC_PERFECT_SUBTICK`
+  (generators `create(0.5, 4.0, true)`), then `BATCH_MODE`. Overlay: the single block's
+  `block/{machines,generators}/<name>` if it has `overlay_front.png`, else implosion compressor / large
+  combustion engine. Recipes: magical assembler (circuit 5) and hammer shaped, from the first tier.
+- `ModularMachine.getMaxVoltage()` returns `getOverclockVoltage()` (the old
+  `SingleHatchTierSkippingWorkableElectricMachine`).
+- Config `modularMachines.enabled` (default true). Not ported: KubeJS tiered machine hook, the
+  `QOL_RECIPE_MODIFIER` part ability, non-English names.
+
+## Overclocking (`overclock/`, `OverclockingLogicMixin`)
+
+- The factor constants (`STD_VOLTAGE_FACTOR` …) are interface fields, so implicitly `static final`
+  compile-time constants inlined by javac; patching them does nothing. The four logic constants are objects
+  but `static final` too (the old `OverclockingPatcher` replaced them with Unsafe). Instead,
+  `OverclockingLogicMixin` (interface mixin, `@Overwrite` only — the old project's approach) overwrites:
+  - `getModifier`: `Overclocking.replace` maps `NON_PERFECT_OVERCLOCK(_SUBTICK)` → 4× EU/t 4× speed and
+    `PERFECT_OVERCLOCK(_SUBTICK)` → 2× EU/t 4× speed, both subtick; always computes parallels
+    (`getParallelAmountWithoutEU`); no ULV OC penalty (as in the old mixin).
+  - `subTickParallelOC`: equivalent OC (fractional OC levels, speed rounded down to whole parallels once at
+    1 tick). Affects every subtick logic, including generators' `create(0.5, 4.0, true)`.
+  - `heatingCoilOC`: every OC 4× EU/t for 8× speed, coil temperature ignored (old behaviour).
+- `GTRecipeViewerWidgetMixin` applies the same replacement to the recipe viewer's OC preview, which calls
+  `runOverclockingLogic` directly.
+- `GTRecipeModifiersMixin` (always on, no toggle): with the new OC computing parallels, the multi smelter's
+  base → OC → parallel order gives wrong results, so the middle OC of `multiSmelterParallel` becomes identity
+  and the OC is appended to the returned function, computed on the parallelized recipe.
+- No config toggle for the above (overwrites can't be switched off at runtime). The following have toggles
+  under `overclocking.*` (all default true, restart):
+  - `buffFusionReactor`: `FusionReactorMachineMixin` wraps `FUSION_OC = create(...)` in `<clinit>` to return
+    `PERFECT_OVERCLOCK_SUBTICK`, and the `getModifier` calls in `recipeModifier` to pass
+    `getOverclockVoltage()` with parallels instead of the tier-capped `getMaxVoltage()`. `GTMultiMachinesMixin`
+    adds substation and laser hatches to the fusion 'E' slot by wrapping `PartAbility.getBlockRange(II)`
+    (its only call in `GTMultiMachines`) inside a regex-selected lambda (`/^lambda\$/`, works).
+  - `enableMultiTierSkipping`: `WorkableElectricMultiblockMachineMixin` wraps `return V[...]` in
+    `getMaxVoltage` (the "several hatches at the highest tier → tier + 1" branch) to return the summed hatch
+    voltage (`VEX[floor tier]` when amperage is 1).
+
+## Smart Assembly Factory and DTFR (`multiblock/`)
+
+Ports of the old ones (the user called the former "精度装配机"; assumed to be the Smart Assembly Factory).
+Registered in `onRegisterMachines`, lang/models datagen'd, recipes in the magical assembler.
+
+- Smart Assembly Factory: assembly line recipes, `PARALLEL_HATCH`, `OC_PERFECT_SUBTICK`, `BATCH_MODE`.
+  Pattern from 7.x `start(BACK, UP, RIGHT)` → v8 `start(RIGHT, UP, BACK)`, `setRepeatable(4)` →
+  `sliceRepeatable(4, 4, ...)`. Data hatch via `.and(dataHatchPredicate())` (null when research is off).
+- DTFR: fusion recipes of any tier (ignores `eu_to_start`), same modifiers. `DTFRMachine` is a plain
+  `WorkableElectricMultiblockMachine` (no fusion buffer/heat/tier cap) holding the ring fade state, because
+  the dynamic render instance is shared. Fusion MK3 layout with all fluid slots as 'X'; energy slots also
+  accept substation/laser hatches (new vs 7.x). Ring: `client/DTFRRingRender` (gtceu's `FusionRingRender`
+  without bloom, white), registered as `gtmqol:dtfr_ring` in `GTMQoLClient.init()` from the constructor
+  on the client dist.
+
+## RecipeDB grouped search (`recipedb/`, `mixin/recipedb/`)
+
+Port of the old `RecipeDBMixin` (late-game lag fix). Full write-up, including what the 7.x patches did and
+why most of them are obsolete in v8, in `docs/RECIPEDB_REFACTOR.md`. In short:
+
+- `fromHolder` is overwritten to tag each ingredient entry with its `RecipeHandlerList` group.
+- Pattern buffers are split per worker, with the circuit and shared inventories as catalysts.
+- `RecipeIterator`'s branch pushes are filtered to entries one group could supply together.
+- The whole set is gated by `RecipeDBMixinPlugin` (`recipeDB.groupedSearch` in
+  `config/gtmqol-early.properties`, default true).
+- `lambda$getNext$0` (javac's default name) is the right target. AE2 is `modCompileOnly` because
+  `PatternBufferIngredients` touches GTCEu's pattern buffer, which implements AE2 interfaces.
 
 ## Pending / open
 

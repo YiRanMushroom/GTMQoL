@@ -55,7 +55,8 @@ final class MagicalAssemblerUI {
         var row = Flow.row().coverChildren();
 
         var itemHandlers = ItemRecipeCapability.CAP.getCapabilityHandlers(machine, io);
-        if (!itemHandlers.isEmpty() && itemHandlers.get(0) instanceof NotifiableItemStackHandler itemHandler) {
+        if (!itemHandlers.isEmpty() && itemHandlers.get(0) != null) {
+            var itemHandler = itemHandlers.get(0);
             var slotGroup = new SlotGroup(ItemRecipeCapability.CAP.id + "_" + io.name(), 4);
             row.child(SlotGroupWidget.builder()
                     .matrix(ITEM_GRID)
@@ -69,7 +70,8 @@ final class MagicalAssemblerUI {
         }
 
         var fluidHandlers = FluidRecipeCapability.CAP.getCapabilityHandlers(machine, io);
-        if (!fluidHandlers.isEmpty() && fluidHandlers.get(0) instanceof NotifiableFluidTank fluidTank) {
+        if (!fluidHandlers.isEmpty() && fluidHandlers.get(0) != null) {
+            var fluidTank = fluidHandlers.get(0);
             row.child(SlotGroupWidget.builder()
                     .matrix(FLUID_GRID)
                     .key('s', i -> new FluidSlot()

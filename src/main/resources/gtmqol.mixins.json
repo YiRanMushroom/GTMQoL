@@ -4,9 +4,19 @@
   "package": "com.yiran.minecraft.gtmqol.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "MachineBuilderMixin"
+    "FusionReactorMachineMixin",
+    "GTMachineUtilsMixin",
+    "GTMultiMachinesMixin",
+    "GTRecipeModifiersMixin",
+    "GTRecipeViewerWidgetMixin",
+    "MachineBuilderMixin",
+    "OverclockingLogicMixin",
+    "WorkableElectricMultiblockMachineMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "mixinextras": {
+    "minVersion": "0.5.5"
   }
 }

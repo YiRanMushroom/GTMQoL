@@ -15,6 +15,8 @@ import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.generation.GTMQoLMachineBuilder;
 import com.yiran.minecraft.gtmqol.generation.GTMQoLMultiblockBuilder;
 import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
+import com.yiran.minecraft.gtmqol.modular.ModularMachines;
+import com.yiran.minecraft.gtmqol.multiblock.GTMQoLMultiblocks;
 import com.yiran.minecraft.gtmqol.wireless.WirelessRecipes;
 
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -86,6 +88,8 @@ public final class GTMQoLAddon implements IGTAddon {
     public void addRecipes(Consumer<FinishedRecipe> provider) {
         MagicalAssembler.addRecipes(provider);
         WirelessRecipes.addRecipes(provider);
+        ModularMachines.addRecipes(provider);
+        GTMQoLMultiblocks.addRecipes(provider);
     }
 
     @Override
