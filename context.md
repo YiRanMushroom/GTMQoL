@@ -22,6 +22,7 @@ src/main/java/com/yiran/minecraft/gtmqol/
 ├── GTMQoL.java            entry point, GTMQoL.id(), event wiring
 ├── GTMQoLAddon.java       @GTAddon, owns the GTRegistrate, creative tab, machine()/multiblock() helpers,
 │                          addRecipes
+├── ae2/                   pattern buffer abstraction, overclocked buffer, EAP smart doubling (AE2 only)
 ├── assembler/MagicalAssembler.java  recipe type, tiered machines, its own recipes
 ├── circuit/               UniversalCircuits (items), CircuitTags (GT ↔ Mekanism tags, datagen)
 ├── client/                client-only init and renders (DTFR ring)
@@ -31,7 +32,8 @@ src/main/java/com/yiran/minecraft/gtmqol/
 ├── integration/           IntegrationTests (example machines), KubeJSDataGenFix
 ├── mixin/                 MachineBuilder, GTMachineUtils, OverclockingLogic, GTRecipeViewerWidget,
 │   │                      fusion, multi smelter, tier skipping
-│   └── recipedb/          RecipeDB grouped search (own config gtmqol.recipedb.mixins.json)
+│   ├── recipedb/          RecipeDB grouped search (own config gtmqol.recipedb.mixins.json)
+│   └── eap/               ExtendedAE Plus smart doubling (own config gtmqol.eap.mixins.json)
 ├── modular/               modular multiblock versions of single-block machines
 ├── multiblock/            Smart Assembly Factory, DTFR
 ├── overclock/             replacement OC logics
@@ -207,8 +209,8 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   (electric tiers), textures copied from `reference/`. Ported recipes from the old `QoLRecipes.kt`: the
   machine's crafting recipe (`PGP/GMG/PCP`), circuit → universal circuit (circuit 5, 1 tick, 1 EU/t), produce
   and copy creative data access hatch. The Smart Assembly Factory and DTFR recipes live in
-  `GTMQoLMultiblocks.addRecipes`. Not ported (outputs don't exist any more): overclocked ME pattern buffer,
-  probable (im)probability devices, industrial LCR.
+  `GTMQoLMultiblocks.addRecipes`. Not ported (outputs don't exist any more): probable (im)probability
+  devices, industrial LCR.
 - `UniversalCircuits`: `<tier>_universal_circuit` for every `GTValues.ALL_TIERS` tier, tagged
   `gtceu:circuits/<tier>`, old textures.
 - `CircuitTags` (datagen, item tags): `forge:circuits/{basic,advanced,elite,ultimate}` includes
@@ -301,6 +303,35 @@ why most of them are obsolete in v8, in `docs/RECIPEDB_REFACTOR.md`. In short:
   `config/gtmqol-early.properties`, default true).
 - `lambda$getNext$0` (javac's default name) is the right target. AE2 is `modCompileOnly` because
   `PatternBufferIngredients` touches GTCEu's pattern buffer, which implements AE2 interfaces.
+
+## AE2: pattern buffers and smart doubling (`ae2/`)
+
+Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isAE2Loaded()`.
+
+- `AbstractMEPatternBufferPartMachine extends MEPatternBufferPartMachine`: `getPatternColumns()` /
+  `getPatternRows()` (must return constants, they are called from the superclass constructor).
+  GTCEu's `MAX_PATTERN_COUNT = 27` is inlined; `mixin/MEPatternBufferPartMachineMixin` `@ModifyConstant`s the
+  five 27s in `<init>` (pattern inventory, internal slots, pattern details), `syncWorkerCount`, `addWorker`
+  (`require = 5`, recheck after a GTCEu bump). `getTerminalPatternInventory` and `buildMainUI` (scrolls past
+  6 rows) are overridden instead. The shared inventory/tank stay GTCEu's 9 slots (the old 25-slot catalyst
+  version would need the whole `getPanelBuilder`). Unformed, the pattern terminal shows GTCEu's buffer icon
+  (`getTerminalGroup`, `customName` is private).
+- `AE2Machines`: `gtmqol:overclocked_me_pattern_buffer`, 12 columns × 18 rows = 216, LuV; recipe in the
+  magical assembler (4 ME pattern buffers, 16 MV circuits, circuit 24, 576 soldering alloy, 4000 glue, 1200 t,
+  MV), as in the old `QoLMachines.kt`.
+- Smart doubling (ExtendedAE Plus, optional): `gtmqol.eap.mixins.json`, gated by `ae2/EAPMixinPlugin`
+  (`LoadingModList` has `extendedae_plus`). `mixin/eap/MEPatternBufferSmartDoublingMixin` on GTCEu's buffer
+  (so ours too) implements `ISmartDoublingHolder`, `@SaveField` toggle (default on) and limit (0 = none),
+  copies them onto the slot patterns (`ISmartDoublingAwarePattern`, `PatternScaler.getComputedMul`) at
+  `getAvailablePatterns` HEAD and in the setters. `pushPattern` unwraps `ScaledProcessingPattern` to its
+  original for the slot/worker matching (and `worker.pattern`, so refunds still match) but pushes the scaled
+  one's inputs (`@ModifyArg` on both `InternalSlot.pushPattern`). The user said this unwrap is required.
+  UI: a "×2" left configurator opening a popup (toggle + limit), added by `@ModifyReturnValue` on
+  `getPanelBuilder` (`SmartDoubling.addConfigurator`). Lang keys registered in `AE2Machines`.
+- Versions are constrained by GTCEu's JEI mixins: JEI stays 15.20.0.115, so EAP stays 1.6.1 (see
+  `gradle.properties`).
+- Known, ignored for now: a JVM access violation (C2 JIT, `InventoryChangeTrigger`) once while picking up a
+  buffer.
 
 ## Pending / open
 

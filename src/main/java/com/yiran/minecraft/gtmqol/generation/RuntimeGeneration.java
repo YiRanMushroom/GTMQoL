@@ -77,7 +77,7 @@ public final class RuntimeGeneration {
             JsonObject json = new JsonObject();
             entries.forEach(json::addProperty);
             // One file per namespace and language: a second write would replace the first.
-            GTDynamicResourcePack.addResource(new ResourceLocation(namespace, "lang/" + language + ".json"), json);
+            GTDynamicResourcePack.addResource(ResourceLocation.fromNamespaceAndPath(namespace, "lang/" + language + ".json"), json);
         }));
     }
 

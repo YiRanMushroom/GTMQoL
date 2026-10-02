@@ -146,6 +146,16 @@ net.minecraft.client.gui.Font$StringRenderOutput`。改这个值会让 Loom 重�
 （`MEPatternBufferPartMachine`）实现了 AE2 接口，引用它的代码（`recipedb/PatternBufferIngredients`）没有 AE2 就编译不过
 （`cannot access ICraftingProvider`）。运行时只在 `GTCEu.Mods.isAE2Loaded()` 时才碰这些类。
 
+# ExtendedAE Plus（可选依赖，smart doubling）
+
+`modCompileOnly` + `modLocalRuntime`，Modrinth maven（`maven.modrinth:extendedae-plus`），不写进 `mods.toml`。
+它 require ExtendedAE，ExtendedAE 又 require GuideMe 和 Glodium，都 `modLocalRuntime` + `transitive = false`。
+相关 mixin 在 `gtmqol.eap.mixins.json`，由 `ae2/EAPMixinPlugin` 按 `LoadingModList` 是否有 `extendedae_plus` 决定。
+
+版本被 GTCEu 的 JEI mixin 卡住：GTCEu v8 的 `jei.FluidHelperMixin` 在新 JEI（15.59）上报 `Invalid descriptor`，
+JEI 15.62+ 还依赖没发布到 BlameJared 的 `net.mezzdev`。所以 JEI 固定 15.20.0.115（和 GTCEu 一致）；EAP 1.6.1-f1
+起声明了可选的 `jei >= 15.48.0.177`（只要装了 JEI，Forge 就检查这个范围），所以 EAP 固定 1.6.1。
+
 # FTB Teams（可选依赖）
 
 编译期 `modCompileOnly`，dev 运行时 `modLocalRuntime`（连同 FTB Library、Architectury，都 `transitive = false`），
