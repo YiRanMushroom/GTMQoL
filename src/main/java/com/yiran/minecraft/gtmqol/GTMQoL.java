@@ -1,13 +1,20 @@
 package com.yiran.minecraft.gtmqol;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
+import com.yiran.minecraft.gtmqol.circuit.CircuitTags;
+import com.yiran.minecraft.gtmqol.circuit.UniversalCircuits;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
+import com.yiran.minecraft.gtmqol.fe.FEInputProvider;
 import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.integration.IntegrationTests;
 import com.yiran.minecraft.gtmqol.integration.KubeJSDataGenFix;
+import com.yiran.minecraft.gtmqol.wireless.WirelessCovers;
 import com.yiran.minecraft.gtmqol.wireless.WirelessNetworks;
 import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.wireless.steam.WirelessSteamMachines;
@@ -34,6 +41,11 @@ public final class GTMQoL {
         GTMQoLAddon.registrate().registerEventListeners(modBus);
         GTMQoLConfig.init();
         WirelessNetworks.init();
+        FEInputProvider.init();
+        UniversalCircuits.init();
+        CircuitTags.init();
+        modBus.addGenericListener(GTRecipeType.class, this::onRegisterRecipeTypes);
+        modBus.addGenericListener(CoverDefinition.class, this::onRegisterCovers);
         modBus.addGenericListener(MachineDefinition.class, this::onRegisterMachines);
         modBus.addListener(this::onRegisterDynamicResources);
 
@@ -64,6 +76,18 @@ public final class GTMQoL {
         return TEMPLATE_LOCATION.withPath(path);
     }
 
+    private void onRegisterRecipeTypes(GTCEuAPI.RegisterEvent<ResourceLocation, GTRecipeType> event) {
+        MagicalAssembler.initRecipeType();
+    }
+
+    /**
+     * Posted by {@code GTCovers.init()} before it freezes the cover registry; {@code IGTAddon.registerCovers}
+     * is deprecated.
+     */
+    private void onRegisterCovers(GTCEuAPI.RegisterEvent<ResourceLocation, CoverDefinition> event) {
+        WirelessCovers.init();
+    }
+
     /**
      * GTCEu posts this at the end of {@code GTMachines.init()}, right before it freezes the machine
      * registry. {@code IGTAddon.initializeAddon()} runs after that, so machines registered there fail with
@@ -71,6 +95,7 @@ public final class GTMQoL {
      *
      */
     private void onRegisterMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
+        MagicalAssembler.initMachines();
         WirelessSteamMachines.init();
         WirelessEnergyMachines.init();
         // do not run integration tests in data generation, They are only for testing in a running game.

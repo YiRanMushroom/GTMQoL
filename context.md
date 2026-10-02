@@ -19,13 +19,19 @@ shaped this way, and what is pending.
 ```text
 src/main/java/com/yiran/minecraft/gtmqol/
 ├── GTMQoL.java            entry point, GTMQoL.id(), event wiring
-├── GTMQoLAddon.java       @GTAddon, owns the GTRegistrate, creative tab, machine()/multiblock() helpers
+├── GTMQoLAddon.java       @GTAddon, owns the GTRegistrate, creative tab, machine()/multiblock() helpers,
+│                          addRecipes
+├── assembler/MagicalAssembler.java  recipe type, tiered machines, its own recipes
+├── circuit/               UniversalCircuits (items), CircuitTags (GT ↔ Mekanism tags, datagen)
 ├── config/GTMQoLConfig.java
+├── fe/FEInputProvider.java  FE input for every GT machine and cable
 ├── generation/            runtime (dynamic) resource generation, opt-in per machine
 ├── integration/           IntegrationTests (example machines), KubeJSDataGenFix
 ├── mixin/MachineBuilderMixin.java
 └── wireless/
     ├── WirelessBindingTrait.java, WirelessNetworks.java, NetworkId.java, FTBTeamsCompat.java, IOStats.java
+    ├── WirelessCovers.java  cover definitions and items
+    ├── WirelessRecipes.java magical assembler recipes for every wireless part
     ├── steam/             everything steam specific
     └── energy/            everything EU specific
 ```
@@ -149,9 +155,70 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   about 256 such hatches on one multiblock to overflow.
 - The EU UI reuses the steam binding lang keys (registered in `WirelessSteamMachines`).
 
+## Wireless covers (`wireless/WirelessCovers.java`) — written, NOT yet compiled or tested
+
+- Registered from GTCEu's `RegisterEvent<ResourceLocation, CoverDefinition>` (`GTMQoL.onRegisterCovers`;
+  `IGTAddon.registerCovers` is deprecated). Cover items are made in the same call through our registrate.
+- `WirelessEnergyCover`: input and output, one per tier (`GTMachineUtils.ALL_TIERS`), ids like
+  `gtmqol:wireless_energy_input.lv`, items `lv_wireless_energy_input_cover`. Moves up to V × A EU/t with
+  `changeEnergy` straight into / out of the machine's buffer, so the machine's voltage doesn't matter and
+  nothing explodes. Input needs `getInputVoltage() > 0`, output `getOutputVoltage() > 0` to attach.
+  Amperage UI and per-player default as for the hatches.
+- `WirelessSteamCover`: input fills the machine's fluid handler with network steam, output drains steam
+  (boilers) into the network, as much as the machine takes/gives per tick.
+- Binding: the placing player (`onAttached`). Covers have no machine, so they hold a
+  `WirelessBindingTrait` built with the `(ISyncManaged owner, BooleanSupplier isRemote)` constructor as a
+  sync field (like GTCEu's `FilterHandler`); `MachineTrait` methods needing a machine would throw. No data
+  stick support on covers.
+- All four use the rainbow `overlay_wireless` texture for the cover and the item, so they look the same.
+
+## EU ↔ FE (`fe/FEInputProvider.java`) — written, NOT yet compiled or tested
+
+- The user wanted every EU input to accept FE and every EU output to give FE.
+- FE → EU: an `AttachCapabilitiesEvent<BlockEntity>` provider on every `MetaMachine` and `CableBlockEntity`
+  exposes `ForgeCapabilities.ENERGY` on sides where the machine/cable takes EU, converting at GTCEu's
+  `feToEuRatio`. Packets are at most the input voltage, so nothing explodes. It looks the container up
+  without attached caps (`MetaMachine.getCapability(machine, ...)`, `cable.getEnergyContainer`), otherwise
+  it and GTCEu's `EUToFEProvider` would query each other forever.
+- EU → FE: nothing to do; GTCEu's `EUToFEProvider` (`nativeEUToFE`, default on) gives FE blocks an EU
+  capability, so outputs and cables push into them. Pull-based FE pipes can't extract from GT machines.
+- No config toggle (the old implementation had `enableFEToEUConversion`).
+
+## Recipes, magical assembler, circuits — written, NOT yet compiled or tested
+
+- Recipes go through `IGTAddon.addRecipes` (`GTMQoLAddon`), which GTCEu runs into its runtime data pack
+  together with its own recipes, so no recipe JSON is datagen'd.
+- `MagicalAssembler`: recipe type `gtmqol:magical_assembler` (16/1 items, 4/1 fluids, default `VA[LV]`),
+  registered from GTCEu's `RegisterEvent<…, GTRecipeType>`; machines via GTCEu's `SimpleMachineBuilder`
+  (electric tiers), textures copied from `reference/`. Ported recipes from the old `QoLRecipes.kt`: the
+  machine's crafting recipe (`PGP/GMG/PCP`), circuit → universal circuit (circuit 5, 1 tick, 1 EU/t), produce
+  and copy creative data access hatch. Skipped because their outputs don't exist any more: overclocked ME
+  pattern buffer, smart assembly factory, DTFR, probable (im)probability devices, industrial LCR.
+- `UniversalCircuits`: `<tier>_universal_circuit` for every `GTValues.ALL_TIERS` tier, tagged
+  `gtceu:circuits/<tier>`, old textures.
+- `CircuitTags` (datagen, item tags): `forge:circuits/{basic,advanced,elite,ultimate}` includes
+  `#gtceu:circuits/{lv,mv,hv,ev}`, and each GT tag includes the matching `mekanism:*_control_circuit` as an
+  optional entry. Not mutual tag references, which would be a cycle. The old version rebound holder sets
+  at `TagsUpdatedEvent` and had a config toggle; static tags can't be toggled, so there is none.
+  ULV pairs with infused alloy the same way: `forge:alloys/advanced` includes `#gtceu:circuits/ulv`
+  (Mekanism recipes use both `forge:alloys/advanced` and `mekanism:alloys/infused`, the latter includes the
+  former), and `gtceu:circuits/ulv` includes `mekanism:alloy_infused`.
+- `MagicalAssemblerUI`: v8 recipe UI is ModularUI, configured through `GTRecipeType.UI(GTRecipeTypeUILayout.Builder)`.
+  Grids can be changed with `setLayoutGridBuilder` (`String[]`, `'s'` = slot), but every capability is
+  stacked vertically in `inputColumn`, so putting fluids *beside* items needs custom per-capability builders
+  (`setMachineCapabilityLayoutBuilder` / `setRecipeViewerLayoutCapabilityLayoutBuilder`): the item builder
+  puts a 4×4 item grid and a 1×4 fluid column in one row, the fluid builder skips IN; outputs use the defaults.
+- Mekanism: dev runtime only (`modLocalRuntime`, modmaven), nothing compiled against it.
+- `WirelessRecipes` (magical assembler, LV): GT energy input/output hatch + circuit 5 → wireless hatch;
+  wireless hatch + circuit 5 → 4 covers of the same direction; GT output hatch + 4 input covers →
+  accessor; screen cover + LV input cover → monitor. Steam is the same from GT's `STEAM_HATCH` (output
+  hatch uses circuit 6, as GT has no steam output hatch).
+
 ## Pending / open
 
 - Open question: should the accessor also use the rainbow overlay?
+- AE2 pattern encoding preferring universal circuits (old `EncodingHelper` mixin) — needs a mixin, waiting
+  for the user's go-ahead.
 
 ## User preferences not covered by `CLAUDE.md`
 

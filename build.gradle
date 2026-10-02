@@ -108,6 +108,7 @@ repositories {
         url = 'https://modmaven.dev/'
         content {
             includeGroup 'appeng'
+            includeGroup 'mekanism'
         }
     }
     maven {
@@ -197,6 +198,11 @@ dependencies {
     // Compile-only for KubeJSDataGenFix; still not a runtime dependency of ours.
     modCompileOnly "dev.latvian.mods:kubejs-forge:${project.kubejs_version}"
     modLocalRuntime "appeng:appliedenergistics2-forge:${project.ae2_version}"
+    // Optional: GT circuit tags and Mekanism's forge:circuits/* tags are merged (see CircuitTags). That is
+    // plain tag data, so nothing is compiled against Mekanism; it's only in the dev runs for testing.
+    modLocalRuntime("mekanism:Mekanism:${project.minecraft_version}-${project.mekanism_version}") {
+        transitive = false
+    }
     // Block info overlay; GTCEu has its own Jade plugin (recipe progress, energy).
     modLocalRuntime "maven.modrinth:jade:${project.jade_version}"
     // Optional: wireless networks are shared per FTB team when it is installed. We compile against
