@@ -569,8 +569,10 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
   UI: a "×2" left configurator opening a popup (toggle + limit), added by `@ModifyReturnValue` on
   `getPanelBuilder` (`SmartDoubling.addConfigurator`). Lang keys registered in `AE2Machines`.
 - ME dual parts (`AEDualParts`, LuV, written, not built or tested): `me_dual_input` (extends the stocking bus, adds a
-  stocking fluid list; fluids are configured in a sub-panel opened by an "F" left configurator because
-  `AEConfigWidget` uses fixed action names) and `me_dual_output` (extends the output bus, adds a fluid buffer;
+  stocking fluid list; main UI has items on the left, fluids on the right. `FluidConfigWidget` is a trimmed copy
+  of GTCEu's `AEConfigWidget` with prefixed sync names, because the original's fixed action names collide when two
+  sit in one panel; resync it if GTCEu changes the widget. The settings popup has item and fluid columns, with
+  separate min stack size / ticks per cycle for fluids) and `me_dual_output` (extends the output bus, adds a fluid buffer;
   autoIO inserts into the network every tick instead of every `updateIntervals`; UI shows items only).
   Recipes: ME assembler (assembler if `ae2.processing` is off), stocking bus + stocking hatch / output bus +
   output hatch + 1000 mB glue + 144 mB (1 L) soldering alloy. Data stick shares the "MEInputBus" key, fluids only paste
