@@ -16,6 +16,7 @@
     "MachineBuilderMixin",
     "ManualCompressionMixin",
     "MEPatternBufferPartMachineMixin",
+    "MEPatternBufferReturnMixin",
     "OverclockingLogicMixin",
     "RecipeRemovalMixin",
     "SimpleSteamMachineMixin",

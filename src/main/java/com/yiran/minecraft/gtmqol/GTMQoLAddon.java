@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBu
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
+import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
@@ -105,6 +106,7 @@ public final class GTMQoLAddon implements IGTAddon {
         if (GTCEu.Mods.isAE2Loaded()) {
             if (config.ae2.overclockedPatternBuffer) AE2Machines.addRecipes(provider);
             if (config.ae2.processing) AEProcessing.addRecipes(provider);
+            if (config.ae2.dualHatches) AEDualParts.addRecipes(provider, config.ae2.processing);
         }
     }
 }

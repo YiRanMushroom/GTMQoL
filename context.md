@@ -206,7 +206,8 @@ false; registers `gtmqol:runtime_single_block` and `gtmqol:runtime_multiblock`, 
   `GTSingleblockMachinePanelsMixin`), `fluidTanks`, `noOutputLimits` (`GTMachinesMixin`/`GTMultiMachinesMixin`
   call the original), `optionalLargeBoilerParts`.
 - `overclocking.*`: see Overclocking.
-- `ae2.*`: `overclockedPatternBuffer`, `processing` (`AEProcessing`).
+- `ae2.*`: `overclockedPatternBuffer`, `processing` (`AEProcessing`), `dualHatches` (`AEDualParts`),
+  `patternBufferReturn` (runtime-read, no restart).
 - `misc.feInput`.
 - `voidMiner.dimensionMapping` (not a toggle).
 
@@ -567,6 +568,17 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
   one's inputs (`@ModifyArg` on both `InternalSlot.pushPattern`). The user said this unwrap is required.
   UI: a "×2" left configurator opening a popup (toggle + limit), added by `@ModifyReturnValue` on
   `getPanelBuilder` (`SmartDoubling.addConfigurator`). Lang keys registered in `AE2Machines`.
+- ME dual parts (`AEDualParts`, LuV, written, not built or tested): `me_dual_input` (extends the stocking bus, adds a
+  stocking fluid list; fluids are configured in a sub-panel opened by an "F" left configurator because
+  `AEConfigWidget` uses fixed action names) and `me_dual_output` (extends the output bus, adds a fluid buffer;
+  autoIO inserts into the network every tick instead of every `updateIntervals`; UI shows items only).
+  Recipes: ME assembler (assembler if `ae2.processing` is off), stocking bus + stocking hatch / output bus +
+  output hatch + 1000 mB glue + 144 mB (1 L) soldering alloy. Data stick shares the "MEInputBus" key, fluids only paste
+  between duals.
+- Pattern buffer return (`PatternBufferReturn`, `MEPatternBufferReturnMixin`): an extra OUT `RecipeHandlerList`
+  (HIGHEST priority, undyed) added to `getRecipeHandlers` once and cached (identity matters). It inserts every
+  output of the multiblock into the network (AE2 hands it to waiting crafting CPUs); if the network refuses,
+  the other output parts get it. Per-buffer toggle (left configurator "ME", default on).
 - Versions are constrained by GTCEu's JEI mixins: JEI stays 15.20.0.115, so EAP stays 1.6.1 (see
   `gradle.properties`).
 - Known, ignored for now: a JVM access violation (C2 JIT, `InventoryChangeTrigger`) once while picking up a

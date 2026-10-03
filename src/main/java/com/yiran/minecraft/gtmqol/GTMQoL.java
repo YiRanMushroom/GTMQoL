@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
+import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.data.tag.CircuitTags;
@@ -69,6 +70,8 @@ public final class GTMQoL {
                 AEProcessing.initRecipeTypes();
                 AEProcessing.initMachines();
             }
+            if (config.ae2.dualHatches) AEDualParts.init();
+            if (config.ae2.patternBufferReturn) AEDualParts.initLang();
         }
         // do not run integration tests in data generation, They are only for testing in a running game.
         if (config.integrationTests.enabled && !DatagenModLoader.isRunningDataGen()) {
