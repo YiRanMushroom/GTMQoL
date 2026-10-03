@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-02T12:12:45.2065928	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.21.1	2026-10-03T15:11:04.058553	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
 e61d13dc7f445fd39b88c0d72baabebd58c467a5 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
 e56ce4c77d68a08637181b48d3164a158cc4a89d assets/gtmqol/blockstates/ev_magical_assembler.json
 95861b8025db09b9e60dcb1943809574b7a1f462 assets/gtmqol/blockstates/ev_me_assembler.json
@@ -132,6 +132,7 @@ aacee5d7d6ffe89416a8d5f073a991f602333c8b assets/gtmqol/blockstates/uxv_me_circui
 b743867aded2ada543beb142be1ec8ae65da6f63 assets/gtmqol/blockstates/uxv_wireless_energy_accessor.json
 dfedf03abc814dc86d0f3a57811b5c19b576f1ae assets/gtmqol/blockstates/uxv_wireless_energy_input_hatch.json
 06ef0fc0a793c999d9e696757d90f9360aa36671 assets/gtmqol/blockstates/uxv_wireless_energy_output_hatch.json
+cd1660b9869457d2b5cfff3527d483d277579cab assets/gtmqol/blockstates/void_miner.json
 fc528f1d4de00e4a342ed0a06eef6d7118f1e01f assets/gtmqol/blockstates/wireless_energy_monitor.json
 aca98a7ff66b618550bdf4c3a5b261136fbad1fd assets/gtmqol/blockstates/wireless_steam_accessor.json
 2e82ada2357009506766303d34385202c9872a49 assets/gtmqol/blockstates/wireless_steam_input_hatch.json
@@ -143,8 +144,8 @@ e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circui
 674a583f2b29eee523d730ad4211c0134c9f8134 assets/gtmqol/blockstates/zpm_wireless_energy_accessor.json
 1136e3739fdb3b339bc80d9bedcd1bde88a780e9 assets/gtmqol/blockstates/zpm_wireless_energy_input_hatch.json
 a77ec21bfd8e4ba2dd87ea6bde687970c4039a69 assets/gtmqol/blockstates/zpm_wireless_energy_output_hatch.json
-67e83d721d7493beaf7dd8b4c4ba2167c62acc65 assets/gtmqol/lang/en_ud.json
-969eddb3d21613a86988389cc699e8fd97092715 assets/gtmqol/lang/en_us.json
+e12404e7633085d3d887c69738b58b24304c8318 assets/gtmqol/lang/en_ud.json
+9eb3108a197aa7f25f0ff4d5312b8d0f197efde6 assets/gtmqol/lang/en_us.json
 68508e04e98fb37278a58e6e9440ba6f5cf3d12a assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
 43e20a64b464684c43af6a30b86673d37ebca485 assets/gtmqol/models/block/machine/ev_magical_assembler.json
 4d8768c0d137d037f6b072fb3cb30868ef674bf3 assets/gtmqol/models/block/machine/ev_me_assembler.json
@@ -278,6 +279,7 @@ eeb265bc7c20d435fcce59a1d6785231aa78c164 assets/gtmqol/models/block/machine/uxv_
 85ace192c859ad96e1f0dc061ee1defc1173ee9a assets/gtmqol/models/block/machine/uxv_wireless_energy_accessor.json
 762646d8ed986873d4758af886821a81cfa8b4ad assets/gtmqol/models/block/machine/uxv_wireless_energy_input_hatch.json
 e3a3f812ca2687d871f30bcc3e9071e30b8139ee assets/gtmqol/models/block/machine/uxv_wireless_energy_output_hatch.json
+31bb84a44b90f411a9ec38573f164f7e17eff479 assets/gtmqol/models/block/machine/void_miner.json
 42e582bf31595d4a5341c372adc7c1a244d12f31 assets/gtmqol/models/block/machine/wireless_energy_monitor.json
 2d8b6f2bfa6d15a2aac4ea4762e74f6d5d7f0d80 assets/gtmqol/models/block/machine/wireless_steam_accessor.json
 857e1037edaa304e097ad02596b456730e30cb14 assets/gtmqol/models/block/machine/wireless_steam_input_hatch.json
@@ -473,6 +475,7 @@ c938c6e3a81587eea68db0384ed4fd623544952e assets/gtmqol/models/item/uxv_wireless_
 8b2048a623bd1ca289a42dd7a63a3dc9fbf920a4 assets/gtmqol/models/item/uxv_wireless_energy_output_cover.json
 1d0c3672c1210ce6ffe200751b43fad9e8eebd56 assets/gtmqol/models/item/uxv_wireless_energy_output_hatch.json
 f9cf145e57f047f3969a2e41ebe118f8f9b7d6b8 assets/gtmqol/models/item/very_simple_control_circuit.json
+341fad2e8e98bd5acfeb8486e39981574ba948d4 assets/gtmqol/models/item/void_miner.json
 136e064c13e0b3fda4ec9e499b0a07b725e7a856 assets/gtmqol/models/item/wireless_energy_monitor.json
 b4cdcc16dc19259982b49c597744d496d7bd45ed assets/gtmqol/models/item/wireless_steam_accessor.json
 8b2048a623bd1ca289a42dd7a63a3dc9fbf920a4 assets/gtmqol/models/item/wireless_steam_input_cover.json
