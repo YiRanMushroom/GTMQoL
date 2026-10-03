@@ -201,6 +201,16 @@ public final class GTMQoLConfig {
         @Configurable.Comment({ "ME Assembler, ME Circuit Slicer, silicon chips and the AE2 part recipes", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean processing = true;
+
+        @Configurable
+        @Configurable.Comment({ "ME Dual Input (stocking bus + hatch) and ME Dual Output (bus + hatch)", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean dualHatches = true;
+
+        @Configurable
+        @Configurable.Comment({ "Pattern buffers send the outputs of their multiblock straight to the ME network",
+                "(per-buffer switch in the GUI)", "Default: true" })
+        public boolean patternBufferReturn = true;
     }
 
     @Configurable
