@@ -1,0 +1,124 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtmqol:lp_steam_mixer",
+  "multipart": [
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_bronze",
+          "textures": {
+            "overlay_back": "gtceu:block/machines/mixer/overlay_back",
+            "overlay_front": "gtceu:block/machines/mixer/overlay_front",
+            "overlay_side": "gtceu:block/machines/mixer/overlay_side",
+            "overlay_top": "gtceu:block/machines/mixer/overlay_top"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "idle"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_bronze",
+          "textures": {
+            "overlay_back": "gtceu:block/machines/mixer/overlay_back_active",
+            "overlay_front": "gtceu:block/machines/mixer/overlay_front_active",
+            "overlay_side": "gtceu:block/machines/mixer/overlay_side_active",
+            "overlay_top": "gtceu:block/machines/mixer/overlay_top_active"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "working"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_bronze",
+          "textures": {
+            "overlay_back": "gtceu:block/machines/mixer/overlay_back_active",
+            "overlay_front": "gtceu:block/machines/mixer/overlay_front_active",
+            "overlay_side": "gtceu:block/machines/mixer/overlay_side_active",
+            "overlay_top": "gtceu:block/machines/mixer/overlay_top_active"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "waiting"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_bronze",
+          "textures": {
+            "overlay_back": "gtceu:block/machines/mixer/overlay_back",
+            "overlay_front": "gtceu:block/machines/mixer/overlay_front",
+            "overlay_side": "gtceu:block/machines/mixer/overlay_side",
+            "overlay_top": "gtceu:block/machines/mixer/overlay_top"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "suspend"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "x": 270
+      },
+      "when": {
+        "steam_vent": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "x": 90
+      },
+      "when": {
+        "steam_vent": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "y": 270
+      },
+      "when": {
+        "steam_vent": "left"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "y": 90
+      },
+      "when": {
+        "steam_vent": "right"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent"
+      },
+      "when": {
+        "steam_vent": "front"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "y": 180
+      },
+      "when": {
+        "steam_vent": "back"
+      }
+    }
+  ]
+}
