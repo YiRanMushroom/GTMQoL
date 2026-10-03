@@ -5,6 +5,9 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
 import com.gregtechceu.gtceu.integration.ae2.gui.AEConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingBusPartMachine;
@@ -16,6 +19,7 @@ import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -28,31 +32,44 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
-import com.mojang.blaze3d.platform.InputConstants;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
+import java.util.function.IntConsumer;
+import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 
 /**
- * ME stocking input bus and stocking input hatch in one. The item half is the stocking bus itself (its main UI);
- * the fluid half is a second stocking list with its own UI, opened from the left configurators. Auto pull, the
- * minimum stack size and the cycle time apply to both.
+ * ME stocking input bus and stocking input hatch in one. The item half is the stocking bus itself; the fluid half
+ * is a second stocking list. The main UI shows the item list on the left and the fluid list on the right. Auto
+ * pull applies to both, the minimum stack size and the cycle time are separate for items and fluids.
  */
 public class MEDualInputPartMachine extends MEStockingBusPartMachine {
 
+    public static final String ITEMS_KEY = "gtmqol.gui.dual_input.items";
     public static final String FLUIDS_KEY = "gtmqol.gui.dual_input.fluids";
 
     private final StockingFluidList fluidList;
     private Predicate<GenericStack> fluidPullTest = $ -> false;
+    // The item side is the stocking bus's own minStackSize / ticksPerCycle.
+    @SaveField
+    private int fluidMinStackSize = 1;
+    @SaveField
+    private int fluidTicksPerCycle = 40;
 
     public MEDualInputPartMachine(BlockEntityCreationInfo info) {
         super(info);
@@ -66,21 +83,23 @@ public class MEDualInputPartMachine extends MEStockingBusPartMachine {
     @Override
     public void autoIO() {
         super.autoIO();
-        if (isAutoPull() && getOffsetTimer() % getTicksPerCycle() == 0) {
-            refreshFluids();
+        if (fluidTicksPerCycle <= 0) fluidTicksPerCycle = 40;
+        if (getOffsetTimer() % fluidTicksPerCycle == 0) {
+            if (isAutoPull()) refreshFluids();
+            syncFluids();
         }
     }
 
-    @Override
-    protected void syncME() {
-        super.syncME();
-        MEStorage networkInv = getMainNode().getGrid().getStorageService().getInventory();
+    private void syncFluids() {
+        IGrid grid = getMainNode().getGrid();
+        if (grid == null) return;
+        MEStorage networkInv = grid.getStorageService().getInventory();
         for (ExportOnlyAEFluidSlot slot : fluidList.getInventory()) {
             var config = slot.getConfig();
             if (config != null) {
                 var key = config.what();
                 long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                if (extracted >= getMinStackSize()) {
+                if (extracted >= fluidMinStackSize) {
                     slot.setStock(new GenericStack(key, extracted));
                     continue;
                 }
@@ -123,7 +142,7 @@ public class MEDualInputPartMachine extends MEStockingBusPartMachine {
             if (amount <= 0 || !(what instanceof AEFluidKey)) continue;
             if (networkStorage.extract(what, amount, Actionable.SIMULATE, actionSource) == 0) continue;
             if (fluidPullTest != null && !fluidPullTest.test(new GenericStack(what, amount))) continue;
-            if (amount >= getMinStackSize()) {
+            if (amount >= fluidMinStackSize) {
                 if (top.size() < CONFIG_SIZE) {
                     top.offer(entry);
                 } else if (amount > top.peek().getLongValue()) {
@@ -216,60 +235,104 @@ public class MEDualInputPartMachine extends MEStockingBusPartMachine {
     // ********** GUI ***********//
     ///////////////////////////////
 
-    // AEConfigWidget talks over fixed action names ("ae_config_set", ...), so the fluid list can't share a
-    // PanelSyncManager with the item list. It gets its own panel, and with that its own manager.
+    // IMEStockingPart#getPanelBuilder with the settings popup split into an item and a fluid column.
     @Override
     public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var builder = super.getPanelBuilder(data, syncManager, settings);
-        IPanelHandler panelHandler = syncManager.syncedPanel("gtmqol_dual_fluids", true, (sm, handler) -> {
-            registerFluidActions(sm);
-            return PopupPanel.createPopupPanel("gtmqol_dual_fluids_panel", 160, 112)
-                    .child(Flow.col()
-                            .coverChildren()
-                            .child(Text.lang(FLUIDS_KEY).asWidget().marginBottom(4))
-                            .child(new AEConfigWidget(fluidList, CONFIG_SIZE, true)
-                                    .syncManager(sm)
-                                    .size(8 * 18, 2 * (18 * 2 + 2)))
-                            .margin(5));
-        });
-        var left = builder.leftConfigurators();
-        return builder.leftConfigurators(left.andThen(f -> f.child(new ButtonWidget<>()
-                .size(18)
-                .onMousePressed((context, b) -> {
-                    if (b == InputConstants.MOUSE_BUTTON_LEFT) {
-                        panelHandler.openPanel();
-                        return true;
-                    }
-                    return false;
-                })
-                .overlay(Text.str("F").asIcon().size(16))
-                .tooltip(new RichTooltip().addLine(Text.lang(FLUIDS_KEY))))));
+        IPanelHandler settingsPanelHandler = syncManager.syncedPanel("stocking_settings", true,
+                (sm, sh) -> PopupPanel.createPopupPanel("stocking_settings_panel", 290, 90)
+                        .child(Flow.row()
+                                .coverChildren()
+                                .child(settingsColumn(ITEMS_KEY, this::getMinStackSize, this::setMinStackSize,
+                                        this::getTicksPerCycle, this::setTicksPerCycle).marginRight(10))
+                                .child(settingsColumn(FLUIDS_KEY, () -> fluidMinStackSize,
+                                        size -> fluidMinStackSize = size, () -> fluidTicksPerCycle,
+                                        ticks -> fluidTicksPerCycle = ticks))
+                                .margin(5)));
+
+        return MachineUIPanelBuilder.panelBuilder(this.self())
+                .rightConfigurators(f -> f
+                        .child(new ToggleButton()
+                                .value(new BooleanSyncValue(this::isAutoPull, this::setAutoPull).allowC2S())
+                                .stateOverlay(GTGuiTextures.BUTTON_AUTO_PULL)
+                                .tooltipAutoUpdate(true)
+                                .tooltipBuilder(r -> r.addLine(Text.lang("gtceu.gui.me_network.auto_pull_toggle"))))
+                        .child(new ButtonWidget<>()
+                                .size(18)
+                                .onMousePressed((context, b) -> {
+                                    settingsPanelHandler.openPanel();
+                                    return true;
+                                })
+                                .overlay(new ItemDrawable(GTItems.TOOL_DATA_STICK.asItem()).asIcon().size(16))
+                                .tooltip(new RichTooltip()
+                                        .addLine(Text.lang("gtceu.gui.me_network.stocking_settings")))));
     }
 
-    // MEInputHatchPartMachine#registerConfigActions, on our list.
+    private static Flow settingsColumn(String titleKey, IntSupplier minStack, IntConsumer setMinStack,
+                                       IntSupplier ticks, IntConsumer setTicks) {
+        return Flow.col()
+                .coverChildren()
+                .child(Text.lang(titleKey).asWidget().marginBottom(2))
+                .child(Text.lang("gtceu.gui.me_network.min_stack_size").asWidget())
+                .child(new TextFieldWidget()
+                        .size(120, 18)
+                        .value(SyncHandlers.intNumber(minStack, setMinStack).allowC2S())
+                        .setNumbers(1, Integer.MAX_VALUE))
+                .child(Text.lang("gtceu.gui.me_network.ticks_per_cycle").asWidget())
+                .child(new TextFieldWidget()
+                        .size(120, 18)
+                        .value(SyncHandlers.intNumber(ticks, setTicks).allowC2S())
+                        .setNumbers(1, 200));
+    }
+
+    // Items on the left, fluids on the right. Both lists are AEConfigWidgets, but the fluid one is our copy with
+    // its own sync names, see FluidConfigWidget.
+    @Override
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        BooleanSyncValue isOnlineValue = new BooleanSyncValue(this::isOnline, this::setOnline);
+        syncManager.syncValue("is_online", isOnlineValue);
+
+        registerConfigActions(syncManager);
+        registerFluidActions(syncManager);
+
+        var flow = Flow.col().coverChildren();
+        flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
+                Component.translatable("gtceu.gui.me_network.online") :
+                Component.translatable("gtceu.gui.me_network.offline"))
+                .asWidget().marginTop(2).marginBottom(4));
+        flow.child(Flow.row()
+                .coverChildren()
+                .child(Flow.col()
+                        .coverChildren()
+                        .child(Text.lang(ITEMS_KEY).asWidget().marginBottom(2))
+                        .child(new AEConfigWidget(getSlotList(), CONFIG_SIZE, false)
+                                .syncManager(syncManager)
+                                .size(8 * 18, 2 * (18 * 2 + 2)))
+                        .marginRight(8))
+                .child(Flow.col()
+                        .coverChildren()
+                        .child(Text.lang(FLUIDS_KEY).asWidget().marginBottom(2))
+                        .child(new FluidConfigWidget(fluidList, CONFIG_SIZE, this::isAutoPull)
+                                .syncManager(syncManager)
+                                .size(8 * 18, 2 * (18 * 2 + 2)))));
+        mainWidget.child(flow.center());
+    }
+
+    // MEInputHatchPartMachine#registerConfigActions, on our list, with FluidConfigWidget's names.
     private void registerFluidActions(PanelSyncManager sm) {
-        sm.registerServerSyncedAction("ae_config_set", packet -> {
+        sm.registerServerSyncedAction(FluidConfigWidget.SET, packet -> {
             int index = packet.readVarInt();
             if (index < 0 || index >= CONFIG_SIZE) return;
             ItemStack held = sm.getPlayer().containerMenu.getCarried();
             FluidUtil.getFluidContained(held)
                     .ifPresent(fluid -> fluidList.getInventory()[index].setConfig(AEUtil.fromFluidStack(fluid)));
         });
-        sm.registerServerSyncedAction("ae_config_clear", packet -> {
+        sm.registerServerSyncedAction(FluidConfigWidget.CLEAR, packet -> {
             int index = packet.readVarInt();
             if (index < 0 || index >= CONFIG_SIZE) return;
             fluidList.getInventory()[index].setConfig(null);
         });
-        sm.registerServerSyncedAction("ae_config_amount", packet -> {
-            int index = packet.readVarInt();
-            long amount = packet.readVarLong();
-            if (index < 0 || index >= CONFIG_SIZE) return;
-            var slot = fluidList.getInventory()[index];
-            if (slot.getConfig() != null && amount > 0) {
-                slot.setConfig(ExportOnlyAESlot.copy(slot.getConfig(), amount));
-            }
-        });
-        sm.registerServerSyncedAction("ae_config_set_ghost", packet -> {
+        sm.registerServerSyncedAction(FluidConfigWidget.SET_GHOST, packet -> {
             int index = packet.readVarInt();
             if (index < 0 || index >= CONFIG_SIZE) return;
             if (packet.readBoolean()) {

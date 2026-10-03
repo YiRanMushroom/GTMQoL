@@ -61,7 +61,8 @@ public final class AEDualParts {
                         Component.translatable("gtceu.part_sharing.enabled"))
                 .register();
 
-        GTMQoLAddon.registrate().addRawLang(MEDualInputPartMachine.FLUIDS_KEY, "Fluid Configuration");
+        GTMQoLAddon.registrate().addRawLang(MEDualInputPartMachine.FLUIDS_KEY, "Fluids");
+        GTMQoLAddon.registrate().addRawLang(MEDualInputPartMachine.ITEMS_KEY, "Items");
     }
 
     public static void addRecipes(RecipeOutput provider, boolean meAssembler) {
