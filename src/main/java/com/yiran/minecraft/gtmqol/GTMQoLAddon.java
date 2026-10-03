@@ -12,17 +12,20 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.yiran.minecraft.gtmqol.ae2.AE2Machines;
-import com.yiran.minecraft.gtmqol.ae2.AEProcessing;
-import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
-import com.yiran.minecraft.gtmqol.circuit.ControlCircuits;
-import com.yiran.minecraft.gtmqol.steam.AdvancedSteamMachines;
-import com.yiran.minecraft.gtmqol.generation.GTMQoLMachineBuilder;
-import com.yiran.minecraft.gtmqol.generation.GTMQoLMultiblockBuilder;
-import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
-import com.yiran.minecraft.gtmqol.modular.ModularMachines;
-import com.yiran.minecraft.gtmqol.multiblock.GTMQoLMultiblocks;
-import com.yiran.minecraft.gtmqol.wireless.WirelessRecipes;
+import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
+import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
+import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
+import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
+import com.yiran.minecraft.gtmqol.data.recipe.MiscRecipes;
+import com.yiran.minecraft.gtmqol.common.steam.AdvancedSteamMachines;
+import com.yiran.minecraft.gtmqol.data.recipe.EarlyGameRecipes;
+import com.yiran.minecraft.gtmqol.api.generation.GTMQoLMachineBuilder;
+import com.yiran.minecraft.gtmqol.api.generation.GTMQoLMultiblockBuilder;
+import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
+import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
+import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
+import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
+import com.yiran.minecraft.gtmqol.data.recipe.WirelessRecipes;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.network.chat.Component;
@@ -91,15 +94,19 @@ public final class GTMQoLAddon implements IGTAddon {
     /** GTCEu generates these into its runtime data pack along with its own recipes. */
     @Override
     public void addRecipes(Consumer<FinishedRecipe> provider) {
+        GTMQoLConfig config = GTMQoLConfig.get();
         MagicalAssembler.addRecipes(provider);
-        WirelessRecipes.addRecipes(provider);
+        if (config.wireless.energy) WirelessRecipes.addEnergyRecipes(provider);
+        if (config.wireless.steam) WirelessRecipes.addSteamRecipes(provider);
         ModularMachines.addRecipes(provider);
         GTMQoLMultiblocks.addRecipes(provider);
-        AdvancedSteamMachines.addRecipes(provider);
-        ControlCircuits.addRecipes(provider);
+        if (config.machines.advancedSteamMachines) AdvancedSteamMachines.addRecipes(provider);
+        if (config.circuits.controlCircuits) ControlCircuits.addRecipes(provider);
+        if (config.recipes.miscRecipes) MiscRecipes.addRecipes(provider);
+        if (config.recipes.earlyGame) EarlyGameRecipes.addRecipes(provider);
         if (GTCEu.Mods.isAE2Loaded()) {
-            AE2Machines.addRecipes(provider);
-            AEProcessing.addRecipes(provider);
+            if (config.ae2.overclockedPatternBuffer) AE2Machines.addRecipes(provider);
+            if (config.ae2.processing) AEProcessing.addRecipes(provider);
         }
     }
 
