@@ -1,8 +1,9 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.yiran.minecraft.gtmqol.mixin",
+  "package": "com.yiran.minecraft.gtmqol.core.mixins",
   "compatibilityLevel": "JAVA_21",
+  "plugin": "com.yiran.minecraft.gtmqol.core.GTMQoLMixinPlugin",
   "mixins": [
     "FusionReactorMachineMixin",
     "GTMachinesMixin",
@@ -13,6 +14,7 @@
     "GTSingleblockMachinePanelsMixin",
     "MachineBuilderAccessor",
     "MachineBuilderMixin",
+    "ManualCompressionMixin",
     "MEPatternBufferPartMachineMixin",
     "OverclockingLogicMixin",
     "RecipeRemovalMixin",

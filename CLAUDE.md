@@ -145,7 +145,7 @@ net.minecraft.client.gui.Font$StringRenderOutput`。改这个值会让 Loom 重�
 - mixin config 在任何模组构造前加载，toma 的 `GTMQoLConfig` 这时还读不到。启动期开关放
   `config/gtmqol-early.properties`，用 `java.util.Properties` 读（和 GTCEu 的 `GTMixinPlugin` / `gtceu-early.properties` 一样）。
   `@Overwrite` 之类不能运行时关的改动，要么做成这样的启动期开关，要么就不给开关。
-- 绕过 GTCEu 自身 bug 的 mixin 放 `mixin/gtceufix/`，和功能 mixin 分开，上游修了就删。
+- 绕过 GTCEu 自身 bug 的 mixin 放 `core/mixins/gtceufix/`，和功能 mixin 分开，上游修了就删。
 - mixin 包（config 里的 `package`）下只能放 mixin 类，非 mixin 的辅助代码放外面（例如 `recipedb/`），否则加载时报错。
 - 私有/包私有类型：`@Accessor` 按字段描述符匹配，返回类型不能用 `Object` 代替不可见的类型。对象本身可以先转成
   `Object` 再强转成 accessor 接口（`@Mixin(targets = "...$Inner")`）。
@@ -153,20 +153,20 @@ net.minecraft.client.gui.Font$StringRenderOutput`。改这个值会让 Loom 重�
 
 # Mekanism（可选，仅 dev 运行时）
 
-只通过 tag 数据和它联动（`circuit/CircuitTags`），不编译依赖它，所以只有 `modLocalRuntime`（modmaven，
+只通过 tag 数据和它联动（`data/tag/CircuitTags`），不编译依赖它，所以只有 `modLocalRuntime`（modmaven，
 `mekanism:Mekanism:<mc>-<version>`），不写进 `mods.toml`。
 
 # AE2（可选依赖）
 
 `modCompileOnly` + `modLocalRuntime`，不写进 `mods.toml`。编译期需要它，是因为 GTCEu 的样板总成
-（`MEPatternBufferPartMachine`）实现了 AE2 接口，引用它的代码（`recipedb/PatternBufferIngredients`）没有 AE2 就编译不过
+（`MEPatternBufferPartMachine`）实现了 AE2 接口，引用它的代码（`common/recipedb/PatternBufferIngredients`）没有 AE2 就编译不过
 （`cannot access ICraftingProvider`）。运行时只在 `GTCEu.Mods.isAE2Loaded()` 时才碰这些类。
 
 # ExtendedAE Plus（可选依赖，smart doubling）
 
 `modCompileOnly` + `modLocalRuntime`，Modrinth maven（`maven.modrinth:extendedae-plus`），不写进 `mods.toml`。
 它 require ExtendedAE，ExtendedAE 又 require GuideMe 和 Glodium，都 `modLocalRuntime` + `transitive = false`。
-相关 mixin 在 `gtmqol.eap.mixins.json`，由 `ae2/EAPMixinPlugin` 按 `LoadingModList` 是否有 `extendedae_plus` 决定。
+相关 mixin 在 `gtmqol.eap.mixins.json`，由 `core/EAPMixinPlugin` 按 `LoadingModList` 是否有 `extendedae_plus` 决定。
 
 版本被 GTCEu 的 JEI mixin 卡住：GTCEu v8 的 `jei.FluidHelperMixin` 在新 JEI（15.59）上报 `Invalid descriptor`，
 JEI 15.62+ 还依赖没发布到 BlameJared 的 `net.mezzdev`。所以 JEI 固定 15.20.0.115（和 GTCEu 一致）；EAP 1.6.1-f1
