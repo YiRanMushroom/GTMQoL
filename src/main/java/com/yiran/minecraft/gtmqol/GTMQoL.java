@@ -7,24 +7,25 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.yiran.minecraft.gtmqol.ae2.AE2Machines;
-import com.yiran.minecraft.gtmqol.ae2.AEProcessing;
-import com.yiran.minecraft.gtmqol.assembler.MagicalAssembler;
-import com.yiran.minecraft.gtmqol.circuit.CircuitTags;
-import com.yiran.minecraft.gtmqol.circuit.ControlCircuits;
-import com.yiran.minecraft.gtmqol.circuit.UniversalCircuits;
+import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
+import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
+import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
+import com.yiran.minecraft.gtmqol.data.tag.CircuitTags;
+import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
+import com.yiran.minecraft.gtmqol.common.circuit.UniversalCircuits;
 import com.yiran.minecraft.gtmqol.client.GTMQoLClient;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
-import com.yiran.minecraft.gtmqol.fe.FEInputProvider;
-import com.yiran.minecraft.gtmqol.generation.RuntimeGeneration;
-import com.yiran.minecraft.gtmqol.integration.IntegrationTests;
+import com.yiran.minecraft.gtmqol.common.fe.FEInputProvider;
+import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
+import com.yiran.minecraft.gtmqol.common.test.IntegrationTests;
 import com.yiran.minecraft.gtmqol.integration.KubeJSDataGenFix;
-import com.yiran.minecraft.gtmqol.multiblock.GTMQoLMultiblocks;
-import com.yiran.minecraft.gtmqol.steam.AdvancedSteamMachines;
-import com.yiran.minecraft.gtmqol.wireless.WirelessCovers;
-import com.yiran.minecraft.gtmqol.wireless.WirelessNetworks;
-import com.yiran.minecraft.gtmqol.wireless.energy.WirelessEnergyMachines;
-import com.yiran.minecraft.gtmqol.wireless.steam.WirelessSteamMachines;
+import com.yiran.minecraft.gtmqol.data.recipe.MiscRecipes;
+import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
+import com.yiran.minecraft.gtmqol.common.steam.AdvancedSteamMachines;
+import com.yiran.minecraft.gtmqol.common.wireless.WirelessCovers;
+import com.yiran.minecraft.gtmqol.common.wireless.WirelessNetworks;
+import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
+import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -46,14 +47,14 @@ public final class GTMQoL {
 
     public GTMQoL(FMLJavaModLoadingContext context) {
         IEventBus modBus = context.getModEventBus();
+        GTMQoLConfig config = GTMQoLConfig.get();
         GTMQoLAddon.registrate().registerEventListeners(modBus);
-        GTMQoLConfig.init();
         WirelessNetworks.init();
-        FEInputProvider.init();
-        UniversalCircuits.init();
-        ControlCircuits.init();
-        CircuitTags.init();
-        if (GTCEu.Mods.isAE2Loaded()) {
+        if (config.misc.feInput) FEInputProvider.init();
+        if (config.circuits.universalCircuits) UniversalCircuits.init();
+        if (config.circuits.controlCircuits) ControlCircuits.init();
+        if (config.circuits.mekanismCircuitTags) CircuitTags.init();
+        if (GTCEu.Mods.isAE2Loaded() && config.ae2.processing) {
             AEProcessing.initItems();
         }
         modBus.addGenericListener(GTRecipeType.class, this::onRegisterRecipeTypes);
@@ -94,7 +95,7 @@ public final class GTMQoL {
 
     private void onRegisterRecipeTypes(GTCEuAPI.RegisterEvent<ResourceLocation, GTRecipeType> event) {
         MagicalAssembler.initRecipeType();
-        if (GTCEu.Mods.isAE2Loaded()) {
+        if (GTCEu.Mods.isAE2Loaded() && GTMQoLConfig.get().ae2.processing) {
             AEProcessing.initRecipeTypes();
         }
     }
@@ -104,7 +105,9 @@ public final class GTMQoL {
      * is deprecated.
      */
     private void onRegisterCovers(GTCEuAPI.RegisterEvent<ResourceLocation, CoverDefinition> event) {
-        WirelessCovers.init();
+        GTMQoLConfig config = GTMQoLConfig.get();
+        if (config.wireless.energy) WirelessCovers.initEnergy();
+        if (config.wireless.steam) WirelessCovers.initSteam();
     }
 
     /**
@@ -114,17 +117,18 @@ public final class GTMQoL {
      *
      */
     private void onRegisterMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
+        GTMQoLConfig config = GTMQoLConfig.get();
         MagicalAssembler.initMachines();
         GTMQoLMultiblocks.init();
-        AdvancedSteamMachines.init();
-        WirelessSteamMachines.init();
-        WirelessEnergyMachines.init();
+        if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
+        if (config.wireless.steam) WirelessSteamMachines.init();
+        if (config.wireless.energy) WirelessEnergyMachines.init();
         if (GTCEu.Mods.isAE2Loaded()) {
-            AE2Machines.init();
-            AEProcessing.initMachines();
+            if (config.ae2.overclockedPatternBuffer) AE2Machines.init();
+            if (config.ae2.processing) AEProcessing.initMachines();
         }
         // do not run integration tests in data generation, They are only for testing in a running game.
-        if (GTMQoLConfig.INSTANCE.integrationTests.enabled && !FMLLoader.getLaunchHandler().isData()) {
+        if (config.integrationTests.enabled && !FMLLoader.getLaunchHandler().isData()) {
             IntegrationTests.registerExampleMachines();
         }
     }

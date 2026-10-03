@@ -22,32 +22,37 @@ src/main/java/com/yiran/minecraft/gtmqol/
 ├── GTMQoL.java            entry point, GTMQoL.id(), event wiring
 ├── GTMQoLAddon.java       @GTAddon, owns the GTRegistrate, creative tab, machine()/multiblock() helpers,
 │                          addRecipes
-├── ae2/                   pattern buffer abstraction, overclocked buffer, EAP smart doubling (AE2 only)
-├── assembler/MagicalAssembler.java  recipe type, tiered machines, its own recipes
-├── circuit/               UniversalCircuits, ControlCircuits (items), CircuitTags (GT ↔ Mekanism tags, datagen)
+├── api/generation/        runtime (dynamic) resource generation, opt-in per machine
 ├── client/                client-only init and renders (DTFR ring)
-├── config/GTMQoLConfig.java
-├── fe/FEInputProvider.java  FE input for every GT machine and cable
-├── generation/            runtime (dynamic) resource generation, opt-in per machine
-├── integration/           IntegrationTests (example machines), KubeJSDataGenFix
-├── mixin/                 MachineBuilder, GTMachineUtils, OverclockingLogic, GTRecipeViewerWidget,
-│   │                      fusion, multi smelter, tier skipping
-│   ├── recipedb/          RecipeDB grouped search (own config gtmqol.recipedb.mixins.json)
-│   ├── gtceufix/          workarounds for upstream bugs; delete once fixed upstream. BaseSchemaRendererMixin: MUI
-│   │                      computes the multiblock preview's GL viewport from MUI's own transform only, so in
-│   │                      EMI/JEI (pose-translated) it is drawn at the screen's top-left; now uses the graphics pose
-│   └── eap/               ExtendedAE Plus smart doubling (own config gtmqol.eap.mixins.json)
-├── modular/               modular multiblock versions of single-block machines
-├── multiblock/            Smart Assembly Factory, DTFR
-├── overclock/             replacement OC logics
-├── recipedb/              non-mixin side of the grouped search, RecipeDBMixinPlugin
-├── steam/                 advanced steam multiblocks, steam parallel hatch, steam magical assembler
-└── wireless/
-    ├── WirelessBindingTrait.java, WirelessNetworks.java, NetworkId.java, FTBTeamsCompat.java, IOStats.java
-    ├── WirelessCovers.java  cover definitions and items
-    ├── WirelessRecipes.java magical assembler recipes for every wireless part
-    ├── steam/             everything steam specific
-    └── energy/            everything EU specific
+├── common/                game content
+│   ├── assembler/MagicalAssembler.java  recipe type, tiered machines, its own recipes
+│   ├── circuit/           UniversalCircuits, ControlCircuits (items)
+│   ├── fe/FEInputProvider.java  FE input for every GT machine and cable
+│   ├── modular/           modular multiblock versions of single-block machines
+│   ├── multiblock/        Smart Assembly Factory, DTFR
+│   ├── overclock/         replacement OC logics
+│   ├── recipedb/          non-mixin side of the grouped search
+│   ├── steam/             advanced steam multiblocks, steam parallel hatch, steam magical assembler
+│   ├── test/              IntegrationTests (example machines)
+│   └── wireless/
+│       ├── WirelessBindingTrait.java, WirelessNetworks.java, NetworkId.java, FTBTeamsCompat.java, IOStats.java
+│       ├── WirelessCovers.java  cover definitions and items
+│       ├── steam/         everything steam specific
+│       └── energy/        everything EU specific
+├── config/                GTMQoLConfig (toma, runtime toggles), EarlyConfig (gtmqol-early.properties)
+├── core/                  GTMQoLMixinPlugin, RecipeDBMixinPlugin, EAPMixinPlugin
+│   └── mixins/            MachineBuilder, GTMachineUtils, OverclockingLogic, GTRecipeViewerWidget,
+│       │                  fusion, multi smelter, tier skipping, ManualCompression
+│       ├── recipedb/      RecipeDB grouped search (own config gtmqol.recipedb.mixins.json)
+│       ├── gtceufix/      workarounds for upstream bugs; delete once fixed upstream. BaseSchemaRendererMixin: MUI
+│       │                  computes the multiblock preview's GL viewport from MUI's own transform only, so in
+│       │                  EMI/JEI (pose-translated) it is drawn at the screen's top-left; now uses the graphics pose
+│       └── eap/           ExtendedAE Plus smart doubling (own config gtmqol.eap.mixins.json)
+├── data/
+│   ├── recipe/            MiscRecipes, EarlyGameRecipes, WirelessRecipes (magical assembler recipes for every wireless part)
+│   └── tag/               CircuitTags (GT ↔ Mekanism tags, datagen)
+└── integration/           KubeJSDataGenFix; ae2/ (pattern buffer abstraction, overclocked buffer, ME machines,
+                           EAP smart doubling; AE2 only)
 ```
 
 Generated resources are committed under `src/generated/resources` (on the resources source set).
@@ -87,14 +92,24 @@ MachineDefinition>`), not in `IGTAddon.initializeAddon()`, which runs after the 
 ## Config
 
 `GTMQoLConfig` uses toma's `Configuration` library (YAML, `config/gtmqol.yaml`), not `ForgeConfigSpec`,
-because values are needed during CONSTRUCT. Options: `modularMachines.enabled` (default true),
-`overclocking.*` (see Overclocking) and
-`integrationTests.enabled` (default false); the latter registers `gtmqol:runtime_single_block` and
-`gtmqol:runtime_multiblock`, never during datagen.
+because values are needed during CONSTRUCT. `GTMQoLConfig.get()` registers lazily on first use (mixins in
+GTCEu static initializers read it before this mod is constructed); during datagen it returns defaults
+(`FMLLoader.getLaunchHandler().isData()`) so every feature gets its lang/models/tags.
+
+Nearly all content has a toggle, default on, all restart-only: `machines.*` (smartAssemblyFactory,
+dimensionallyTranscendentFusionReactor, advancedSteamMachines), `modularMachines.enabled`, `wireless.{energy,steam}`,
+`circuits.*`, `recipes.{miscRecipes,earlyGame,keepManualCompression}`, `steamTweaks.*`, `overclocking.*` (fusion and
+tier skipping), `ae2.{overclockedPatternBuffer,processing}`, `misc.feInput`. `integrationTests.enabled` (default
+false) registers `gtmqol:runtime_single_block` and `gtmqol:runtime_multiblock`, never during datagen.
+Wireless networks/binding/stats always load (shared); machine registration is gated in `GTMQoL`'s listeners.
+
+Known limitation (user: ignore): `circuits.*` toggles don't remove the datagen'd static circuit tag JSONs.
 
 Mixin-time options can't use it (mixin configs load before mods). They go in
-`config/gtmqol-early.properties`, read by `recipedb/RecipeDBMixinPlugin` with `java.util.Properties`
-(same approach as GTCEu's `gtceu-early.properties`): `recipeDB.groupedSearch` (default true).
+`config/gtmqol-early.properties`, read by `config/EarlyConfig` with `java.util.Properties` (same approach as
+GTCEu's `gtceu-early.properties`): `recipeDB.groupedSearch` (default true, `core/RecipeDBMixinPlugin`) and
+`overclocking.overhaul` (default true, `core/GTMQoLMixinPlugin` skips `OverclockingLogicMixin`,
+`GTRecipeViewerWidgetMixin`, `GTRecipeModifiersMixin`). Other mixins always apply and check `GTMQoLConfig` at runtime.
 
 ## Wireless steam network
 
@@ -314,9 +329,20 @@ reference clone at `E:\code\Minecraft\gtnl-ref`, outside the repo), not a copy.
   Also `lp_/hp_steam_magical_assembler` (`registerSteamMachines` + `SimpleSteamMachine`, our magical
   assembler overlay; HP keeps GTCEu's steel theme like other HP single blocks). Recipes: LP steam magical
   assembler shaped (bronze hull, crafting tables); HP like GTCEu's steel upgrades; each multi in the magical
-  assembler (4 HP steam machines or 1 LV electric machine + 4 bronze gearbox + 8 bronze bricks + bronze
-  plates/gears + 4 ULV circuits, ULV EU/t, so the steam one can make them); parallel hatch from a steam
-  hatch + 2 bronze gearboxes + 4 LV circuits.
+  assembler (1 LP steam single block + 2 bronze gearbox + 4 bronze bricks + 8 bronze plates + 2 bronze gears,
+  no circuits, ULV EU/t, so the steam one can make them); parallel hatch from a steam hatch + 2 bronze
+  gearboxes + 4 LV circuits (user: no LV machines or circuits in the large steam multis).
+  The 14 bases GTCEu has no steam version of (bender … circuit assembler) get `gtmqol:lp_/hp_steam_<x>` via
+  `GTMachineUtils.registerSimpleSteamMachines` (GTCEu's overlay). LP: `PCP/XMX/PXP` (bronze plates, small bronze
+  pipes, bronze hull, `C` a per-machine key item; the circuit assembler's key is 1 LV circuit, the only
+  circuit, as the user asked); HP: GTCEu's steel upgrade layout `WSW/PMP/WWW`.
+- Steam single blocks have full IO: `SimpleSteamMachineMixin` also attaches persistent fluid tanks sized by the
+  recipe type (8 B, like LV). The input tank refuses steam (`setFilter`) and is attached with trait priority 2,
+  above the steam tank (also an IN `NotifiableFluidTank`): GTCEu's machine UI uses the first IN fluid handler
+  as the recipe slots and `getTraits` is sorted by priority, otherwise it drew the steam tank (and a 2-input
+  mixer would index past its one slot). `GTMachinesMixin` / `GTMultiMachinesMixin` drop every
+  `addOutputLimit` in GTCEu's registration (steam macerator, LV–HV macerators, steam grinder, steam oven;
+  user wants byproducts everywhere). Generator output limits (in `GTMachineUtils`) are untouched.
 - `AdvancedSteamShapes`: generated once by a Python script from GTNL's `assets/sciencenotleisure/multiblock/
   large_steam_*.mbs` (format: `MBS1`, string table of int length + UTF-8, then rows of int indices;
   `shape[row top→bottom][slice front→back]`, strings along X, `~` controller, space any). Rows reversed to
@@ -333,12 +359,23 @@ reference clone at `E:\code\Minecraft\gtnl-ref`, outside the repo), not a copy.
   authors "Yiran, Frosty").
 - `MagicalAssemblerUI` builds the 4-slot fluid column from the first IN fluid handler. On a steam machine that
   handler is `SteamMachine.steamTank` (1 slot), so indexing slots 1–3 threw and the UI did not open on right
-  click; the column is now skipped when the handler is the steam tank (the steam one has no recipe fluid input).
+  click; the column is now skipped when the handler is the steam tank. With the mixin's input tank first, the
+  steam magical assembler now shows and uses the fluid column; the steam tank check is only a fallback.
 - Ghost circuit on steam: `SimpleSteamMachineMixin` attaches `ProgrammableCircuitSlotTrait` (as "circuit", like
   `SimpleTieredMachine`) to every steam single block, GTCEu's included; `GTSingleblockMachinePanelsMixin` turns
   trait configurators back on for the steam panel (`defaultSteamMachinePanelBuilder` disables them) so the slot
   shows; `SteamItemBusPartMachineMixin` re-enables the bus circuit slot GTCEu turns off (input bus only), which
-  gives steam multis ghost circuits through their input bus.
+  gives steam multis ghost circuits through their input bus. The constructor inject must be `<init>*`: plain
+  `<init>` only matched one of `SimpleSteamMachine`'s two constructors.
+- Early game (steam before LV): `GTMachineUtilsMixin` makes the large boiler's muffler and maintenance hatch
+  optional (the two `setExactLimit` in the `registerLargeBoiler` pattern lambda → `setMaxGlobalLimited`,
+  `require = 2`). `steam/EarlyGameRecipes`: ULV/LV machine casing + chest = bus, + glass = hatch, chest/glass on
+  top = input, below = output. `RecipeRemovalMixin` keeps `minecraft:glass` (sand smelting) out of gtceu's
+  `hardGlassRecipes` removals. Magical assembler: any sapling + sticky resin → rubber sapling.
+  `ManualCompressionMixin` (`recipes.keepManualCompression`) wraps every read of
+  `ConfigHolder$RecipeConfigs.disableManualCompression` (`RecipeAddition`, `RecipeRemoval.init`,
+  `MaterialRecipeHandler.processNugget/processBlock`, `OreRecipeHandler.processRawOre`) so 3x3/2x2
+  block/ingot/nugget/raw ore crafting stays. Setting the field from the constructor (the old approach) didn't stick.
 
 ## RecipeDB grouped search (`recipedb/`, `mixin/recipedb/`)
 
@@ -348,7 +385,7 @@ why most of them are obsolete in v8, in `docs/RECIPEDB_REFACTOR.md`. In short:
 - `fromHolder` is overwritten to tag each ingredient entry with its `RecipeHandlerList` group.
 - Pattern buffers are split per worker, with the circuit and shared inventories as catalysts.
 - `RecipeIterator`'s branch pushes are filtered to entries one group could supply together.
-- The whole set is gated by `RecipeDBMixinPlugin` (`recipeDB.groupedSearch` in
+- The whole set is gated by `core/RecipeDBMixinPlugin` (`recipeDB.groupedSearch` in
   `config/gtmqol-early.properties`, default true).
 - `lambda$getNext$0` (javac's default name) is the right target. AE2 is `modCompileOnly` because
   `PatternBufferIngredients` touches GTCEu's pattern buffer, which implements AE2 interfaces.
@@ -376,7 +413,7 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
   constructor, recipe types / machines from the GTCEu register events. Not ported: the sticky card and the
   oblivion singularity (electric implosion is gone). Machine names come from `SimpleMachineBuilder`'s
   `toEnglishName`, so they read "Me Assembler".
-- Smart doubling (ExtendedAE Plus, optional): `gtmqol.eap.mixins.json`, gated by `ae2/EAPMixinPlugin`
+- Smart doubling (ExtendedAE Plus, optional): `gtmqol.eap.mixins.json`, gated by `core/EAPMixinPlugin`
   (`LoadingModList` has `extendedae_plus`). `mixin/eap/MEPatternBufferSmartDoublingMixin` on GTCEu's buffer
   (so ours too) implements `ISmartDoublingHolder`, `@SaveField` toggle (default on) and limit (0 = none),
   copies them onto the slot patterns (`ISmartDoublingAwarePattern`, `PatternScaler.getComputedMul`) at
@@ -395,6 +432,16 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
 - Open question: should the accessor also use the rainbow overlay?
 - AE2 pattern encoding preferring universal circuits (old `EncodingHelper` mixin) — needs a mixin, waiting
   for the user's go-ahead.
+- Known bug, not fixed (user: leave it for now; workaround: don't reload client resources, restart if hit):
+  after a client resource reload (F3+T, resource pack / language / mipmap change) every GTCEu bronze/steel themed
+  UI (steam single blocks, steam generators) fails to open with `ClassCastException: IDrawable$2 (NONE) cannot
+  be cast to UITexture` in GTCEu `MachineUIPanel.<init>`. Seen on 1.21.1 in a pack (2026-10-02); dev only
+  loads themes once, so it looks fine. Cause is ModularUI: `ThemeManager` merges the java-registered theme into
+  a new `JsonBuilder` with `addAllOf` (shallow), then `parse` writes `background: "none"` (hover marker, when
+  `panel` has no hover theme) into the shared `panel` object, i.e. into GTCEu's registered `GTGuiTheme` JSON.
+  The next reload reads `"none"` as the panel background. Not checked whether 1.20.1's MUI build has the same
+  code. Possible fix: client mixin in `gtceufix/` wrapping that `jsonBuilder.addAllOf(builder)` to pass
+  `builder.getJson().deepCopy()`.
 - Done: jar naming is `gtmqol-<mod version>-<mc version>.jar` (currently `gtmqol-2.0.0-1.20.1.jar`).
   `archives_base_name=gtmqol`; `build.gradle` sets `archiveVersion` on every `AbstractArchiveTask`
   (including Loom's `remapJar`). `project.version` stays `mod_version` (2.0.0), which is what goes into

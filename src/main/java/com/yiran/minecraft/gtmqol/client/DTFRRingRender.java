@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
-import com.yiran.minecraft.gtmqol.multiblock.DTFRMachine;
+import com.yiran.minecraft.gtmqol.common.multiblock.DTFRMachine;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;

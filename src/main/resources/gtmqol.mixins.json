@@ -1,18 +1,22 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.yiran.minecraft.gtmqol.mixin",
+  "package": "com.yiran.minecraft.gtmqol.core.mixins",
+  "plugin": "com.yiran.minecraft.gtmqol.core.GTMQoLMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "FusionReactorMachineMixin",
+    "GTMachinesMixin",
     "GTMachineUtilsMixin",
     "GTMultiMachinesMixin",
     "GTRecipeModifiersMixin",
     "GTRecipeViewerWidgetMixin",
     "GTSingleblockMachinePanelsMixin",
     "MachineBuilderMixin",
+    "ManualCompressionMixin",
     "MEPatternBufferPartMachineMixin",
     "OverclockingLogicMixin",
+    "RecipeRemovalMixin",
     "SimpleSteamMachineMixin",
     "SteamItemBusPartMachineMixin",
     "WorkableElectricMultiblockMachineMixin"
