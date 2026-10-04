@@ -588,6 +588,16 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
 
 ## Pending / open
 
+- Fixed (gtceu bug, 2026-10-03): the ME stocking / plain ME input bus config UI (and our dual input) didn't
+  update while open, only after reopening. The server sent and the client received the packet, but the display
+  stayed old. Likely cause: `AEConfigSyncHandler.detectAndSendChanges` computes the per-slot `changed` flag and
+  updates its cache inside the `syncToClient` writer lambda, which runs at packet encode time; if encoding runs
+  it twice, the delivered packet has every flag false (`init` forces true, so opening was always right). Fix:
+  `gtceufix/AEConfigSyncHandlerMixin` (`@WrapMethod`, resend everything when anything changed); confirmed in
+  game, the encode-twice part itself unverified. Remove it once gtceu fixes this.
+- Fixed: the dual input's fluid config was lost on world reload because the fluid list was only `attachTrait`ed;
+  trait data needs `attachPersistentTrait(name, trait)`. (Not yet re-tested in game.)
+
 - Open question: should the accessor also use the rainbow overlay?
 - GTCEu v8 terminal (`TerminalBehavior`, not a bug of ours): Shift+right-click auto-build only works in creative,
   and only after the preview has been opened and closed once (right-click controller → right-click air → close;

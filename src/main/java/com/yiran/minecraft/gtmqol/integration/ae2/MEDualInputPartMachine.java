@@ -73,7 +73,9 @@ public class MEDualInputPartMachine extends MEStockingBusPartMachine {
 
     public MEDualInputPartMachine(BlockEntityCreationInfo info) {
         super(info);
-        this.fluidList = attachTrait(new StockingFluidList(CONFIG_SIZE));
+        this.fluidList = new StockingFluidList(CONFIG_SIZE);
+        // attachTrait alone doesn't save the trait's data (the config would be lost on reload).
+        attachPersistentTrait("fluid_config", fluidList);
     }
 
     /////////////////////////////////
@@ -294,7 +296,6 @@ public class MEDualInputPartMachine extends MEStockingBusPartMachine {
 
         registerConfigActions(syncManager);
         registerFluidActions(syncManager);
-
         var flow = Flow.col().coverChildren();
         flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
                 Component.translatable("gtceu.gui.me_network.online") :
