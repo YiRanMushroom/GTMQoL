@@ -144,10 +144,10 @@ public class FluidConfigWidget extends Widget<FluidConfigWidget>
 
     @Override
     public Result onMousePressed(int button) {
-        if (autoPull.getAsBoolean() || syncManager == null) return Result.IGNORE;
         double localX = getContext().getMouseX();
         double localY = getContext().getMouseY();
         int slotIndex = getSlotAtLocal(localX, localY);
+        if (autoPull.getAsBoolean() || syncManager == null) return Result.IGNORE;
         if (slotIndex < 0 || localY >= slotY(slotIndex) + CELL_SIZE) return Result.IGNORE;
 
         if (button == 1) {
