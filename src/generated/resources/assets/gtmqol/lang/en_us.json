@@ -1,5 +1,6 @@
 {
   "block.gtmqol.dimensionally_transcendent_fusion_reactor": "Dimensionally Transcendent Fusion Reactor",
+  "block.gtmqol.electric_implosion_compressor": "Electric Implosion Compressor",
   "block.gtmqol.ev_magical_assembler": "§5Advanced Magical Assembler III§r",
   "block.gtmqol.ev_me_assembler": "§5Advanced Me Assembler III§r",
   "block.gtmqol.ev_me_circuit_slicer": "§5Advanced Me Circuit Slicer III§r",
@@ -297,6 +298,7 @@
   "item.gtmqol.zpm_universal_circuit": "ZPM Universal Circuit",
   "item.gtmqol.zpm_wireless_energy_input_cover": "§cZPM Wireless Energy Input Cover",
   "item.gtmqol.zpm_wireless_energy_output_cover": "§cZPM Wireless Energy Output Cover",
+  "recipe_type.gtmqol.electric_implosion_compressor": "Electric Implosion Compressor",
   "recipe_type.gtmqol.magical_assembler": "Magical Assembler",
   "recipe_type.gtmqol.me_assembler": "ME Assembler",
   "recipe_type.gtmqol.me_circuit_slicer": "ME Circuit Slicer"

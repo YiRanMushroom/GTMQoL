@@ -444,7 +444,7 @@ Goal: nether stars before IV (IV needs a lot of them).
   rebuilds every loaded `GTRecipe` with its type's prototype `onSave` at the end of `RecipeManager.apply`, so
   data pack / KubeJS implosion recipes get copies too (same ids overwrite, no duplicates). Controller: shaped `PCP/FSF/PCP`, ZPM circuits,
   implosion compressor, IV motors and field generators (as in 1.19).
-- Not yet in game; 1.20.1 not ported yet.
+- Not yet in game. Ported to 1.20.1 (there KubeJS implosion recipes get no copy, no late regeneration).
 
 ## Void miner (`multiblock/VoidMinerMachine`, `VoidMinerOres`)
 

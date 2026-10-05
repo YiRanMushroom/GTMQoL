@@ -29,6 +29,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.HashMap;
 import java.util.List;
@@ -169,7 +170,7 @@ public final class AEProcessing {
 
         if (isExtendedAELoaded()) {
             var entroCrystal = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "entro_crystal"));
-            var concurrentCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "printed_concurrent_processor"));
+            var concurrentCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "concurrent_processor_print"));
             if (entroCrystal != Items.AIR && concurrentCircuit != Items.AIR) {
                 ME_CIRCUIT_SLICER_RECIPES.recipeBuilder(GTMQoL.id("slice_concurrent_circuit"))
                         .inputItems(entroCrystal)
@@ -241,7 +242,7 @@ public final class AEProcessing {
                 AEItems.ENGINEERING_PROCESSOR_PRINT.asItem(), AEItems.ENGINEERING_PROCESSOR.asItem()));
 
         if (isExtendedAELoaded()) {
-            var concurrentCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "printed_concurrent_processor"));
+            var concurrentCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "concurrent_processor_print"));
             var concurrentProcessor = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "concurrent_processor"));
             if (concurrentCircuit != Items.AIR && concurrentProcessor != Items.AIR) {
                 printToProcessor.put(concurrentCircuit, concurrentProcessor);
@@ -376,6 +377,8 @@ public final class AEProcessing {
         if (isExtendedAELoaded()) {
             var entroDust = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "entro_dust"));
             var entroCrystal = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "entro_crystal"));
+            var entroIngot = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "entro_ingot"));
+
             if (entroDust != Items.AIR && entroCrystal != Items.AIR) {
                 GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_entro"))
                         .notConsumable(entroDust)
@@ -393,13 +396,25 @@ public final class AEProcessing {
                         .duration(800)
                         .save(provider);
 
+                if (entroIngot != Items.AIR) {
+                    GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_entro_ingot"))
+                            .inputItems(entroDust, 1)
+                            .inputItems(dust, Lapis)
+                            .inputItems(ingot, Gold)
+                            .inputFluids(Water, 100)
+                            .outputItems(entroIngot, 2)
+                            .EUt(VA[LV])
+                            .duration(80)
+                            .save(provider);
+                }
+
                 if (isExtendedAEPlusLoaded()) {
                     var lattraDust = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae_plus", "lattra_dust"));
                     var lattraCrystal = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae_plus", "lattra_crystal"));
                     if (lattraDust != Items.AIR && lattraCrystal != Items.AIR) {
                         GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_lattra"))
                                 .notConsumable(lattraDust)
-                                .inputItems(FLUIX)
+                                .inputItems(entroCrystal)
                                 .inputFluids(Water, 10)
                                 .outputItems(lattraCrystal)
                                 .EUt(VA[LV])
@@ -474,7 +489,7 @@ public final class AEProcessing {
                         var quantumAlloy = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "quantum_alloy"));
                         if (quantumAlloy != Items.AIR) {
                             GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_quantum_alloy"))
-                                    .inputFluids(new FluidStack(quantumInfusionSource, 1000))
+                                    .inputFluids(SizedFluidIngredient.of(quantumInfusionSource, 1000))
                                     .inputItems(TagPrefix.ingot, Copper, 4)
                                     .inputItems(shatteredSingularity, 4)
                                     .inputItems(AEItems.SINGULARITY, 4)
