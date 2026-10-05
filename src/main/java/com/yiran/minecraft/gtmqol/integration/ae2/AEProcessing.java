@@ -1,7 +1,13 @@
 package com.yiran.minecraft.gtmqol.integration.ae2;
 
+import appeng.api.util.AEColor;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
@@ -11,22 +17,20 @@ import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.tterrag.registrate.util.entry.ItemEntry;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
-
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
 
-import appeng.api.util.AEColor;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import com.tterrag.registrate.util.entry.ItemEntry;
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +46,8 @@ import static com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.regist
  * assembler turns chip + print + silicon print into processors (more per chip for better wafers) and makes the
  * GTCEu ME parts from AE2 parts. Also the v7 misc AE recipes in GTCEu machines. Only touch this class when AE2 is
  * loaded ({@code GTCEu.Mods.isAE2Loaded()}).
+ * <p>
+ * Support for AE integration mods are only for 1.21.1, as many of the recipes changed from 1.20 to 1.21
  */
 public final class AEProcessing {
 
@@ -57,8 +63,10 @@ public final class AEProcessing {
 
     private static final TagKey<Item> SILICON = ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "silicon"));
     private static final TagKey<Item> FLUIX = ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "gems/fluix"));
+    private static final TagKey<Item> skyStoneDust = ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "dusts/sky_stone"));
 
-    private AEProcessing() {}
+    private AEProcessing() {
+    }
 
     public static void initItems() {
         SILICON_CHIP = chip("silicon_chip", "Silicon Chip");
@@ -158,6 +166,58 @@ public final class AEProcessing {
                 .duration(200)
                 .EUt(VA[LV])
                 .save(provider);
+
+        if (isExtendedAELoaded()) {
+            var entroCrystal = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "entro_crystal"));
+            var concurrentCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "concurrent_circuit"));
+            if (entroCrystal != Items.AIR && concurrentCircuit != Items.AIR) {
+                ME_CIRCUIT_SLICER_RECIPES.recipeBuilder(GTMQoL.id("slice_concurrent_circuit"))
+                        .inputItems(entroCrystal)
+                        .outputItems(concurrentCircuit, 4)
+                        .duration(200)
+                        .EUt(VA[LV])
+                        .save(provider);
+            }
+        }
+
+        if (isAdvancedAELoaded()) {
+            var quantumAlloy = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "quantum_alloy"));
+            var quantumCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "quantum_circuit"));
+            if (quantumAlloy != Items.AIR && quantumCircuit != Items.AIR) {
+                ME_CIRCUIT_SLICER_RECIPES.recipeBuilder(GTMQoL.id("slice_quantum_circuit"))
+                        .inputItems(quantumAlloy)
+                        .outputItems(quantumCircuit, 4)
+                        .duration(200)
+                        .EUt(VA[LV])
+                        .save(provider);
+            }
+        }
+
+        if (isMegaCellsLoaded()) {
+            var skySteelIngot = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("megacells", "sky_steel_ingot"));
+            var accumulationCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("megacells", "accumulation_circuit"));
+            if (skySteelIngot != Items.AIR && accumulationCircuit != Items.AIR) {
+                ME_CIRCUIT_SLICER_RECIPES.recipeBuilder(GTMQoL.id("slice_accumulation_circuit"))
+                        .inputItems(skySteelIngot)
+                        .outputItems(accumulationCircuit, 4)
+                        .duration(200)
+                        .EUt(VA[LV])
+                        .save(provider);
+            }
+        }
+
+        if (isAppliedFluxLoaded()) {
+            var redstoneCrystal = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "redstone_crystal"));
+            var energyCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "energy_circuit"));
+            if (redstoneCrystal != Items.AIR && energyCircuit != Items.AIR) {
+                ME_CIRCUIT_SLICER_RECIPES.recipeBuilder(GTMQoL.id("slice_energy_circuit"))
+                        .inputItems(redstoneCrystal)
+                        .outputItems(energyCircuit, 4)
+                        .duration(200)
+                        .EUt(VA[LV])
+                        .save(provider);
+            }
+        }
     }
 
     private static void slice(RecipeOutput provider, String id, Item wafer, Item chip, int count, int duration) {
@@ -175,10 +235,42 @@ public final class AEProcessing {
                 PHOSPHORUS_DOPED_SILICON_CHIP.get(), 16,
                 NAQUADAH_DOPED_SILICON_CHIP.get(), 32,
                 NEUTRONIUM_DOPED_SILICON_CHIP.get(), 64);
-        Map<Item, Item> printToProcessor = Map.of(
+        Map<Item, Item> printToProcessor = new HashMap<>(Map.of(
                 AEItems.CALCULATION_PROCESSOR_PRINT.asItem(), AEItems.CALCULATION_PROCESSOR.asItem(),
                 AEItems.LOGIC_PROCESSOR_PRINT.asItem(), AEItems.LOGIC_PROCESSOR.asItem(),
-                AEItems.ENGINEERING_PROCESSOR_PRINT.asItem(), AEItems.ENGINEERING_PROCESSOR.asItem());
+                AEItems.ENGINEERING_PROCESSOR_PRINT.asItem(), AEItems.ENGINEERING_PROCESSOR.asItem()));
+
+        if (isExtendedAELoaded()) {
+            var concurrentCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "concurrent_circuit"));
+            var concurrentProcessor = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "concurrent_processor"));
+            if (concurrentCircuit != Items.AIR && concurrentProcessor != Items.AIR) {
+                printToProcessor.put(concurrentCircuit, concurrentProcessor);
+            }
+        }
+
+        if (isAdvancedAELoaded()) {
+            var quantumCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "quantum_circuit"));
+            var quantumProcessor = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "quantum_processor"));
+            if (quantumCircuit != Items.AIR && quantumProcessor != Items.AIR) {
+                printToProcessor.put(quantumCircuit, quantumProcessor);
+            }
+        }
+
+        if (isMegaCellsLoaded()) {
+            var accumulationCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("megacells", "accumulation_circuit"));
+            var accumulationProcessor = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("megacells", "accumulation_processor"));
+            if (accumulationCircuit != Items.AIR && accumulationProcessor != Items.AIR) {
+                printToProcessor.put(accumulationCircuit, accumulationProcessor);
+            }
+        }
+
+        if (isAppliedFluxLoaded()) {
+            var energyCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "energy_circuit"));
+            var energyProcessor = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "energy_processor"));
+            if (energyCircuit != Items.AIR && energyProcessor != Items.AIR) {
+                printToProcessor.put(energyCircuit, energyProcessor);
+            }
+        }
 
         chipToCount.forEach((chip, count) -> printToProcessor.forEach((print, processor) -> {
             String id = path(processor) + "_from_" + path(chip);
@@ -204,7 +296,8 @@ public final class AEProcessing {
         }));
 
         // extraProcessor: 4 more processors besides the 4 logic processors, null for none
-        record Part(String id, Item aePart, Item extraProcessor, MachineDefinition output, Material plateMaterial) {}
+        record Part(String id, Item aePart, Item extraProcessor, MachineDefinition output, Material plateMaterial) {
+        }
         for (Part p : List.of(
                 new Part("me_input_bus", AEParts.EXPORT_BUS.asItem(), null, GTAEMachines.ITEM_IMPORT_BUS_ME.get(),
                         Iron),
@@ -272,6 +365,211 @@ public final class AEProcessing {
                 .EUt(VA[LV])
                 .duration(200)
                 .save(provider);
+
+        GTRecipeTypes.MACERATOR_RECIPES.recipeBuilder(GTMQoL.id("macerate_fluix"))
+                .inputItems(FLUIX)
+                .outputItems(AEItems.FLUIX_DUST.asItem())
+                .EUt(2)
+                .duration(800)
+                .save(provider);
+
+        if (isExtendedAELoaded()) {
+            var entroDust = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "entro_dust"));
+            var entroCrystal = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "entro_crystal"));
+            if (entroDust != Items.AIR && entroCrystal != Items.AIR) {
+                GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_entro"))
+                        .notConsumable(entroDust)
+                        .inputItems(FLUIX)
+                        .inputFluids(Water, 10)
+                        .outputItems(entroCrystal)
+                        .EUt(VA[LV])
+                        .duration(20)
+                        .save(provider);
+
+                GTRecipeTypes.MACERATOR_RECIPES.recipeBuilder(GTMQoL.id("macerate_entro"))
+                        .inputItems(entroCrystal)
+                        .outputItems(entroDust)
+                        .EUt(2)
+                        .duration(800)
+                        .save(provider);
+
+                if (isExtendedAEPlusLoaded()) {
+                    var lattraDust = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae_plus", "lattra_dust"));
+                    var lattraCrystal = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae_plus", "lattra_crystal"));
+                    if (lattraDust != Items.AIR && lattraCrystal != Items.AIR) {
+                        GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_lattra"))
+                                .notConsumable(lattraDust)
+                                .inputItems(FLUIX)
+                                .inputFluids(Water, 10)
+                                .outputItems(lattraCrystal)
+                                .EUt(VA[LV])
+                                .duration(20)
+                                .save(provider);
+
+                        GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_lattra_from_entro"))
+                                .inputItems(dust, Redstone)
+                                .inputItems(entroCrystal)
+                                .inputItems(Items.GHAST_TEAR)
+                                .outputItems(lattraCrystal, 4)
+                                .inputFluids(Water, 100)
+                                .EUt(VA[LV])
+                                .duration(20)
+                                .save(provider);
+
+                        GTRecipeTypes.MACERATOR_RECIPES.recipeBuilder(GTMQoL.id("macerate_lattra"))
+                                .inputItems(lattraCrystal)
+                                .outputItems(lattraDust)
+                                .EUt(2)
+                                .duration(800)
+                                .save(provider);
+                    }
+                    var oblivionSingularity = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae_plus", "oblivion_singularity"));
+                    if (oblivionSingularity != Items.AIR) {
+                        GTRecipeTypes.IMPLOSION_RECIPES.recipeBuilder(GTMQoL.id("implode_oblivion_singularity"))
+                                .inputItems(Items.NETHER_STAR)
+                                .inputItems(TagPrefix.block, Netherite)
+                                .outputItems(oblivionSingularity, 2)
+                                .EUt(VA[UHV])
+                                .duration(1)
+                                .save(provider);
+                    }
+                }
+
+
+            }
+        }
+
+        if (isAdvancedAELoaded()) {
+            var shatteredSingularity = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "shattered_singularity"));
+            if (shatteredSingularity != Items.AIR) {
+                GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_shattered_singularity"))
+                        .inputItems(AEItems.SINGULARITY)
+                        .inputItems(dust, EnderPearl)
+                        .inputItems(skyStoneDust)
+                        .inputFluids(Lava, 100)
+                        .outputItems(shatteredSingularity, 4)
+                        .EUt(VA[HV])
+                        .duration(200)
+                        .save(provider);
+
+                var quantumInfusedDust = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "quantum_infused_dust"));
+                if (quantumInfusedDust != Items.AIR) {
+                    GTRecipeTypes.MACERATOR_RECIPES.recipeBuilder(GTMQoL.id("macerate_quantum_infused_dust"))
+                            .inputItems(shatteredSingularity)
+                            .outputItems(quantumInfusedDust)
+                            .EUt(2)
+                            .duration(800)
+                            .save(provider);
+
+                    var quantumInfusionSource = BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "quantum_infusion_source"));
+                    if (quantumInfusionSource != Fluids.EMPTY) {
+                        GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_quantum_infused_dust"))
+                                .inputItems(quantumInfusedDust)
+                                .inputFluids(Water, 4000)
+                                .outputFluids(new FluidStack(quantumInfusionSource, 1000))
+                                .EUt(VA[HV])
+                                .duration(200)
+                                .save(provider);
+
+                        var quantumAlloy = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "quantum_alloy"));
+                        if (quantumAlloy != Items.AIR) {
+                            GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_quantum_alloy"))
+                                    .inputFluids(new FluidStack(quantumInfusionSource, 1000))
+                                    .inputItems(TagPrefix.ingot, Copper, 4)
+                                    .inputItems(shatteredSingularity, 4)
+                                    .inputItems(AEItems.SINGULARITY, 4)
+                                    .outputItems(quantumAlloy, 4)
+                                    .EUt(VA[HV])
+                                    .duration(200)
+                                    .save(provider);
+
+                            var quantumAlloyPlate = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "quantum_alloy_plate"));
+                            if (quantumAlloyPlate != Items.AIR) {
+                                GTRecipeTypes.COMPRESSOR_RECIPES.recipeBuilder(GTMQoL.id("press_quantum_alloy_plate"))
+                                        .inputItems(quantumAlloy, 4)
+                                        .outputItems(quantumAlloyPlate)
+                                        .EUt(VA[HV])
+                                        .duration(200)
+                                        .save(provider);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (isMegaCellsLoaded()) {
+            var skySteelIngot = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("megacells", "sky_steel_ingot"));
+            var skyBronzeIngot = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("megacells", "sky_bronze_ingot"));
+            if (skySteelIngot != Items.AIR && skyBronzeIngot != Items.AIR) {
+                GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_sky_steel"))
+                        .inputItems(TagPrefix.ingot, Iron)
+                        .inputItems(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
+                        .inputItems(AEBlocks.SKY_STONE_BLOCK)
+                        .inputFluids(Lava, 5)
+                        .outputItems(skySteelIngot, 4)
+                        .EUt(VA[LV])
+                        .duration(20)
+                        .save(provider);
+
+                GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_sky_bronze"))
+                        .inputItems(TagPrefix.ingot, Copper)
+                        .inputItems(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
+                        .inputItems(AEBlocks.SKY_STONE_BLOCK)
+                        .inputFluids(Lava, 5)
+                        .outputItems(skyBronzeIngot, 4)
+                        .EUt(VA[LV])
+                        .duration(20)
+                        .save(provider);
+            }
+        }
+
+        if (isAppliedFluxLoaded()) {
+            var redstoneCrystal = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "redstone_crystal"));
+            var chargedRedstone = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "charged_redstone"));
+            if (redstoneCrystal != Items.AIR && chargedRedstone != Items.AIR) {
+                GTRecipeTypes.POLARIZER_RECIPES.recipeBuilder(GTMQoL.id("charge_redstone_crystal"))
+                        .inputItems(redstoneCrystal)
+                        .outputItems(chargedRedstone)
+                        .EUt(VA[LV])
+                        .duration(80)
+                        .save(provider);
+            }
+            var insulatingResin = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "insulating_resin"));
+            if (insulatingResin != Items.AIR) {
+                GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_insulating_resin"))
+                        .inputItems(TagKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.fromNamespaceAndPath("c", "silicone")))
+                        .inputItems(Items.CACTUS)
+                        .inputItems(TagKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.fromNamespaceAndPath("c", "dusts/bone")))
+                        .inputItems(TagKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.fromNamespaceAndPath("c", "slimeballs")))
+                        .inputFluids(Water, 100)
+                        .outputItems(insulatingResin, 4)
+                        .EUt(VA[LV])
+                        .duration(200)
+                        .save(provider);
+            }
+        }
+    }
+
+
+    private static boolean isExtendedAELoaded() {
+        return GTCEu.isModLoaded("extendedae");
+    }
+
+    private static boolean isExtendedAEPlusLoaded() {
+        return GTCEu.isModLoaded("extendedae_plus");
+    }
+
+    private static boolean isAdvancedAELoaded() {
+        return GTCEu.isModLoaded("advanced_ae");
+    }
+
+    private static boolean isMegaCellsLoaded() {
+        return GTCEu.isModLoaded("megacells");
+    }
+
+    private static boolean isAppliedFluxLoaded() {
+        return GTCEu.isModLoaded("appliedflux");
     }
 
     private static String path(Item item) {
