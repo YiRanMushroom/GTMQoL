@@ -56,6 +56,12 @@ public final class GTMQoLConfig {
         public boolean voidMiner = true;
 
         @Configurable
+        @Configurable.Comment({ "Electric Implosion Compressor (every implosion recipe that uses TNT, without the TNT)",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean electricImplosionCompressor = true;
+
+        @Configurable
         @Configurable.Comment({ "Large steam multiblocks, the steam parallel hatch, the steam magical assembler and",
                 "the steam single blocks GTCEu does not have (bender, wiremill, ...)", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
@@ -136,6 +142,17 @@ public final class GTMQoLConfig {
                 "even when GTCEu's disableManualCompression is on", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean keepManualCompression = true;
+
+        @Configurable
+        @Configurable.Comment({ "Keep vanilla's TNT crafting recipe even when GTCEu's removeVanillaTNTRecipe is on",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean keepVanillaTNT = true;
+
+        @Configurable
+        @Configurable.Comment({ "Nether star dust in the mixer (HV): 4 diamond dust + 16 silver dust", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean netherStarDust = true;
     }
 
     @Configurable

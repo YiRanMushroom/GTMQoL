@@ -15,6 +15,7 @@ import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.common.fe.FEInputProvider;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.test.IntegrationTests;
+import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
 import com.yiran.minecraft.gtmqol.common.steam.AdvancedSteamMachines;
@@ -60,6 +61,7 @@ public final class GTMQoL {
         if (config.wireless.steam) WirelessCovers.initSteam();
         MagicalAssembler.initMachines();
         GTMQoLMultiblocks.init();
+        if (config.machines.electricImplosionCompressor) ElectricImplosion.init(modBus);
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
         if (config.wireless.steam) WirelessSteamMachines.init();
         if (config.wireless.energy) WirelessEnergyMachines.init();

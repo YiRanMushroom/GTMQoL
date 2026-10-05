@@ -193,7 +193,8 @@ false; registers `gtmqol:runtime_single_block` and `gtmqol:runtime_multiblock`, 
 
 - `machines.*`: `smartAssemblyFactory`, `dimensionallyTranscendentFusionReactor`, `voidMiner`,
   `advancedSteamMachines` (large steam multis, steam parallel hatch, steam magical assembler, the extra steam
-  single blocks, as one unit). `GTMQoLMultiblocks` has one init/recipe method per machine.
+  single blocks, as one unit), `electricImplosionCompressor`. `GTMQoLMultiblocks` has one init/recipe method
+  per machine.
 - `modularMachines.enabled`.
 - `wireless.energy` / `wireless.steam`: machines, covers (`WirelessCovers.initEnergy/initSteam`) and recipes
   (`WirelessRecipes.addEnergyRecipes/addSteamRecipes`). `WirelessNetworks.init` (events, command, stats) always
@@ -201,7 +202,7 @@ false; registers `gtmqol:runtime_single_block` and `gtmqol:runtime_multiblock`, 
 - `circuits.*`: `universalCircuits` (items + the magical assembler conversion), `controlCircuits`,
   `mekanismCircuitTags`.
 - `recipes.*`: `miscRecipes`, `earlyGame` (`EarlyGameRecipes` and the kept sand → glass smelting),
-  `keepManualCompression` (see the steam section).
+  `keepManualCompression` (see the steam section), `keepVanillaTNT`, `netherStarDust` (see Nether stars).
 - `steamTweaks.*`: `circuitSlots` (`SimpleSteamMachineMixin` circuit trait, `SteamItemBusPartMachineMixin`,
   `GTSingleblockMachinePanelsMixin`), `fluidTanks`, `noOutputLimits` (`GTMachinesMixin`/`GTMultiMachinesMixin`
   call the original), `optionalLargeBoilerParts`.
@@ -423,6 +424,27 @@ Registered in `onRegisterMachines`, lang/models datagen'd, recipes in the magica
   accept substation/laser hatches (new vs 7.x). Ring: `client/DTFRRingRender` (gtceu's `FusionRingRender`
   without bloom, white), registered as `gtmqol:dtfr_ring` in `GTMQoLClient.init()` from the constructor
   on the client dist.
+
+## Nether stars, electric implosion compressor (`implosion/ElectricImplosion`)
+
+Goal: nether stars before IV (IV needs a lot of them).
+- `recipes.keepVanillaTNT`: `RecipeRemovalMixin` `@ModifyExpressionValue`s the `removeVanillaTNTRecipe` read in
+  `RecipeRemoval.generalRemovals` to false, i.e. keeps `minecraft:tnt` crafting regardless of GTCEu's config.
+- `recipes.netherStarDust`: mixer, 4 diamond dust + 16 silver dust → 1 nether star dust, 20 s, `VA[HV]`
+  (`MiscRecipes.addNetherStarDust`, user's choice; GTCEu has no nether star dust synthesis, GTExpert's recipe
+  needs rocket fuel at LuV). The dust then goes through GTCEu's normal implosion recipes.
+- `machines.electricImplosionCompressor`: port of the 1.19 one. Recipe type and multiblock
+  `gtmqol:electric_implosion_compressor` (old 1.19 pattern, robust tungstensteel casing, parallel hatch,
+  perfect subtick OC, batch). Recipes: GTCEu makes four implosion variants per material (powderbarrel, TNT,
+  dynamite, ITNT); only the one with vanilla TNT (`implode_<x>_tnt`) is copied, as `implode_<x>_electric` without
+  the TNT and 4× duration. No mixins (1.19 used two): at common setup an `onSave` is chained onto
+  `IMPLOSION_RECIPES`' prototype builder, which `recipeBuilder(id)` copies (recipes are built on server reload,
+  after that). It keeps and calls any earlier `onSave` (implosion has no `onRecipeBuild` in GTCEu, so normally
+  none); someone setting it after us without chaining would drop ours. GTCEu's `RecipeManagerLateMixin` also
+  rebuilds every loaded `GTRecipe` with its type's prototype `onSave` at the end of `RecipeManager.apply`, so
+  data pack / KubeJS implosion recipes get copies too (same ids overwrite, no duplicates). Controller: shaped `PCP/FSF/PCP`, ZPM circuits,
+  implosion compressor, IV motors and field generators (as in 1.19).
+- Not yet in game; 1.20.1 not ported yet.
 
 ## Void miner (`multiblock/VoidMinerMachine`, `VoidMinerOres`)
 
