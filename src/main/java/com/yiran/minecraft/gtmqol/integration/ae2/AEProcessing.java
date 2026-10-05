@@ -549,7 +549,18 @@ public final class AEProcessing {
                         .EUt(VA[LV])
                         .duration(80)
                         .save(provider);
+
+                GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_redstone_crystal"))
+                        .inputItems(block, Redstone)
+                        .inputItems(FLUIX)
+                        .inputItems(dust, Glowstone)
+                        .inputFluids(Water, 100)
+                        .outputItems(redstoneCrystal, 4)
+                        .EUt(VA[LV])
+                        .duration(80)
+                        .save(provider);
             }
+
             var insulatingResin = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appflux", "insulating_resin"));
             if (insulatingResin != Items.AIR) {
                 GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_insulating_resin"))
