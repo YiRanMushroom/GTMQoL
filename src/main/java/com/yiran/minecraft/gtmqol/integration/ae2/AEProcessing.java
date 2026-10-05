@@ -169,7 +169,7 @@ public final class AEProcessing {
 
         if (isExtendedAELoaded()) {
             var entroCrystal = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "entro_crystal"));
-            var concurrentCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "concurrent_circuit"));
+            var concurrentCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "printed_concurrent_processor"));
             if (entroCrystal != Items.AIR && concurrentCircuit != Items.AIR) {
                 ME_CIRCUIT_SLICER_RECIPES.recipeBuilder(GTMQoL.id("slice_concurrent_circuit"))
                         .inputItems(entroCrystal)
@@ -182,7 +182,7 @@ public final class AEProcessing {
 
         if (isAdvancedAELoaded()) {
             var quantumAlloy = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "quantum_alloy"));
-            var quantumCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "quantum_circuit"));
+            var quantumCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "printed_quantum_processor"));
             if (quantumAlloy != Items.AIR && quantumCircuit != Items.AIR) {
                 ME_CIRCUIT_SLICER_RECIPES.recipeBuilder(GTMQoL.id("slice_quantum_circuit"))
                         .inputItems(quantumAlloy)
@@ -195,9 +195,9 @@ public final class AEProcessing {
 
         if (isMegaCellsLoaded()) {
             var skySteelIngot = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("megacells", "sky_steel_ingot"));
-            var accumulationCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("megacells", "accumulation_circuit"));
+            var accumulationCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("megacells", "printed_accumulation_processor"));
             if (skySteelIngot != Items.AIR && accumulationCircuit != Items.AIR) {
-                ME_CIRCUIT_SLICER_RECIPES.recipeBuilder(GTMQoL.id("slice_accumulation_circuit"))
+                ME_CIRCUIT_SLICER_RECIPES.recipeBuilder(GTMQoL.id("slice_accumulation_processor_print"))
                         .inputItems(skySteelIngot)
                         .outputItems(accumulationCircuit, 4)
                         .duration(200)
@@ -207,11 +207,11 @@ public final class AEProcessing {
         }
 
         if (isAppliedFluxLoaded()) {
-            var redstoneCrystal = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "redstone_crystal"));
-            var energyCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "energy_circuit"));
-            if (redstoneCrystal != Items.AIR && energyCircuit != Items.AIR) {
-                ME_CIRCUIT_SLICER_RECIPES.recipeBuilder(GTMQoL.id("slice_energy_circuit"))
-                        .inputItems(redstoneCrystal)
+            var chargedRedstone = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appflux", "charged_redstone"));
+            var energyCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appflux", "printed_energy_processor"));
+            if (chargedRedstone != Items.AIR && energyCircuit != Items.AIR) {
+                ME_CIRCUIT_SLICER_RECIPES.recipeBuilder(GTMQoL.id("slice_energy_processor_print"))
+                        .inputItems(chargedRedstone)
                         .outputItems(energyCircuit, 4)
                         .duration(200)
                         .EUt(VA[LV])
@@ -241,7 +241,7 @@ public final class AEProcessing {
                 AEItems.ENGINEERING_PROCESSOR_PRINT.asItem(), AEItems.ENGINEERING_PROCESSOR.asItem()));
 
         if (isExtendedAELoaded()) {
-            var concurrentCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "concurrent_circuit"));
+            var concurrentCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "printed_concurrent_processor"));
             var concurrentProcessor = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("extendedae", "concurrent_processor"));
             if (concurrentCircuit != Items.AIR && concurrentProcessor != Items.AIR) {
                 printToProcessor.put(concurrentCircuit, concurrentProcessor);
@@ -249,7 +249,7 @@ public final class AEProcessing {
         }
 
         if (isAdvancedAELoaded()) {
-            var quantumCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "quantum_circuit"));
+            var quantumCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "printed_quantum_processor"));
             var quantumProcessor = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("advanced_ae", "quantum_processor"));
             if (quantumCircuit != Items.AIR && quantumProcessor != Items.AIR) {
                 printToProcessor.put(quantumCircuit, quantumProcessor);
@@ -257,7 +257,7 @@ public final class AEProcessing {
         }
 
         if (isMegaCellsLoaded()) {
-            var accumulationCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("megacells", "accumulation_circuit"));
+            var accumulationCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("megacells", "printed_accumulation_processor"));
             var accumulationProcessor = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("megacells", "accumulation_processor"));
             if (accumulationCircuit != Items.AIR && accumulationProcessor != Items.AIR) {
                 printToProcessor.put(accumulationCircuit, accumulationProcessor);
@@ -265,8 +265,8 @@ public final class AEProcessing {
         }
 
         if (isAppliedFluxLoaded()) {
-            var energyCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "energy_circuit"));
-            var energyProcessor = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "energy_processor"));
+            var energyCircuit = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appflux", "printed_energy_processor"));
+            var energyProcessor = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appflux", "energy_processor"));
             if (energyCircuit != Items.AIR && energyProcessor != Items.AIR) {
                 printToProcessor.put(energyCircuit, energyProcessor);
             }
@@ -525,8 +525,8 @@ public final class AEProcessing {
         }
 
         if (isAppliedFluxLoaded()) {
-            var redstoneCrystal = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "redstone_crystal"));
-            var chargedRedstone = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "charged_redstone"));
+            var redstoneCrystal = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appflux", "redstone_crystal"));
+            var chargedRedstone = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appflux", "charged_redstone"));
             if (redstoneCrystal != Items.AIR && chargedRedstone != Items.AIR) {
                 GTRecipeTypes.POLARIZER_RECIPES.recipeBuilder(GTMQoL.id("charge_redstone_crystal"))
                         .inputItems(redstoneCrystal)
@@ -535,7 +535,7 @@ public final class AEProcessing {
                         .duration(80)
                         .save(provider);
             }
-            var insulatingResin = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appliedflux", "insulating_resin"));
+            var insulatingResin = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("appflux", "insulating_resin"));
             if (insulatingResin != Items.AIR) {
                 GTRecipeTypes.MIXER_RECIPES.recipeBuilder(GTMQoL.id("mix_insulating_resin"))
                         .inputItems(TagKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.fromNamespaceAndPath("c", "silicone")))
@@ -569,7 +569,7 @@ public final class AEProcessing {
     }
 
     private static boolean isAppliedFluxLoaded() {
-        return GTCEu.isModLoaded("appliedflux");
+        return GTCEu.isModLoaded("appflux");
     }
 
     private static String path(Item item) {
