@@ -298,6 +298,12 @@ The user chose concrete code in parallel with steam rather than a generic per-re
 - `WirelessEnergyContainer` overrides `getTotalContentAmount()` to return `getEnergyStored()`: the base
   returns its raw `energyStored` field (always 0 here), and `RecipeHandlerList.handleRecipe` skips input
   handlers whose total is 0, so without it recipes report insufficient inputs.
+- Both wireless containers (hatch and accessor) override `getContents()` to return `new EnergyStack(stored)`.
+  The base goes through `EnergyContainerList.calculateVoltageAmperage`, whose `hasPrimeFactorGreaterThanTwo`
+  is linear in the amperage (powers of two are the worst: after dividing out the 2s it still counts up to
+  amps/2). At our 2^24 A that is millions of iterations per call, and `EURecipeCapability.getMaxParallelAmount`
+  calls it on every parallel calculation (seen as ~77% of a server profile, 2026-10-05). The one call in
+  `EnergyContainerList`'s constructor (on form) is left as is.
 - Known limitation: GTCEu sums hatches in longs; one MAX hatch at full amperage is 2^55 EU/t, so it takes
   about 256 such hatches on one multiblock to overflow.
 - The EU UI reuses the steam binding lang keys (registered in `WirelessSteamMachines`).
