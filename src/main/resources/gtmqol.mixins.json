@@ -23,6 +23,7 @@
     "SteamItemBusPartMachineMixin",
     "WorkableElectricMultiblockMachineMixin",
     "gtceufix.AEConfigSyncHandlerMixin",
+    "gtceufix.EnergyContainerListMixin",
     "gtceufix.EmiCallWrapperMixin",
     "gtceufix.GameDataMixin",
     "gtceufix.GTRecipeCategoryMixin",
