@@ -1,0 +1,100 @@
+{
+  "variants": {
+    "facing=east,upwards_facing=down": {
+      "gtceu:z": 180,
+      "model": "gtmqol:block/machine/fishing_pond",
+      "y": 90
+    },
+    "facing=east,upwards_facing=east": {
+      "model": "gtmqol:block/machine/fishing_pond"
+    },
+    "facing=east,upwards_facing=north": {
+      "gtceu:z": 270,
+      "model": "gtmqol:block/machine/fishing_pond",
+      "y": 90
+    },
+    "facing=east,upwards_facing=south": {
+      "gtceu:z": 90,
+      "model": "gtmqol:block/machine/fishing_pond",
+      "y": 90
+    },
+    "facing=east,upwards_facing=up": {
+      "model": "gtmqol:block/machine/fishing_pond",
+      "y": 90
+    },
+    "facing=east,upwards_facing=west": {
+      "model": "gtmqol:block/machine/fishing_pond"
+    },
+    "facing=north,upwards_facing=down": {
+      "gtceu:z": 180,
+      "model": "gtmqol:block/machine/fishing_pond"
+    },
+    "facing=north,upwards_facing=east": {
+      "gtceu:z": 90,
+      "model": "gtmqol:block/machine/fishing_pond"
+    },
+    "facing=north,upwards_facing=north": {
+      "model": "gtmqol:block/machine/fishing_pond"
+    },
+    "facing=north,upwards_facing=south": {
+      "model": "gtmqol:block/machine/fishing_pond"
+    },
+    "facing=north,upwards_facing=up": {
+      "model": "gtmqol:block/machine/fishing_pond"
+    },
+    "facing=north,upwards_facing=west": {
+      "gtceu:z": 270,
+      "model": "gtmqol:block/machine/fishing_pond"
+    },
+    "facing=south,upwards_facing=down": {
+      "gtceu:z": 180,
+      "model": "gtmqol:block/machine/fishing_pond",
+      "y": 180
+    },
+    "facing=south,upwards_facing=east": {
+      "gtceu:z": 270,
+      "model": "gtmqol:block/machine/fishing_pond",
+      "y": 180
+    },
+    "facing=south,upwards_facing=north": {
+      "model": "gtmqol:block/machine/fishing_pond"
+    },
+    "facing=south,upwards_facing=south": {
+      "model": "gtmqol:block/machine/fishing_pond"
+    },
+    "facing=south,upwards_facing=up": {
+      "model": "gtmqol:block/machine/fishing_pond",
+      "y": 180
+    },
+    "facing=south,upwards_facing=west": {
+      "gtceu:z": 90,
+      "model": "gtmqol:block/machine/fishing_pond",
+      "y": 180
+    },
+    "facing=west,upwards_facing=down": {
+      "gtceu:z": 180,
+      "model": "gtmqol:block/machine/fishing_pond",
+      "y": 270
+    },
+    "facing=west,upwards_facing=east": {
+      "model": "gtmqol:block/machine/fishing_pond"
+    },
+    "facing=west,upwards_facing=north": {
+      "gtceu:z": 90,
+      "model": "gtmqol:block/machine/fishing_pond",
+      "y": 270
+    },
+    "facing=west,upwards_facing=south": {
+      "gtceu:z": 270,
+      "model": "gtmqol:block/machine/fishing_pond",
+      "y": 270
+    },
+    "facing=west,upwards_facing=up": {
+      "model": "gtmqol:block/machine/fishing_pond",
+      "y": 270
+    },
+    "facing=west,upwards_facing=west": {
+      "model": "gtmqol:block/machine/fishing_pond"
+    }
+  }
+}
