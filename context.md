@@ -585,7 +585,7 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
   v7 recipes: machine crafting (AE2 inscriber in the middle), wafer → chips (8/16/32/64), AE2 materials → prints,
   chip + print + silicon print (or 4 copper foil) + 144 redstone → processors ×chip multiplier, GTCEu ME
   buses/hatches/pattern buffer (+proxy) from AE2 parts, and wiremill/polarizer/mixer AE recipes. Not ported:
-  the sticky card and the oblivion singularity (electric implosion is gone). Machine names come from
+  the oblivion singularity (electric implosion is gone; the sticky card is below). Machine names come from
   `SimpleMachineBuilder`'s `toEnglishName`, so they read "Me Assembler".
 - Smart doubling (ExtendedAE Plus, optional): `gtmqol.eap.mixins.json`, gated by `core/EAPMixinPlugin`
   (`LoadingModList` has `extendedae_plus`). `mixin/eap/MEPatternBufferSmartDoublingMixin` on GTCEu's buffer
@@ -610,6 +610,22 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
   (HIGHEST priority, undyed) added to `getRecipeHandlers` once and cached (identity matters). It inserts every
   output of the multiblock into the network (AE2 hands it to waiting crafting CPUs); if the network refuses,
   the other output parts get it. Per-buffer toggle (left configurator "ME", default on).
+- Sticky card and universal circuit encoding, ported from the v7 code in `reference/` (written, not built or
+  tested). `gtmqol.ae2.mixins.json`, gated by `core/AE2MixinPlugin` (AE2 loaded; the ExtendedAE mixin also needs
+  `extendedae`; note ExtendedAE's mod id is `extendedae`, v7's 1.20 fork used `expatternprovider`). Package
+  `core/mixins/ae2`:
+  `EncodingHelperMixin` (`@ModifyExpressionValue` on the `Comparator.comparing` in `<clinit>`, adds "is a universal
+  circuit" after craftable, so patterns encode with the universal circuit); `MEInventoryHandlerMixin` (adds `ISticky`:
+  flag + `shouldStick` = sticky, non-empty partition, passes it); `NetworkStorageMixin` (a `@Share` stop flag, set
+  after an insert into a sticky handler that has the key partitioned; wrapped iterators of `priorityInventory.values()`
+  and `secondPassInventories` stop on it); `StorageBusPartMixin` / `PartSpecialStorageBusMixin` (ExtendedAE's mod /
+  precise / tag buses) set the flag from `isUpgradedWith(STICKY_CARD)` right at the `setVoidOverflow` call in
+  `updateTarget`. `integration/ae2/StickyCardItem` (item, tooltip lang, `Upgrades.add` in `FMLCommonSetupEvent`,
+  recipes: ME assembler if `ae2.processing`, plus the shaped one). Two early switches in
+  `config/gtmqol-early.properties` (`EarlyConfig`, not toma, since they decide mixins): `ae2.universalCircuitEncoding`
+  (only `EncodingHelperMixin`) and `ae2.stickyCard` (the other four mixins, the item and its recipes); the plugin
+  applies each set accordingly, and the mixins also check `StickyCardItem.STICKY_CARD != null`. `StorageBusPartMixin` reads the private `handler` field by reflection like v7 (a `@WrapOperation` with the supertype receiver did not match the private `StorageBusInventory`). The Upgrades have no tooltip group (AE2's storage bus
+  upgrades have none). ExtendedAE is now `compileOnly` too.
 - Versions are constrained by GTCEu's JEI mixins: JEI stays 15.20.0.115, so EAP stays 1.6.1 (see
   `gradle.properties`).
 - Known, ignored for now: a JVM access violation (C2 JIT, `InventoryChangeTrigger`) once while picking up a
@@ -636,8 +652,6 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
   item out, energy) + maintenance + parallel + data hatch; DTFR = fluid in/out + parallel + energy; steam multis
   = recipe-type buses/hatches + steam buses + steam hatch + steam parallel. All are used; only maintenance is
   questionable. Nothing removed yet, waiting for the user.
-- AE2 pattern encoding preferring universal circuits (old `EncodingHelper` mixin) — needs a mixin, waiting
-  for the user's go-ahead.
 - Known bug, not fixed (user: leave it for now; workaround: don't reload client resources, restart if hit):
   after a client resource reload (F3+T, resource pack / language / mipmap change) every GTCEu bronze/steel themed
   UI (steam single blocks, steam generators) fails to open with `ClassCastException: IDrawable$2 (NONE) cannot

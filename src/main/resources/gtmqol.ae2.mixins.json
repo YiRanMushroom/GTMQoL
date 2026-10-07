@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.yiran.minecraft.gtmqol.core.mixins.ae2",
+  "plugin": "com.yiran.minecraft.gtmqol.core.AE2MixinPlugin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "EncodingHelperMixin",
+    "MEInventoryHandlerMixin",
+    "NetworkStorageMixin",
+    "PartSpecialStorageBusMixin",
+    "StorageBusPartMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixinextras": {
+    "minVersion": "0.5.3"
+  }
+}

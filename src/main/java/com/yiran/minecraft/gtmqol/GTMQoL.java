@@ -6,11 +6,13 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
+import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.data.tag.CircuitTags;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
 import com.yiran.minecraft.gtmqol.common.circuit.UniversalCircuits;
 import com.yiran.minecraft.gtmqol.client.GTMQoLClient;
+import com.yiran.minecraft.gtmqol.config.EarlyConfig;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.common.fe.FEInputProvider;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
@@ -28,6 +30,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.data.loading.DatagenModLoader;
 
@@ -74,6 +77,10 @@ public final class GTMQoL {
             }
             if (config.ae2.dualHatches) AEDualParts.init();
             if (config.ae2.patternBufferReturn) AEDualParts.initLang();
+            if (EarlyConfig.AE2_STICKY_CARD) {
+                StickyCardItem.init();
+                modBus.addListener(FMLCommonSetupEvent.class, event -> event.enqueueWork(StickyCardItem::registerUpgrades));
+            }
         }
         // do not run integration tests in data generation, They are only for testing in a running game.
         if (config.integrationTests.enabled && !DatagenModLoader.isRunningDataGen()) {
