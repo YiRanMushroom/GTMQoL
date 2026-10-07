@@ -273,6 +273,13 @@ public final class AEProcessing {
                 .EUt(VA[LV])
                 .duration(200)
                 .save(provider);
+
+        GTRecipeTypes.MACERATOR_RECIPES.recipeBuilder(GTMQoL.id("macerate_fluix"))
+                .inputItems(FLUIX)
+                .outputItems(AEItems.FLUIX_DUST.asItem())
+                .EUt(2)
+                .duration(800)
+                .save(provider);
     }
 
     private static String path(Item item) {

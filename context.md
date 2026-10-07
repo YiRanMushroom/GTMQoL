@@ -11,7 +11,7 @@ shaped this way, and what is pending.
   but not committed yet.
 - Builds, datagen and the dev client all work. Everything below has been tested in game by the user.
 - Minecraft 1.20.1, Forge 47.4.1, GTCEu v8 snapshot (pinned, see `gradle.properties`), Java 17 target,
-  Architectury Loom 1.13. Java only; no Kotlin.
+  ModDevGradle legacyForge 2.0.141 (migrated from Architectury Loom, **not built yet**, see below). Java only; no Kotlin.
 - The old implementation is archived under `reference/` as research material. Do not migrate it wholesale
   and do not modify it.
 
@@ -78,7 +78,7 @@ onto GTCEu's mod bus (`AbstractRegistrate.getModEventBus()` is `FMLJavaModLoadin
 datagen wrote nothing. Now it is `create(MOD_ID, false)` plus `registerEventListeners(modBus)` as the
 first line of the `GTMQoL` constructor.
 
-Datagen gotcha, recurring: `MultipleArgumentsForOptionException: Found multiple arguments for option
+(Loom-era note, may no longer apply after the MDG migration.) Datagen gotcha, recurring: `MultipleArgumentsForOptionException: Found multiple arguments for option
 output` when running the IDEA "Minecraft Data" config. Loom puts `--all --mod --output` (from
 `forge.dataGen`) into `.gradle/loom-cache/launch.cfg` under `dataArgs`; an old
 `.idea/runConfigurations/Minecraft_Data.xml` that also has them in `PROGRAM_PARAMETERS` passes them twice.
@@ -97,9 +97,10 @@ GTCEu static initializers read it before this mod is constructed); during datage
 (`FMLLoader.getLaunchHandler().isData()`) so every feature gets its lang/models/tags.
 
 Nearly all content has a toggle, default on, all restart-only: `machines.*` (smartAssemblyFactory,
-dimensionallyTranscendentFusionReactor, advancedSteamMachines), `modularMachines.enabled`, `wireless.{energy,steam}`,
-`circuits.*`, `recipes.{miscRecipes,earlyGame,keepManualCompression}`, `steamTweaks.*`, `overclocking.*` (fusion and
-tier skipping), `ae2.{overclockedPatternBuffer,processing}`, `misc.feInput`. `integrationTests.enabled` (default
+dimensionallyTranscendentFusionReactor, electricImplosionCompressor, advancedSteamMachines), `modularMachines.enabled`,
+`wireless.{energy,steam}`, `circuits.*`,
+`recipes.{miscRecipes,earlyGame,keepManualCompression,keepVanillaTNT,netherStarDust}`, `steamTweaks.*`, `overclocking.*` (fusion and
+tier skipping), `ae2.{overclockedPatternBuffer,processing,dualHatches,patternBufferReturn}`, `misc.feInput`. `integrationTests.enabled` (default
 false) registers `gtmqol:runtime_single_block` and `gtmqol:runtime_multiblock`, never during datagen.
 Wireless networks/binding/stats always load (shared); machine registration is gated in `GTMQoL`'s listeners.
 
@@ -186,6 +187,11 @@ The user chose concrete code in parallel with steam rather than a generic per-re
 - `WirelessEnergyContainer` overrides `getTotalContentAmount()` to return `getEnergyStored()`: the base
   returns its raw `energyStored` field (always 0 here), and `RecipeHandlerList.handleRecipe` skips input
   handlers whose total is 0, so without it recipes report insufficient inputs.
+- Both wireless containers (hatch and accessor) override `getContents()` to return `new EnergyStack(stored)`.
+  The base goes through `EnergyContainerList.calculateVoltageAmperage`, whose `hasPrimeFactorGreaterThanTwo`
+  is linear in the amperage (powers of two are the worst). At our 2^24 A that is millions of iterations per
+  call, on every parallel calculation (found on 1.21, ~77% of a server profile; same GTCEu code here). The one
+  call in `EnergyContainerList`'s constructor (on form) is left as is.
 - Known limitation: GTCEu sums hatches in longs; one MAX hatch at full amperage is 2^55 EU/t, so it takes
   about 256 such hatches on one multiblock to overflow.
 - The EU UI reuses the steam binding lang keys (registered in `WirelessSteamMachines`).
@@ -310,6 +316,20 @@ Registered in `onRegisterMachines`, lang/models datagen'd, recipes in the magica
   without bloom, white), registered as `gtmqol:dtfr_ring` in `GTMQoLClient.init()` from the constructor
   on the client dist.
 
+## Nether stars, electric implosion compressor (`implosion/ElectricImplosion`)
+
+Same as 1.21 (see its context.md), goal: nether stars before IV.
+- `recipes.keepVanillaTNT`: `RecipeRemovalMixin` `@ModifyExpressionValue`s the `removeVanillaTNTRecipe` read in
+  `RecipeRemoval.generalRemovals` to false.
+- `recipes.netherStarDust`: mixer, 4 diamond dust + 16 silver dust → 1 nether star dust, 20 s, `VA[HV]`.
+- `machines.electricImplosionCompressor`: recipe type (recipe type `RegisterEvent`) and multiblock (machine
+  `RegisterEvent`) `gtmqol:electric_implosion_compressor`. Only the vanilla TNT implosion variant is copied, as
+  `implode_<x>_electric` without the TNT, 4× duration. Hooked with `IMPLOSION_RECIPES.onRecipeBuild` when our
+  recipe type registers; 1.20's `GTRecipeType` has no getter for the prototype, so the previous `onSave` is read
+  from a `recipeBuilder(...)` copy and called first. Unlike 1.21, 1.20 GTCEu has no `RecipeManagerLateMixin`
+  regeneration, so KubeJS / data pack implosion recipes get no copy.
+- Not yet in game.
+
 ## Advanced steam multiblocks (`steam/`, `circuit/ControlCircuits`)
 
 Written, not built or tested yet. Modelled on GTNL's steam multis (GTNH addon, LGPL-3.0, credited in README;
@@ -410,9 +430,19 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
   v7 recipes: machine crafting (AE2 inscriber in the middle), wafer → chips (8/16/32/64), AE2 materials → prints,
   chip + print + silicon print (or 4 copper foil) + 144 redstone → processors ×chip multiplier, GTCEu ME
   buses/hatches/pattern buffer (+proxy) from AE2 parts, and wiremill/polarizer/mixer AE recipes. Items in the
-  constructor, recipe types / machines from the GTCEu register events. Not ported: the sticky card and the
-  oblivion singularity (electric implosion is gone). Machine names come from `SimpleMachineBuilder`'s
+  constructor, recipe types / machines from the GTCEu register events. Not ported: the
+  oblivion singularity (electric implosion is gone; the sticky card is below). Machine names come from `SimpleMachineBuilder`'s
   `toEnglishName`, so they read "Me Assembler".
+- Sticky card and universal circuit encoding, ported from the v7 code in `reference/` (same as the 1.21 branch;
+  written, not built or tested). `gtmqol.ae2.mixins.json` (in `build.gradle` `mixinConfig`), gated by
+  `core/AE2MixinPlugin`: AE2 loaded; the ExtendedAE mixin also needs `expatternprovider` (ExtendedAE's 1.20.1 mod
+  id). Two early switches in `config/gtmqol-early.properties` (`EarlyConfig`): `ae2.universalCircuitEncoding` (only
+  `EncodingHelperMixin`, on `appeng.integration.modules.jeirei.EncodingHelper`) and `ae2.stickyCard` (the other
+  four mixins in `core/mixins/ae2`, the item `integration/ae2/StickyCardItem` and its recipes). Mixins as on 1.21:
+  `MEInventoryHandlerMixin` adds `ISticky`, `NetworkStorageMixin` stops the insert loops with a `@Share` flag,
+  `StorageBusPartMixin` (`@Shadow` on the private `handler`: AT `META-INF/accesstransformer.cfg` + ModAccessor `accessModCompileOnly` for AE2, after the MDG migration; a `@WrapOperation` with the supertype receiver did not match) and `PartSpecialStorageBusMixin` set the flag. The Upgrades have no tooltip group
+  (v7 passed `group.storage.name`; AE2's own storage bus upgrades have none). ExtendedAE is now `modCompileOnly`
+  too (`EPPItemAndBlock.*_STORAGE_BUS`).
 - Smart doubling (ExtendedAE Plus, optional): `gtmqol.eap.mixins.json`, gated by `core/EAPMixinPlugin`
   (`LoadingModList` has `extendedae_plus`). `mixin/eap/MEPatternBufferSmartDoublingMixin` on GTCEu's buffer
   (so ours too) implements `ISmartDoublingHolder`, `@SaveField` toggle (default on) and limit (0 = none),
@@ -422,6 +452,16 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
   one's inputs (`@ModifyArg` on both `InternalSlot.pushPattern`). The user said this unwrap is required.
   UI: a "×2" left configurator opening a popup (toggle + limit), added by `@ModifyReturnValue` on
   `getPanelBuilder` (`SmartDoubling.addConfigurator`). Lang keys registered in `AE2Machines`.
+- ME dual parts and pattern buffer return, ported from 1.21 (`AEDualParts`, `MEDualInputPartMachine`,
+  `MEDualOutputPartMachine`, `FluidConfigWidget`, `PatternBufferReturn`, `MEPatternBufferReturnMixin`; written, not
+  built or tested). Same behavior and config keys (`ae2.dualHatches`, `ae2.patternBufferReturn`) as 1.21, see its
+  context. Port differences: forge packages, `FluidStack.readFromPacket/writeToPacket`, config tag methods without
+  `HolderLookup.Provider`, GTCEu's mutable `Ingredient`/`SizedIngredient`/`FluidIngredient` (the unfinished rest is
+  written back with `setAmount`/`setCount` instead of replacing the list entry), `MachineDefinition` /
+  `GTRecipeType` / `Consumer<FinishedRecipe>`, and `PatternBufferReturn` builds its own `IActionSource` because the
+  buffer's `actionSource` is protected. The fluid list uses `attachPersistentTrait`.
+  The 1.21 `AEConfigSyncHandlerMixin` is not ported: ModularUI 1.20.1's `syncToClient` writes eagerly, so the bug
+  probably doesn't exist here; port it if a stocking bus's config UI doesn't update while open.
 - Versions are constrained by GTCEu's JEI mixins: JEI stays 15.20.0.115, so EAP stays 1.6.1 (see
   `gradle.properties`).
 - Known, ignored for now: a JVM access violation (C2 JIT, `InventoryChangeTrigger`) once while picking up a
@@ -430,8 +470,6 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
 ## Pending / open
 
 - Open question: should the accessor also use the rainbow overlay?
-- AE2 pattern encoding preferring universal circuits (old `EncodingHelper` mixin) — needs a mixin, waiting
-  for the user's go-ahead.
 - Known bug, not fixed (user: leave it for now; workaround: don't reload client resources, restart if hit):
   after a client resource reload (F3+T, resource pack / language / mipmap change) every GTCEu bronze/steel themed
   UI (steam single blocks, steam generators) fails to open with `ClassCastException: IDrawable$2 (NONE) cannot
@@ -444,7 +482,7 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
   `builder.getJson().deepCopy()`.
 - Done: jar naming is `gtmqol-<mod version>-<mc version>.jar` (currently `gtmqol-2.0.0-1.20.1.jar`).
   `archives_base_name=gtmqol`; `build.gradle` sets `archiveVersion` on every `AbstractArchiveTask`
-  (including Loom's `remapJar`). `project.version` stays `mod_version` (2.0.0), which is what goes into
+  (including `reobfJar`). `project.version` stays `mod_version` (2.0.0), which is what goes into
   `mods.toml`. More naming details to be added later.
 
 ## User preferences not covered by `CLAUDE.md`
@@ -454,3 +492,12 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
 - The user replies in Chinese.
 - The user runs all Gradle tasks (build, `runData`, `runClient`) and pastes logs back; tell them exactly
   what to look for in game.
+
+## Build migration: Loom -> ModDevGradle legacyForge (untested)
+
+`build.gradle` / `settings.gradle` follow gtceu's 1.20.1 branch: plugin `net.neoforged.moddev.legacyforge`,
+`legacyForge {}` (version, parchment, runs, mods), `mixin {}` (refmap `gtmqol.refmap.json` + the four configs),
+`obfuscation { createRemappingConfiguration(configurations.localRuntime) }` for `modLocalRuntime`, MixinExtras
+as `jarJar`, ModAccessor for the AT. Things to check on the first build: `nameSyntheticMembers` has no switch
+here (Jade `this$0` mixin), whether the full gtceu jar's jarjar now works (we still use `:slim` plus explicit
+deps), `EvalEx` as plain `runtimeOnly`, run configs / datagen args, CLAUDE.md's 1.20 section is still Loom.

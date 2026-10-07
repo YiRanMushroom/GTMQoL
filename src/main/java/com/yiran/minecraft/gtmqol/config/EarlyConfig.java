@@ -28,15 +28,23 @@ public final class EarlyConfig {
             supply when searching for recipes. Strongly recommended with many distinct buses or pattern
             buffers. Default: true
             overclocking.overhaul: overclocking that uses every energy hatch's voltage and amperage, with
-            tier skipping and the overclock info in the recipe viewer. Default: true""";
+            tier skipping and the overclock info in the recipe viewer. Default: true
+            ae2.universalCircuitEncoding: AE2 pattern encoding from the recipe viewer prefers universal
+            circuits over the other circuits. Default: true
+            ae2.stickyCard: the Sticky Card item (and its recipes) for storage buses, which stops a network
+            insert at a bus whose filter matches. Default: true""";
 
     public static final boolean RECIPE_DB_GROUPED_SEARCH;
     public static final boolean OVERCLOCKING_OVERHAUL;
+    public static final boolean AE2_UNIVERSAL_CIRCUIT_ENCODING;
+    public static final boolean AE2_STICKY_CARD;
 
     static {
         Properties properties = load();
         RECIPE_DB_GROUPED_SEARCH = Boolean.parseBoolean(properties.getProperty("recipeDB.groupedSearch").trim());
         OVERCLOCKING_OVERHAUL = Boolean.parseBoolean(properties.getProperty("overclocking.overhaul").trim());
+        AE2_UNIVERSAL_CIRCUIT_ENCODING = Boolean.parseBoolean(properties.getProperty("ae2.universalCircuitEncoding").trim());
+        AE2_STICKY_CARD = Boolean.parseBoolean(properties.getProperty("ae2.stickyCard").trim());
     }
 
     private EarlyConfig() {}
@@ -45,6 +53,8 @@ public final class EarlyConfig {
         Properties defaults = new Properties();
         defaults.setProperty("recipeDB.groupedSearch", "true");
         defaults.setProperty("overclocking.overhaul", "true");
+        defaults.setProperty("ae2.universalCircuitEncoding", "true");
+        defaults.setProperty("ae2.stickyCard", "true");
 
         Properties properties = new Properties();
         try {
