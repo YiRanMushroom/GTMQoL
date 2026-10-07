@@ -193,6 +193,10 @@ dependencies {
     localRuntime("maven.modrinth:extendedae-plus:${project.eap_version}") {
         transitive = false
     }
+    // ExtendedAE is also compiled against, for the sticky card (its storage buses) and the mixin on them.
+    compileOnly("maven.modrinth:extended-ae:${project.extendedae_version}") {
+        transitive = false
+    }
     localRuntime("maven.modrinth:extended-ae:${project.extendedae_version}") {
         transitive = false
     }
