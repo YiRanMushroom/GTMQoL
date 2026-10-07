@@ -51,6 +51,12 @@ public final class GTMQoLConfig {
         public boolean dimensionallyTranscendentFusionReactor = true;
 
         @Configurable
+        @Configurable.Comment({ "Electric Implosion Compressor (every implosion recipe that uses TNT, without the TNT)",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean electricImplosionCompressor = true;
+
+        @Configurable
         @Configurable.Comment({ "Large steam multiblocks, the steam parallel hatch, the steam magical assembler and",
                 "the steam single blocks GTCEu does not have (bender, wiremill, ...)", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
@@ -131,6 +137,17 @@ public final class GTMQoLConfig {
                 "even when GTCEu's disableManualCompression is on", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean keepManualCompression = true;
+
+        @Configurable
+        @Configurable.Comment({ "Keep vanilla's TNT crafting recipe even when GTCEu's removeVanillaTNTRecipe is on",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean keepVanillaTNT = true;
+
+        @Configurable
+        @Configurable.Comment({ "Nether star dust in the mixer (HV): 4 diamond dust + 16 silver dust", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean netherStarDust = true;
     }
 
     @Configurable
@@ -196,6 +213,16 @@ public final class GTMQoLConfig {
         @Configurable.Comment({ "ME Assembler, ME Circuit Slicer, silicon chips and the AE2 part recipes", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean processing = true;
+
+        @Configurable
+        @Configurable.Comment({ "ME Dual Input (stocking bus + hatch) and ME Dual Output (bus + hatch)", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean dualHatches = true;
+
+        @Configurable
+        @Configurable.Comment({ "Pattern buffers send the outputs of their multiblock straight to the ME network",
+                "(per-buffer switch in the GUI)", "Default: true" })
+        public boolean patternBufferReturn = true;
     }
 
     @Configurable

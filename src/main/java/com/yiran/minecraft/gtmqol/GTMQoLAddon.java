@@ -13,9 +13,12 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
+import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
+import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
+import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.data.recipe.MiscRecipes;
 import com.yiran.minecraft.gtmqol.common.steam.AdvancedSteamMachines;
 import com.yiran.minecraft.gtmqol.data.recipe.EarlyGameRecipes;
@@ -24,6 +27,7 @@ import com.yiran.minecraft.gtmqol.api.generation.GTMQoLMultiblockBuilder;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
+import com.yiran.minecraft.gtmqol.config.EarlyConfig;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.data.recipe.WirelessRecipes;
 
@@ -104,9 +108,13 @@ public final class GTMQoLAddon implements IGTAddon {
         if (config.circuits.controlCircuits) ControlCircuits.addRecipes(provider);
         if (config.recipes.miscRecipes) MiscRecipes.addRecipes(provider);
         if (config.recipes.earlyGame) EarlyGameRecipes.addRecipes(provider);
+        if (config.recipes.netherStarDust) MiscRecipes.addNetherStarDust(provider);
+        if (config.machines.electricImplosionCompressor) ElectricImplosion.addRecipes(provider);
         if (GTCEu.Mods.isAE2Loaded()) {
             if (config.ae2.overclockedPatternBuffer) AE2Machines.addRecipes(provider);
             if (config.ae2.processing) AEProcessing.addRecipes(provider);
+            if (config.ae2.dualHatches) AEDualParts.addRecipes(provider, config.ae2.processing);
+            if (EarlyConfig.AE2_STICKY_CARD) StickyCardItem.addRecipes(provider, config.ae2.processing);
         }
     }
 

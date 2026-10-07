@@ -3,12 +3,14 @@ package com.yiran.minecraft.gtmqol.common.wireless.energy;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.yiran.minecraft.gtmqol.common.wireless.NetworkId;
 
 import net.minecraft.core.Direction;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
@@ -67,6 +69,12 @@ public class WirelessEnergyAccessorContainer extends NotifiableEnergyContainer {
     public long getEnergyStored() {
         NetworkId id = network.get();
         return id == null ? 0 : WirelessEnergySavedData.get().getAffordable(id, 1);
+    }
+
+    /** See {@link WirelessEnergyContainer#getContents()}. */
+    @Override
+    public List<Object> getContents() {
+        return List.of(new EnergyStack(getEnergyStored()));
     }
 
     @Override

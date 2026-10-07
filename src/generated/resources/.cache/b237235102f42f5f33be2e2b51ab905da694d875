@@ -1,5 +1,6 @@
-// 1.20.1	2026-10-03T15:53:27.158132	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.20.1	2026-10-06T19:26:44.9372666	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
 e61d13dc7f445fd39b88c0d72baabebd58c467a5 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
+f9870cf6218e8d4c6a301978cf03cd4e3221859d assets/gtmqol/blockstates/electric_implosion_compressor.json
 e56ce4c77d68a08637181b48d3164a158cc4a89d assets/gtmqol/blockstates/ev_magical_assembler.json
 95861b8025db09b9e60dcb1943809574b7a1f462 assets/gtmqol/blockstates/ev_me_assembler.json
 77578905ec427b24123794e2929f0a7f8ccbd901 assets/gtmqol/blockstates/ev_me_circuit_slicer.json
@@ -84,6 +85,8 @@ b07f799005d72f9746a3dd60b536188a2a59b75e assets/gtmqol/blockstates/lv_wireless_e
 7739a082f17a4374b68ba899d879e2dd18950354 assets/gtmqol/blockstates/max_wireless_energy_accessor.json
 d5d03f3ce7426a1db231f9e01cb78c5b208f467d assets/gtmqol/blockstates/max_wireless_energy_input_hatch.json
 3f179675238afd15f4eebc4100d3d4700357189f assets/gtmqol/blockstates/max_wireless_energy_output_hatch.json
+e0195c3dd1083af55a1e0fb85c7e122a78d970ef assets/gtmqol/blockstates/me_dual_input.json
+4124d9f0a9e48fa7980bdf3be5754099eefc6ee7 assets/gtmqol/blockstates/me_dual_output.json
 4ced164d918bf000fcb3a6dd2b66c365a7e71482 assets/gtmqol/blockstates/mv_magical_assembler.json
 4410fc9a5f1705a105ffa37460997d49fba7d802 assets/gtmqol/blockstates/mv_me_assembler.json
 a35287e71d12483924bc6e1c6b01903bac4fdcef assets/gtmqol/blockstates/mv_me_circuit_slicer.json
@@ -143,9 +146,10 @@ e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circui
 674a583f2b29eee523d730ad4211c0134c9f8134 assets/gtmqol/blockstates/zpm_wireless_energy_accessor.json
 1136e3739fdb3b339bc80d9bedcd1bde88a780e9 assets/gtmqol/blockstates/zpm_wireless_energy_input_hatch.json
 a77ec21bfd8e4ba2dd87ea6bde687970c4039a69 assets/gtmqol/blockstates/zpm_wireless_energy_output_hatch.json
-c8ab19d81dc4a53ccdacef485ed946e28917fdbc assets/gtmqol/lang/en_ud.json
-bdcea8201e8b9bff30277517a8d93af65aaa1818 assets/gtmqol/lang/en_us.json
+d7cfe89dcffc2288e025a673ad6893e5a6183f32 assets/gtmqol/lang/en_ud.json
+26ba29c6c4733b82f1d4b31e4d2bf28950002850 assets/gtmqol/lang/en_us.json
 68508e04e98fb37278a58e6e9440ba6f5cf3d12a assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
+741b8a3b73652f73a2e11b5943bc7ddeb426f178 assets/gtmqol/models/block/machine/electric_implosion_compressor.json
 43e20a64b464684c43af6a30b86673d37ebca485 assets/gtmqol/models/block/machine/ev_magical_assembler.json
 4d8768c0d137d037f6b072fb3cb30868ef674bf3 assets/gtmqol/models/block/machine/ev_me_assembler.json
 89142eaabfe7d4ca475f7b5077d1e3a331415d58 assets/gtmqol/models/block/machine/ev_me_circuit_slicer.json
@@ -230,6 +234,8 @@ b4d610ac113ea9421ce04a728e1a46286fd892b5 assets/gtmqol/models/block/machine/lp_s
 73b298a27670d0ec5eb93f4a87f804b4de2175df assets/gtmqol/models/block/machine/max_wireless_energy_accessor.json
 9b7752d7c6a92bb5e27e0ca647b7e7bc4307d584 assets/gtmqol/models/block/machine/max_wireless_energy_input_hatch.json
 3582247601700e1ddcc7b32bf437a9cb95779391 assets/gtmqol/models/block/machine/max_wireless_energy_output_hatch.json
+5fa5b82c8c6a049067b8dba146c784cf9b6ef96f assets/gtmqol/models/block/machine/me_dual_input.json
+cfafef766f0d99886bc65b5599827c85179bd45a assets/gtmqol/models/block/machine/me_dual_output.json
 4c698cf49681244aebdbb672ff220f769cd01db7 assets/gtmqol/models/block/machine/mv_magical_assembler.json
 d4472e94d06937253c3f0db1d0606aeffccb7037 assets/gtmqol/models/block/machine/mv_me_assembler.json
 055ca002bfc98fdac8af340dcb6498c1955a33d9 assets/gtmqol/models/block/machine/mv_me_circuit_slicer.json
@@ -292,6 +298,7 @@ d4b0042832be3e3afea4960be0a038c430abe30f assets/gtmqol/models/block/machine/zpm_
 d1eb0723081491309d46aeff66a2c26486b7eef3 assets/gtmqol/models/item/advanced_control_circuit.json
 be3f8cfc9239ad5de00f065cec0a9a7d0b50e0f1 assets/gtmqol/models/item/basic_control_circuit.json
 cf7743976cfd88da6a96fe40650046a311fa84ec assets/gtmqol/models/item/dimensionally_transcendent_fusion_reactor.json
+3b8ddae18e81cc41975815c2b9441a4d3bb9e4ff assets/gtmqol/models/item/electric_implosion_compressor.json
 4cfe84f37bb9012d579a77ba78fa898eb24f1ac3 assets/gtmqol/models/item/elite_control_circuit.json
 a4ce3412d9732cdd0237d1c99b1578100584bf59 assets/gtmqol/models/item/ev_magical_assembler.json
 e9e8799b76624b2ca7572680c1aad4cdf4871ace assets/gtmqol/models/item/ev_me_assembler.json
@@ -395,6 +402,8 @@ a4b7b6f335e9bf4b27f51d20d6df1b6ec07e384d assets/gtmqol/models/item/max_universal
 dc8f2b39dd32583e6ecf86c5a00022417c94affe assets/gtmqol/models/item/max_wireless_energy_input_hatch.json
 8b2048a623bd1ca289a42dd7a63a3dc9fbf920a4 assets/gtmqol/models/item/max_wireless_energy_output_cover.json
 522e7617efd3df7ea4932c204f7eae9562273b7d assets/gtmqol/models/item/max_wireless_energy_output_hatch.json
+ac8970bfb4a62ae88852bb6eb6d834828322d726 assets/gtmqol/models/item/me_dual_input.json
+f0f70a3215271f2f719cbd9b7fb50aaecedb99be assets/gtmqol/models/item/me_dual_output.json
 be707b47c96be6e3e2b6f890a60d11e63573a943 assets/gtmqol/models/item/mv_magical_assembler.json
 9c162fcd8558cc55d051fc111d50a533ed713c2a assets/gtmqol/models/item/mv_me_assembler.json
 b3915121697dd824442bb227908994fae4b000d7 assets/gtmqol/models/item/mv_me_circuit_slicer.json
@@ -421,6 +430,7 @@ c76e334a08ac58c9fe19a1a3a6375101a7814cb3 assets/gtmqol/models/item/overclocked_m
 4b2d6544c00ca8fce442dd61087f493d1d9abc87 assets/gtmqol/models/item/simple_control_circuit.json
 8ed731296fb90ab6355072e65bf2f8cbb5039acf assets/gtmqol/models/item/smart_assembly_factory.json
 e7c86c95da8b0d2fc682e0d3fa536e0ab271a99a assets/gtmqol/models/item/steam_parallel_hatch.json
+610152857793f6c106f955bbde4ccbcd41493691 assets/gtmqol/models/item/sticky_card.json
 fa12ec40c26ad169c1d647367802f47a5c42dc45 assets/gtmqol/models/item/uev_magical_assembler.json
 3583f0d29cdc08a201ad5607815003480128942e assets/gtmqol/models/item/uev_me_assembler.json
 b1d3e96cce81bf19e5d6437b5339ed04b182d292 assets/gtmqol/models/item/uev_me_circuit_slicer.json

@@ -3,12 +3,14 @@ package com.yiran.minecraft.gtmqol.common.wireless.energy;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.yiran.minecraft.gtmqol.common.wireless.NetworkId;
 
 import net.minecraft.core.Direction;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
@@ -112,6 +114,16 @@ public class WirelessEnergyContainer extends NotifiableEnergyContainer {
     @Override
     public double getTotalContentAmount() {
         return getEnergyStored();
+    }
+
+    /**
+     * Same total EU as the base class, without {@code EnergyContainerList.calculateVoltageAmperage}: its
+     * prime factor check is linear in the amperage, which is up to 2^24 here (worst for powers of two), and this
+     * is called on every parallel calculation.
+     */
+    @Override
+    public List<Object> getContents() {
+        return List.of(new EnergyStack(getEnergyStored()));
     }
 
     @Override

@@ -8,16 +8,20 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
+import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
+import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.data.tag.CircuitTags;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
 import com.yiran.minecraft.gtmqol.common.circuit.UniversalCircuits;
 import com.yiran.minecraft.gtmqol.client.GTMQoLClient;
+import com.yiran.minecraft.gtmqol.config.EarlyConfig;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.common.fe.FEInputProvider;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.test.IntegrationTests;
+import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.integration.KubeJSDataGenFix;
 import com.yiran.minecraft.gtmqol.data.recipe.MiscRecipes;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
@@ -31,6 +35,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -56,6 +61,10 @@ public final class GTMQoL {
         if (config.circuits.mekanismCircuitTags) CircuitTags.init();
         if (GTCEu.Mods.isAE2Loaded() && config.ae2.processing) {
             AEProcessing.initItems();
+        }
+        if (GTCEu.Mods.isAE2Loaded() && EarlyConfig.AE2_STICKY_CARD) {
+            StickyCardItem.init();
+            modBus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(StickyCardItem::registerUpgrades));
         }
         modBus.addGenericListener(GTRecipeType.class, this::onRegisterRecipeTypes);
         modBus.addGenericListener(CoverDefinition.class, this::onRegisterCovers);
@@ -95,6 +104,7 @@ public final class GTMQoL {
 
     private void onRegisterRecipeTypes(GTCEuAPI.RegisterEvent<ResourceLocation, GTRecipeType> event) {
         MagicalAssembler.initRecipeType();
+        if (GTMQoLConfig.get().machines.electricImplosionCompressor) ElectricImplosion.initRecipeType();
         if (GTCEu.Mods.isAE2Loaded() && GTMQoLConfig.get().ae2.processing) {
             AEProcessing.initRecipeTypes();
         }
@@ -120,12 +130,15 @@ public final class GTMQoL {
         GTMQoLConfig config = GTMQoLConfig.get();
         MagicalAssembler.initMachines();
         GTMQoLMultiblocks.init();
+        if (config.machines.electricImplosionCompressor) ElectricImplosion.initMachine();
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
         if (config.wireless.steam) WirelessSteamMachines.init();
         if (config.wireless.energy) WirelessEnergyMachines.init();
         if (GTCEu.Mods.isAE2Loaded()) {
             if (config.ae2.overclockedPatternBuffer) AE2Machines.init();
             if (config.ae2.processing) AEProcessing.initMachines();
+            if (config.ae2.dualHatches) AEDualParts.init();
+            if (config.ae2.patternBufferReturn) AEDualParts.initLang();
         }
         // do not run integration tests in data generation, They are only for testing in a running game.
         if (config.integrationTests.enabled && !FMLLoader.getLaunchHandler().isData()) {
