@@ -58,4 +58,6 @@ bin/
 /.registrate-src-1.21
 /runclient.log
 /.gtmthings-src
+/.mc-src
+/.mui-src
 /.modularui-src

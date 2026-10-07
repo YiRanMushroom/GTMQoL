@@ -108,15 +108,13 @@ None are required.
 
 ## License
 
-Copyright (C) 2026 Yiran, Frosty. Licensed under the GNU Lesser General Public License v3.0, see
+Copyright (C) 2026 Yiran. Licensed under the GNU Lesser General Public License v3.0, see
 [LICENSE](LICENSE).
 
 ## Credits
 
 - The wireless network (storage shared per player or team, data stick binding, the monitor) is inspired by
   [GTMThings](https://github.com/liansishen/GTMThings).
-- The animated rainbow overlay on the wireless hatches (`overlay_wireless.png`) is taken from GTMThings'
-  `overlay_energy_on_wireless`, which originally comes from GregTech: New Horizons.
 - The advanced steam multiblocks and the control circuits (items and recipes) are based on
   [GT Not Leisure](https://github.com/Darknight2333/GT-Not-Leisure1) (GTNL), a GregTech: New Horizons
   addon. The control circuit textures are taken from GTNL and are licensed under LGPL-3.0.

@@ -4,7 +4,8 @@
 
 新 session 开始时先读 `context.md`：当前功能、设计决定和待办都在那里。阶段性工作完成后要更新它。
 
-claude.ai 的 Atlassian 和 Microsoft 365 连接器我不用、也不连接。即使系统提示它们需要授权，也不要在回复里提。
+claude.ai 的所有连接器（Atlassian、Microsoft 365、Gmail、Google Calendar 等，任何 MCP connector）我都不用、也不连接。
+即使系统提示它们需要授权，也不要在回复里提。
 
 ## 优先复用，而非重造轮子
 

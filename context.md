@@ -123,7 +123,7 @@ src/main/java/com/yiran/minecraft/gtmqol/
 │   ├── circuit/           UniversalCircuits, ControlCircuits (items)
 │   ├── fe/                FEInputProvider: FE input for every GT machine and cable
 │   ├── modular/           modular multiblock versions of single-block machines
-│   ├── multiblock/        Smart Assembly Factory, DTFR, void miner
+│   ├── multiblock/        Smart Assembly Factory, DTFR, void miner, fishing pond
 │   ├── overclock/         replacement OC logics
 │   ├── recipedb/          non-mixin side of the grouped search
 │   ├── steam/             advanced steam multiblocks, steam parallel hatch, steam magical assembler
@@ -452,36 +452,69 @@ Goal: nether stars before IV (IV needs a lot of them).
   implosion compressor, IV motors and field generators (as in 1.19).
 - Not yet in game. Ported to 1.20.1 (there KubeJS implosion recipes get no copy, no late regeneration).
 
+## Cyclic multiblocks (`multiblock/CyclicMultiblockMachine`, `PendingOutputTrait`)
+
+Abstraction the user asked for (void miner + fishing pond). Written, not built yet.
+
+- `CyclicMultiblockMachine extends MultiblockControllerMachine implements IMuiMachine`: own server tick, no
+  recipe logic (GTCEu's voids overflowing outputs). State IDLE → WORKING (`cycleTicks()`, `onCycleTick()` every
+  tick, pauses while unformed) → `finishCycle()` adds to `output` → OUTPUTTING (retry every `RETRY_TICKS` = 5)
+  → IDLE. While enabled in IDLE, `startCycle()` (returns null or a problem lang key, also pays) is retried every
+  5 ticks. Stopping lets the current cycle finish. `RECIPE_LOGIC_STATUS` set by hand (WORKING only while working).
+  Shared UI pieces: status line, stored button + live popup (fixed rows, `setEnabledIf`), power toggle, popup,
+  counter row (Shift step per machine). Lang keys under the machine's prefix, common ones via
+  `GTMQoLMultiblocks.addCyclicMachineLang`.
+- `PendingOutputTrait`: parallel `@SaveField` lists `items` (count-1 templates, merged by
+  `isSameItemSameComponents`, so enchanted books / damaged rods survive) and `counts` (long). `output()` inserts
+  into every `NotifiableItemStackHandler` with `IO.OUT` (ME output bus works). Breaking the controller loses it.
+- The refactor changed the void miner's saved fields (`pending` CompoundTag gone, state `MINING` → `WORKING`):
+  old placed miners lose their pending ores / may load in an odd state.
+
 ## Void miner (`multiblock/VoidMinerMachine`, `VoidMinerOres`)
 
-1.21.1 only so far, written but not built; port to 1.20.1 after the user tests it.
+1.21.1 only so far; port to 1.20.1 after the user tests it. On `CyclicMultiblockMachine` (see above).
 
-- Plain `MultiblockControllerMachine` + `IMuiMachine`, no recipe logic, no energy hatch (`DUMMY_RECIPES`).
-  Shape = GTCEu's EV Large Miner with solid steel casing and steel frames; 'X' only takes output buses
-  (≥1, ME output bus works: `insertItemInternal` on every `NotifiableItemStackHandler` with `IO.OUT`).
-  Model copies the large miner's (active parent when formed); `RECIPE_LOGIC_STATUS` set by hand.
+- No energy hatch (`DUMMY_RECIPES`). Shape = GTCEu's EV Large Miner with solid steel casing and steel frames;
+  'X' only takes output buses (≥1). Model copies the large miner's (active parent when formed).
 - Power: `WirelessBindingTrait` (auto-binds on placement, data stick works) and
   `WirelessEnergySavedData.extract(network, 1, cost)` = all-or-nothing. 1M EU per stack (64 ores),
-  operations 1..16 × stacks 1..16, paid at the start of the cycle (retried every second while enabled).
+  operations 1..16 × stacks 1..16, paid in `startCycle()`.
 - Semantics (user-corrected): one stack = 64 of the *same* ore. Each operation draws one ore (binary search
   over the cumulative chances) and yields `multiplier` stacks of it, so operations = max distinct ores per cycle.
   Settings are snapshotted into `cycleOperations`/`cycleMultiplier` at payment; changes apply next cycle.
-- Cycle: 300 ticks (pauses while unformed), then the draws go into `pending` (CompoundTag item id → long,
-  saved). Output; what doesn't fit is retried every 100 ticks (`progress` counts that too); next cycle only
-  after `pending` is empty, so it never holds more than 16 ore types. Stopping = no next cycle.
-  Breaking the controller loses `pending`.
+- Cycle 300 ticks; the next cycle only starts once everything is out, so at most 16 ore types are pending.
 - Ores: GTCEu `ORE_VEIN` datapack registry ("GTNH veins" read as GT's own veins), veins whose
   `dimensionFilter` has the dimension; each vein adds `weight × chance / Σchances` per material. Prefix:
   overworld deepslate, nether netherrack, end endstone, else the `TagPrefix.ORES` entry whose stone is the
   dimension's noise `defaultBlock`, else deepslate. `voidMiner.dimensionMapping` (`"from=to"`) mines another
   dimension's veins and stone. Computed once per machine load (a datapack `/reload` needs a chunk reload).
-- UI: wireless binding block (`WirelessEnergyUI.create`) + status (seconds to 2 decimals; output-full shows
-  ores left and the retry countdown) + settings lines + four buttons: ore chances popup, stored popup, settings
-  popup (±1, Shift ±4), power toggle. Popups are `syncedPanel` + `Dialog` like GTCEu's
-  `CreativeEnergyContainerMachine`; ore and stored lists are `GenericListSyncHandler`s in the main panel. The
-  stored popup is live: 16 fixed rows (`DynamicDrawable` icon + dynamic text), extra rows `setEnabledIf`-hidden.
+- UI: wireless binding block (`WirelessEnergyUI.create`) + status + settings lines + buttons: ore chances popup,
+  stored popup, settings popup (±1, Shift ±4), power toggle. Popups are `syncedPanel`s.
 - Recipe (magical assembler, LV, no chips): 4 LV miners, 16 LV circuits, 16 each LV motor/piston/conveyor,
   16 solid steel casings, 64 double steel plates, 16 steel gears.
+
+## Industrial Fishing Pond (`multiblock/FishingPondMachine`, `client/FishingPondWaterRender`)
+
+1.21.1 only, written, not built yet. Config `machines.fishingPond`. On `CyclicMultiblockMachine`.
+
+- Structure: GTCEu's Large Chemical Bath widened — 7 × 7 × 5 watertight casing, 5 × 5 × 4 air cavity
+  (= vanilla's open-water check: 5 × 5, y−1..y+2), open top, controller in the front wall at the cavity's bottom
+  layer. 'X' ≥100 casings, ≥1 output bus, ≥1 energy input (hatch / substation / laser). Chem bath model.
+- Water: persistent `MultiblockFluidRendererTrait` (offsets = the 5 × 5 on the cavity's second layer from the
+  top) + own `DynamicRender` (always water, same `FluidBlockRenderer` settings as GTCEu's chem bath);
+  `FluidAreaRender` can't be reused (typed to `WorkableMultiblockMachine`, reads recipe logic).
+- Rod: `CustomItemStackHandler(1)` in the controller UI, filter `canPerformAction(FISHING_ROD_CAST)`, dropped
+  via `modifyDrops`, never damaged. No rod = start problem.
+- Energy: while working, drains energy inputs as fast as they give into `energyBuffer` (saved), capped at
+  Σ(V × A) × 100 (saturating). Never power-fails. Cycle 100 ticks. At the end: cost per fish
+  c = 1000 EU (×4 treasure) × (350 − min(Lure ticks, 300)) / 350, rounded up (Lure I/II/III 715/429/143);
+  m = buffer / (rolls × c); m < 1 → nothing, buffer kept; else pay m × rolls × c, roll vanilla `FISHING` loot
+  `rolls` (1..64, UI) times, every stack × m.
+- Loot: no AT/mixin. Normal mode leaves out THIS_ENTITY, so the treasure entry's `in_open_water` condition fails
+  (fish + junk). Treasure mode passes a fresh `FishingHook` (not added to the level; `openWater` defaults true).
+  Luck of the Sea → `withLuck(getFishingLuckBonus)`. Origin = controller.
+- Recipe (magical assembler, EV): 4 EV fishers, 8 EV circuits, 8 EV pumps, 4 EV robot arms, 32 watertight
+  casings, 32 double titanium plates, 16 fishing rods.
 
 ## Advanced steam multiblocks (`steam/`, `circuit/ControlCircuits`)
 

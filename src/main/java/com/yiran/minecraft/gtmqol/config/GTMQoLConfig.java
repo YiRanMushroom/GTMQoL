@@ -56,6 +56,12 @@ public final class GTMQoLConfig {
         public boolean voidMiner = true;
 
         @Configurable
+        @Configurable.Comment({ "Industrial Fishing Pond (vanilla fishing loot for EU, with a rod in the controller)",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean fishingPond = true;
+
+        @Configurable
         @Configurable.Comment({ "Electric Implosion Compressor (every implosion recipe that uses TNT, without the TNT)",
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)

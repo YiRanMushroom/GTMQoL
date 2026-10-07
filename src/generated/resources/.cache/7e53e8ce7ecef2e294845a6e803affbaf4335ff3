@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-06T19:00:09.5269383	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.21.1	2026-10-07T16:30:55.4900849	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
 e61d13dc7f445fd39b88c0d72baabebd58c467a5 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
 f9870cf6218e8d4c6a301978cf03cd4e3221859d assets/gtmqol/blockstates/electric_implosion_compressor.json
 e56ce4c77d68a08637181b48d3164a158cc4a89d assets/gtmqol/blockstates/ev_magical_assembler.json
@@ -7,6 +7,7 @@ e56ce4c77d68a08637181b48d3164a158cc4a89d assets/gtmqol/blockstates/ev_magical_as
 a91e65af95233fb1c36351f1a8af8558f01fbadd assets/gtmqol/blockstates/ev_wireless_energy_accessor.json
 db1903aa17abc549be82973c4afbb45a05462a80 assets/gtmqol/blockstates/ev_wireless_energy_input_hatch.json
 a0f3715f02c7b8a5d797a0c14afec3eec6492e2b assets/gtmqol/blockstates/ev_wireless_energy_output_hatch.json
+c7057cd5ff42fd96286ee50fe068734a2df58119 assets/gtmqol/blockstates/fishing_pond.json
 f276ef9c619c09ac5c554e3996a601921170ba37 assets/gtmqol/blockstates/hp_steam_assembler.json
 412092fb7918ccc89579b85476f27d158d753a04 assets/gtmqol/blockstates/hp_steam_bender.json
 7884940f046112dc0d7875c7ae8e0efb1f79dadd assets/gtmqol/blockstates/hp_steam_centrifuge.json
@@ -147,8 +148,8 @@ e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circui
 674a583f2b29eee523d730ad4211c0134c9f8134 assets/gtmqol/blockstates/zpm_wireless_energy_accessor.json
 1136e3739fdb3b339bc80d9bedcd1bde88a780e9 assets/gtmqol/blockstates/zpm_wireless_energy_input_hatch.json
 a77ec21bfd8e4ba2dd87ea6bde687970c4039a69 assets/gtmqol/blockstates/zpm_wireless_energy_output_hatch.json
-77b8b195a4d30137c4c7727bbcc5837233823789 assets/gtmqol/lang/en_ud.json
-94bc9325041bbb59ba1c74f66c81116a82c6d2de assets/gtmqol/lang/en_us.json
+6d568c327ac3e77e7455ab4e07aacf5af971c28e assets/gtmqol/lang/en_ud.json
+188c1f35e6b2a2c7b46ce00b6bc7da2b05bc3933 assets/gtmqol/lang/en_us.json
 68508e04e98fb37278a58e6e9440ba6f5cf3d12a assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
 741b8a3b73652f73a2e11b5943bc7ddeb426f178 assets/gtmqol/models/block/machine/electric_implosion_compressor.json
 43e20a64b464684c43af6a30b86673d37ebca485 assets/gtmqol/models/block/machine/ev_magical_assembler.json
@@ -157,6 +158,7 @@ a77ec21bfd8e4ba2dd87ea6bde687970c4039a69 assets/gtmqol/blockstates/zpm_wireless_
 916308d53b00fee7f8b2da46fe6742ff6c7eff61 assets/gtmqol/models/block/machine/ev_wireless_energy_accessor.json
 be1e4b3fccfeccfda54136642c18f1677391de98 assets/gtmqol/models/block/machine/ev_wireless_energy_input_hatch.json
 c890d8413a15b66baa74300a2e80b500ed1a3cfe assets/gtmqol/models/block/machine/ev_wireless_energy_output_hatch.json
+d138154ffe24090cee9f9736fc02bccfa9d37280 assets/gtmqol/models/block/machine/fishing_pond.json
 444706533a6fd002bfb76c58ca2cf0230d47a3dd assets/gtmqol/models/block/machine/hp_steam_assembler.json
 9581271903647b8fb198559f8b7b18fbc16b8f3f assets/gtmqol/models/block/machine/hp_steam_bender.json
 bd65b5854ad129a0ddae07cf798bd5f626650371 assets/gtmqol/models/block/machine/hp_steam_centrifuge.json
@@ -311,6 +313,7 @@ d3bc3c423665653d0d50310bf80859cc4fc3910c assets/gtmqol/models/item/ev_wireless_e
 5023592c5052d70b5ed1163c1a29c24a25492b96 assets/gtmqol/models/item/ev_wireless_energy_input_hatch.json
 8b2048a623bd1ca289a42dd7a63a3dc9fbf920a4 assets/gtmqol/models/item/ev_wireless_energy_output_cover.json
 c98c29954d577a46830e6bd55d7f10509b405f5c assets/gtmqol/models/item/ev_wireless_energy_output_hatch.json
+a4654293c47d5e1e5e849f7cfb5588d668d5bb3c assets/gtmqol/models/item/fishing_pond.json
 e09d78c38c41a6761f617d31fd1cbca261286e68 assets/gtmqol/models/item/hp_steam_assembler.json
 75d201e2533f9d90abe05c4069d0a348292488af assets/gtmqol/models/item/hp_steam_bender.json
 2a50d52c2a3303dab172b6d591768836307d874c assets/gtmqol/models/item/hp_steam_centrifuge.json
