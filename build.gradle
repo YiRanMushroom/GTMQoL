@@ -3,6 +3,8 @@ plugins {
     id 'maven-publish'
     // Same plugin and version as gtceu's 1.21 branch and its 1.21.1 addon template.
     id 'net.neoforged.moddev' version '2.0.141'
+    // Applies META-INF/accesstransformer.cfg to compileOnly dependencies (accessCompileOnly), compile time only.
+    id 'dev.vfyjxf.modaccessor' version '1.2.1'
 }
 
 base {
@@ -63,6 +65,13 @@ neoForge {
             sourceSet sourceSets.main
         }
     }
+}
+
+// Our AT is for other mods' private classes (see META-INF/accesstransformer.cfg). ModDevGradle only applies it to
+// Minecraft, so ModAccessor patches the jars on accessCompileOnly for javac; at runtime NeoForge applies the AT.
+modAccessor {
+    createTransformConfiguration(configurations.compileOnly)
+    accessTransformerFiles = project.files('src/main/resources/META-INF/accesstransformer.cfg')
 }
 
 configurations {
@@ -182,7 +191,7 @@ dependencies {
     localRuntime "dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}"
     // Compile-only for recipedb/PatternBufferIngredients (gtceu's pattern buffer implements AE2 interfaces);
     // only used when AE2 is loaded, still not a runtime dependency of ours.
-    compileOnly "org.appliedenergistics:appliedenergistics2:${project.ae2_version}"
+    accessCompileOnly "org.appliedenergistics:appliedenergistics2:${project.ae2_version}"
     localRuntime "org.appliedenergistics:appliedenergistics2:${project.ae2_version}"
     // Optional: ExtendedAE Plus smart doubling on gtceu's pattern buffer. Compile against its API, never
     // require it. It requires ExtendedAE, which in turn requires GuideMe and Glodium; all from Modrinth,
