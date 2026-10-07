@@ -624,7 +624,7 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
   recipes: ME assembler if `ae2.processing`, plus the shaped one). Two early switches in
   `config/gtmqol-early.properties` (`EarlyConfig`, not toma, since they decide mixins): `ae2.universalCircuitEncoding`
   (only `EncodingHelperMixin`) and `ae2.stickyCard` (the other four mixins, the item and its recipes); the plugin
-  applies each set accordingly, and the mixins also check `StickyCardItem.STICKY_CARD != null`. `StorageBusPartMixin` reads the private `handler` field by reflection like v7 (a `@WrapOperation` with the supertype receiver did not match the private `StorageBusInventory`). The Upgrades have no tooltip group (AE2's storage bus
+  applies each set accordingly, and the mixins also check `StickyCardItem.STICKY_CARD != null`. `StorageBusPartMixin` `@Shadow`s the `handler` field; its private type `StorageBusInventory` is opened by `META-INF/accesstransformer.cfg`, which MDG only applies to Minecraft, so the ModAccessor plugin (`dev.vfyjxf.modaccessor`, build time only) patches the AE2 jar on `accessCompileOnly` for javac (compiles; a `@WrapOperation` with the supertype receiver did not match). The Upgrades have no tooltip group (AE2's storage bus
   upgrades have none). ExtendedAE is now `compileOnly` too.
 - Versions are constrained by GTCEu's JEI mixins: JEI stays 15.20.0.115, so EAP stays 1.6.1 (see
   `gradle.properties`).
@@ -633,6 +633,9 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
 
 ## Pending / open
 
+- Known, not fixing (GTCEu issue, 2026-10-06): on steam (BRONZE theme) machine panels, including our wireless steam ones, 
+  the title and the GT logo are pushed to the right and look squeezed. GTCEu's own steam machines do the same, 
+  so it is upstream; revisit only if GTCEu changes the panel.
 - Fixed (gtceu bug, 2026-10-03): the ME stocking / plain ME input bus config UI (and our dual input) didn't
   update while open, only after reopening. The server sent and the client received the packet, but the display
   stayed old. Likely cause: `AEConfigSyncHandler.detectAndSendChanges` computes the per-slot `changed` flag and
