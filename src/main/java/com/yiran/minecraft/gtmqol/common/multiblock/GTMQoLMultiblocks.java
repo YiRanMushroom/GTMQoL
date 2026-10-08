@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
+import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.common.data.GCYMBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -230,15 +231,18 @@ public final class GTMQoLMultiblocks {
                         Component.translatable(FishingPondMachine.KEY + "tooltip.2"),
                         Component.translatable(FishingPondMachine.KEY + "tooltip.3"))
                 .appearanceBlock(GCYMBlocks.CASING_WATERTIGHT)
+                // startOffset is the controller -> first block of the first slice: the back wall is 6 slices behind
+                // (1 + 5 repeats), S is in string 1 and char 3. Without it gtceu guesses from the controller's slice
+                // index, which counts the repeatable slice once.
                 .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
+                        .startOffset(OriginOffset.of(BACK, 6).move(DOWN, 1).move(LEFT, 3))
                         .slice("XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX")
                         .sliceRepeatable(5, 5, "XXXXXXX", "X     X", "X     X", "X     X", "X     X")
                         .slice("XXXXXXX", "XXXSXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX")
                         .where('S', controller(blocks(definition.getBlock())))
                         .where('X', blocks(GCYMBlocks.CASING_WATERTIGHT.get()).setMinGlobalLimited(100)
                                 .and(abilities(PartAbility.EXPORT_ITEMS).setMinGlobalLimited(1).setPreviewCount(1))
-                                .and(abilities(PartAbility.INPUT_ENERGY, PartAbility.SUBSTATION_INPUT_ENERGY,
-                                        PartAbility.INPUT_LASER).setMinGlobalLimited(1).setPreviewCount(1)))
+                                .and(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setPreviewCount(1)))
                         .where(' ', air())
                         .build())
                 .hasBER(true)
@@ -348,7 +352,7 @@ public final class GTMQoLMultiblocks {
                 .inputItems(GTItems.ROBOT_ARM_EV, 4)
                 .inputItems(GCYMBlocks.CASING_WATERTIGHT.asItem(), 32)
                 .inputItems(plateDouble, Titanium, 32)
-                .inputItems(Items.FISHING_ROD, 16)
+                .inputItems(GTMachines.RESERVOIR_HATCH)
                 .outputItems(FISHING_POND)
                 .duration(1200)
                 .EUt(VA[EV])
