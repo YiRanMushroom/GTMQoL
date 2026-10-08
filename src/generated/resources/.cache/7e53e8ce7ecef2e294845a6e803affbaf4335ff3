@@ -1,4 +1,5 @@
-// 1.21.1	2026-10-07T16:30:55.4900849	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.21.1	2026-10-07T23:01:18.8872971	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+09fb3a7710cbbd11f92fc4af1cdf02c52d2d0796 assets/gtmqol/blockstates/crystal_growth_chamber.json
 e61d13dc7f445fd39b88c0d72baabebd58c467a5 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
 f9870cf6218e8d4c6a301978cf03cd4e3221859d assets/gtmqol/blockstates/electric_implosion_compressor.json
 e56ce4c77d68a08637181b48d3164a158cc4a89d assets/gtmqol/blockstates/ev_magical_assembler.json
@@ -148,8 +149,9 @@ e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circui
 674a583f2b29eee523d730ad4211c0134c9f8134 assets/gtmqol/blockstates/zpm_wireless_energy_accessor.json
 1136e3739fdb3b339bc80d9bedcd1bde88a780e9 assets/gtmqol/blockstates/zpm_wireless_energy_input_hatch.json
 a77ec21bfd8e4ba2dd87ea6bde687970c4039a69 assets/gtmqol/blockstates/zpm_wireless_energy_output_hatch.json
-6d568c327ac3e77e7455ab4e07aacf5af971c28e assets/gtmqol/lang/en_ud.json
-188c1f35e6b2a2c7b46ce00b6bc7da2b05bc3933 assets/gtmqol/lang/en_us.json
+93a84cf6a112687b465b497d6f8a590f0026ce1e assets/gtmqol/lang/en_ud.json
+0982810b97e8346e83bfe279778351fe6e42246a assets/gtmqol/lang/en_us.json
+4164843cf5260a41ff807a6f71a0269d98fdc69f assets/gtmqol/models/block/machine/crystal_growth_chamber.json
 68508e04e98fb37278a58e6e9440ba6f5cf3d12a assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
 741b8a3b73652f73a2e11b5943bc7ddeb426f178 assets/gtmqol/models/block/machine/electric_implosion_compressor.json
 43e20a64b464684c43af6a30b86673d37ebca485 assets/gtmqol/models/block/machine/ev_magical_assembler.json
@@ -301,6 +303,7 @@ d4b0042832be3e3afea4960be0a038c430abe30f assets/gtmqol/models/block/machine/zpm_
 01c6c803b25ecd3a1a385983618f9b307d0a5979 assets/gtmqol/models/block/machine/zpm_wireless_energy_output_hatch.json
 d1eb0723081491309d46aeff66a2c26486b7eef3 assets/gtmqol/models/item/advanced_control_circuit.json
 be3f8cfc9239ad5de00f065cec0a9a7d0b50e0f1 assets/gtmqol/models/item/basic_control_circuit.json
+f54b8e608c4f1891e653492833ad34ac682a4b4f assets/gtmqol/models/item/crystal_growth_chamber.json
 cf7743976cfd88da6a96fe40650046a311fa84ec assets/gtmqol/models/item/dimensionally_transcendent_fusion_reactor.json
 3b8ddae18e81cc41975815c2b9441a4d3bb9e4ff assets/gtmqol/models/item/electric_implosion_compressor.json
 4cfe84f37bb9012d579a77ba78fa898eb24f1ac3 assets/gtmqol/models/item/elite_control_circuit.json
