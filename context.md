@@ -543,12 +543,19 @@ Works in game on 1.21. Ported to 1.20 (not built there yet). Config `machines.cr
 
 ## Greenhouse (`greenhouse/Greenhouse`, `integration/mysticalagriculture/MAGreenhouseRecipes`)
 
-Written on 1.21 2026-10-07, not built yet; not on 1.20 yet. Config `machines.greenhouse`.
-- 5 × 5 × 5: steel casing floor, edges and roof border, tempered glass (or casing) walls and roof. The controller
-  is in the front wall, one block above the floor. The middle of the floor's inside must be `#minecraft:dirt`
-  (`blockTag`); the rest of the inside is free. Perfect subtick OC, no parallel, like the crystal chamber.
+Written on 1.21 and ported to 1.20 2026-10-07, built on neither yet. Config `machines.greenhouse` (both machines).
+- Greenhouse: single block in every `ELECTRIC_TIERS` tier (`<tier>_greenhouse`, `SimpleTieredMachine`, fermenter
+  overlay), non-perfect OC like GT's single blocks. Crafted with `MetaTileEntityLoader.registerMachineRecipe` and
+  `GTCraftingComponents` in the fermenter's pattern (hull, pump, circuit, cable, glass), so only tiers GT has
+  components for get a recipe.
+- Industrial Greenhouse, IV (user's call 2026-10-08): 5 × 5 × 5, robust tungstensteel casing floor, edges and roof
+  border, laminated glass (or casing) walls and roof. The controller is in the front wall, one block above the
+  floor. The middle of the floor's inside must be `#minecraft:dirt` (`blockTag`); the rest of the inside is free.
+  Modifiers `PARALLEL_HATCH`, `INDUSTRIAL_OUTPUT` (own `RecipeModifier`: `outputModifier(multiplier(16))`, i.e.
+  16× every output, chanced ones too) and perfect subtick OC; no batch mode. Crafted from the IV greenhouse, IV
+  pumps, LuV circuits and laminated glass.
 - Plain recipes (`gtmqol:greenhouse`): the seed/sapling as a `notConsumable` input (distinct inputs, same reason as
-  the crystal chamber) plus 1000 mB water, MV (`VA[MV]`).
+  the crystal chamber) plus 1000 mB water, `VA[LV]` so every tier runs every recipe.
   - Crops: 10 s. Seeds give 8 produce + 4 seeds; plants that are their own seed (carrots, cane...) give 12.
   - Trees: 20 s. 16 logs, 8 leaves, 2 saplings, plus extras (apples, mangrove roots, shroomlights, sticky resin).
   - Mystical Agriculture (its API, `compileOnly` + dev runtime with Cucumber, from Modrinth): every enabled crop

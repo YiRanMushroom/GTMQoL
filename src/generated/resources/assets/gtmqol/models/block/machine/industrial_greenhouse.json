@@ -1,16 +1,16 @@
 {
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
-  "machine": "gtmqol:greenhouse",
+  "machine": "gtmqol:industrial_greenhouse",
   "texture_overrides": {
-    "all": "gtceu:block/casings/solid/machine_casing_solid_steel"
+    "all": "gtceu:block/casings/solid/machine_casing_robust_tungstensteel"
   },
   "variants": {
     "recipe_logic_status=idle": {
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_solid_steel",
+          "all": "gtceu:block/casings/solid/machine_casing_robust_tungstensteel",
           "overlay_front": "gtceu:block/multiblock/large_chemical_reactor/overlay_front",
           "overlay_front_emissive": "gtceu:block/multiblock/large_chemical_reactor/overlay_front_emissive"
         }
@@ -20,7 +20,7 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_solid_steel",
+          "all": "gtceu:block/casings/solid/machine_casing_robust_tungstensteel",
           "overlay_front": "gtceu:block/multiblock/large_chemical_reactor/overlay_front_paused",
           "overlay_front_emissive": "gtceu:block/multiblock/large_chemical_reactor/overlay_front_paused_emissive"
         }
@@ -30,7 +30,7 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_solid_steel",
+          "all": "gtceu:block/casings/solid/machine_casing_robust_tungstensteel",
           "overlay_front": "gtceu:block/multiblock/large_chemical_reactor/overlay_front_active",
           "overlay_front_emissive": "gtceu:block/multiblock/large_chemical_reactor/overlay_front_active_emissive"
         }
@@ -40,7 +40,7 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_solid_steel",
+          "all": "gtceu:block/casings/solid/machine_casing_robust_tungstensteel",
           "overlay_front": "gtceu:block/multiblock/large_chemical_reactor/overlay_front_active",
           "overlay_front_emissive": "gtceu:block/multiblock/large_chemical_reactor/overlay_front_active_emissive"
         }

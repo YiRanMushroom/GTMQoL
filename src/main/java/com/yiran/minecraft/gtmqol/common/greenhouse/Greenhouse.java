@@ -3,18 +3,24 @@ package com.yiran.minecraft.gtmqol.common.greenhouse;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.integration.mysticalagriculture.MAGreenhouseRecipes;
@@ -32,6 +38,7 @@ import net.minecraft.world.level.block.SaplingBlock;
 import net.neoforged.fml.ModList;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -41,43 +48,74 @@ import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Water;
 import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
+import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
+import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*;
 
 /**
- * Greenhouse: a 5 × 5 × 5 glass multiblock with a dirt block in the middle of its floor. One plain recipe per seed or
- * sapling, which is a non-consumed input (so every recipe has distinct inputs, see {@code CrystalGrowth}), plus
- * water. Vanilla and GTCEu plants are listed by hand, Mystical Agriculture crops come from its crop registry, and
- * other mods' saplings and crops are guessed from their names.
+ * Greenhouse: a single block in every electric tier, and the Industrial Greenhouse, an IV 5 × 5 × 5 glass multiblock
+ * with a dirt block in the middle of its floor, 16 times the outputs, parallel hatches and perfect overclocks. One plain recipe per seed or sapling, which is a
+ * non-consumed input (so every recipe has distinct inputs, see {@code CrystalGrowth}), plus water. Vanilla and
+ * GTCEu plants are listed by hand, Mystical Agriculture crops come from its crop registry, and other mods' saplings
+ * and crops are guessed from their names.
  */
 public final class Greenhouse {
 
-    private static final String KEY = "gtmqol.multiblock.greenhouse.";
+    private static final String KEY = "gtmqol.machine.greenhouse.";
+    private static final String INDUSTRIAL_KEY = "gtmqol.multiblock.industrial_greenhouse.";
 
     public static final int CROP_DURATION = 200;
     public static final int TREE_DURATION = 400;
 
     public static GTRecipeTypeEntry RECIPE_TYPE;
-    public static MachineEntry<MultiblockMachineDefinition> MACHINE;
+    @SuppressWarnings("unchecked")
+    public static MachineEntry<MachineDefinition>[] MACHINES = new MachineEntry[TIER_COUNT];
+    public static MachineEntry<MultiblockMachineDefinition> INDUSTRIAL;
 
     /** Seeds and saplings that already have a recipe, so the name guesses don't add a conflicting second one. */
     private static final Set<Item> PLANTED = new HashSet<>();
+
+    /** Multiplies every output of the Industrial Greenhouse. */
+    public static final int INDUSTRIAL_OUTPUT_MULTIPLIER = 16;
+    private static final RecipeModifier INDUSTRIAL_OUTPUT = (machine, recipe) -> ModifierFunction.builder()
+            .outputModifier(ContentModifier.multiplier(INDUSTRIAL_OUTPUT_MULTIPLIER))
+            .build();
 
     private Greenhouse() {}
 
     public static void init() {
         var registrate = GTMQoLAddon.registrate();
-        RECIPE_TYPE = registrate.recipeType("greenhouse", GTRecipeTypes.MULTIBLOCK)
+        RECIPE_TYPE = registrate.recipeType("greenhouse", GTRecipeTypes.ELECTRIC)
                 .setMaxIOSize(1, 4, 1, 0)
                 .setEUIO(IO.IN)
                 .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
                 .lang("Greenhouse")
                 .register();
 
-        MACHINE = GTMQoLAddon.multiblock("greenhouse", WorkableElectricMultiblockMachine::new)
+        for (int tier : ELECTRIC_TIERS) {
+            MACHINES[tier] = GTMQoLAddon.machine(VN[tier].toLowerCase(Locale.ROOT) + "_greenhouse",
+                    info -> new SimpleTieredMachine(info, tier))
+                    .tier(tier)
+                    .langValue("%s Greenhouse %s".formatted(VLVH[tier], VLVT[tier]))
+                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(RECIPE_TYPE)
+                    .recipeModifier(OC_NON_PERFECT)
+                    .workableTieredHullModel(GTCEu.id("block/machines/fermenter"))
+                    .tooltips(Component.translatable(KEY + "tooltip"))
+                    .tooltips(workableTiered(tier, V[tier], V[tier] * 64, RECIPE_TYPE,
+                            defaultTankSizeFunction.applyAsInt(tier), true))
+                    .tooltips(explosion())
+                    .register();
+        }
+
+        INDUSTRIAL = GTMQoLAddon.multiblock("industrial_greenhouse", WorkableElectricMultiblockMachine::new)
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(RECIPE_TYPE)
-                .recipeModifiers(OC_PERFECT_SUBTICK)
-                .tooltips(Component.translatable(KEY + "tooltip.0"), Component.translatable(KEY + "tooltip.1"))
-                .appearanceBlock(CASING_STEEL_SOLID)
+                .recipeModifiers(PARALLEL_HATCH, INDUSTRIAL_OUTPUT, OC_PERFECT_SUBTICK)
+                .tooltips(Component.translatable(INDUSTRIAL_KEY + "tooltip.0"),
+                        Component.translatable(INDUSTRIAL_KEY + "tooltip.1", INDUSTRIAL_OUTPUT_MULTIPLIER),
+                        Component.translatable(INDUSTRIAL_KEY + "tooltip.2"))
+                .appearanceBlock(CASING_TUNGSTENSTEEL_ROBUST)
                 // slices go back to front, strings bottom to top: a casing floor, glass walls on casing pillars and
                 // a glass roof. D is the middle of the floor's inside, the rest of the inside is free.
                 .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
@@ -87,29 +125,35 @@ public final class Greenhouse {
                         .slice("XXXXX", "G###G", "G###G", "G###G", "XGGGX")
                         .slice("XXXXX", "XGSGX", "XGGGX", "XGGGX", "XXXXX")
                         .where('S', controller(blocks(definition.getBlock())))
-                        .where('X', blocks(CASING_STEEL_SOLID.get())
+                        .where('X', blocks(CASING_TUNGSTENSTEEL_ROBUST.get())
                                 .and(autoAbilities(definition.getRecipeTypes()))
-                                .and(autoAbilities(true, false, false)))
-                        .where('G', blocks(CASING_TEMPERED_GLASS.get()).or(blocks(CASING_STEEL_SOLID.get())))
+                                .and(autoAbilities(true, false, true)))
+                        .where('G', blocks(CASING_LAMINATED_GLASS.get())
+                                .or(blocks(CASING_TUNGSTENSTEEL_ROBUST.get())))
                         .where('D', blockTag(BlockTags.DIRT))
                         .where('#', any())
                         .build())
-                .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
+                .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
                         GTCEu.id("block/multiblock/large_chemical_reactor"))
-                .langValue("Greenhouse")
+                .langValue("Industrial Greenhouse")
                 .register();
 
-        registrate.addRawLang(KEY + "tooltip.0", "Grows the seed or sapling in its input bus, which is not consumed.");
-        registrate.addRawLang(KEY + "tooltip.1", "Needs dirt, grass or the like in the middle of its floor.");
+        registrate.addRawLang(KEY + "tooltip", "Grows the seed or sapling in its input slot, which is not consumed.");
+        registrate.addRawLang(INDUSTRIAL_KEY + "tooltip.0",
+                "Grows the seed or sapling in its input bus, which is not consumed.");
+        registrate.addRawLang(INDUSTRIAL_KEY + "tooltip.1", "Outputs %sx as much.");
+        registrate.addRawLang(INDUSTRIAL_KEY + "tooltip.2", "Needs dirt, grass or the like in the middle of its floor.");
     }
 
     public static void addRecipes(RecipeOutput provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, true, GTMQoL.id("greenhouse"),
-                MACHINE.asStack(), "GCG", "PHP", "GCG",
-                'G', CASING_TEMPERED_GLASS.asItem(),
-                'C', CustomTags.MV_CIRCUITS,
-                'P', GTItems.ELECTRIC_PUMP_MV.asStack(),
-                'H', GTMachines.HULL[MV].asStack());
+        MetaTileEntityLoader.registerMachineRecipe(provider, MACHINES, "WPW", "GMG", "WCW",
+                'M', HULL, 'P', PUMP, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, GTMQoL.id("industrial_greenhouse"),
+                INDUSTRIAL.asStack(), "PCP", "GMG", "PCP",
+                'G', CASING_LAMINATED_GLASS.asItem(),
+                'C', CustomTags.LuV_CIRCUITS,
+                'P', GTItems.ELECTRIC_PUMP_IV.asStack(),
+                'M', MACHINES[IV].asStack());
 
         PLANTED.clear();
         addTrees(provider);
@@ -222,6 +266,6 @@ public final class Greenhouse {
                 .notConsumable(seed)
                 .inputFluids(Water, 1000)
                 .duration(duration)
-                .EUt(VA[MV]);
+                .EUt(VA[LV]);
     }
 }
