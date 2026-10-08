@@ -19,6 +19,7 @@ import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
+import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.data.recipe.MiscRecipes;
 import com.yiran.minecraft.gtmqol.common.steam.AdvancedSteamMachines;
@@ -110,6 +111,7 @@ public final class GTMQoLAddon implements IGTAddon {
         if (config.recipes.netherStarDust) MiscRecipes.addNetherStarDust(provider);
         if (config.machines.electricImplosionCompressor) ElectricImplosion.addRecipes(provider);
         if (config.machines.crystalGrowthChamber) CrystalGrowth.addRecipes(provider);
+        if (config.machines.greenhouse) Greenhouse.addRecipes(provider);
         if (GTCEu.Mods.isAE2Loaded()) {
             if (config.ae2.overclockedPatternBuffer) AE2Machines.addRecipes(provider);
             if (config.ae2.processing) AEProcessing.addRecipes(provider);

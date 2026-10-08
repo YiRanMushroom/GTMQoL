@@ -215,6 +215,16 @@ dependencies {
     localRuntime("maven.modrinth:guideme:${project.guideme_version}") {
         transitive = false
     }
+    // Optional: greenhouse recipes for every Mystical Agriculture crop, read from its crop registry (API only).
+    compileOnly("maven.modrinth:mystical-agriculture:${project.mysticalagriculture_version}") {
+        transitive = false
+    }
+    localRuntime("maven.modrinth:mystical-agriculture:${project.mysticalagriculture_version}") {
+        transitive = false
+    }
+    localRuntime("maven.modrinth:cucumber:${project.cucumber_version}") {
+        transitive = false
+    }
     // Optional: GT circuit tags and Mekanism's circuit tags are merged (see CircuitTags). That is plain tag
     // data, so nothing is compiled against Mekanism; it's only in the dev runs for testing.
     localRuntime("mekanism:Mekanism:${project.minecraft_version}-${project.mekanism_version}") {

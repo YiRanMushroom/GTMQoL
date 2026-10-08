@@ -68,6 +68,12 @@ public final class GTMQoLConfig {
         public boolean crystalGrowthChamber = true;
 
         @Configurable
+        @Configurable.Comment({ "Greenhouse (grows seeds and saplings with water: vanilla, GT, Mystical Agriculture, " +
+                "other mods' by name)", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean greenhouse = true;
+
+        @Configurable
         @Configurable.Comment({ "Electric Implosion Compressor (every implosion recipe that uses TNT, without the TNT)",
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
