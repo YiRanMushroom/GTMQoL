@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "gtmqol:block/machine/mv_greenhouse",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtmqol:block/machine/mv_greenhouse"
+    },
+    "facing=south": {
+      "model": "gtmqol:block/machine/mv_greenhouse",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gtmqol:block/machine/mv_greenhouse",
+      "y": 270
+    }
+  }
+}
