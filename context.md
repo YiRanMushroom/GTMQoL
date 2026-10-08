@@ -472,7 +472,7 @@ Abstraction the user asked for (void miner + fishing pond). Written, not built y
 
 ## Void miner (`multiblock/VoidMinerMachine`, `VoidMinerOres`)
 
-1.21.1 only so far; port to 1.20.1 after the user tests it. On `CyclicMultiblockMachine` (see above).
+Ported to 1.20.1 (2026-10-07, not built there yet). On `CyclicMultiblockMachine` (see above).
 
 - No energy hatch (`DUMMY_RECIPES`). Shape = GTCEu's EV Large Miner with solid steel casing and steel frames;
   'X' only takes output buses (≥1). Model copies the large miner's (active parent when formed).
@@ -495,11 +495,16 @@ Abstraction the user asked for (void miner + fishing pond). Written, not built y
 
 ## Industrial Fishing Pond (`multiblock/FishingPondMachine`, `client/FishingPondWaterRender`)
 
-1.21.1 only, written, not built yet. Config `machines.fishingPond`. On `CyclicMultiblockMachine`.
+Forms in game on 1.21.1 (2026-10-07); ported to 1.20.1 (not built there yet). Config `machines.fishingPond`.
+On `CyclicMultiblockMachine`.
 
 - Structure: GTCEu's Large Chemical Bath widened — 7 × 7 × 5 watertight casing, 5 × 5 × 4 air cavity
   (= vanilla's open-water check: 5 × 5, y−1..y+2), open top, controller in the front wall at the cavity's bottom
-  layer. 'X' ≥100 casings, ≥1 output bus, ≥1 energy input (hatch / substation / laser). Chem bath model.
+  layer. 'X' ≥100 casings, ≥1 output bus, ≥1 `INPUT_ENERGY` hatch (only that ability, user's call). Chem bath model.
+- Pattern needs an explicit `startOffset(OriginOffset.of(BACK, 6).move(DOWN, 1).move(LEFT, 3))`: GTCEu's
+  automatic offset counts a repeatable slice once, so with `sliceRepeatable(5, 5, ...)` before the controller's
+  slice it checks the wrong blocks and never forms (GTCEu bug). `startOffset` = vector from the controller to the
+  first char of the first slice.
 - Water: persistent `MultiblockFluidRendererTrait` (offsets = the 5 × 5 on the cavity's second layer from the
   top) + own `DynamicRender` (always water, same `FluidBlockRenderer` settings as GTCEu's chem bath);
   `FluidAreaRender` can't be reused (typed to `WorkableMultiblockMachine`, reads recipe logic).
