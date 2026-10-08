@@ -18,6 +18,7 @@ import com.yiran.minecraft.gtmqol.common.fe.FEInputProvider;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.test.IntegrationTests;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
+import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
@@ -67,6 +68,7 @@ public final class GTMQoL {
         GTMQoLMultiblocks.init();
         if (config.machines.electricImplosionCompressor) ElectricImplosion.init(modBus);
         if (config.machines.crystalGrowthChamber) CrystalGrowth.init();
+        if (config.machines.greenhouse) Greenhouse.init();
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
         if (config.wireless.steam) WirelessSteamMachines.init();
         if (config.wireless.energy) WirelessEnergyMachines.init();

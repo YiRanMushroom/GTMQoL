@@ -523,7 +523,7 @@ On `CyclicMultiblockMachine`.
 
 ## Crystal Growth Chamber (`crystal/CrystalGrowth`, `crystal/CenterBlockCondition`)
 
-Works in game on 1.21. Port to 1.20 still to do. Config `machines.crystalGrowthChamber`.
+Works in game on 1.21. Ported to 1.20 (not built there yet). Config `machines.crystalGrowthChamber`.
 - 3 × 3 × 3 steel casing, controller in the middle of the front face, any block in the middle. The middle of the
   four sides and the back: tempered glass or casing. `NON_Y_AXIS`, no extended facing: the condition reads
   `pos.relative(front.getOpposite())`.
@@ -540,6 +540,24 @@ Works in game on 1.21. Port to 1.20 still to do. Config `machines.crystalGrowthC
   shard. Missing ids are skipped.
 - KubeJS: GTCEu registers a schema for every GT recipe type, so `event.recipes.gtmqol.crystal_growth(id)` exists;
   a binding for the condition is still to do.
+
+## Greenhouse (`greenhouse/Greenhouse`, `integration/mysticalagriculture/MAGreenhouseRecipes`)
+
+Written on 1.21 2026-10-07, not built yet; not on 1.20 yet. Config `machines.greenhouse`.
+- 5 × 5 × 5: steel casing floor, edges and roof border, tempered glass (or casing) walls and roof. The controller
+  is in the front wall, one block above the floor. The middle of the floor's inside must be `#minecraft:dirt`
+  (`blockTag`); the rest of the inside is free. Perfect subtick OC, no parallel, like the crystal chamber.
+- Plain recipes (`gtmqol:greenhouse`): the seed/sapling as a `notConsumable` input (distinct inputs, same reason as
+  the crystal chamber) plus 1000 mB water, MV (`VA[MV]`).
+  - Crops: 10 s. Seeds give 8 produce + 4 seeds; plants that are their own seed (carrots, cane...) give 12.
+  - Trees: 20 s. 16 logs, 8 leaves, 2 saplings, plus extras (apples, mangrove roots, shroomlights, sticky resin).
+  - Mystical Agriculture (its API, `compileOnly` + dev runtime with Cucumber, from Modrinth): every enabled crop
+    in `getCropRegistry().getCrops()`. Tier 1 and elemental 10 s, each tier above doubles. 2 of its essence plus
+    1/10 fertilized essence (MA's own secondary drop). No tier essences or seeds: those are crafted in MA.
+- Sources: vanilla and GT rubber by hand, then MA, then other mods by guess. The guess skips anything that already
+  has a recipe (`PLANTED`) and the `minecraft` namespace: a `SaplingBlock` item `<x>_sapling` with an `<x>_log`
+  (leaves if `<x>_leaves` exists), a `CropBlock` item `<x>_seeds` with an `<x>`, or any other `CropBlock` item
+  as its own produce.
 
 ## Advanced steam multiblocks (`steam/`, `circuit/ControlCircuits`)
 
