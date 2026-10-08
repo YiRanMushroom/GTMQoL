@@ -62,6 +62,12 @@ public final class GTMQoLConfig {
         public boolean fishingPond = true;
 
         @Configurable
+        @Configurable.Comment({ "Crystal Growth Chamber (shards of the budding block in its middle: vanilla, AE2, GeOre)",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean crystalGrowthChamber = true;
+
+        @Configurable
         @Configurable.Comment({ "Electric Implosion Compressor (every implosion recipe that uses TNT, without the TNT)",
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)

@@ -521,6 +521,26 @@ On `CyclicMultiblockMachine`.
 - Recipe (magical assembler, EV): 4 EV fishers, 8 EV circuits, 8 EV pumps, 4 EV robot arms, 32 watertight
   casings, 32 double titanium plates, 16 fishing rods.
 
+## Crystal Growth Chamber (`crystal/CrystalGrowth`, `crystal/CenterBlockCondition`)
+
+Works in game on 1.21. Port to 1.20 still to do. Config `machines.crystalGrowthChamber`.
+- 3 × 3 × 3 steel casing, controller in the middle of the front face, any block in the middle. The middle of the
+  four sides and the back: tempered glass or casing. `NON_Y_AXIS`, no extended facing: the condition reads
+  `pos.relative(front.getOpposite())`.
+- Perfect subtick OC only: no parallel hatch (`autoAbilities(true, false, false)`), no batch mode (user's call).
+- Plain GT recipes (`gtmqol:crystal_growth`), one per budding block: `CenterBlockCondition(block)` + the shard as a
+  `notConsumable` input → 4 shards, LV, 10 s. Its `modifyUI` shows the block like GTCEu's `AdjacentBlockCondition`.
+- Why the shard input: `RecipeDB.addRecursive` keeps one recipe per set of item/fluid inputs and drops the rest
+  (dev-only warn, not in the category map either, so not in EMI). Recipes with no item/fluid input are added to the
+  category map but never found by the lookup (`fromHolder` returns null). Failing conditions are fine though:
+  `handleSearchingRecipes` goes on to the next match.
+- Recipes generated at runtime (`addRecipes`): `ae2:flawless_budding_quartz` → `certus_quartz_crystal`, plus every
+  `<ns>:budding_<x>` that has an `<ns>:<x>_shard`, in any namespace. That covers vanilla amethyst and all 28 GeOre
+  crystals: GeOre's `GeOreBlockReg` registers exactly these names on both 1.20 and 1.21, and its cluster loot is the
+  shard. Missing ids are skipped.
+- KubeJS: GTCEu registers a schema for every GT recipe type, so `event.recipes.gtmqol.crystal_growth(id)` exists;
+  a binding for the condition is still to do.
+
 ## Advanced steam multiblocks (`steam/`, `circuit/ControlCircuits`)
 
 Written, not built or tested yet. Modelled on GTNL's steam multis (GTNH addon, LGPL-3.0, credited in README;
