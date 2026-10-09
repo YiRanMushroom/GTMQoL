@@ -374,7 +374,9 @@ The user chose concrete code in parallel with steam rather than a generic per-re
 - `MachineBuilderMixin` (RETURN of `MachineBuilder.register()`) hands every non-multiblock machine to
   `ModularMachines`. The user's rule (2026-10-08): for each set of recipe types, the first machine registered
   with tier ≥ LV gets the modular machine (steam machines share the types but are tier 0, so the LV one wins).
-  It is named after that machine with the `VN[tier].toLowerCase()+"_"` prefix stripped; if that name is taken by
+  Only machines named `VN[tier].toLowerCase()+"_"<name>` count: GTCEu (and addons copying it) register `hp_` steam
+  machines with `tier(1)` = LV, and before this check they were picked as "the LV machine" for their recipe types.
+  It is named after that machine with the prefix stripped; if that name is taken by
   a different recipe type set, a warning is logged and it gets none. `registerTieredMachines`, KubeJS tiered
   machines and addons looping their tiers themselves all end in `register()`. Replaced master's approach (RETURN
   of `registerTieredMachines` + `KJSTieredMachineBuilder` mixin), which missed self-looping machines.
@@ -395,6 +397,57 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   `SingleHatchTierSkippingWorkableElectricMachine`).
 - Config `modularMachines.enabled` (default true). Not ported: the
   `QOL_RECIPE_MODIFIER` part ability, non-English names.
+
+## Gregification (`gregification/`, 1.21.1 only, 2026-10-09, not built yet)
+
+Other mods' machine recipes run on GT machines. The user designed it as an abstraction layer: one source per
+mod returns `ForeignMachineType`s.
+- Each foreign recipe type gets its own `GregifiedRecipeType` (`gtmqol:<name>`, via `GregifiedRecipeTypeBuilder`).
+  It proxies the foreign type, so GT converts the recipes on every reload through the type's
+  `ForeignRecipeConverter`; nothing goes into data packs.
+  - If the converter returns false or throws, `toGTRecipe` returns null, and `core/mixins/RecipeManagerHandlerMixin`
+    (hacky, the user approved it) skips the null in the lambda of `RecipeManagerHandler.addProxyRecipesToLookup`.
+  - Converted recipe ids are `gtmqol:/gregification/<foreign ns>/<foreign path>`. They are not in the recipe
+    manager, and EMI (dev mode only) warns about every such id unless the path starts with `/` (synthetic).
+  - GT converts proxies only on the server and doesn't sync the results, so on a dedicated server EMI would show
+    empty categories. `gregification/client/GregificationClient` handles `RecipesUpdatedEvent` (HIGHEST, before the
+    recipe viewers reload). On a remote connection it converts the synced foreign recipes itself and adds them to
+    the type's category map, removing the ones it added the previous time. In singleplayer it does nothing, because
+    the server already filled the shared types. Unverified.
+- Single-block types get LV–UV tiered `GregifiedTieredMachine`s (`<tier>_<name>`, GT model). This is
+  `SimpleTieredMachine` plus a `BatchModeTrait`, which saves the flag and adds GT's batch button to the right
+  configurators (`IAttachConfiguratorsTrait`); the default is off, like multiblocks. ModularMachines then adds
+  `modular_<name>` for them.
+- Every generated machine, recipe type name and modular machine uses `dynamicallyGenerated(true)` / runtime
+  lang, so nothing is added to the static resources (the user wants this).
+- Multiblock types get one `WorkableElectricMultiblockMachine` shaped like a GT multiblock (`MultiblockShape`:
+  patterns copied from `GTMultiMachines` with our controller), running plain recipe logic.
+- Recipe types take the sound and progress bar of their GT counterpart (`ForeignMachineType.sound/ui`; no
+  counterpart: no sound, plain arrow). Slot overlays aren't copied, the slot layouts differ.
+- Crafting (`Gregification.addRecipes`, from `GTMQoLAddon.addRecipes`): shapeless counterpart + catalyst = machine,
+  as a `CatalystShapelessRecipe` (our serializer `gtmqol:catalyst_shapeless`), which leaves the catalyst in the
+  grid. Counterpart and catalyst are item ids resolved at recipe time; missing ones (e.g. tiers GTCEu doesn't
+  register) are skipped. MI: catalyst is MI's guidebook; counterpart is the same-tier GT machine, the GT
+  multiblock controller, or (no GT equivalent) MI's own machine. MI's unpacker is crafted from our MI packer,
+  since GT's packer is already taken.
+- All of them (and the modular versions, via `Gregification.allGregified`) use `GregificationModifiers`:
+  - `OVERCLOCK`: the speed-up is `voltage / EUt` at the same energy per recipe. Below 1 tick it runs subtick
+    parallels (`voltage / EUt / duration`).
+  - `BATCH`: GT's batch mode. Single blocks read their `BatchModeTrait`.
+  - The user calls this "FE overclock logic": recipes run at `VA[LV]`, the subtick overclock keeps total energy
+    about the same.
+- Sources are declared on the first `RegisterEvent` (HIGHEST priority). GT reorders the registries (its own and
+  recipe types go first), and MI's KubeJS-added types exist by then.
+- MI (`gregification/mi/MIGregification`, config `gregification.modernIndustrialization`, only when
+  `modern_industrialization` is loaded):
+  - 14 single-block and 10 multiblock types; names `mi_<path>`, "MI <Name>".
+  - Single blocks get MI's slot counts. Multiblocks get 6 slots per kind MI allows.
+  - Recipes use `EUt(VA[LV])`, with duration `ceil(MI total EU / VA[LV])`, so the total energy matches MI's
+    (1 MI EU = 1 GT EU).
+  - MI probability 0 on an input → chance 0 (not consumed). Below 1 → a chance.
+  - Recipes with process conditions are skipped. Unknown (e.g. KubeJS) types are logged and skipped.
+  - Dependency: `compileOnly` + `localRuntime` Modrinth `modern-industrialization` (id `HOR1tVas` = 2.5.10).
+    GrandPower is jar-in-jar; guideme is already a dev runtime mod.
 
 ## Overclocking (`overclock/`, `OverclockingLogicMixin`)
 
@@ -555,7 +608,7 @@ Works in game on 1.21. Ported to 1.20 (not built there yet). Config `machines.cr
 Written on 1.21 and ported to 1.20 2026-10-07, built on neither yet. Config `machines.greenhouse` (both machines).
 - Greenhouse: single block in every `ELECTRIC_TIERS` tier (`<tier>_greenhouse`, `SimpleTieredMachine`, fermenter
   overlay), non-perfect OC like GT's single blocks. Crafted with `MetaTileEntityLoader.registerMachineRecipe` and
-  `GTCraftingComponents` in the fermenter's pattern (hull, pump, circuit, cable, glass), so only tiers GT has
+  `GTCraftingComponents`, `GSG/PMP/WCW` with a sapling (the fermenter's `WPW/GMG/WCW` without one collided), so only tiers GT has
   components for get a recipe.
 - Industrial Greenhouse, IV (user's call 2026-10-08): 5 × 5 × 5, robust tungstensteel casing floor, edges and roof
   border, laminated glass (or casing) walls and roof. The controller is in the front wall, one block above the

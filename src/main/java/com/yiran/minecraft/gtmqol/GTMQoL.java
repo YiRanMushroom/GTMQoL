@@ -27,10 +27,14 @@ import com.yiran.minecraft.gtmqol.common.wireless.WirelessCovers;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessNetworks;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
+import com.yiran.minecraft.gtmqol.gregification.Gregification;
+import com.yiran.minecraft.gtmqol.gregification.client.GregificationClient;
+import com.yiran.minecraft.gtmqol.gregification.mi.MIGregification;
 
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -56,6 +60,10 @@ public final class GTMQoL {
         if (config.circuits.controlCircuits) ControlCircuits.init();
         if (config.circuits.mekanismCircuitTags) CircuitTags.init();
         ModularMachines.init(modBus);
+        Gregification.init(modBus);
+        if (config.gregification.modernIndustrialization && ModList.get().isLoaded("modern_industrialization")) {
+            Gregification.addSource(MIGregification::types);
+        }
 
         // On 1.21 gtceu's registries are Registrate deferred registers, so content is declared right here like
         // gtceu's own CommonProxy does; the entries are created when the registry's RegisterEvent fires.
@@ -95,6 +103,7 @@ public final class GTMQoL {
 
         if (FMLEnvironment.dist.isClient()) {
             GTMQoLClient.init();
+            GregificationClient.init();
         }
     }
 
