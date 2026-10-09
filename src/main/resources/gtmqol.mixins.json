@@ -20,7 +20,8 @@
     "RecipeRemovalMixin",
     "SimpleSteamMachineMixin",
     "SteamItemBusPartMachineMixin",
-    "WorkableElectricMultiblockMachineMixin"
+    "WorkableElectricMultiblockMachineMixin",
+    "gtceufix.EnergyContainerListMixin"
   ],
   "client": [
     "gtceufix.BaseSchemaRendererMixin"

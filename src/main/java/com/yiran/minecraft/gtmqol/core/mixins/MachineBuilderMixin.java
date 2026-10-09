@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.yiran.minecraft.gtmqol.api.generation.IDynamicGenerationHandler;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
+import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -34,5 +35,6 @@ public abstract class MachineBuilderMixin implements IDynamicGenerationHandler {
         if (gtmqol$dynamicGenerated) {
             RuntimeGeneration.addMachine((MachineBuilder<?, ?, ?>) (Object) this, cir.getReturnValue());
         }
+        ModularMachines.register(cir.getReturnValue());
     }
 }

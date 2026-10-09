@@ -43,8 +43,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * ME output bus and output hatch in one. Items go through the ME output bus's buffer, fluids through a second
- * buffer here. Both are pushed into the network as soon as something lands in them; whatever the network does not
- * take stays and is retried every {@code updateIntervals} ticks. The UI lists both buffers together.
+ * buffer here. Both are pushed into the network every {@code updateIntervals} ticks, like the plain bus and hatch
+ * (batching whatever arrived in between). The UI lists both buffers together.
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -53,16 +53,11 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
     @SaveField
     private KeyStorage fluidBuffer = new KeyStorage();
 
-    // Set when the network refused something, so the retries are paced by shouldSyncME instead of every tick.
-    private boolean blocked;
-
     public MEDualOutputPartMachine(BlockEntityCreationInfo info) {
         super(info);
-        getInventory().addChangedListener(() -> blocked = false);
         var tank = attachTrait(new FluidBufferTank(fluidBuffer));
         fluidBuffer.setOnContentsChanged(() -> {
             tank.onContentsChanged();
-            blocked = false;
             updateInventorySubscription();
         });
     }
@@ -86,14 +81,13 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
 
     @Override
     public void autoIO() {
-        if (blocked && !shouldSyncME()) return;
+        if (!shouldSyncME()) return;
         if (!updateMEStatus()) return;
         var grid = getMainNode().getGrid();
         if (grid != null) {
             var network = grid.getStorageService().getInventory();
             if (!fluidBuffer.isEmpty()) fluidBuffer.insertInventory(network, actionSource);
             flushItems(network);
-            blocked = !fluidBuffer.isEmpty() || storageIterator().hasNext();
         }
         updateInventorySubscription();
     }

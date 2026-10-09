@@ -11,5 +11,6 @@ public final class GTMQoLClient {
     public static void init() {
         // Must be registered before machine models are generated or loaded, they reference the type by id.
         DynamicRenderManager.register(GTMQoL.id("dtfr_ring"), DTFRRingRender.TYPE);
+        DynamicRenderManager.register(GTMQoL.id("fishing_pond_water"), FishingPondWaterRender.TYPE);
     }
 }
