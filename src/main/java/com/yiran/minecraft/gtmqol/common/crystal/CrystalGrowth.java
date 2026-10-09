@@ -66,7 +66,7 @@ public final class CrystalGrowth {
                 // the condition looks behind the controller, which only works without extended facing
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(RECIPE_TYPE)
-                .recipeModifiers(OC_PERFECT_SUBTICK)
+                .recipeModifiers(OC_PERFECT_SUBTICK, BATCH_MODE)
                 .tooltips(Component.translatable(KEY + "tooltip.0"), Component.translatable(KEY + "tooltip.1"))
                 .appearanceBlock(CASING_STEEL_SOLID)
                 // G: the middle of the four sides and the back, glass or casing

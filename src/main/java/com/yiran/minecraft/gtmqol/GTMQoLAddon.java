@@ -28,6 +28,7 @@ import com.yiran.minecraft.gtmqol.api.generation.GTMQoLMachineBuilder;
 import com.yiran.minecraft.gtmqol.api.generation.GTMQoLMultiblockBuilder;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
+import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
 import com.yiran.minecraft.gtmqol.config.EarlyConfig;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
@@ -103,6 +104,7 @@ public final class GTMQoLAddon implements IGTAddon {
         if (config.wireless.energy) WirelessRecipes.addEnergyRecipes(provider);
         if (config.wireless.steam) WirelessRecipes.addSteamRecipes(provider);
         ModularMachines.addRecipes(provider);
+        Gregification.addRecipes(provider);
         GTMQoLMultiblocks.addRecipes(provider);
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.addRecipes(provider);
         if (config.circuits.controlCircuits) ControlCircuits.addRecipes(provider);

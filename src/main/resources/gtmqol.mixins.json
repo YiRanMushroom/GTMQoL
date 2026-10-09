@@ -18,6 +18,7 @@
     "MEPatternBufferPartMachineMixin",
     "MEPatternBufferReturnMixin",
     "OverclockingLogicMixin",
+    "RecipeManagerHandlerMixin",
     "RecipeRemovalMixin",
     "SimpleSteamMachineMixin",
     "SteamItemBusPartMachineMixin",

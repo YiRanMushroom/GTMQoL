@@ -30,6 +30,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -143,8 +144,8 @@ public final class Greenhouse {
     }
 
     public static void addRecipes(RecipeOutput provider) {
-        MetaTileEntityLoader.registerMachineRecipe(provider, MACHINES, "WPW", "GMG", "WCW",
-                'M', HULL, 'P', PUMP, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
+        MetaTileEntityLoader.registerMachineRecipe(provider, MACHINES, "GSG", "PMP", "WCW",
+                'M', HULL, 'P', PUMP, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS, 'S', ItemTags.SAPLINGS);
         VanillaRecipeHelper.addShapedRecipe(provider, true, GTMQoL.id("industrial_greenhouse"),
                 INDUSTRIAL.asStack(), "PCP", "GMG", "PCP",
                 'G', CASING_LAMINATED_GLASS.asItem(),

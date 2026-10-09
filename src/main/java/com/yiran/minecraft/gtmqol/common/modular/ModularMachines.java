@@ -20,6 +20,8 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
+import com.yiran.minecraft.gtmqol.gregification.Gregification;
+import com.yiran.minecraft.gtmqol.gregification.GregificationModifiers;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -50,7 +52,8 @@ import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.UP;
  * A 3x3x3 multiblock version of every tiered single-block machine with recipe types.
  *
  * <p>{@code MachineBuilderMixin} hands every registered machine here; the first electric-tier (≥ LV) one with each
- * set of recipe types gets the modular machine, named after it without the {@code lv_}/{@code mv_}/... prefix.
+ * set of recipe types gets the modular machine, named after it without the {@code lv_}/{@code mv_}/... prefix
+ * (machines without that prefix are skipped).
  * That covers
  * {@code GTMachineUtils.registerTieredMachines}, KubeJS tiered machines and addons looping their tiers themselves.</p>
  *
@@ -89,8 +92,10 @@ public final class ModularMachines {
     public static void queue(String namespace, String name, int tier, MachineEntry<?> simple,
                              Set<Supplier<GTRecipeType>> recipeTypes) {
         if (tier < LV || recipeTypes.isEmpty()) return;
+        // Electric machines are named <voltage>_<name>; this also keeps out hp_ steam machines, which are tier 1 (LV).
         String prefix = VN[tier].toLowerCase(Locale.ROOT) + "_";
-        String family = name.startsWith(prefix) ? name.substring(prefix.length()) : name;
+        if (!name.startsWith(prefix)) return;
+        String family = name.substring(prefix.length());
         if (declared) {
             if (GTMQoLConfig.get().modularMachines.enabled && !RECIPE_TYPES.contains(resolve(recipeTypes))) {
                 GTMQoL.LOGGER.warn("Machine {}:{} was registered after the modular machines were declared, " +
@@ -136,15 +141,19 @@ public final class ModularMachines {
                 .durationMultiplier(generator ? 8.0 : 0.125)
                 .build();
 
+        // gregified machines keep their own recipe logic
+        boolean gregified = Gregification.allGregified(recipeTypes);
+        RecipeModifier overclock = generator ? GENERATOR_OVERCLOCK :
+                gregified ? GregificationModifiers.OVERCLOCK : GTRecipeModifiers.OC_PERFECT_SUBTICK;
+        RecipeModifier batch = gregified ? GregificationModifiers.BATCH : GTRecipeModifiers.BATCH_MODE;
+
         @SuppressWarnings("unchecked")
         Supplier<GTRecipeType>[] typeSuppliers = pending.recipeTypes().toArray(Supplier[]::new);
         MachineEntry<MultiblockMachineDefinition> modular = GTMQoLAddon.multiblock(modularName, ModularMachine::new)
                 .dynamicallyGenerated(true)
                 .rotationState(RotationState.ALL)
                 .recipeTypes(typeSuppliers)
-                .recipeModifiers(startModifier,
-                        generator ? GENERATOR_OVERCLOCK : GTRecipeModifiers.OC_PERFECT_SUBTICK,
-                        GTRecipeModifiers.BATCH_MODE)
+                .recipeModifiers(startModifier, overclock, batch)
                 .generator(generator)
                 .regressWhenWaiting(!generator)
                 .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
