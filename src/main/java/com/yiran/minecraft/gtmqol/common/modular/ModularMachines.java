@@ -2,7 +2,6 @@ package com.yiran.minecraft.gtmqol.common.modular;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
@@ -11,7 +10,6 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
@@ -34,13 +32,16 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.GTValues.LV;
 import static com.gregtechceu.gtceu.api.GTValues.VA;
+import static com.gregtechceu.gtceu.api.GTValues.VN;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.FRONT;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.RIGHT;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.UP;
@@ -48,20 +49,27 @@ import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.UP;
 /**
  * A 3x3x3 multiblock version of every tiered single-block machine with recipe types.
  *
- * <p>On 1.21 every machine is a deferred Registrate entry, so {@code GTMachineUtilsMixin} only queues the
- * tiered machines here (gtceu's own are queued before our config even exists). The multiblocks are declared
- * at the start of the machine registry event: recipe types are registered by then, and our registrate
- * hasn't created its machines yet.</p>
+ * <p>{@code MachineBuilderMixin} hands every registered machine here; the first electric-tier (≥ LV) one with each
+ * set of recipe types gets the modular machine, named after it without the {@code lv_}/{@code mv_}/... prefix.
+ * That covers
+ * {@code GTMachineUtils.registerTieredMachines}, KubeJS tiered machines and addons looping their tiers themselves.</p>
+ *
+ * <p>On 1.21 every machine is a deferred Registrate entry, so they are only queued here in registration order (gtceu's
+ * own are queued before our config even exists, and the recipe type suppliers can't be resolved yet). The multiblocks are declared at the start of the machine registry event: recipe types are
+ * registered by then, and our registrate hasn't created its machines yet.</p>
  */
 public final class ModularMachines {
 
-    private record Pending(String namespace, String name, MachineEntry<MachineDefinition>[] tiers,
+    private record Pending(String namespace, String name, MachineEntry<?> simple,
                            Set<Supplier<GTRecipeType>> recipeTypes) {}
 
-    private record Entry(MachineEntry<MachineDefinition> simple, MachineEntry<MultiblockMachineDefinition> modular) {}
+    private record Entry(MachineEntry<?> simple, MachineEntry<MultiblockMachineDefinition> modular) {}
 
     private static final List<Pending> PENDING = new ArrayList<>();
+    private static final Set<Set<GTRecipeType>> RECIPE_TYPES = new HashSet<>();
+    private static final Set<String> NAMES = new HashSet<>();
     private static final List<Entry> ENTRIES = new ArrayList<>();
+    private static boolean declared;
 
     private static final RecipeModifier GENERATOR_OVERCLOCK = GTRecipeModifiers.ELECTRIC_OVERCLOCK
             .apply(OverclockingLogic.create(0.5, 4.0, true));
@@ -78,12 +86,23 @@ public final class ModularMachines {
         });
     }
 
-    public static void queue(GTRegistrate registrate, String name, MachineEntry<MachineDefinition>[] tiers,
+    public static void queue(String namespace, String name, int tier, MachineEntry<?> simple,
                              Set<Supplier<GTRecipeType>> recipeTypes) {
-        PENDING.add(new Pending(registrate.getModid(), name, tiers, recipeTypes));
+        if (tier < LV || recipeTypes.isEmpty()) return;
+        String prefix = VN[tier].toLowerCase(Locale.ROOT) + "_";
+        String family = name.startsWith(prefix) ? name.substring(prefix.length()) : name;
+        if (declared) {
+            if (GTMQoLConfig.get().modularMachines.enabled && !RECIPE_TYPES.contains(resolve(recipeTypes))) {
+                GTMQoL.LOGGER.warn("Machine {}:{} was registered after the modular machines were declared, " +
+                        "it gets no modular machine", namespace, name);
+            }
+            return;
+        }
+        PENDING.add(new Pending(namespace, family, simple, recipeTypes));
     }
 
     private static void declareAll() {
+        declared = true;
         List<Pending> pending = new ArrayList<>(PENDING);
         PENDING.clear();
         if (!GTMQoLConfig.get().modularMachines.enabled) return;
@@ -91,12 +110,13 @@ public final class ModularMachines {
         pending.forEach(ModularMachines::declare);
     }
 
+    private static Set<GTRecipeType> resolve(Set<Supplier<GTRecipeType>> recipeTypes) {
+        return recipeTypes.stream().map(Supplier::get).collect(Collectors.toUnmodifiableSet());
+    }
+
     private static void declare(Pending pending) {
-        MachineEntry<MachineDefinition> simple = Arrays.stream(pending.tiers()).filter(Objects::nonNull)
-                .findFirst().orElse(null);
-        if (simple == null) return;
+        if (!RECIPE_TYPES.add(resolve(pending.recipeTypes()))) return;
         GTRecipeType[] recipeTypes = pending.recipeTypes().stream().map(Supplier::get).toArray(GTRecipeType[]::new);
-        if (recipeTypes.length == 0) return;
         if (Arrays.asList(recipeTypes).contains(GTRecipeTypes.DUMMY_RECIPES.get())) return;
 
         boolean generator = Arrays.stream(recipeTypes).allMatch(type -> "generator".equals(type.group));
@@ -106,6 +126,11 @@ public final class ModularMachines {
         String name = pending.name();
         String modularName = "modular_" +
                 (namespace.equals(GTCEu.MOD_ID) || namespace.equals(GTMQoL.MOD_ID) ? name : namespace + "_" + name);
+        if (!NAMES.add(modularName)) {
+            GTMQoL.LOGGER.warn("Machine {}:{} has new recipe types but {} already exists, it gets no modular machine",
+                    namespace, name, modularName);
+            return;
+        }
 
         RecipeModifier startModifier = (machine, recipe) -> ModifierFunction.builder()
                 .durationMultiplier(generator ? 8.0 : 0.125)
@@ -137,7 +162,7 @@ public final class ModularMachines {
                 .langValue("Modular " + FormattingUtil.toEnglishName(name))
                 .register();
 
-        ENTRIES.add(new Entry(simple, modular));
+        ENTRIES.add(new Entry(pending.simple(), modular));
     }
 
     /** The single-block machine's own overlay if it has a front one, else a gtceu multiblock's. */

@@ -38,7 +38,6 @@ import net.minecraft.world.level.block.SaplingBlock;
 import net.neoforged.fml.ModList;
 
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -67,8 +66,7 @@ public final class Greenhouse {
     public static final int TREE_DURATION = 400;
 
     public static GTRecipeTypeEntry RECIPE_TYPE;
-    @SuppressWarnings("unchecked")
-    public static MachineEntry<MachineDefinition>[] MACHINES = new MachineEntry[TIER_COUNT];
+    public static MachineEntry<MachineDefinition>[] MACHINES;
     public static MachineEntry<MultiblockMachineDefinition> INDUSTRIAL;
 
     /** Seeds and saplings that already have a recipe, so the name guesses don't add a conflicting second one. */
@@ -91,10 +89,9 @@ public final class Greenhouse {
                 .lang("Greenhouse")
                 .register();
 
-        for (int tier : ELECTRIC_TIERS) {
-            MACHINES[tier] = GTMQoLAddon.machine(VN[tier].toLowerCase(Locale.ROOT) + "_greenhouse",
-                    info -> new SimpleTieredMachine(info, tier))
-                    .tier(tier)
+        // through GTCEu's helper, like the other tiered machines
+        MACHINES = registerTieredMachines(registrate, "greenhouse", SimpleTieredMachine::new,
+                (tier, builder) -> builder
                     .langValue("%s Greenhouse %s".formatted(VLVH[tier], VLVT[tier]))
                     .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                     .rotationState(RotationState.NON_Y_AXIS)
@@ -105,8 +102,8 @@ public final class Greenhouse {
                     .tooltips(workableTiered(tier, V[tier], V[tier] * 64, RECIPE_TYPE,
                             defaultTankSizeFunction.applyAsInt(tier), true))
                     .tooltips(explosion())
-                    .register();
-        }
+                    .register(),
+                ELECTRIC_TIERS);
 
         INDUSTRIAL = GTMQoLAddon.multiblock("industrial_greenhouse", WorkableElectricMultiblockMachine::new)
                 .rotationState(RotationState.NON_Y_AXIS)

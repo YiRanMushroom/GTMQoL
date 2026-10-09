@@ -32,9 +32,8 @@ shaped this way, and what is pending.
     declared in the `GTMQoL` constructor (recipe types first). `IGTAddon` has no `initializeAddon`.
   - Builders are in `api.registry.registrate.builder`. `register()` returns `MachineEntry`, and the
     properties live behind `properties()`. `RuntimeGeneration` keeps the builder and the entry.
-  - `ModularMachines`: `GTMachineUtilsMixin` only queues the tiered entries and the builder's recipe type
-    suppliers (`@Share` between the `BiFunction.apply` wrap and the RETURN inject; read through
-    `MachineBuilderAccessor`). The multiblocks are declared at the start of the `gtceu:machine`
+  - `ModularMachines`: `MachineBuilderMixin` only queues the entry and the builder's recipe type
+    suppliers (read through `MachineBuilderAccessor`). The multiblocks are declared at the start of the `gtceu:machine`
     `RegisterEvent`, at NORMAL priority. That is before our registrate's LOW `onRegister` and after
     recipe types exist. The config is readable by then.
   - `FEInputProvider` registers `Capabilities.EnergyStorage.BLOCK` in `RegisterCapabilitiesEvent` for
@@ -372,8 +371,18 @@ The user chose concrete code in parallel with steam rather than a generic per-re
 
 ## Modular machines (`modular/`)
 
-- `GTMachineUtilsMixin` injects at RETURN of `GTMachineUtils.registerTieredMachines`, which every tiered
-  single-block machine goes through (gtceu's, our magical assembler, other addons'). `ModularMachines.register`
+- `MachineBuilderMixin` (RETURN of `MachineBuilder.register()`) hands every non-multiblock machine to
+  `ModularMachines`. The user's rule (2026-10-08): for each set of recipe types, the first machine registered
+  with tier ≥ LV gets the modular machine (steam machines share the types but are tier 0, so the LV one wins).
+  It is named after that machine with the `VN[tier].toLowerCase()+"_"` prefix stripped; if that name is taken by
+  a different recipe type set, a warning is logged and it gets none. `registerTieredMachines`, KubeJS tiered
+  machines and addons looping their tiers themselves all end in `register()`. Replaced master's approach (RETURN
+  of `registerTieredMachines` + `KJSTieredMachineBuilder` mixin), which missed self-looping machines.
+  On 1.21 it only queues (builder name, `properties().tier()`, unresolved recipe type suppliers through
+  `MachineBuilderAccessor`), deduped in `declare` once the suppliers resolve; the multiblocks are declared at the start of the `gtceu:machine` registry event.
+  Machines registered after that (KubeJS creates its objects in the registry event, possibly later) log a warning
+  ("registered after the modular machines were declared") and get none. Unverified (2026-10-08).
+  `ModularMachines.declare`
   then registers `gtmqol:modular_<name>` (other addons: `modular_<ns>_<name>`) through our registrate, with
   `dynamicallyGenerated(true)` (models and en_us lang at runtime, nothing datagen'd; skipped during datagen).
 - Port of the old `AddModularMultiblocksLogic.kt`: skip machines without recipe types, with `DUMMY_RECIPES`, or
@@ -384,7 +393,7 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   combustion engine. Recipes: magical assembler (circuit 5) and hammer shaped, from the first tier.
 - `ModularMachine.getMaxVoltage()` returns `getOverclockVoltage()` (the old
   `SingleHatchTierSkippingWorkableElectricMachine`).
-- Config `modularMachines.enabled` (default true). Not ported: KubeJS tiered machine hook, the
+- Config `modularMachines.enabled` (default true). Not ported: the
   `QOL_RECIPE_MODIFIER` part ability, non-English names.
 
 ## Overclocking (`overclock/`, `OverclockingLogicMixin`)

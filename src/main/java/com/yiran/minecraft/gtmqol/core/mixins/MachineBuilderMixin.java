@@ -1,9 +1,11 @@
 package com.yiran.minecraft.gtmqol.core.mixins;
 
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.yiran.minecraft.gtmqol.api.generation.IDynamicGenerationHandler;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
+import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -32,8 +34,13 @@ public abstract class MachineBuilderMixin implements IDynamicGenerationHandler {
     @Inject(method = "register()Lcom/gregtechceu/gtceu/api/registry/registrate/entry/MachineEntry;",
             at = @At("RETURN"))
     private void gtmqol$queueDynamicGeneration(CallbackInfoReturnable<MachineEntry<?>> cir) {
+        MachineBuilder<?, ?, ?> self = (MachineBuilder<?, ?, ?>) (Object) this;
         if (gtmqol$dynamicGenerated) {
-            RuntimeGeneration.addMachine((MachineBuilder<?, ?, ?>) (Object) this, cir.getReturnValue());
+            RuntimeGeneration.addMachine(self, cir.getReturnValue());
+        }
+        if (!(self instanceof MultiblockMachineBuilder<?>)) {
+            ModularMachines.queue(self.getOwner().getModid(), self.getName(), self.properties().tier(),
+                    cir.getReturnValue(), ((MachineBuilderAccessor) self).gtmqol$getUnresolvedRecipeTypes());
         }
     }
 }
