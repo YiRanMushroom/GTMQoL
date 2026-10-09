@@ -29,25 +29,34 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.LV;
 import static com.gregtechceu.gtceu.api.GTValues.VA;
+import static com.gregtechceu.gtceu.api.GTValues.VN;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.FRONT;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.RIGHT;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.UP;
 
 /**
- * A 3x3x3 multiblock version of every tiered single-block machine with recipe types, registered from
- * {@code GTMachineUtilsMixin} right after the single-block tiers.
+ * A 3x3x3 multiblock version of every tiered single-block machine with recipe types.
+ *
+ * <p>{@code MachineBuilderMixin} hands every registered machine here; the first electric-tier (≥ LV) one with each
+ * set of recipe types gets the modular machine, registered right away and named after it without the
+ * {@code lv_}/{@code mv_}/... prefix (machines without that prefix are skipped). That covers {@code GTMachineUtils.registerTieredMachines}, KubeJS tiered
+ * machines and addons looping their tiers themselves.</p>
  */
 public final class ModularMachines {
 
     private record Entry(MachineDefinition simple, MultiblockMachineDefinition modular) {}
 
     private static final List<Entry> ENTRIES = new ArrayList<>();
+    private static final Set<Set<GTRecipeType>> RECIPE_TYPES = new HashSet<>();
+    private static final Set<String> NAMES = new HashSet<>();
 
     private static final RecipeModifier GENERATOR_OVERCLOCK = GTRecipeModifiers.ELECTRIC_OVERCLOCK
             .apply(OverclockingLogic.create(0.5, 4.0, true));
@@ -55,22 +64,32 @@ public final class ModularMachines {
 
     private ModularMachines() {}
 
-    public static void register(String name, MachineDefinition[] definitions) {
+    public static void register(MachineDefinition simple) {
+        if (simple instanceof MultiblockMachineDefinition) return;
+        int tier = simple.getTier();
+        GTRecipeType[] recipeTypes = simple.getRecipeTypes();
+        if (tier < LV || recipeTypes == null || recipeTypes.length == 0) return;
+        // Electric machines are named <voltage>_<name>; this also keeps out hp_ steam machines, which are tier 1 (LV).
+        String namespace = simple.getId().getNamespace();
+        String prefix = VN[tier].toLowerCase(Locale.ROOT) + "_";
+        if (!simple.getId().getPath().startsWith(prefix)) return;
+        String name = simple.getId().getPath().substring(prefix.length());
+        if (!RECIPE_TYPES.add(Set.copyOf(Arrays.asList(recipeTypes)))) return;
+
         if (!GTMQoLConfig.get().modularMachines.enabled) return;
         if (FMLLoader.getLaunchHandler().isData()) return;
-
-        MachineDefinition simple = Arrays.stream(definitions).filter(Objects::nonNull).findFirst().orElse(null);
-        if (simple == null) return;
-        GTRecipeType[] recipeTypes = simple.getRecipeTypes();
-        if (recipeTypes == null || recipeTypes.length == 0) return;
         if (Arrays.asList(recipeTypes).contains(GTRecipeTypes.DUMMY_RECIPES)) return;
 
         boolean generator = Arrays.stream(recipeTypes).allMatch(type -> "generator".equals(type.group));
         if (!generator && Arrays.stream(recipeTypes).anyMatch(type -> "generator".equals(type.group))) return;
 
-        String namespace = simple.getId().getNamespace();
         String modularName = "modular_" +
                 (namespace.equals(GTCEu.MOD_ID) || namespace.equals(GTMQoL.MOD_ID) ? name : namespace + "_" + name);
+        if (!NAMES.add(modularName)) {
+            GTMQoL.LOGGER.warn("Machine {} has new recipe types but {} already exists, it gets no modular machine",
+                    simple.getId(), modularName);
+            return;
+        }
 
         RecipeModifier startModifier = (machine, recipe) -> ModifierFunction.builder()
                 .durationMultiplier(generator ? 8.0 : 0.125)

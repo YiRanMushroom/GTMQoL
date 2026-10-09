@@ -258,8 +258,17 @@ The user chose concrete code in parallel with steam rather than a generic per-re
 
 ## Modular machines (`modular/`)
 
-- `GTMachineUtilsMixin` injects at RETURN of `GTMachineUtils.registerTieredMachines`, which every tiered
-  single-block machine goes through (gtceu's, our magical assembler, other addons'). `ModularMachines.register`
+- `MachineBuilderMixin` (RETURN of `MachineBuilder.register()`) hands every non-multiblock machine to
+  `ModularMachines`. The user's rule (2026-10-08): for each set of recipe types, the first machine registered
+  with tier ≥ LV gets the modular machine (steam machines share the types but are tier 0, so the LV one wins).
+  Only machines named `VN[tier].toLowerCase()+"_"<name>` count: GTCEu (and addons copying it) register `hp_` steam
+  machines with `tier(1)` = LV, and before this check they were picked as "the LV machine" for their recipe types.
+  It is named after that machine with the prefix stripped; if that name is taken by
+  a different recipe type set, a warning is logged and it gets none. `registerTieredMachines`, KubeJS tiered
+  machines and addons looping their tiers themselves all end in `register()`. Replaced master's approach (RETURN
+  of `registerTieredMachines` + `KJSTieredMachineBuilder` mixin), which missed self-looping machines.
+  On 1.20 it registers right away from the definition (`getTier()`, `getRecipeTypes()`), nested inside the
+  single block's `register()` in the machine event. `ModularMachines.register`
   then registers `gtmqol:modular_<name>` (other addons: `modular_<ns>_<name>`) through our registrate, with
   `dynamicallyGenerated(true)` (models and en_us lang at runtime, nothing datagen'd; skipped during datagen).
 - Port of the old `AddModularMultiblocksLogic.kt`: skip machines without recipe types, with `DUMMY_RECIPES`, or
@@ -270,7 +279,7 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   combustion engine. Recipes: magical assembler (circuit 5) and hammer shaped, from the first tier.
 - `ModularMachine.getMaxVoltage()` returns `getOverclockVoltage()` (the old
   `SingleHatchTierSkippingWorkableElectricMachine`).
-- Config `modularMachines.enabled` (default true). Not ported: KubeJS tiered machine hook, the
+- Config `modularMachines.enabled` (default true). Not ported: the
   `QOL_RECIPE_MODIFIER` part ability, non-English names.
 
 ## Overclocking (`overclock/`, `OverclockingLogicMixin`)
@@ -329,6 +338,44 @@ Same as 1.21 (see its context.md), goal: nether stars before IV.
   from a `recipeBuilder(...)` copy and called first. Unlike 1.21, 1.20 GTCEu has no `RecipeManagerLateMixin`
   regeneration, so KubeJS / data pack implosion recipes get no copy.
 - Not yet in game.
+
+## Cyclic multiblocks, void miner, fishing pond (`multiblock/`)
+
+Ported from 1.21 on 2026-10-07 (see its context.md for the behavior), written, not built yet. Files:
+`CyclicMultiblockMachine`, `PendingOutputTrait`, `VoidMinerMachine`, `VoidMinerOres`, `FishingPondMachine`,
+`client/FishingPondWaterRender` (registered in `GTMQoLClient`), definitions/lang/recipes in `GTMQoLMultiblocks`,
+config `machines.voidMiner`, `machines.fishingPond`, `voidMiner.dimensionMapping`. Needs `runData` for models/lang.
+Port differences:
+- UI sync: ModularUI 1.20's `GenericListSyncHandler.Builder<T>` takes `(FriendlyByteBuf, T)` / `FriendlyByteBuf -> T`,
+  so `Stored` / `OreChance` have static `read`/`write` instead of `StreamCodec`s. `Mth.clamp` (no Java 21 `Math.clamp`).
+- `PendingOutputTrait` merges by `isSameItemSameTags`.
+- Ores: `GTRegistries.ORE_VEINS` (not a datapack registry here); `ChemicalHelper.getItem` may return null.
+- Fishing: `ToolActions.FISHING_ROD_CAST`, Lure = `getFishingSpeedBonus(tool) * 5 s`,
+  `getFishingLuckBonus(tool)`, `server.getLootData().getLootTable`. `new FishingHook(EntityType, Level)`
+  visibility not checked yet.
+- Same `startOffset` fishing pond pattern as 1.21.
+
+## Crystal Growth Chamber (`crystal/CrystalGrowth`, `crystal/CenterBlockCondition`)
+
+Ported from 1.21 on 2026-10-07 (it works there; see its context.md for the design), written, not built yet.
+Config `machines.crystalGrowthChamber`. Port differences:
+- The condition's `CODEC` is a `Codec` (`RecordCodecBuilder.create`), not a `MapCodec`.
+- `gtmqol:center_block` is registered from GTCEu's `RegisterEvent` for `RecipeConditionType` (posted by
+  `GTRecipeConditions.init()`, same `CommonProxy.init()` as recipe types and machines), listener in `GTMQoL`.
+- Recipe type via `GTRecipeTypes.register`, machine from the machine `RegisterEvent`, like the electric implosion
+  compressor. GeOre's 1.20 branch uses the same `budding_<x>` / `<x>_shard` names.
+
+## Greenhouse (`greenhouse/Greenhouse`, `integration/mysticalagriculture/MAGreenhouseRecipes`)
+
+Ported from 1.21 on 2026-10-07 together with it (see its context.md for the design), built on neither yet.
+Config `machines.greenhouse`. Tiered single-block Greenhouses (every electric tier) plus the IV Industrial Greenhouse
+multiblock (5 × 5 × 5, dirt-tag block in the middle of the floor, 16× outputs via its own `RecipeModifier`,
+parallel + perfect OC), sharing recipe type `gtmqol:greenhouse`. Recipes are `VA[LV]`.
+Port differences:
+- Recipe type via `GTRecipeTypes.register` (`initRecipeType`), both machines from the machine `RegisterEvent`
+  (`initMachines`), recipes on `Consumer<FinishedRecipe>`, `MachineDefinition[]` for `registerMachineRecipe`.
+- Mystical Agriculture 1.20.1-7.0.24 + Cucumber from Modrinth (`modCompileOnly` / `modLocalRuntime`). Its 1.20
+  API has no `MysticalAgricultureAPI.resource`, so the fertilized essence id is built by hand.
 
 ## Advanced steam multiblocks (`steam/`, `circuit/ControlCircuits`)
 
@@ -430,9 +477,16 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
   v7 recipes: machine crafting (AE2 inscriber in the middle), wafer → chips (8/16/32/64), AE2 materials → prints,
   chip + print + silicon print (or 4 copper foil) + 144 redstone → processors ×chip multiplier, GTCEu ME
   buses/hatches/pattern buffer (+proxy) from AE2 parts, and wiremill/polarizer/mixer AE recipes. Items in the
-  constructor, recipe types / machines from the GTCEu register events. Not ported: the
-  oblivion singularity (electric implosion is gone; the sticky card is below). Machine names come from `SimpleMachineBuilder`'s
+  constructor, recipe types / machines from the GTCEu register events (the sticky card is below). Machine names come from `SimpleMachineBuilder`'s
   `toEnglishName`, so they read "Me Assembler".
+- AE addon recipes ported from 1.21 (2026-10-07, not built or tested): slicer prints / assembler processors /
+  mixer, macerator, polarizer, compressor recipes for Advanced AE (`advanced_ae`), MEGA Cells (`megacells`) and
+  Applied Flux (`appflux`), plus the oblivion singularity implosion for ExtendedAE Plus, each behind
+  `GTCEu.isModLoaded` and `!= Items.AIR` checks (an id that differs just skips its recipe silently). The
+  ExtendedAE entro / concurrent processor and EAP lattra recipes are left out: ExtendedAE 1.20 (mod id
+  `expatternprovider`, 1.4.18 jar checked) has no entro items or concurrent processor, and EAP 1.6.1 has
+  `lattra_crystal` / `oblivion_singularity` but no `lattra_dust`. AdvancedAE / MEGA / AppFlux ids not checked
+  against 1.20 jars. `c:` tags became `forge:` (`forge:silicone` for the insulating resin is a guess).
 - Sticky card and universal circuit encoding, ported from the v7 code in `reference/` (same as the 1.21 branch;
   written, not built or tested). `gtmqol.ae2.mixins.json` (in `build.gradle` `mixinConfig`), gated by
   `core/AE2MixinPlugin`: AE2 loaded; the ExtendedAE mixin also needs `expatternprovider` (ExtendedAE's 1.20.1 mod
@@ -469,6 +523,9 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
 
 ## Pending / open
 
+- Known, not fixing (GTCEu issue, 2026-10-06): on steam (BRONZE theme) machine panels, including our wireless steam ones, 
+  the title and the GT logo are pushed to the right and look squeezed. GTCEu's own steam machines do the same, 
+  so it is upstream; revisit only if GTCEu changes the panel.
 - Open question: should the accessor also use the rainbow overlay?
 - Known bug, not fixed (user: leave it for now; workaround: don't reload client resources, restart if hit):
   after a client resource reload (F3+T, resource pack / language / mipmap change) every GTCEu bronze/steel themed

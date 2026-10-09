@@ -51,6 +51,29 @@ public final class GTMQoLConfig {
         public boolean dimensionallyTranscendentFusionReactor = true;
 
         @Configurable
+        @Configurable.Comment({ "Void Miner (mines the dimension's vein ores for wireless EU)", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean voidMiner = true;
+
+        @Configurable
+        @Configurable.Comment({ "Industrial Fishing Pond (vanilla fishing loot for EU, with a rod in the controller)",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean fishingPond = true;
+
+        @Configurable
+        @Configurable.Comment({ "Crystal Growth Chamber (shards of the budding block in its middle: vanilla, AE2, GeOre)",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean crystalGrowthChamber = true;
+
+        @Configurable
+        @Configurable.Comment({ "Greenhouse (grows seeds and saplings with water: vanilla, GT, Mystical Agriculture, " +
+                "other mods' by name)", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean greenhouse = true;
+
+        @Configurable
         @Configurable.Comment({ "Electric Implosion Compressor (every implosion recipe that uses TNT, without the TNT)",
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
@@ -236,6 +259,19 @@ public final class GTMQoLConfig {
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean feInput = true;
+    }
+
+    @Configurable
+    @Configurable.Comment("Void miner")
+    public VoidMiner voidMiner = new VoidMiner();
+
+    public static class VoidMiner {
+
+        @Configurable
+        @Configurable.Comment({ "Void miners in one dimension mine another dimension's ores, as \"from=to\" dimension ids,",
+                "e.g. \"skyblockbuilder:skyblock=minecraft:overworld\" for a skyblock world that is not the overworld",
+                "Default: none" })
+        public String[] dimensionMapping = new String[0];
     }
 
     @Configurable

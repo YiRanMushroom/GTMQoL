@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
@@ -21,6 +22,8 @@ import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.common.fe.FEInputProvider;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.test.IntegrationTests;
+import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
+import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.integration.KubeJSDataGenFix;
 import com.yiran.minecraft.gtmqol.data.recipe.MiscRecipes;
@@ -66,6 +69,7 @@ public final class GTMQoL {
             StickyCardItem.init();
             modBus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(StickyCardItem::registerUpgrades));
         }
+        modBus.addGenericListener(RecipeConditionType.class, this::onRegisterRecipeConditions);
         modBus.addGenericListener(GTRecipeType.class, this::onRegisterRecipeTypes);
         modBus.addGenericListener(CoverDefinition.class, this::onRegisterCovers);
         modBus.addGenericListener(MachineDefinition.class, this::onRegisterMachines);
@@ -102,9 +106,16 @@ public final class GTMQoL {
         return TEMPLATE_LOCATION.withPath(path);
     }
 
+    /** Posted by {@code GTRecipeConditions.init()} before it freezes the condition registry. */
+    private void onRegisterRecipeConditions(GTCEuAPI.RegisterEvent<ResourceLocation, RecipeConditionType<?>> event) {
+        if (GTMQoLConfig.get().machines.crystalGrowthChamber) CrystalGrowth.initCondition(event);
+    }
+
     private void onRegisterRecipeTypes(GTCEuAPI.RegisterEvent<ResourceLocation, GTRecipeType> event) {
         MagicalAssembler.initRecipeType();
         if (GTMQoLConfig.get().machines.electricImplosionCompressor) ElectricImplosion.initRecipeType();
+        if (GTMQoLConfig.get().machines.crystalGrowthChamber) CrystalGrowth.initRecipeType();
+        if (GTMQoLConfig.get().machines.greenhouse) Greenhouse.initRecipeType();
         if (GTCEu.Mods.isAE2Loaded() && GTMQoLConfig.get().ae2.processing) {
             AEProcessing.initRecipeTypes();
         }
@@ -131,6 +142,8 @@ public final class GTMQoL {
         MagicalAssembler.initMachines();
         GTMQoLMultiblocks.init();
         if (config.machines.electricImplosionCompressor) ElectricImplosion.initMachine();
+        if (config.machines.crystalGrowthChamber) CrystalGrowth.initMachine();
+        if (config.machines.greenhouse) Greenhouse.initMachines();
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
         if (config.wireless.steam) WirelessSteamMachines.init();
         if (config.wireless.energy) WirelessEnergyMachines.init();
