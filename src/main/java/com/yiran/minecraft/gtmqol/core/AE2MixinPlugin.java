@@ -21,6 +21,7 @@ public class AE2MixinPlugin implements IMixinConfigPlugin {
     private static final String EMI_ENCODING_MIXIN = "com.yiran.minecraft.gtmqol.core.mixins.ae2.EmiEncodePatternHandlerMixin";
     private static final String EXTENDEDAE_MIXIN = "com.yiran.minecraft.gtmqol.core.mixins.ae2.PartSpecialStorageBusMixin";
     private static final String STOCKING_MIXIN_PREFIX = "com.yiran.minecraft.gtmqol.core.mixins.ae2.MEStocking";
+    private static final String PATTERN_BUFFER_MIXIN_PREFIX = "com.yiran.minecraft.gtmqol.core.mixins.ae2.MEPatternBuffer";
 
     @Override
     public void onLoad(String mixinPackage) {}
@@ -34,6 +35,8 @@ public class AE2MixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.equals(EMI_ENCODING_MIXIN)) return mods.getModFileById("emi") != null;
         // duplicate checks against the universal ME input; no effect without one
         if (mixinClassName.startsWith(STOCKING_MIXIN_PREFIX)) return true;
+        // bridged capabilities (e.g. chemicals) in the pattern buffer; no effect without a bridge
+        if (mixinClassName.startsWith(PATTERN_BUFFER_MIXIN_PREFIX)) return true;
         // everything else is the sticky card
         if (!EarlyConfig.AE2_STICKY_CARD) return false;
         return !mixinClassName.equals(EXTENDEDAE_MIXIN) || mods.getModFileById("extendedae") != null;

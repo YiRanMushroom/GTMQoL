@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -14,7 +15,10 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
+import com.yiran.minecraft.gtmqol.common.stacklike.GenericStackLikeNotifiableHandler;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
+import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridge;
+import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
 
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -30,6 +34,7 @@ import brachy.modularui.api.drawable.Text;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -53,7 +58,21 @@ public final class PatternBufferReturn {
      * forms and must stay the same object until it unforms.
      */
     public static RecipeHandlerList createHandlerList(MEPatternBufferPartMachine buffer, BooleanSupplier enabled) {
-        return RecipeHandlerList.of(IO.OUT, -1, new ItemReturn(buffer, enabled), new FluidReturn(buffer, enabled));
+        List<IRecipeHandler<?>> handlers = new ArrayList<>();
+        handlers.add(new ItemReturn(buffer, enabled));
+        handlers.add(new FluidReturn(buffer, enabled));
+        for (var bridge : AEStackLikeBridges.all()) handlers.add(new BridgedReturn<>(buffer, enabled, bridge));
+        return RecipeHandlerList.of(IO.OUT, -1, handlers);
+    }
+
+    /** The network to insert into, or null when outputs should not go there. */
+    @Nullable
+    private static MEStorage network(MEPatternBufferPartMachine buffer, BooleanSupplier enabled) {
+        if (!enabled.getAsBoolean() || !GTMQoLConfig.get().ae2.patternBufferReturn || !buffer.isOnline()) {
+            return null;
+        }
+        var grid = buffer.getMainNode().getGrid();
+        return grid == null ? null : grid.getStorageService().getInventory();
     }
 
     public static MachineUIPanelBuilder addToggle(MachineUIPanelBuilder builder, BooleanSupplier enabled,
@@ -74,14 +93,9 @@ public final class PatternBufferReturn {
             this.enabled = enabled;
         }
 
-        /** The network to insert into, or null when outputs should not go there. */
         @Nullable
         MEStorage network() {
-            if (!enabled.getAsBoolean() || !GTMQoLConfig.get().ae2.patternBufferReturn || !buffer.isOnline()) {
-                return null;
-            }
-            var grid = buffer.getMainNode().getGrid();
-            return grid == null ? null : grid.getStorageService().getInventory();
+            return PatternBufferReturn.network(buffer, enabled);
         }
 
         Actionable mode(boolean simulate) {
@@ -194,6 +208,50 @@ public final class PatternBufferReturn {
         @Override
         public RecipeCapability<SizedFluidIngredient> getCapability() {
             return FluidRecipeCapability.CAP;
+        }
+    }
+
+    // Not an attached trait; outputs never ask for the machine.
+    private static final class BridgedReturn<S, I> extends GenericStackLikeNotifiableHandler<S, I> {
+
+        private final MEPatternBufferPartMachine buffer;
+        private final BooleanSupplier enabled;
+        private final AEStackLikeBridge<S, I> bridge;
+
+        BridgedReturn(MEPatternBufferPartMachine buffer, BooleanSupplier enabled, AEStackLikeBridge<S, I> bridge) {
+            super(bridge.cap(), IO.OUT);
+            this.buffer = buffer;
+            this.enabled = enabled;
+            this.bridge = bridge;
+        }
+
+        @Override
+        public List<S> getStacks() {
+            return List.of();
+        }
+
+        @Override
+        protected long extract(S stack, long amount, boolean simulate) {
+            return 0;
+        }
+
+        @Override
+        protected long insert(S stack, long amount, boolean simulate) {
+            MEStorage network = network(buffer, enabled);
+            AEKey key = bridge.toKey(stack);
+            if (network == null || key == null) return 0;
+            return network.insert(key, amount, simulate ? Actionable.SIMULATE : Actionable.MODULATE,
+                    buffer.getActionSource());
+        }
+
+        @Override
+        protected @Nullable MetaMachine getRecipeMachine() {
+            return null;
+        }
+
+        @Override
+        public int getPriority() {
+            return IFilteredHandler.HIGHEST;
         }
     }
 }

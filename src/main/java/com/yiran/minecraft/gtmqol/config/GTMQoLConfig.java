@@ -108,6 +108,12 @@ public final class GTMQoLConfig {
         @Configurable.Comment({ "Modern Industrialization's machine recipes, at LV voltage", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean modernIndustrialization = true;
+
+        @Configurable
+        @Configurable.Comment({ "Mekanism's chemical oxidizer and metallurgic infuser recipes, at LV voltage",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean mekanism = true;
     }
 
     @Configurable

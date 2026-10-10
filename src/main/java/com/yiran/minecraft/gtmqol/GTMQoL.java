@@ -33,6 +33,7 @@ import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.client.GregificationClient;
+import com.yiran.minecraft.gtmqol.gregification.mekanism.MekanismGregification;
 import com.yiran.minecraft.gtmqol.gregification.mi.MIGregification;
 
 import net.minecraft.resources.ResourceLocation;
@@ -69,6 +70,9 @@ public final class GTMQoL {
         Gregification.init(modBus);
         if (config.gregification.modernIndustrialization && ModList.get().isLoaded("modern_industrialization")) {
             Gregification.addSource(MIGregification::types);
+        }
+        if (config.gregification.mekanism && ModList.get().isLoaded("mekanism")) {
+            Gregification.addSource(MekanismGregification::types);
         }
 
         // On 1.21 gtceu's registries are Registrate deferred registers, so content is declared right here like

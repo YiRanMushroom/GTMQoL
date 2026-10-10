@@ -464,6 +464,45 @@ mod returns `ForeignMachineType`s.
   - Recipes with process conditions are skipped. Unknown (e.g. KubeJS) types are logged and skipped.
   - Dependency: `compileOnly` + `localRuntime` Modrinth `modern-industrialization` (id `HOR1tVas` = 2.5.10).
     GrandPower is jar-in-jar; guideme is already a dev runtime mod.
+- The proxied foreign type is a `Supplier` and is only added to `getProxyRecipes()` at common setup
+  (`GregifiedRecipeType.resolveProxy`), not passed to the properties. Mekanism creates its recipe types when they
+  are registered, after we declare. `ForeignMachineType.withRecipeType` adds anything else the GT recipe type
+  needs (e.g. `setMaxSize` for chemicals).
+- Mekanism (`gregification/mekanism/MekanismGregification`, config `gregification.mekanism`, 2026-10-10, not built
+  yet): only the chemical oxidizer (`mek_chemical_oxidizer`) and the metallurgic infuser (`mek_metallurgic_infuser`),
+  to test the chemical capability. Both use `MultiblockShape.ANY_PARTS`, the 3x3x3 steel box that takes every
+  item/fluid import/export part whatever the slot counts (the universal ME parts and pattern buffer carry those
+  abilities). Duration = Mek's base ticks (100 / 200) at `VA[LV]`. A per-tick chemical is multiplied by the
+  ticks. The output is the first of `getOutputDefinition()`. Crafted from the Mek machine + configurator.
+
+## Stack-like recipe capabilities (`stacklike/`, 1.21.1 only, 2026-10-10, not built yet)
+
+- `GenericStackLikeType<S, I>` describes a stack/ingredient pair. `GenericStackLikeRecipeCapability` and
+  `GenericStackLikeNotifiableHandler` (long amounts) are generic over it. Mekanism chemicals are first
+  (`stacklike/mekanism/ChemicalStackLike`, registered only when `mekanism` is loaded).
+- The user's rule: whatever enters a recipe has a real `RecipeCapability`. AEKey is not a capability. Capabilities
+  opt into AE through `AEStackLikeBridge`s (`integration/ae2/stacklike/`, `AppMekChemicalBridge` via Applied
+  Mekanistics). Dedicated capabilities have priority over the universal parts.
+- Universal ME parts: 36-slot scrolling input and output, one shared min stack size / ticks per cycle; dual parts
+  are kept.
+- Pattern buffer (`core/mixins/ae2/MEPatternBuffer*`, always applied with AE2):
+  - Each `InternalSlot` also stores bridged keys (`Object2LongOpenHashMap<AEKey>`). This covers pushing, `isEmpty`,
+    refund and NBT (`gtmqol:stack_like`).
+  - `BufferRecipeHandlerList.handlersFor` returns a per-slot handler for bridged caps. These are unattached
+    `GenericStackLikeNotifiableHandler`s, like GT's slot handlers. A slot holding only bridged keys is no longer
+    skipped as empty.
+  - The buffer gets one attached aggregate handler per bridge, for lookup and parallel. Proxies get forwarding
+    handlers (`ProxyRHL` mixin).
+  - `checkInput` and `couldSlotMatchContents` accept bridged keys.
+  - The output return (`PatternBufferReturn`) inserts bridged outputs too.
+  - RecipeDB splits them per slot (`PatternBufferIngredients`).
+  - `workers`, `Worker` and `Worker.slot` are public through our AT, so neither these mixins nor recipedb need
+    accessors for them. GTCEu is `accessCompileOnly` + `runtimeOnly` so ModAccessor applies the AT at compile time.
+  - Unclean points:
+    - unattached traits;
+    - `@Shadow this$0` (javac hides synthetic members, so an AT can't expose it);
+    - the aggregate's parallel limit sums all slots, as GT does for items.
+- Later: external chemical hatches, recipe UI / EMI for the cap, the 1.20.1 port.
 
 ## Overclocking (`overclock/`, `OverclockingLogicMixin`)
 
