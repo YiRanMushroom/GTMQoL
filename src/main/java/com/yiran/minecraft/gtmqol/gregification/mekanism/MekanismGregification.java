@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.common.stacklike.mekanism.ChemicalStackLike;
 import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
 import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
@@ -150,15 +149,10 @@ public final class MekanismGregification {
                         MekanismGregification::convertSeparating,
                         0, 0, 1, 0, 0, 2, GTSoundEntries.ELECTROLYZER, GTGuiTextures.PROGRESS_EXTRACT,
                         mek("electrolytic_separator")),
-                // one Mek machine, two directions: the second is crafted from the first so the recipes differ
-                type("rotary_condensentrator", "Mek Rotary Condensentrator", MekanismRecipeTypes.TYPE_ROTARY,
-                        (h, b) -> convertRotary(h, b, false),
-                        0, 0, 0, 1, 1, 0, GTSoundEntries.COOLING, GTGuiTextures.PROGRESS_ARROW,
+                machine("rotary_condensentrator", "Mek Rotary Condensentrator", MekanismRecipeTypes.TYPE_ROTARY,
+                        MekanismGregification::convertRotary,
+                        0, 0, 1, 1, 1, 1, GTSoundEntries.COOLING, GTGuiTextures.PROGRESS_ARROW,
                         mek("rotary_condensentrator")),
-                type("rotary_decondensentrator", "Mek Rotary Decondensentrator", MekanismRecipeTypes.TYPE_ROTARY,
-                        (h, b) -> convertRotary(h, b, true),
-                        0, 0, 1, 0, 0, 1, GTSoundEntries.BOILER, GTGuiTextures.PROGRESS_ARROW,
-                        GTMQoL.id("mek_rotary_condensentrator")),
                 type("thermal_evaporation_plant", "Mek Thermal Evaporation Plant",
                         MekanismRecipeTypes.TYPE_EVAPORATING, MekanismGregification::convertEvaporating,
                         0, 0, 1, 1, 0, 0, GTSoundEntries.BOILER, GTGuiTextures.PROGRESS_ARROW,
@@ -169,11 +163,22 @@ public final class MekanismGregification {
         return ResourceLocation.fromNamespaceAndPath(MEK, path);
     }
 
+    /** One GT recipe per Mek recipe. */
     private static ForeignMachineType type(String path, String englishName, Supplier<? extends RecipeType<?>> proxy,
-                                           ForeignRecipeConverter converter, int itemInputs, int itemOutputs,
+                                           ForeignRecipeConverter.Single converter, int itemInputs, int itemOutputs,
                                            int fluidInputs, int fluidOutputs, int chemicalInputs, int chemicalOutputs,
                                            Holder<SoundEntry> sound, ProgressBarTextureSet progressBar,
                                            ResourceLocation counterpart) {
+        return machine(path, englishName, proxy, ForeignRecipeConverter.single(converter), itemInputs, itemOutputs,
+                fluidInputs, fluidOutputs, chemicalInputs, chemicalOutputs, sound, progressBar, counterpart);
+    }
+
+    private static ForeignMachineType machine(String path, String englishName,
+                                              Supplier<? extends RecipeType<?>> proxy,
+                                              ForeignRecipeConverter converter, int itemInputs, int itemOutputs,
+                                              int fluidInputs, int fluidOutputs, int chemicalInputs,
+                                              int chemicalOutputs, Holder<SoundEntry> sound,
+                                              ProgressBarTextureSet progressBar, ResourceLocation counterpart) {
         return ForeignMachineType.multiblock("mek_" + path, englishName, proxy, converter,
                         itemInputs, itemOutputs, fluidInputs, fluidOutputs, sound,
                         builder -> builder.setProgressBar(progressBar), null, counterpart, MultiblockShape.ANY_PARTS)
@@ -328,28 +333,35 @@ public final class MekanismGregification {
         builder.inputFluids(recipe.getInput().ingredient());
         builder.output(ChemicalStackLike.CAP, ChemicalStackLike.TYPE.of(output.left()));
         builder.output(ChemicalStackLike.CAP, ChemicalStackLike.TYPE.of(output.right()));
-        builder.EUt(VA[LV]).duration(PER_TICK_DURATION);
+        // the multiplier is energy per operation; at a fixed voltage that's time
+        long multiplier = Math.max(1, recipe.getEnergyMultiplier());
+        builder.EUt(VA[LV]).duration((int) Math.min(Integer.MAX_VALUE, PER_TICK_DURATION * multiplier));
         return true;
     }
 
-    /** Fluid to chemical when {@code decondensentrating}, chemical to fluid otherwise; recipes may do either or both. */
-    private static boolean convertRotary(RecipeHolder<?> holder, GTRecipeBuilder builder, boolean decondensentrating) {
-        if (!(holder.value() instanceof RotaryRecipe recipe) || recipe.isIncomplete()) return false;
-        if (decondensentrating) {
-            if (!recipe.hasFluidToChemical()) return false;
-            var outputs = recipe.getChemicalOutputDefinition();
-            if (outputs.isEmpty()) return false;
-            builder.inputFluids(recipe.getFluidInput().ingredient());
-            builder.output(ChemicalStackLike.CAP, ChemicalStackLike.TYPE.of(outputs.getFirst()));
-        } else {
-            if (!recipe.hasChemicalToFluid()) return false;
-            var outputs = recipe.getFluidOutputDefinition();
-            if (outputs.isEmpty()) return false;
-            builder.input(ChemicalStackLike.CAP, recipe.getChemicalInput());
-            builder.outputFluids(outputs.getFirst());
+    /** A GT recipe per direction the Mek recipe has: chemical to fluid, fluid to chemical. */
+    private static void convertRotary(RecipeHolder<?> holder, ForeignRecipeConverter.Output output) {
+        if (!(holder.value() instanceof RotaryRecipe recipe) || recipe.isIncomplete()) return;
+        if (recipe.hasChemicalToFluid()) {
+            output.add(builder -> {
+                var outputs = recipe.getFluidOutputDefinition();
+                if (outputs.isEmpty()) return false;
+                builder.input(ChemicalStackLike.CAP, recipe.getChemicalInput());
+                builder.outputFluids(outputs.getFirst());
+                builder.EUt(VA[LV]).duration(PER_TICK_DURATION);
+                return true;
+            });
         }
-        builder.EUt(VA[LV]).duration(PER_TICK_DURATION);
-        return true;
+        if (recipe.hasFluidToChemical()) {
+            output.add(builder -> {
+                var outputs = recipe.getChemicalOutputDefinition();
+                if (outputs.isEmpty()) return false;
+                builder.inputFluids(recipe.getFluidInput().ingredient());
+                builder.output(ChemicalStackLike.CAP, ChemicalStackLike.TYPE.of(outputs.getFirst()));
+                builder.EUt(VA[LV]).duration(PER_TICK_DURATION);
+                return true;
+            });
+        }
     }
 
     private static boolean convertEvaporating(RecipeHolder<?> holder, GTRecipeBuilder builder) {

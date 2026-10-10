@@ -53,10 +53,10 @@ public final class GregificationClient {
             for (RecipeType<?> proxy : type.getProxyRecipes().keySet()) {
                 List<RecipeHolder<?>> holders = (List) manager.getAllRecipesFor((RecipeType) proxy);
                 for (RecipeHolder<?> holder : holders) {
-                    RecipeHolder<GTRecipe> converted = type.toGTRecipe(holder);
-                    if (converted == null) continue;
-                    type.addToCategoryMap(converted.value().recipeCategory, converted.value());
-                    added.add(converted.value());
+                    for (RecipeHolder<GTRecipe> converted : type.toGTRecipes(holder)) {
+                        type.addToCategoryMap(converted.value().recipeCategory, converted.value());
+                        added.add(converted.value());
+                    }
                 }
             }
             ADDED.put(type, added);

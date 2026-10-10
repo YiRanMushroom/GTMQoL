@@ -91,10 +91,9 @@ Config `gregification.mekanism`. Design and durations (per-tick machines: 1 t, u
 - 22 `mek_*` multiblocks (`MultiblockShape.ANY_PARTS`): crusher, enrichment chamber, osmium compressor, purification
   chamber, chemical injection chamber, metallurgic infuser, painting machine, dissolution chamber, combiner,
   precision sawmill, crystallizer, oxidizer, pigment extractor, PRC, chemical infuser, pigment mixer, isotopic
-  centrifuge, solar neutron activator, washer, electrolytic separator, rotary condensentrator + decondensentrator,
-  thermal evaporation plant.
-- Crafted from the Mek machine with a GT hammer or through the magical assembler (circuit 5). The decondensentrator
-  is crafted from our condensentrator.
+  centrifuge, solar neutron activator, washer, electrolytic separator, rotary condensentrator (both directions in
+  one machine), thermal evaporation plant.
+- Crafted from the Mek machine with a GT hammer or through the magical assembler (circuit 5).
 - Not covered on purpose: Mek smelting, fission, fusion, SPS, pumps, antimatter/nucleosynthesizer, energy/chemical
   conversion.
 - None of the 20 new types has been run in game yet.
