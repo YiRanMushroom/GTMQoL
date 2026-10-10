@@ -17,7 +17,8 @@ first RegisterEvent (HIGHEST)            declareAll(): every source's types (ski
   CRAFTED += (machine, catalyst, counterpart)
 gtceu:machine RegisterEvent              ModularMachines adds modular_<name> for the single blocks
 FMLCommonSetupEvent                      GregifiedRecipeType.resolveProxy(): foreign type → getProxyRecipes()
-every recipe reload (server)             gtceu's RecipeManagerLateMixin → toGTRecipe(holder) per foreign recipe
+every recipe reload (server)             gtceu's RecipeManagerLateMixin → addProxyRecipesToLookup, which our mixin
+                                         takes over for gregified types: toGTRecipes(holder) per foreign recipe
 RecipesUpdatedEvent (remote client)      GregificationClient converts the synced foreign recipes itself
 GTMQoLAddon.addRecipes                   Gregification.addRecipes: crafting recipes for CRAFTED
 ```
@@ -32,9 +33,9 @@ reorders registries (its own and recipe types first), and we'd rather not depend
 | Class | Role |
 |---|---|
 | `ForeignMachineType` (record) | One foreign recipe type. Fields: `name` (path of the GT type and machines, e.g. `mi_macerator`, `mek_chemical_oxidizer`), `englishName`, `proxy` (supplier of the foreign `RecipeType`, only asked for at common setup), `converter`, item/fluid IO counts, `recipeType` (extra `GTRecipeTypeBuilder` setup, via `withRecipeType`), `sound`, `ui` (progress bar etc.), `catalyst` and `counterpart` (item ids), `model` (single blocks) or `shape` (multiblocks). Factories `singleBlock(...)` and `multiblock(...)`. |
-| `ForeignRecipeConverter` | `boolean convert(RecipeHolder<?>, GTRecipeBuilder)`. False means leave the recipe out. It sets inputs, outputs, `EUt` and `duration`. |
-| `GregifiedRecipeType` / `GregifiedRecipeTypeBuilder` | GT recipe type that proxies the foreign one. `toGTRecipe` calls the converter, logs and drops on exceptions, and sets the id `gtmqol:/gregification/<our type path>/<ns>/<path>` (our type path keeps it unique when two of our types proxy the same foreign type, e.g. Mek rotary both ways). The leading `/` marks it synthetic, so EMI (dev mode) doesn't warn that it isn't in the recipe manager. Returns null for dropped recipes. |
-| `core/mixins/RecipeManagerHandlerMixin` | Skips those nulls in `RecipeManagerHandler.addProxyRecipesToLookup`. Hacky, approved by the user. |
+| `ForeignRecipeConverter` | `void convert(RecipeHolder<?>, Output)`: one foreign recipe to any number of GT recipes. Each `output.add(builder -> ...)` fills a fresh builder (inputs, outputs, `EUt`, `duration`) and returns false to drop that one, so a converter that bails halfway leaves nothing behind. Adding none leaves the foreign recipe out. Most converters make one recipe: write them as `ForeignRecipeConverter.Single` (`boolean convert(holder, builder)`, the old form) and wrap with `ForeignRecipeConverter.single(...)`. Several recipes: Mek rotary (one per direction). |
+| `GregifiedRecipeType` / `GregifiedRecipeTypeBuilder` | GT recipe type that proxies the foreign one. `toGTRecipes` calls the converter, logs and returns nothing on exceptions, and sets ids `gtmqol:/gregification/<our type path>/<ns>/<path>`, plus `/<index>` from the second recipe of one foreign recipe on. Our type path keeps ids unique when two of our types proxy the same foreign type. The leading `/` marks it synthetic, so EMI (dev mode) doesn't warn that it isn't in the recipe manager. `toGTRecipe` (GTCEu's one-recipe API) returns the first or null; nothing of ours calls it. |
+| `core/mixins/RecipeManagerHandlerMixin` | HEAD inject into `RecipeManagerHandler.addProxyRecipesToLookup`, cancelled only for `GregifiedRecipeType`: the same steps as GTCEu (clear the proxy list, filter by type, add to the list and `addStaging`), but with `toGTRecipes`. GTCEu's version takes exactly one recipe per foreign recipe, which doesn't fit ours; the user chose to own this. If GTCEu changes that method, ours won't follow. Other types are untouched. |
 | `GregifiedTieredMachine` | `SimpleTieredMachine` + `BatchModeTrait` (saved flag, GT's batch button on the right configurators, default off). |
 | `MultiblockShape` | Multiblock structures: `GENERIC` (3x3x3 steel, recipe-type auto abilities), `ANY_PARTS` (same box, but takes every item/fluid import/export part plus 1–2 energy hatches whatever the slot counts; for capabilities that come in through parts of other abilities, e.g. chemicals), `ELECTRIC_BLAST_FURNACE` (coils; controller is a `CoilWorkableElectricMultiblockMachine`), `VACUUM_FREEZER`, `IMPLOSION_COMPRESSOR`, `DISTILLATION_TOWER`. The GT ones are copied from `GTMultiMachines`, because the pattern functions aren't reachable from the registered definitions. Each shape gives casing, casing model and overlay, `machine()` and `configure(builder)`. |
 | `GregificationModifiers` | `OVERCLOCK`, `BATCH`, `COIL_TEMPERATURE`, below. |
@@ -90,7 +91,7 @@ at recipe time; missing ones (e.g. tiers gtceu doesn't register) are skipped wit
   (`gregification/hammer_<machine path>`; the GT hammer loses durability through GT's crafting remainder), and a
   magical assembler recipe (counterpart + circuit 5, `VA[LV]`, 200 t). Used by Mek.
 - Two machines may not share a counterpart: the recipes would be identical. Craft the second from the first
-  (MI unpacker from our MI packer, Mek decondensentrator from our condensentrator).
+  (e.g. the MI unpacker from our MI packer).
 
 ### Dedicated servers
 
@@ -141,10 +142,10 @@ Config `gregification.mekanism`, only when `mekanism` is loaded. It uses the che
 - Machines without progress, one operation per tick (chemical infuser, pigment mixer, centrifuge, activator, washer,
   separator, rotary, evaporation): amounts as in Mek, duration 1 t, i.e. one operation per tick like the Mek
   machine without upgrades. Batch mode and parallels give the throughput (the user's call; not scaled up). The
-  separator's `getEnergyMultiplier()` is ignored.
+  separator's duration is `getEnergyMultiplier()` ticks (energy per operation, as time at a fixed voltage).
 - Sawmill: secondary output becomes a GT chanced output (`getSecondaryChance()` × 10000), or a plain output at 100%.
-- Rotary: two types on `TYPE_ROTARY`, `mek_rotary_condensentrator` (chemical → fluid) and
-  `mek_rotary_decondensentrator` (fluid → chemical); each skips recipes without its direction.
+- Rotary: one machine, `mek_rotary_condensentrator`, and a GT recipe per direction the Mek recipe has (chemical →
+  fluid, fluid → chemical), so it condenses or decondenses by what goes in.
 - Not gregified: Mek smelting (the energized smelter runs furnace recipes; GT's electric furnace covers that),
   fission, fusion, SPS, pumps, antimatter (nucleosynthesizer), energy and chemical conversion (item → energy/chemical
   in slots).
@@ -158,8 +159,9 @@ A source for a new mod:
 
 1. A class `gregification/<mod>/<Mod>Gregification` with `static List<ForeignMachineType> types()`. Touch the mod's
    classes only there.
-2. Converters for each foreign recipe class: inputs, outputs, `EUt`, `duration`. Return false for anything a GT
-   machine can't do (conditions, missing ingredients).
+2. Converters for each foreign recipe class: inputs, outputs, `EUt`, `duration`. Usually a `Single` wrapped with
+   `ForeignRecipeConverter.single`; a full `ForeignRecipeConverter` when one foreign recipe becomes several. Return
+   false for anything a GT machine can't do (conditions, missing ingredients).
 3. A config toggle under `gregification.*`, and in the `GTMQoL` constructor
    `if (config.gregification.<mod> && ModList.get().isLoaded("<mod>")) Gregification.addSource(<Mod>Gregification::types);`.
 4. The dependency is `compileOnly` + `localRuntime`, not in `neoforge.mods.toml`.
@@ -171,7 +173,7 @@ A source for a new mod:
 
 - Gtceu 1.21 sources (`.gtceu-src-1.21/com/gregtechceu/gtceu/`):
   - `core/mixins/RecipeManagerLateMixin.java` and `api/recipe/lookup/RecipeManagerHandler.java` (proxy conversion);
-  - `api/recipe/GTRecipeType.java` (`getProxyRecipes`, `toGTRecipe`);
+  - `api/recipe/GTRecipeType.java` (`getProxyRecipes`, `toGTRecipe`), `api/recipe/lookup/RecipeManagerHandler.java` (what our mixin replaces);
   - `common/data/machines/GTMultiMachines.java` (patterns);
   - `common/data/GTRecipeModifiers.java`;
   - `api/machine/mui/MachineUIPanelBuilder.java` (batch button).

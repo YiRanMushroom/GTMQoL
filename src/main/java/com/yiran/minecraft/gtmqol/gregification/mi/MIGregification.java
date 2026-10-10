@@ -152,15 +152,15 @@ public final class MIGregification {
             Multiblock multi = MULTIBLOCKS.get(path);
             if (single != null) {
                 types.add(ForeignMachineType.singleBlock(name, englishName, () -> recipeType,
-                        MIGregification::convert,
+                        ForeignRecipeConverter.single(MIGregification::convert),
                         single.itemInputs, single.itemOutputs, single.fluidInputs, single.fluidOutputs,
                         single.sound, single.ui, GUIDEBOOK,
                         tier -> ResourceLocation.parse(
                                 single.counterpart.formatted(VN[tier].toLowerCase(Locale.ROOT))),
                         GTCEu.id("block/machines/" + single.model)));
             } else if (multi != null) {
-                ForeignRecipeConverter converter = path.equals("blast_furnace") ?
-                        MIGregification::convertBlastFurnace : MIGregification::convert;
+                ForeignRecipeConverter converter = ForeignRecipeConverter.single(path.equals("blast_furnace") ?
+                        MIGregification::convertBlastFurnace : MIGregification::convert);
                 types.add(ForeignMachineType.multiblock(name, englishName, () -> recipeType, converter,
                         multi.itemInputs ? MULTIBLOCK_SLOTS : 0, multi.itemOutputs ? MULTIBLOCK_SLOTS : 0,
                         multi.fluidInputs ? MULTIBLOCK_SLOTS : 0, multi.fluidOutputs ? MULTIBLOCK_SLOTS : 0,

@@ -11,13 +11,14 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * A GT recipe type that proxies one recipe type of another mod: GTCEu's {@code RecipeManagerLateMixin} hands every
- * recipe of that type to {@link #toGTRecipe} after each reload, and the results go to the recipe lookup and EMI.
- *
- * <p>Returns null for recipes the converter leaves out; {@code RecipeManagerHandlerMixin} skips those.</p>
+ * A GT recipe type that proxies one recipe type of another mod. After each reload, every recipe of that type goes
+ * through {@link #toGTRecipes}, which may give any number of GT recipes (GTCEu's own proxy handling takes exactly
+ * one, so {@code RecipeManagerHandlerMixin} does the adding for these types), and the results go to the recipe lookup
+ * and EMI.
  */
 public class GregifiedRecipeType extends GTRecipeType {
 
@@ -40,21 +41,34 @@ public class GregifiedRecipeType extends GTRecipeType {
         getProxyRecipes().computeIfAbsent(proxy.get(), type -> new ArrayList<>());
     }
 
-    @Override
-    public @Nullable RecipeHolder<GTRecipe> toGTRecipe(RecipeHolder<?> holder) {
-        var builder = recipeBuilder(holder.id());
+    /** Every GT recipe for one foreign recipe; empty if the converter leaves it out or fails. */
+    public List<RecipeHolder<GTRecipe>> toGTRecipes(RecipeHolder<?> holder) {
+        List<RecipeHolder<GTRecipe>> recipes = new ArrayList<>();
         try {
-            if (!converter.convert(holder, builder)) return null;
+            converter.convert(holder, recipe -> {
+                var builder = recipeBuilder(holder.id());
+                if (!recipe.test(builder)) return;
+                GTRecipe built = builder.build();
+                // foreign recipe ids are unique in the recipe manager, and with our type's path in front they stay
+                // unique across our types; the index tells apart the recipes made from one foreign recipe.
+                // Not in the recipe manager: the leading '/' marks it synthetic for EMI.
+                ResourceLocation id = holder.id();
+                String suffix = recipes.isEmpty() ? "" : "/" + recipes.size();
+                built.setId(GTMQoL.id("/gregification/" + this.id.getPath() + "/" + id.getNamespace() + "/" +
+                        id.getPath() + suffix));
+                recipes.add(new RecipeHolder<>(built.id, built));
+            });
         } catch (RuntimeException e) {
             GTMQoL.LOGGER.error("Failed to convert {} to {}", holder.id(), this, e);
-            return null;
+            return List.of();
         }
-        GTRecipe built = builder.build();
-        // foreign recipe ids are unique in the recipe manager, and with our type's path in front they stay unique
-        // when two of our types proxy the same foreign one (e.g. both directions of Mekanism's rotary recipes).
-        // Not in the recipe manager: the leading '/' marks it synthetic for EMI.
-        ResourceLocation id = holder.id();
-        built.setId(GTMQoL.id("/gregification/" + this.id.getPath() + "/" + id.getNamespace() + "/" + id.getPath()));
-        return new RecipeHolder<>(built.id, built);
+        return recipes;
+    }
+
+    /** Only the first; everything of ours goes through {@link #toGTRecipes}. */
+    @Override
+    public @Nullable RecipeHolder<GTRecipe> toGTRecipe(RecipeHolder<?> holder) {
+        var recipes = toGTRecipes(holder);
+        return recipes.isEmpty() ? null : recipes.getFirst();
     }
 }
