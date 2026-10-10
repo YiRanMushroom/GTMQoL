@@ -152,10 +152,15 @@ net.minecraft.client.gui.Font$StringRenderOutput`。改这个值会让 Loom 重�
   `Object` 再强转成 accessor 接口（`@Mixin(targets = "...$Inner")`）。
 - lambda 目标直接写 javac 的合成名（`lambda$getNext$0`）或用正则（`/^lambda\$/`），都能用；GTCEu 升级后要重新核对。
 
-# Mekanism（可选，仅 dev 运行时）
+# Mekanism（可选）
 
-只通过 tag 数据和它联动（`data/tag/CircuitTags`），不编译依赖它，所以只有 `modLocalRuntime`（modmaven，
+1.20.1 只通过 tag 数据和它联动（`data/tag/CircuitTags`），不编译依赖它，所以只有 `modLocalRuntime`（modmaven，
 `mekanism:Mekanism:<mc>-<version>`），不写进 `mods.toml`。
+
+1.21.1 另外把化学品做成了 recipe capability（`common/stacklike/`，`GenericStackLikeType` 描述符 +
+`mekanism/ChemicalStackLike`），所以 Mekanism 是 `compileOnly` + `localRuntime`，只在 `ModList` 有 `mekanism`
+时才碰这些类。AE 里的化学品走 Applied Mekanistics 的 `MekanismKey`（modId `appmek`，Modrinth 版本 ID 在
+`gradle.properties` 的 `appmek_version`），同样 `compileOnly` + `localRuntime`，不写进 `neoforge.mods.toml`。
 
 # AE2（可选依赖）
 

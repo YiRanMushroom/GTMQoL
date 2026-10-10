@@ -26,6 +26,11 @@ public final class AEDualParts {
 
     public static MachineEntry<MachineDefinition> ME_DUAL_INPUT;
     public static MachineEntry<MachineDefinition> ME_DUAL_OUTPUT;
+    public static MachineEntry<MachineDefinition> ME_UNIVERSAL_INPUT;
+    public static MachineEntry<MachineDefinition> ME_UNIVERSAL_OUTPUT;
+
+    private static final String UNIVERSAL_INPUT_TOOLTIP = "gtmqol.machine.me_universal_input.tooltip";
+    private static final String UNIVERSAL_OUTPUT_TOOLTIP = "gtmqol.machine.me_universal_output.tooltip";
 
     private AEDualParts() {}
 
@@ -61,8 +66,35 @@ public final class AEDualParts {
                         Component.translatable("gtceu.part_sharing.enabled"))
                 .register();
 
+        ME_UNIVERSAL_INPUT = GTMQoLAddon.machine("me_universal_input", MEUniversalInputPartMachine::new)
+                .tier(LuV)
+                .rotationState(RotationState.ALL)
+                .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS)
+                .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_bus"))
+                .langValue("ME Universal Input")
+                .tooltips(Component.translatable(UNIVERSAL_INPUT_TOOLTIP),
+                        Component.translatable("gtceu.machine.me.item_import.tooltip"),
+                        Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
+                        Component.translatable("gtceu.part_sharing.enabled"))
+                .register();
+
+        ME_UNIVERSAL_OUTPUT = GTMQoLAddon.machine("me_universal_output", MEUniversalOutputPartMachine::new)
+                .tier(LuV)
+                .rotationState(RotationState.ALL)
+                .abilities(PartAbility.EXPORT_ITEMS, PartAbility.EXPORT_FLUIDS)
+                .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_output_bus"))
+                .langValue("ME Universal Output")
+                .tooltips(Component.translatable(UNIVERSAL_OUTPUT_TOOLTIP),
+                        Component.translatable("gtceu.machine.me.export.tooltip"),
+                        Component.translatable("gtceu.part_sharing.enabled"))
+                .register();
+
         GTMQoLAddon.registrate().addRawLang(MEDualInputPartMachine.FLUIDS_KEY, "Fluids");
         GTMQoLAddon.registrate().addRawLang(MEDualInputPartMachine.ITEMS_KEY, "Items");
+        GTMQoLAddon.registrate().addRawLang(UNIVERSAL_INPUT_TOOLTIP,
+                "Stocks items, fluids and other ME types (e.g. Mekanism chemicals) in 36 slots");
+        GTMQoLAddon.registrate().addRawLang(UNIVERSAL_OUTPUT_TOOLTIP,
+                "Outputs items, fluids and other ME types (e.g. Mekanism chemicals) to the ME network");
     }
 
     public static void addRecipes(RecipeOutput provider, boolean meAssembler) {
@@ -85,6 +117,26 @@ public final class AEDualParts {
                 .inputFluids(Glue, 1000)
                 .inputFluids(SolderingAlloy, L)
                 .outputItems(ME_DUAL_OUTPUT)
+                .duration(400)
+                .EUt(VA[IV])
+                .save(provider);
+
+        type.recipeBuilder(GTMQoL.id("me_universal_input"))
+                .inputItems(ME_DUAL_INPUT)
+                .inputItems(GTAEMachines.STOCKING_IMPORT_BUS_ME)
+                .inputFluids(Glue, 1000)
+                .inputFluids(SolderingAlloy, L)
+                .outputItems(ME_UNIVERSAL_INPUT)
+                .duration(400)
+                .EUt(VA[IV])
+                .save(provider);
+
+        type.recipeBuilder(GTMQoL.id("me_universal_output"))
+                .inputItems(ME_DUAL_OUTPUT)
+                .inputItems(GTAEMachines.ITEM_EXPORT_BUS_ME)
+                .inputFluids(Glue, 1000)
+                .inputFluids(SolderingAlloy, L)
+                .outputItems(ME_UNIVERSAL_OUTPUT)
                 .duration(400)
                 .EUt(VA[IV])
                 .save(provider);

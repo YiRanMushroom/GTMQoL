@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-09T19:22:28.9320819	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.21.1	2026-10-10T11:28:58.9134107	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
 09fb3a7710cbbd11f92fc4af1cdf02c52d2d0796 assets/gtmqol/blockstates/crystal_growth_chamber.json
 e61d13dc7f445fd39b88c0d72baabebd58c467a5 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
 f9870cf6218e8d4c6a301978cf03cd4e3221859d assets/gtmqol/blockstates/electric_implosion_compressor.json
@@ -95,6 +95,8 @@ d5d03f3ce7426a1db231f9e01cb78c5b208f467d assets/gtmqol/blockstates/max_wireless_
 3f179675238afd15f4eebc4100d3d4700357189f assets/gtmqol/blockstates/max_wireless_energy_output_hatch.json
 e0195c3dd1083af55a1e0fb85c7e122a78d970ef assets/gtmqol/blockstates/me_dual_input.json
 4124d9f0a9e48fa7980bdf3be5754099eefc6ee7 assets/gtmqol/blockstates/me_dual_output.json
+7c0ab5082da8a7a6f57865b6b79e2fa4bf0433ba assets/gtmqol/blockstates/me_universal_input.json
+4fa53923d97705d76ee855c41605422a7b1272c3 assets/gtmqol/blockstates/me_universal_output.json
 678bd14c92c953216a4cdcf726786828c2d4008a assets/gtmqol/blockstates/mv_greenhouse.json
 4ced164d918bf000fcb3a6dd2b66c365a7e71482 assets/gtmqol/blockstates/mv_magical_assembler.json
 4410fc9a5f1705a105ffa37460997d49fba7d802 assets/gtmqol/blockstates/mv_me_assembler.json
@@ -163,8 +165,8 @@ e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circui
 674a583f2b29eee523d730ad4211c0134c9f8134 assets/gtmqol/blockstates/zpm_wireless_energy_accessor.json
 1136e3739fdb3b339bc80d9bedcd1bde88a780e9 assets/gtmqol/blockstates/zpm_wireless_energy_input_hatch.json
 a77ec21bfd8e4ba2dd87ea6bde687970c4039a69 assets/gtmqol/blockstates/zpm_wireless_energy_output_hatch.json
-23e09c896b71bfcd7b2a8170704d60a2f37383eb assets/gtmqol/lang/en_ud.json
-188d15809671aea4761a6a16fb4aa02c948fe994 assets/gtmqol/lang/en_us.json
+73060868d2ab8b8f5b7d1e6439ba76e4f6160565 assets/gtmqol/lang/en_ud.json
+2c144f3d88364212a8609178d4d1f5ec4b6000a4 assets/gtmqol/lang/en_us.json
 4164843cf5260a41ff807a6f71a0269d98fdc69f assets/gtmqol/models/block/machine/crystal_growth_chamber.json
 68508e04e98fb37278a58e6e9440ba6f5cf3d12a assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
 741b8a3b73652f73a2e11b5943bc7ddeb426f178 assets/gtmqol/models/block/machine/electric_implosion_compressor.json
@@ -261,6 +263,8 @@ b036e3b66aaafa32b09631ac823fe4d6a9c1a467 assets/gtmqol/models/block/machine/luv_
 3582247601700e1ddcc7b32bf437a9cb95779391 assets/gtmqol/models/block/machine/max_wireless_energy_output_hatch.json
 5fa5b82c8c6a049067b8dba146c784cf9b6ef96f assets/gtmqol/models/block/machine/me_dual_input.json
 cfafef766f0d99886bc65b5599827c85179bd45a assets/gtmqol/models/block/machine/me_dual_output.json
+03494aa2ed55e01e4900eca169be0943c398406b assets/gtmqol/models/block/machine/me_universal_input.json
+d4970694e85e2a8343ab1dd8617d3d1d0e027d1b assets/gtmqol/models/block/machine/me_universal_output.json
 b1c637046be8db41f9891078996c3b346796aa17 assets/gtmqol/models/block/machine/mv_greenhouse.json
 4c698cf49681244aebdbb672ff220f769cd01db7 assets/gtmqol/models/block/machine/mv_magical_assembler.json
 d4472e94d06937253c3f0db1d0606aeffccb7037 assets/gtmqol/models/block/machine/mv_me_assembler.json
@@ -446,6 +450,8 @@ dc8f2b39dd32583e6ecf86c5a00022417c94affe assets/gtmqol/models/item/max_wireless_
 522e7617efd3df7ea4932c204f7eae9562273b7d assets/gtmqol/models/item/max_wireless_energy_output_hatch.json
 ac8970bfb4a62ae88852bb6eb6d834828322d726 assets/gtmqol/models/item/me_dual_input.json
 f0f70a3215271f2f719cbd9b7fb50aaecedb99be assets/gtmqol/models/item/me_dual_output.json
+de109f5031838b45f139b70791aa875d197e8e00 assets/gtmqol/models/item/me_universal_input.json
+775252d224cf987e98939da980ac4304558ec764 assets/gtmqol/models/item/me_universal_output.json
 47e4d37f98474e07ef86b0b3789a45623d4850e6 assets/gtmqol/models/item/mv_greenhouse.json
 be707b47c96be6e3e2b6f890a60d11e63573a943 assets/gtmqol/models/item/mv_magical_assembler.json
 9c162fcd8558cc55d051fc111d50a533ed713c2a assets/gtmqol/models/item/mv_me_assembler.json
