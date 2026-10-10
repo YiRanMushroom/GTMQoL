@@ -49,6 +49,30 @@ public enum MultiblockShape {
                     .build();
         }
     },
+    /**
+     * {@link #GENERIC}, but taking every item and fluid part whatever the recipe type's slots: parts of other
+     * capabilities (e.g. the universal ME parts and the pattern buffer for chemicals) carry those abilities.
+     */
+    ANY_PARTS(CASING_STEEL_SOLID, "block/casings/solid/machine_casing_solid_steel",
+            "block/multiblock/large_chemical_reactor") {
+
+        @Override
+        IBlockPattern pattern(MultiblockMachineDefinition definition) {
+            return MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
+                    .slice("XXX", "XXX", "XXX")
+                    .slice("XXX", "X#X", "XXX")
+                    .slice("XXX", "XSX", "XXX")
+                    .where('S', controller(blocks(definition.getBlock())))
+                    .where('X', blocks(CASING_STEEL_SOLID.get()).setMinGlobalLimited(10)
+                            .and(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2)
+                                    .setPreviewCount(1))
+                            .and(abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS,
+                                    PartAbility.EXPORT_ITEMS, PartAbility.EXPORT_FLUIDS).setPreviewCount(1))
+                            .and(autoAbilities(true, false, false)))
+                    .where('#', air())
+                    .build();
+        }
+    },
     ELECTRIC_BLAST_FURNACE(CASING_INVAR_HEATPROOF, "block/casings/solid/machine_casing_heatproof",
             "block/multiblock/electric_blast_furnace") {
 

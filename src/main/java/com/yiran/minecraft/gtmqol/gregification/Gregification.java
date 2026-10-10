@@ -26,6 +26,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.data.loading.DatagenModLoader;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -68,6 +69,9 @@ public final class Gregification {
         // The first registry event of all: gtceu moves its registries and recipe types to the front, in an order
         // we'd rather not depend on.
         modBus.addListener(EventPriority.HIGHEST, RegisterEvent.class, event -> declareAll());
+        modBus.addListener(FMLCommonSetupEvent.class, event -> {
+            for (GregifiedRecipeType recipeType : recipeTypes()) recipeType.resolveProxy();
+        });
     }
 
     /** Call from the mod constructor. */
@@ -93,15 +97,15 @@ public final class Gregification {
     private static void declare(ForeignMachineType type) {
         GTRegistrate registrate = GTMQoLAddon.registrate();
         String name = type.name();
-        GTRecipeTypeEntry recipeType = registrate
+        GTRecipeTypeBuilder builder = registrate
                 .<RecipeType<?>, GTRecipeType, GTRegistrate, GTRecipeTypeBuilder>entry(name,
                         callback -> new GregifiedRecipeTypeBuilder(registrate, name, callback, GTRecipeTypes.ELECTRIC,
                                 type.converter(), type.proxy()))
                 .setMaxIOSize(type.itemInputs(), type.itemOutputs(), type.fluidInputs(), type.fluidOutputs())
                 .setEUIO(IO.IN)
                 .UI(type.ui())
-                .setSound(type.sound())
-                .register();
+                .setSound(type.sound());
+        GTRecipeTypeEntry recipeType = type.recipeType().apply(builder).register();
         RECIPE_TYPES.add(recipeType);
         RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us",
                 GTMQoL.id(name).toLanguageKey(GTRecipeType.LANGUAGE_KEY_PATH), type.englishName());

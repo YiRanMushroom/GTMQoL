@@ -171,7 +171,11 @@ dependencies {
     // Same setup as gtceu's 1.21.1 addon template: gtceu without its pom dependencies, and the libraries it
     // jar-in-jars declared by hand (Registrate and ModularUI are also in gtceu's public API). NeoForge runs
     // on Mojang names, so nothing is remapped and the jars stay as published.
-    implementation("com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtceu_version}") {
+    // accessCompileOnly so our AT reaches gtceu's private classes at compile time; at runtime NeoForge applies it.
+    accessCompileOnly("com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtceu_version}") {
+        transitive = false
+    }
+    runtimeOnly("com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtceu_version}") {
         transitive = false
     }
     implementation "com.tterrag.registrate:Registrate:${project.registrate_version}"

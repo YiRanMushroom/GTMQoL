@@ -151,7 +151,8 @@ public final class MIGregification {
             SingleBlock single = SINGLE_BLOCKS.get(path);
             Multiblock multi = MULTIBLOCKS.get(path);
             if (single != null) {
-                types.add(ForeignMachineType.singleBlock(name, englishName, recipeType, MIGregification::convert,
+                types.add(ForeignMachineType.singleBlock(name, englishName, () -> recipeType,
+                        MIGregification::convert,
                         single.itemInputs, single.itemOutputs, single.fluidInputs, single.fluidOutputs,
                         single.sound, single.ui, GUIDEBOOK,
                         tier -> ResourceLocation.parse(
@@ -160,7 +161,7 @@ public final class MIGregification {
             } else if (multi != null) {
                 ForeignRecipeConverter converter = path.equals("blast_furnace") ?
                         MIGregification::convertBlastFurnace : MIGregification::convert;
-                types.add(ForeignMachineType.multiblock(name, englishName, recipeType, converter,
+                types.add(ForeignMachineType.multiblock(name, englishName, () -> recipeType, converter,
                         multi.itemInputs ? MULTIBLOCK_SLOTS : 0, multi.itemOutputs ? MULTIBLOCK_SLOTS : 0,
                         multi.fluidInputs ? MULTIBLOCK_SLOTS : 0, multi.fluidOutputs ? MULTIBLOCK_SLOTS : 0,
                         multi.sound, multi.ui, GUIDEBOOK, ResourceLocation.parse(multi.counterpart),

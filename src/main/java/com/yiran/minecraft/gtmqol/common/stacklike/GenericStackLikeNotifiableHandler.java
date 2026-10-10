@@ -2,6 +2,7 @@ package com.yiran.minecraft.gtmqol.common.stacklike;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableRecipeHandlerTrait;
@@ -109,12 +110,20 @@ public abstract class GenericStackLikeNotifiableHandler<S, I> extends Notifiable
         if (changed && !simulate) onContentsChanged();
     }
 
+    /**
+     * The machine whose recipe logic records consumed inputs, see {@link #addConsumedInput}. Handlers that aren't
+     * attached traits (e.g. per pattern buffer slot) override this, {@link #getMachine()} throws for them.
+     */
+    protected @Nullable MetaMachine getRecipeMachine() {
+        return getMachine();
+    }
+
     /** Same bookkeeping as gtceu's item and fluid handlers. */
     private void addConsumedInput(@Nullable GTRecipe recipe, S consumed) {
+        MetaMachine machine = getRecipeMachine();
+        if (machine == null) return;
         I ingredient = cap.type.of(consumed);
-        // Handlers that aren't attached traits (e.g. per pattern buffer slot) have no machine.
-        if (getMachine() == null) return;
-        if (getMachine() instanceof MultiblockPartMachine part) {
+        if (machine instanceof MultiblockPartMachine part) {
             for (MultiblockControllerMachine controller : part.getControllers()) {
                 RecipeLogic logic = controller.getTrait(RecipeLogic.class);
                 if (logic != null && logic.getStartingRecipe() == recipe) {
@@ -122,7 +131,7 @@ public abstract class GenericStackLikeNotifiableHandler<S, I> extends Notifiable
                 }
             }
         } else {
-            getMachine().getTraitOptional(RecipeLogic.class).map(RecipeLogic::getConsumedInputs)
+            machine.getTraitOptional(RecipeLogic.class).map(RecipeLogic::getConsumedInputs)
                     .ifPresent(inputs -> inputs.addConsumedInput(cap, ingredient));
         }
     }

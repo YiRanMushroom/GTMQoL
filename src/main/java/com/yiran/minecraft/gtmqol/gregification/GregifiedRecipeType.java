@@ -6,8 +6,12 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.function.Supplier;
 
 /**
  * A GT recipe type that proxies one recipe type of another mod: GTCEu's {@code RecipeManagerLateMixin} hands every
@@ -18,10 +22,22 @@ import org.jetbrains.annotations.Nullable;
 public class GregifiedRecipeType extends GTRecipeType {
 
     private final ForeignRecipeConverter converter;
+    private final Supplier<? extends RecipeType<?>> proxy;
 
-    public GregifiedRecipeType(ResourceLocation id, Properties properties, ForeignRecipeConverter converter) {
+    public GregifiedRecipeType(ResourceLocation id, Properties properties, ForeignRecipeConverter converter,
+                               Supplier<? extends RecipeType<?>> proxy) {
         super(id, properties);
         this.converter = converter;
+        this.proxy = proxy;
+    }
+
+    /**
+     * Adds the proxied type to {@link #getProxyRecipes()}, at common setup. Not in the properties: the foreign type
+     * may not exist yet when this one is declared (Mekanism creates its recipe types when they are registered).
+     * Recipes are only converted on reloads, which come later.
+     */
+    public void resolveProxy() {
+        getProxyRecipes().computeIfAbsent(proxy.get(), type -> new ArrayList<>());
     }
 
     @Override

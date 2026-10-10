@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.ProxySlotRecipeHandler;
-import com.yiran.minecraft.gtmqol.core.mixins.recipedb.MEPatternBufferPartMachineAccessor;
-import com.yiran.minecraft.gtmqol.core.mixins.recipedb.MEPatternBufferWorkerAccessor;
+import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
+import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.PatternBufferStackLikeSlot;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -36,13 +36,19 @@ final class PatternBufferIngredients {
         list.addContents(ItemRecipeCapability.CAP, buffer.getShareInventory().getContents(), kind, owner, catalyst);
         list.addContents(FluidRecipeCapability.CAP, buffer.getShareTank().getContents(), kind, owner, catalyst);
         int slot = GroupedIngredientList.WHOLE;
-        for (Object worker : ((MEPatternBufferPartMachineAccessor) buffer).gtmqol$getWorkers()) {
-            var internalSlot = ((MEPatternBufferWorkerAccessor) worker).gtmqol$getSlot();
+        // workers and Worker.slot are public through our AT
+        for (var worker : buffer.workers) {
+            var internalSlot = worker.slot;
             slot++;
             list.addContents(ItemRecipeCapability.CAP, new ArrayList<Object>(internalSlot.getItems()), kind, owner,
                     slot);
             list.addContents(FluidRecipeCapability.CAP, new ArrayList<Object>(internalSlot.getFluids()), kind, owner,
                     slot);
+            var stackLike = (PatternBufferStackLikeSlot) internalSlot;
+            for (var bridge : AEStackLikeBridges.all()) {
+                list.addContents(bridge.cap(), stackLike.gtmqol$getStackLikeHandler(bridge).getContents(), kind,
+                        owner, slot);
+            }
         }
         return true;
     }

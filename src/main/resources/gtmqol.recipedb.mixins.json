@@ -5,8 +5,6 @@
   "plugin": "com.yiran.minecraft.gtmqol.core.RecipeDBMixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "MEPatternBufferPartMachineAccessor",
-    "MEPatternBufferWorkerAccessor",
     "RecipeDBMixin",
     "RecipeIteratorMixin",
     "SearchFrameAccessor"

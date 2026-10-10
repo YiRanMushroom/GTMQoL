@@ -1,5 +1,7 @@
 package com.yiran.minecraft.gtmqol.integration.ae2.stacklike;
 
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+
 import appeng.api.stacks.AEKey;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +30,13 @@ public final class AEStackLikeBridges {
     public static @Nullable AEStackLikeBridge<?, ?> forKey(AEKey key) {
         for (var bridge : BRIDGES) {
             if (bridge.isKey(key)) return bridge;
+        }
+        return null;
+    }
+
+    public static @Nullable AEStackLikeBridge<?, ?> forCap(RecipeCapability<?> cap) {
+        for (var bridge : BRIDGES) {
+            if (bridge.cap() == cap) return bridge;
         }
         return null;
     }
