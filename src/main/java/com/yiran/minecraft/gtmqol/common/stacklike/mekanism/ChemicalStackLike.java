@@ -5,6 +5,7 @@ import com.yiran.minecraft.gtmqol.common.stacklike.GenericStackLikeRecipeCapabil
 import com.yiran.minecraft.gtmqol.common.stacklike.GenericStackLikeType;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
@@ -76,6 +77,11 @@ public final class ChemicalStackLike implements GenericStackLikeType<ChemicalSta
     @Override
     public Codec<ChemicalStack> stackCodec() {
         return ChemicalStack.OPTIONAL_CODEC;
+    }
+
+    @Override
+    public Component displayName(ChemicalStack stack) {
+        return stack.getTextComponent();
     }
 
     @Override

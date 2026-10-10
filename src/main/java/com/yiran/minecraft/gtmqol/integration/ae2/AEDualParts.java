@@ -29,8 +29,9 @@ public final class AEDualParts {
     public static MachineEntry<MachineDefinition> ME_UNIVERSAL_INPUT;
     public static MachineEntry<MachineDefinition> ME_UNIVERSAL_OUTPUT;
 
-    private static final String UNIVERSAL_INPUT_TOOLTIP = "gtmqol.machine.me_universal_input.tooltip";
-    private static final String UNIVERSAL_OUTPUT_TOOLTIP = "gtmqol.machine.me_universal_output.tooltip";
+    // Not "<ns>.machine.<id>.tooltip": gtceu adds that key to the tooltip by itself, it would show twice.
+    private static final String UNIVERSAL_INPUT_TOOLTIP = "gtmqol.machine.me_universal_input.desc";
+    private static final String UNIVERSAL_OUTPUT_TOOLTIP = "gtmqol.machine.me_universal_output.desc";
 
     private AEDualParts() {}
 
