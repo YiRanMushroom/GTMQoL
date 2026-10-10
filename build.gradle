@@ -228,6 +228,9 @@ dependencies {
     // Compile-only: FluidConfigWidget takes EMI stacks as drag-and-drop ingredients (only when EMI is loaded).
     modCompileOnly "dev.emi:emi-forge:${project.emi_version}"
 
+    // Compile-only: the pattern encoding mixin reads JEI's recipe slots (only when JEI is loaded).
+    modCompileOnly "mezz.jei:jei-${project.minecraft_version}-forge:${project.jei_version}"
+
     // Dev-only mods so the test client has recipe viewing, ME networks and KubeJS (GTCEu's optional deps).
     modLocalRuntime "mezz.jei:jei-${project.minecraft_version}-forge:${project.jei_version}"
     modLocalRuntime "dev.latvian.mods:kubejs-forge:${project.kubejs_version}"

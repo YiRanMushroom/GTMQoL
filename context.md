@@ -245,6 +245,11 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   ULV pairs with infused alloy the same way: `forge:alloys/advanced` includes `#gtceu:circuits/ulv`
   (Mekanism recipes use both `forge:alloys/advanced` and `mekanism:alloys/infused`, the latter includes the
   former), and `gtceu:circuits/ulv` includes `mekanism:alloy_infused`.
+- `MaterialAliasTags` (datagen, item/block/fluid tags, always on): GT spells some materials differently from other
+  mods. For each of the material's `MaterialEntry` (`ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP` / `_BLOCK_MAP`) and
+  each non-parent `TagPrefix` tag whose path contains the name, the alias tag includes `#<GT tag>` as an optional tag
+  (e.g. `forge:ingots/aluminum` → `#forge:ingots/aluminium`, `forge:plutonium` fluid → `#forge:plutonium_239`).
+  Optional because GT's material tags are generated at runtime. Aliases: aluminium → aluminum, plutonium_239 → plutonium.
 - `MagicalAssemblerUI`: v8 recipe UI is ModularUI, configured through `GTRecipeType.UI(GTRecipeTypeUILayout.Builder)`.
   Grids can be changed with `setLayoutGridBuilder` (`String[]`, `'s'` = slot), but every capability is
   stacked vertically in `inputColumn`, so putting fluids *beside* items needs custom per-capability builders
@@ -497,6 +502,13 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
   `StorageBusPartMixin` (`@Shadow` on the private `handler`: AT `META-INF/accesstransformer.cfg` + ModAccessor `accessModCompileOnly` for AE2, after the MDG migration; a `@WrapOperation` with the supertype receiver did not match) and `PartSpecialStorageBusMixin` set the flag. The Upgrades have no tooltip group
   (v7 passed `group.storage.name`; AE2's own storage bus upgrades have none). ExtendedAE is now `modCompileOnly`
   too (`EPPItemAndBlock.*_STORAGE_BUS`).
+- Pattern encoding skips non-consumed inputs (toma `ae2.skipNotConsumedInputs`, runtime, default on), client
+  mixins applied only when the viewer is loaded; AE2 skips empty input lists:
+  - EMI: `EmiEncodePatternHandlerMixin` wraps `EmiStackHelper.ofInputs`, blanks `EmiIngredient.getChance() == 0`.
+  - JEI: `EncodePatternTransferHandlerMixin` wraps `GenericEntryStackHelper.ofInputs`. JEI slots have no chance, so
+    for a `GTRecipe` it rebuilds `GTRecipeJEICategory`'s layout (one INPUT slot per stack of
+    `JeiIngredientHandler.toJeiIngredient(mapped)`, items then fluids) and blanks slots of chance-0 contents; if the
+    slot count doesn't match it leaves the inputs alone. JEI is `modCompileOnly` for this.
 - Smart doubling (ExtendedAE Plus, optional): `gtmqol.eap.mixins.json`, gated by `core/EAPMixinPlugin`
   (`LoadingModList` has `extendedae_plus`). `mixin/eap/MEPatternBufferSmartDoublingMixin` on GTCEu's buffer
   (so ours too) implements `ISmartDoublingHolder`, `@SaveField` toggle (default on) and limit (0 = none),

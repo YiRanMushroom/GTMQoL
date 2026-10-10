@@ -20,6 +20,8 @@ import java.util.Set;
 public class AE2MixinPlugin implements IMixinConfigPlugin {
 
     private static final String ENCODING_MIXIN = "com.yiran.minecraft.gtmqol.core.mixins.ae2.EncodingHelperMixin";
+    private static final String EMI_ENCODING_MIXIN = "com.yiran.minecraft.gtmqol.core.mixins.ae2.EmiEncodePatternHandlerMixin";
+    private static final String JEI_ENCODING_MIXIN = "com.yiran.minecraft.gtmqol.core.mixins.ae2.EncodePatternTransferHandlerMixin";
     private static final String EXTENDEDAE_MIXIN = "com.yiran.minecraft.gtmqol.core.mixins.ae2.PartSpecialStorageBusMixin";
 
     @Override
@@ -30,6 +32,9 @@ public class AE2MixinPlugin implements IMixinConfigPlugin {
         var mods = FMLLoader.getLoadingModList();
         if (mods.getModFileById("ae2") == null) return false;
         if (mixinClassName.equals(ENCODING_MIXIN)) return EarlyConfig.AE2_UNIVERSAL_CIRCUIT_ENCODING;
+        // toggled at runtime by GTMQoLConfig.ae2.skipNotConsumedInputs
+        if (mixinClassName.equals(EMI_ENCODING_MIXIN)) return mods.getModFileById("emi") != null;
+        if (mixinClassName.equals(JEI_ENCODING_MIXIN)) return mods.getModFileById("jei") != null;
         // everything else is the sticky card
         if (!EarlyConfig.AE2_STICKY_CARD) return false;
         // ExtendedAE's mod id is still the old name of its 1.20.1 fork
