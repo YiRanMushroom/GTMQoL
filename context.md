@@ -355,6 +355,11 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   at `TagsUpdatedEvent`. The tags are datagen'd static JSON, so the `circuit` toggles (`universalCircuits`,
   `controlCircuits`, `mekanismCircuitTags`) don't remove them at runtime; known limitation, deliberately left
   as is.
+- `MaterialAliasTags` (datagen, item/block/fluid tags, always on): GT spells some materials differently from other
+  mods. For each of the material's `MaterialEntry` (`ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP` / `_BLOCK_MAP`) and
+  each non-parent `TagPrefix` tag whose path contains the name, the alias tag includes `#<GT tag>` as an optional tag
+  (e.g. `c:ingots/aluminum` → `#c:ingots/aluminium`, `c:plutonium` fluid → `#c:plutonium_239`). Optional because
+  GT's material tags are generated at runtime. Aliases: aluminium → aluminum, plutonium_239 → plutonium.
   ULV pairs with infused alloy the same way: `forge:alloys/advanced` includes `#gtceu:circuits/ulv`
   (Mekanism recipes use both `forge:alloys/advanced` and `mekanism:alloys/infused`, the latter includes the
   former), and `gtceu:circuits/ulv` includes `mekanism:alloy_infused`.
@@ -433,7 +438,9 @@ mod returns `ForeignMachineType`s.
 - All of them (and the modular versions, via `Gregification.allGregified`) use `GregificationModifiers`:
   - `OVERCLOCK`: the speed-up is `voltage / EUt` at the same energy per recipe. Below 1 tick it runs subtick
     parallels (`voltage / EUt / duration`).
-  - `BATCH`: GT's batch mode. Single blocks read their `BatchModeTrait`.
+  - `BATCH`: GT's batch mode, single blocks only (reads their `BatchModeTrait`). Multiblocks (gregified ones
+    and their modular versions) use GT's own `GTRecipeModifiers.BATCH_MODE` (same logic), because
+    `MachineUIPanelBuilder` only shows the batch button when the modifier list contains that exact instance.
   - The user calls this "FE overclock logic": recipes run at `VA[LV]`, the subtick overclock keeps total energy
     about the same.
 - Sources are declared on the first `RegisterEvent` (HIGHEST priority). GT reorders the registries (its own and
@@ -444,7 +451,16 @@ mod returns `ForeignMachineType`s.
   - Single blocks get MI's slot counts. Multiblocks get 6 slots per kind MI allows.
   - Recipes use `EUt(VA[LV])`, with duration `ceil(MI total EU / VA[LV])`, so the total energy matches MI's
     (1 MI EU = 1 GT EU).
+  - Blast furnace: MI picks the coil tier by the recipe's EU/t (`ElectricBlastFurnaceBlockEntity.tiers`,
+    `maxBaseEu`). The recipe gets `blastFurnaceTemp` of the GT coil at the same index (cupronickel 1800 K,
+    kanthal 2700 K; KubeJS-added MI tiers continue with nichrome...). The controller is a
+    `CoilWorkableElectricMultiblockMachine` (`MultiblockShape.machine()`), and `GregificationModifiers.COIL_TEMPERATURE`
+    cancels recipes that are too hot, with GT's EBF temperature (coil + 100 K per tier above MV). No heat discount or
+    perfect OC; it then runs our `OVERCLOCK`. The recipe UI shows GT's temperature/coil line.
   - MI probability 0 on an input → chance 0 (not consumed). Below 1 → a chance.
+  - Fluids are matched to GT by name: GT material = the fluid's id path, after `MaterialAliasTags.ALIASES` (aluminum →
+    aluminium, plutonium → plutonium_239). A single-fluid input becomes compound(original, `#c:<material>`). An output
+    becomes the GT fluid. Nothing changes when the GT fluid is the original (water). It's only a name guess.
   - Recipes with process conditions are skipped. Unknown (e.g. KubeJS) types are logged and skipped.
   - Dependency: `compileOnly` + `localRuntime` Modrinth `modern-industrialization` (id `HOR1tVas` = 2.5.10).
     GrandPower is jar-in-jar; guideme is already a dev runtime mod.
@@ -771,6 +787,10 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
   (only `EncodingHelperMixin`) and `ae2.stickyCard` (the other four mixins, the item and its recipes); the plugin
   applies each set accordingly, and the mixins also check `StickyCardItem.STICKY_CARD != null`. `StorageBusPartMixin` `@Shadow`s the `handler` field; its private type `StorageBusInventory` is opened by `META-INF/accesstransformer.cfg`, which MDG only applies to Minecraft, so the ModAccessor plugin (`dev.vfyjxf.modaccessor`, build time only) patches the AE2 jar on `accessCompileOnly` for javac (compiles; a `@WrapOperation` with the supertype receiver did not match). The Upgrades have no tooltip group (AE2's storage bus
   upgrades have none). ExtendedAE is now `compileOnly` too.
+- Pattern encoding skips non-consumed inputs (toma `ae2.skipNotConsumedInputs`, runtime, default on):
+  `EmiEncodePatternHandlerMixin` (client, only with EMI) wraps `EmiStackHelper.ofInputs` and blanks inputs whose
+  `EmiIngredient.getChance() == 0` (GT's `GTEmiRecipe` passes content chance through); AE2 skips empty input lists.
+  AE2 19 has no JEI module, so EMI only (1.20.1 has a JEI mixin too).
 - Versions are constrained by GTCEu's JEI mixins: JEI stays 15.20.0.115, so EAP stays 1.6.1 (see
   `gradle.properties`).
 - Known, ignored for now: a JVM access violation (C2 JIT, `InventoryChangeTrigger`) once while picking up a

@@ -145,15 +145,14 @@ public final class ModularMachines {
         boolean gregified = Gregification.allGregified(recipeTypes);
         RecipeModifier overclock = generator ? GENERATOR_OVERCLOCK :
                 gregified ? GregificationModifiers.OVERCLOCK : GTRecipeModifiers.OC_PERFECT_SUBTICK;
-        RecipeModifier batch = gregified ? GregificationModifiers.BATCH : GTRecipeModifiers.BATCH_MODE;
-
         @SuppressWarnings("unchecked")
         Supplier<GTRecipeType>[] typeSuppliers = pending.recipeTypes().toArray(Supplier[]::new);
         MachineEntry<MultiblockMachineDefinition> modular = GTMQoLAddon.multiblock(modularName, ModularMachine::new)
                 .dynamicallyGenerated(true)
                 .rotationState(RotationState.ALL)
                 .recipeTypes(typeSuppliers)
-                .recipeModifiers(startModifier, overclock, batch)
+                // GT's machine UI only shows the batch button for this exact modifier
+                .recipeModifiers(startModifier, overclock, GTRecipeModifiers.BATCH_MODE)
                 .generator(generator)
                 .regressWhenWaiting(!generator)
                 .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)

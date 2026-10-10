@@ -1,8 +1,9 @@
 package com.yiran.minecraft.gtmqol.gregification;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -10,6 +11,8 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
+import net.minecraft.network.chat.Component;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,11 +29,32 @@ public final class GregificationModifiers {
     public static final RecipeModifier OVERCLOCK = GregificationModifiers::overclock;
 
     /**
-     * GTCEu's batch mode; single blocks toggle it with their {@link BatchModeTrait}.
+     * GTCEu's batch mode for single blocks, toggled with their {@link BatchModeTrait}. Multiblocks use GT's own
+     * {@code GTRecipeModifiers.BATCH_MODE} (same logic), since GT's UI only shows the batch button for that one.
      */
     public static final RecipeModifier BATCH = GregificationModifiers::batch;
 
+    /**
+     * Recipes with GT's {@code ebf_temp} need a coil machine at least that hot (same temperature as GT's EBF, but no
+     * heat discount or perfect overclock). Others pass.
+     */
+    public static final RecipeModifier COIL_TEMPERATURE = GregificationModifiers::coilTemperature;
+
     private GregificationModifiers() {}
+
+    private static @NotNull ModifierFunction coilTemperature(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!recipe.data.contains("ebf_temp")) return ModifierFunction.IDENTITY;
+        if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
+            return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
+        }
+        // as in GTRecipeModifiers.ebfOverclock
+        int temperature = coilMachine.getCoilType().getCoilTemperature() +
+                100 * Math.max(0, coilMachine.getTier() - GTValues.MV);
+        if (recipe.data.getInt("ebf_temp") > temperature) {
+            return ModifierFunction.cancel(Component.translatable("gtceu.recipe_modifier.coil_temperature_too_low"));
+        }
+        return ModifierFunction.IDENTITY;
+    }
 
     private static @NotNull ModifierFunction overclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof IOverclockMachine overclockMachine)) return ModifierFunction.IDENTITY;
@@ -64,7 +88,8 @@ public final class GregificationModifiers {
     }
 
     private static @NotNull ModifierFunction batch(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (!batchEnabled(machine)) return ModifierFunction.IDENTITY;
+        BatchModeTrait trait = machine.getTrait(BatchModeTrait.class);
+        if (trait == null || !trait.isBatchEnabled()) return ModifierFunction.IDENTITY;
         int batchDuration = ConfigHolder.INSTANCE.machines.batchDuration;
         if (recipe.duration >= batchDuration) return ModifierFunction.IDENTITY;
 
@@ -77,13 +102,5 @@ public final class GregificationModifiers {
                 .durationMultiplier(parallels)
                 .batchParallels(parallels)
                 .build();
-    }
-
-    private static boolean batchEnabled(MetaMachine machine) {
-        if (machine instanceof MultiblockControllerMachine controller) {
-            return controller.isFormed() && controller.isBatchEnabled();
-        }
-        BatchModeTrait trait = machine.getTrait(BatchModeTrait.class);
-        return trait != null && trait.isBatchEnabled();
     }
 }
