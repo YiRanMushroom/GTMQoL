@@ -50,10 +50,11 @@ public class GregifiedRecipeType extends GTRecipeType {
             return null;
         }
         GTRecipe built = builder.build();
-        // foreign recipe ids are unique in the recipe manager, so they stay unique under our namespace.
+        // foreign recipe ids are unique in the recipe manager, and with our type's path in front they stay unique
+        // when two of our types proxy the same foreign one (e.g. both directions of Mekanism's rotary recipes).
         // Not in the recipe manager: the leading '/' marks it synthetic for EMI.
         ResourceLocation id = holder.id();
-        built.setId(GTMQoL.id("/gregification/" + id.getNamespace() + "/" + id.getPath()));
+        built.setId(GTMQoL.id("/gregification/" + this.id.getPath() + "/" + id.getNamespace() + "/" + id.getPath()));
         return new RecipeHolder<>(built.id, built);
     }
 }

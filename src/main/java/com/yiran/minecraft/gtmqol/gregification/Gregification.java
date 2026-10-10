@@ -11,15 +11,18 @@ import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.api.generation.GTMQoLMultiblockBuilder;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
+import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -29,6 +32,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.data.loading.DatagenModLoader;
 import net.neoforged.neoforge.registries.RegisterEvent;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -60,7 +65,8 @@ public final class Gregification {
     private static final List<Crafted> CRAFTED = new ArrayList<>();
     private static boolean declared;
 
-    private record Crafted(MachineEntry<?> machine, ResourceLocation catalyst, ResourceLocation counterpart) {}
+    private record Crafted(MachineEntry<?> machine, @Nullable ResourceLocation catalyst,
+                           ResourceLocation counterpart) {}
 
     private Gregification() {}
 
@@ -154,12 +160,32 @@ public final class Gregification {
         CRAFTED.add(new Crafted(machine, type.catalyst(), type.counterpart().apply(-1)));
     }
 
-    /** Shapeless: counterpart + catalyst (kept) = machine. */
+    /**
+     * Shapeless: counterpart + catalyst (kept) = machine. Without a catalyst, like the modular machines: the
+     * counterpart hit with a GT hammer, or through the magical assembler.
+     */
     public static void addRecipes(RecipeOutput provider) {
         for (Crafted crafted : CRAFTED) {
-            var catalyst = BuiltInRegistries.ITEM.getOptional(crafted.catalyst);
             var counterpart = BuiltInRegistries.ITEM.getOptional(crafted.counterpart);
             ResourceLocation id = crafted.machine.getId();
+            if (crafted.catalyst == null) {
+                if (counterpart.isEmpty()) {
+                    GTMQoL.LOGGER.debug("No recipe for {}: {} doesn't exist", id, crafted.counterpart);
+                    continue;
+                }
+                ItemStack counterpartStack = new ItemStack(counterpart.get());
+                MagicalAssembler.RECIPE_TYPE.get().recipeBuilder(GTMQoL.id("gregification/" + id.getPath()))
+                        .inputItems(counterpartStack)
+                        .outputItems(crafted.machine.asStack())
+                        .circuitMeta(5)
+                        .EUt(VA[LV])
+                        .duration(200)
+                        .save(provider);
+                VanillaRecipeHelper.addShapedRecipe(provider, GTMQoL.id("gregification/hammer_" + id.getPath()),
+                        crafted.machine.asStack(), "h", "M", 'M', counterpartStack);
+                continue;
+            }
+            var catalyst = BuiltInRegistries.ITEM.getOptional(crafted.catalyst);
             if (catalyst.isEmpty() || counterpart.isEmpty()) {
                 // e.g. a tier GTCEu doesn't register without high tier content
                 GTMQoL.LOGGER.debug("No recipe for {}: {} or {} doesn't exist", id, crafted.catalyst,
