@@ -468,14 +468,14 @@ mod returns `ForeignMachineType`s.
   (`GregifiedRecipeType.resolveProxy`), not passed to the properties. Mekanism creates its recipe types when they
   are registered, after we declare. `ForeignMachineType.withRecipeType` adds anything else the GT recipe type
   needs (e.g. `setMaxSize` for chemicals).
-- Mekanism (`gregification/mekanism/MekanismGregification`, config `gregification.mekanism`, 2026-10-10, not built
-  yet): only the chemical oxidizer (`mek_chemical_oxidizer`) and the metallurgic infuser (`mek_metallurgic_infuser`),
+- Mekanism (`gregification/mekanism/MekanismGregification`, config `gregification.mekanism`, 2026-10-10, tested
+  by the user): only the chemical oxidizer (`mek_chemical_oxidizer`) and the metallurgic infuser (`mek_metallurgic_infuser`),
   to test the chemical capability. Both use `MultiblockShape.ANY_PARTS`, the 3x3x3 steel box that takes every
   item/fluid import/export part whatever the slot counts (the universal ME parts and pattern buffer carry those
   abilities). Duration = Mek's base ticks (100 / 200) at `VA[LV]`. A per-tick chemical is multiplied by the
   ticks. The output is the first of `getOutputDefinition()`. Crafted from the Mek machine + configurator.
 
-## Stack-like recipe capabilities (`stacklike/`, 1.21.1 only, 2026-10-10, not built yet)
+## Stack-like recipe capabilities (`stacklike/`, 1.21.1 only, 2026-10-10, tested by the user except the display)
 
 - `GenericStackLikeType<S, I>` describes a stack/ingredient pair. `GenericStackLikeRecipeCapability` and
   `GenericStackLikeNotifiableHandler` (long amounts) are generic over it. Mekanism chemicals are first
@@ -502,7 +502,28 @@ mod returns `ForeignMachineType`s.
     - unattached traits;
     - `@Shadow this$0` (javac hides synthetic members, so an AT can't expose it);
     - the aggregate's parallel limit sums all slots, as GT does for items.
-- Later: external chemical hatches, recipe UI / EMI for the cap, the 1.20.1 port.
+- Display (real EMI slots replaced the first text-only version; not built yet):
+  - EMI layout: `core/mixins/GTRecipeTypeUILayoutBuilderMixin` adds defaults for every cap in
+    `GenericStackLikeRecipeCapability.ALL` at the end of the builder's constructor, next to gtceu's item/fluid ones.
+    A type's own `UI(...)` can override them.
+  - `StackLikeRecipeViewer` copies gtceu's FLUID layout and content builders. It uses
+    `RecipeViewerSlotWidget.create(stackClass)` with a `StackLikeEntryList`, a fluid slot background, and
+    `ContentOverlay` plus `StackLikeAmountOverlay`. The overlay is needed because gtceu only draws amounts for
+    `SizedFluidIngredient`.
+  - MUI's `EmiRecipeViewerSlot` wraps a real EMI `SlotWidget`, so hover, R/U and the tooltip come from EMI. The
+    stack class needs an `EmiStackConverter`: `stacklike/mekanism/ChemicalEmiConverter` uses Mekanism's
+    `IMekanismEmiHelper` stacks and is registered in `GTMQoLClient.init` when EMI and Mekanism are loaded.
+    A cap without a converter shows empty slots.
+  - `core/mixins/GTEmiRecipeStackLikeMixin` (client) appends stack-like contents to `GTEmiRecipe.getInputs/getOutputs`
+    through `StackLikeEmi`, because gtceu only lists items and fluids there. EMI's recipe lookup and AE2's pattern
+    encoding (Applied Mekanistics has an EMI chemical converter) read these lists.
+  - Machine tooltip lang keys must not be `<ns>.machine.<id>.tooltip`: `MetaMachineBlock.appendHoverText` adds that
+    key by itself, so it showed twice. Ours are `.desc`.
+  - Jade: `integration/jade/GTMQoLJadePlugin` (`@WailaPlugin`; Jade is `compileOnly` + `localRuntime`) with
+    `StackLikeRecipeOutputProvider`, after gtceu's `RecipeOutputProvider` (priority `BODY + 1`). Outputs only,
+    like gtceu; adds gtceu's "Recipe Outputs:" line when the recipe has no item/fluid outputs.
+  - `GenericStackLikeType.displayName(S)` names a type, `GenericStackLikeRecipeCapability.describe` adds the amount.
+- Later: external chemical hatches, the 1.20.1 port.
 
 ## Overclocking (`overclock/`, `OverclockingLogicMixin`)
 

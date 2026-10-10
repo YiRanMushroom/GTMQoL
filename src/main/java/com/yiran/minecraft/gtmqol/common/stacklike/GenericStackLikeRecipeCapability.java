@@ -16,10 +16,13 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -35,6 +38,9 @@ import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.addToRecipeHandlerMa
  * {@code getContents()} are stacks of the type.
  */
 public class GenericStackLikeRecipeCapability<S, I> extends RecipeCapability<I> {
+
+    /** Every capability made by {@link #register}, in registration order. */
+    public static final List<GenericStackLikeRecipeCapability<?, ?>> ALL = new ArrayList<>();
 
     public final GenericStackLikeType<S, I> type;
 
@@ -54,7 +60,16 @@ public class GenericStackLikeRecipeCapability<S, I> extends RecipeCapability<I> 
         // Recipe ingredients are exactly the content class, so getFrom never falls back to
         // getDefaultMapIngredient for them (stacks from handlers do).
         MapIngredientTypeManager.registerMapIngredient(type.ingredientClass(), cap::getDefaultMapIngredient);
+        ALL.add(cap);
         return cap;
+    }
+
+    /** "1,000 x Oxygen", naming the first type the ingredient matches; empty if it matches nothing. */
+    public MutableComponent describe(I ingredient, long amount) {
+        List<S> stacks = type.getStacks(ingredient);
+        if (stacks.isEmpty()) return Component.empty();
+        return Component.literal(FormattingUtil.formatNumbers(amount) + " ")
+                .append(Component.translatable("gtceu.gui.content.times_item", type.displayName(stacks.getFirst())));
     }
 
     @Override

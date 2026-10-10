@@ -10,6 +10,7 @@
     "GTMachineUtilsMixin",
     "GTMultiMachinesMixin",
     "GTRecipeModifiersMixin",
+    "GTRecipeTypeUILayoutBuilderMixin",
     "GTRecipeViewerWidgetMixin",
     "GTSingleblockMachinePanelsMixin",
     "MachineBuilderAccessor",
@@ -32,6 +33,7 @@
     "gtceufix.MEPatternBufferInternalSlotMixin"
   ],
   "client": [
+    "GTEmiRecipeStackLikeMixin",
     "gtceufix.BaseSchemaRendererMixin"
   ],
   "injectors": {

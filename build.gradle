@@ -251,7 +251,9 @@ dependencies {
     localRuntime("maven.modrinth:applied-mekanistics:${project.appmek_version}") {
         transitive = false
     }
-    // Block info overlay; GTCEu has its own Jade plugin (recipe progress, energy).
+    // Block info overlay; GTCEu has its own Jade plugin (recipe progress, energy). Compiled against for our
+    // plugin (integration/jade), which Jade only loads when it is installed.
+    compileOnly "maven.modrinth:jade:${project.jade_version}"
     localRuntime "maven.modrinth:jade:${project.jade_version}"
     // Optional: wireless networks are shared per FTB team when it is installed. We compile against
     // FTB Teams and Architectury (its events are Architectury Events) but never require them; the dev

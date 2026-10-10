@@ -2,6 +2,9 @@ package com.yiran.minecraft.gtmqol.client;
 
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.yiran.minecraft.gtmqol.GTMQoL;
+import com.yiran.minecraft.gtmqol.common.stacklike.mekanism.ChemicalEmiConverter;
+
+import net.neoforged.fml.ModList;
 
 /** Called from the mod constructor on the client only, like gtceu's {@code ClientProxy}. */
 public final class GTMQoLClient {
@@ -12,5 +15,6 @@ public final class GTMQoLClient {
         // Must be registered before machine models are generated or loaded, they reference the type by id.
         DynamicRenderManager.register(GTMQoL.id("dtfr_ring"), DTFRRingRender.TYPE);
         DynamicRenderManager.register(GTMQoL.id("fishing_pond_water"), FishingPondWaterRender.TYPE);
+        if (ModList.get().isLoaded("emi") && ModList.get().isLoaded("mekanism")) ChemicalEmiConverter.register();
     }
 }

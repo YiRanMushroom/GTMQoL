@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.common.stacklike;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
@@ -39,6 +40,9 @@ public interface GenericStackLikeType<S, I> {
     Object lookupKey(S stack);
 
     Codec<S> stackCodec();
+
+    /** The type's name, without the amount. Shown in recipe viewers and Jade. */
+    Component displayName(S stack);
 
     // Ingredients
 
