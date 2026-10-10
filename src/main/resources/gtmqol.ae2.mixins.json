@@ -7,6 +7,8 @@
   "mixins": [
     "EncodingHelperMixin",
     "MEInventoryHandlerMixin",
+    "MEStockingBusPartMachineMixin",
+    "MEStockingHatchPartMachineMixin",
     "NetworkStorageMixin",
     "PartSpecialStorageBusMixin",
     "StorageBusPartMixin"

@@ -7,6 +7,8 @@ import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
+import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
+import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AppMekChemicalBridge;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.data.tag.CircuitTags;
 import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
@@ -23,6 +25,7 @@ import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
+import com.yiran.minecraft.gtmqol.common.stacklike.mekanism.ChemicalStackLike;
 import com.yiran.minecraft.gtmqol.common.steam.AdvancedSteamMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessCovers;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessNetworks;
@@ -61,6 +64,7 @@ public final class GTMQoL {
         if (config.circuits.controlCircuits) ControlCircuits.init();
         if (config.circuits.mekanismCircuitTags) CircuitTags.init();
         MaterialAliasTags.init();
+        if (ModList.get().isLoaded("mekanism")) ChemicalStackLike.init();
         ModularMachines.init(modBus);
         Gregification.init(modBus);
         if (config.gregification.modernIndustrialization && ModList.get().isLoaded("modern_industrialization")) {
@@ -83,6 +87,10 @@ public final class GTMQoL {
         if (config.wireless.steam) WirelessSteamMachines.init();
         if (config.wireless.energy) WirelessEnergyMachines.init();
         if (GTCEu.Mods.isAE2Loaded()) {
+            // Before any machine exists: the universal parts attach one handler per bridge when constructed.
+            if (ModList.get().isLoaded("mekanism") && ModList.get().isLoaded("appmek")) {
+                AEStackLikeBridges.register(AppMekChemicalBridge.INSTANCE);
+            }
             if (config.ae2.overclockedPatternBuffer) AE2Machines.init();
             if (config.ae2.processing) {
                 AEProcessing.initItems();
