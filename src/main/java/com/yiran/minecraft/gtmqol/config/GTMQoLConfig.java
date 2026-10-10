@@ -258,6 +258,11 @@ public final class GTMQoLConfig {
         @Configurable.Comment({ "Pattern buffers send the outputs of their multiblock straight to the ME network",
                 "(per-buffer switch in the GUI)", "Default: true" })
         public boolean patternBufferReturn = true;
+
+        @Configurable
+        @Configurable.Comment({ "Encoding a processing pattern from the recipe viewer leaves out inputs the recipe",
+                "doesn't consume (molds, lenses, ...)", "Default: true" })
+        public boolean skipNotConsumedInputs = true;
     }
 
     @Configurable

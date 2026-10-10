@@ -1,26 +1,37 @@
 package com.yiran.minecraft.gtmqol.gregification.mi;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.api.recipe.gui.ProgressBarTextureSet;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.recipe.gui.GTRecipeUIModifiers;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.yiran.minecraft.gtmqol.GTMQoL;
+import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
+import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
 import com.yiran.minecraft.gtmqol.gregification.MultiblockShape;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.CompoundFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
+import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
@@ -101,7 +112,9 @@ public final class MIGregification {
     // no GT counterpart: crafted from MI's own machine, no sound
     private static final Map<String, Multiblock> MULTIBLOCKS = Map.ofEntries(
             entry("blast_furnace", new Multiblock(true, true, true, true, MultiblockShape.ELECTRIC_BLAST_FURNACE,
-                    "gtceu:electric_blast_furnace", GTSoundEntries.FURNACE, progress(GTGuiTextures.PROGRESS_ARROW))),
+                    "gtceu:electric_blast_furnace", GTSoundEntries.FURNACE,
+                    builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
+                            .addRecipeUIModifier(GTRecipeUIModifiers.TEMP_COIL_INFO))),
             entry("coke_oven", new Multiblock(true, true, false, true, MultiblockShape.GENERIC,
                     "gtceu:pyrolyse_oven", GTSoundEntries.FIRE, progress(GTGuiTextures.PROGRESS_ARROW))),
             entry("distillation_tower", new Multiblock(false, false, true, true, MultiblockShape.DISTILLATION_TOWER,
@@ -145,7 +158,9 @@ public final class MIGregification {
                                 single.counterpart.formatted(VN[tier].toLowerCase(Locale.ROOT))),
                         GTCEu.id("block/machines/" + single.model)));
             } else if (multi != null) {
-                types.add(ForeignMachineType.multiblock(name, englishName, recipeType, MIGregification::convert,
+                ForeignRecipeConverter converter = path.equals("blast_furnace") ?
+                        MIGregification::convertBlastFurnace : MIGregification::convert;
+                types.add(ForeignMachineType.multiblock(name, englishName, recipeType, converter,
                         multi.itemInputs ? MULTIBLOCK_SLOTS : 0, multi.itemOutputs ? MULTIBLOCK_SLOTS : 0,
                         multi.fluidInputs ? MULTIBLOCK_SLOTS : 0, multi.fluidOutputs ? MULTIBLOCK_SLOTS : 0,
                         multi.sound, multi.ui, GUIDEBOOK, ResourceLocation.parse(multi.counterpart),
@@ -170,18 +185,60 @@ public final class MIGregification {
         for (var input : recipe.fluidInputs) {
             if (input.fluid().hasNoFluids()) return false;
             withChance(builder, input.probability(), true, () -> builder
-                    .inputFluids(new SizedFluidIngredient(input.fluid(), (int) input.amount())));
+                    .inputFluids(new SizedFluidIngredient(widenToGT(input.fluid()), (int) input.amount())));
         }
         for (var output : recipe.itemOutputs) {
             withChance(builder, output.probability(), false, () -> builder.outputItems(output.getStack()));
         }
         for (var output : recipe.fluidOutputs) {
             withChance(builder, output.probability(), false,
-                    () -> builder.outputFluids(new FluidStack(output.fluid(), (int) output.amount())));
+                    () -> builder.outputFluids(new FluidStack(toGT(output.fluid()), (int) output.amount())));
         }
         // same total energy as in MI (1 MI EU = 1 GT EU), at VA[LV]
         builder.EUt(VA[LV]).duration((int) Math.max(1, Math.ceilDiv(recipe.getTotalEu(), VA[LV])));
         return true;
+    }
+
+    /**
+     * MI's blast furnace takes recipes up to its coil tier's max EU/t. The recipe needs the temperature of the GT coil
+     * with the same index (cupronickel, kanthal, then nichrome... for KubeJS-added MI tiers).
+     */
+    private static boolean convertBlastFurnace(RecipeHolder<?> holder, GTRecipeBuilder builder) {
+        if (!convert(holder, builder)) return false;
+        long eu = ((MachineRecipe) holder.value()).eu;
+        int tier = (int) ElectricBlastFurnaceBlockEntity.tiers.stream().filter(t -> t.maxBaseEu() < eu).count();
+        CoilBlock.CoilType[] coils = CoilBlock.CoilType.values();
+        builder.blastFurnaceTemp(coils[Math.min(tier, coils.length - 1)].getCoilTemperature());
+        return true;
+    }
+
+    /**
+     * The GT material whose name matches the fluid's id path ({@code modern_industrialization:hydrogen} ->
+     * {@code gtceu:hydrogen}), going through {@link MaterialAliasTags#ALIASES} for spellings GT doesn't use. A guess
+     * by name only.
+     */
+    private static @Nullable Material gtMaterial(Fluid fluid) {
+        String name = BuiltInRegistries.FLUID.getKey(fluid).getPath();
+        for (var alias : MaterialAliasTags.ALIASES.entrySet()) {
+            if (alias.getValue().equals(name)) name = alias.getKey();
+        }
+        var material = GTRegistries.MATERIALS.getOptional(GTCEu.id(name));
+        return material.filter(Material::hasFluid).orElse(null);
+    }
+
+    /** A single-fluid input also accepts the same-named GT material's fluid tag. */
+    private static FluidIngredient widenToGT(FluidIngredient ingredient) {
+        FluidStack[] stacks = ingredient.getStacks();
+        if (stacks.length != 1) return ingredient;
+        Material material = gtMaterial(stacks[0].getFluid());
+        if (material == null || material.getFluid() == stacks[0].getFluid()) return ingredient;
+        return CompoundFluidIngredient.of(ingredient, FluidIngredient.tag(material.getFluidTag()));
+    }
+
+    /** Outputs the same-named GT material's fluid instead, so it stacks with GT's. */
+    private static Fluid toGT(Fluid fluid) {
+        Material material = gtMaterial(fluid);
+        return material == null ? fluid : material.getFluid();
     }
 
     /**

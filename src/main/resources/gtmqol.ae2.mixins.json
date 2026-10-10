@@ -11,6 +11,9 @@
     "PartSpecialStorageBusMixin",
     "StorageBusPartMixin"
   ],
+  "client": [
+    "EmiEncodePatternHandlerMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },

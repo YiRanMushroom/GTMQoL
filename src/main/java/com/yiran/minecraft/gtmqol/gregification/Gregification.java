@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.GTRecipeTypeBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.yiran.minecraft.gtmqol.GTMQoL;
@@ -134,11 +135,13 @@ public final class Gregification {
     private static void declareMultiblock(ForeignMachineType type, GTRecipeTypeEntry recipeType) {
         MultiblockShape shape = type.shape();
         GTMQoLMultiblockBuilder<WorkableElectricMultiblockMachine> builder = GTMQoLAddon
-                .multiblock(type.name(), WorkableElectricMultiblockMachine::new)
+                .multiblock(type.name(), shape.machine())
                 .dynamicallyGenerated(true);
         shape.configure(builder);
         MachineEntry<?> machine = builder.recipeType(recipeType)
-                .recipeModifiers(GregificationModifiers.OVERCLOCK, GregificationModifiers.BATCH)
+                // GT's machine UI only shows the batch button for GT's own BATCH_MODE
+                .recipeModifiers(GregificationModifiers.COIL_TEMPERATURE, GregificationModifiers.OVERCLOCK,
+                        GTRecipeModifiers.BATCH_MODE)
                 .appearanceBlock(shape.casing)
                 .pattern(shape::pattern)
                 .workableCasingModel(shape.casingModel, shape.overlay)

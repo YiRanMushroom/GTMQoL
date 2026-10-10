@@ -9,6 +9,7 @@ import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.data.tag.CircuitTags;
+import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
 import com.yiran.minecraft.gtmqol.common.circuit.UniversalCircuits;
 import com.yiran.minecraft.gtmqol.client.GTMQoLClient;
@@ -59,6 +60,7 @@ public final class GTMQoL {
         if (config.circuits.universalCircuits) UniversalCircuits.init();
         if (config.circuits.controlCircuits) ControlCircuits.init();
         if (config.circuits.mekanismCircuitTags) CircuitTags.init();
+        MaterialAliasTags.init();
         ModularMachines.init(modBus);
         Gregification.init(modBus);
         if (config.gregification.modernIndustrialization && ModList.get().isLoaded("modern_industrialization")) {

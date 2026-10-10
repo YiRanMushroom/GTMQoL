@@ -2,8 +2,11 @@ package com.yiran.minecraft.gtmqol.gregification;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
@@ -23,8 +26,8 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 
 /**
  * Structures of gregified multiblocks. The GT ones are copied from {@code GTMultiMachines} (the pattern functions
- * aren't reachable from the registered definitions), with the controller swapped for ours; they only run plain
- * recipe logic, so e.g. the blast furnace's coils don't matter.
+ * aren't reachable from the registered definitions), with the controller swapped for ours. The blast furnace's coils
+ * only set its temperature, nothing else of GT's coil logic.
  */
 public enum MultiblockShape {
 
@@ -63,6 +66,12 @@ public enum MultiblockShape {
                     .where('C', heatingCoils())
                     .where('#', air())
                     .build();
+        }
+
+        // knows its coil temperature, see GregificationModifiers.COIL_TEMPERATURE
+        @Override
+        MachineInstanceFactory<WorkableElectricMultiblockMachine> machine() {
+            return CoilWorkableElectricMultiblockMachine::new;
         }
     },
     VACUUM_FREEZER(CASING_ALUMINIUM_FROSTPROOF, "block/casings/solid/machine_casing_frost_proof",
@@ -146,6 +155,10 @@ public enum MultiblockShape {
     }
 
     abstract IBlockPattern pattern(MultiblockMachineDefinition definition);
+
+    MachineInstanceFactory<WorkableElectricMultiblockMachine> machine() {
+        return WorkableElectricMultiblockMachine::new;
+    }
 
     void configure(GTMQoLMultiblockBuilder<?> builder) {
         builder.rotationState(RotationState.ALL);
