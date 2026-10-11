@@ -10,6 +10,9 @@ shaped this way, and what is pending.
   overclocking, the Smart Assembly Factory/DTFR, the circuit/alloy tags and the RecipeDB search are staged
   but not committed yet.
 - Builds, datagen and the dev client all work. Everything below has been tested in game by the user.
+- **Exception, written but never built or run:** the stack-like port from 1.21 (`common/stacklike/`, Mek 10.4
+  chemicals, `gregification/` + Mek machines, AE bridge/universal parts/pattern buffer, `integration/jade/`).
+  Design and 1.20.1 differences: `docs/STACK_LIKE_CAPABILITIES.md` on `port/1.21.1`. Universal parts need a `runData`.
 - Minecraft 1.20.1, Forge 47.4.1, GTCEu v8 snapshot (pinned, see `gradle.properties`), Java 17 target,
   ModDevGradle legacyForge 2.0.141 (migrated from Architectury Loom, **not built yet**, see below). Java only; no Kotlin.
 - The old implementation is archived under `reference/` as research material. Do not migrate it wholesale
