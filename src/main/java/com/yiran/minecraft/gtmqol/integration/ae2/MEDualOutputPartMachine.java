@@ -9,12 +9,10 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.gui.AEKeyStorageSyncHandler;
-import com.gregtechceu.gtceu.integration.ae2.gui.AEStackDisplayWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.ScrollPreservingGrid;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.CommonComponents;
@@ -60,6 +58,14 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
             tank.onContentsChanged();
             updateInventorySubscription();
         });
+    }
+
+    /**
+     * Everything that isn't an item. Flushing, saving and the UI go through it by key, so a subclass can put other
+     * keys than fluids in it (see {@link MEUniversalOutputPartMachine}).
+     */
+    protected KeyStorage getNonItemBuffer() {
+        return fluidBuffer;
     }
 
     @Override
@@ -139,7 +145,7 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
                                 var entry = list.get(index);
                                 return Flow.row()
                                         .coverChildrenHeight()
-                                        .child(new AEStackDisplayWidget(list, index))
+                                        .child(new AEKeyDisplayWidget(list, index))
                                         .child(Text.comp(Component
                                                 .literal(FormattingUtil.formatNumbers(entry.amount()) + "x")
                                                 .append(CommonComponents.SPACE)
@@ -279,8 +285,9 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
         @Override
         public int fill(FluidStack resource, FluidAction action) {
             var key = AEFluidKey.of(resource);
-            int oldValue = GTMath.saturatedCast(buffer.storage.getOrDefault(key, 0));
-            int change = Math.min(Integer.MAX_VALUE - oldValue, resource.getAmount());
+            // The buffer holds longs; only a single fill is int (FluidStack).
+            long oldValue = buffer.storage.getOrDefault(key, 0L);
+            int change = (int) Math.min(Long.MAX_VALUE - oldValue, resource.getAmount());
             if (change > 0 && action.execute()) {
                 buffer.storage.put(key, oldValue + change);
                 buffer.onChanged();

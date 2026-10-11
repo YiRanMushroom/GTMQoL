@@ -2,6 +2,8 @@ package com.yiran.minecraft.gtmqol.core;
 
 import com.yiran.minecraft.gtmqol.config.EarlyConfig;
 
+import net.minecraftforge.fml.loading.FMLLoader;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
@@ -14,7 +16,8 @@ import java.util.Set;
 /**
  * Skips the overclocking overhaul mixins of {@code gtmqol.mixins.json} when
  * {@link EarlyConfig#OVERCLOCKING_OVERHAUL} is off. Everything else in that config always applies and checks
- * {@code GTMQoLConfig} at runtime.
+ * {@code GTMQoLConfig} at runtime. Mixins in {@code mekanism/} target Mekanism classes and only apply when it is
+ * loaded.
  */
 public class GTMQoLMixinPlugin implements IMixinConfigPlugin {
 
@@ -33,6 +36,9 @@ public class GTMQoLMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        if (mixinClassName.startsWith(PACKAGE + "mekanism.")) {
+            return FMLLoader.getLoadingModList().getModFileById("mekanism") != null;
+        }
         return EarlyConfig.OVERCLOCKING_OVERHAUL || !OVERCLOCKING_MIXINS.contains(mixinClassName);
     }
 

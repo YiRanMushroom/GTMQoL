@@ -14,7 +14,8 @@ import java.util.Set;
 /**
  * Applies {@code gtmqol.ae2.mixins.json} only when AE2 is installed: the encoding mixin if
  * {@code ae2.universalCircuitEncoding} is on, the sticky card ones if {@code ae2.stickyCard} is on (both in the
- * early config), and the ExtendedAE one only when ExtendedAE is installed too. Same loading mod list check as
+ * early config), the stocking / pattern buffer ones always, and the ExtendedAE one only when ExtendedAE is installed
+ * too. Same loading mod list check as
  * {@link EAPMixinPlugin}.
  */
 public class AE2MixinPlugin implements IMixinConfigPlugin {
@@ -23,6 +24,8 @@ public class AE2MixinPlugin implements IMixinConfigPlugin {
     private static final String EMI_ENCODING_MIXIN = "com.yiran.minecraft.gtmqol.core.mixins.ae2.EmiEncodePatternHandlerMixin";
     private static final String JEI_ENCODING_MIXIN = "com.yiran.minecraft.gtmqol.core.mixins.ae2.EncodePatternTransferHandlerMixin";
     private static final String EXTENDEDAE_MIXIN = "com.yiran.minecraft.gtmqol.core.mixins.ae2.PartSpecialStorageBusMixin";
+    private static final String STOCKING_MIXIN_PREFIX = "com.yiran.minecraft.gtmqol.core.mixins.ae2.MEStocking";
+    private static final String PATTERN_BUFFER_MIXIN_PREFIX = "com.yiran.minecraft.gtmqol.core.mixins.ae2.MEPatternBuffer";
 
     @Override
     public void onLoad(String mixinPackage) {}
@@ -35,6 +38,10 @@ public class AE2MixinPlugin implements IMixinConfigPlugin {
         // toggled at runtime by GTMQoLConfig.ae2.skipNotConsumedInputs
         if (mixinClassName.equals(EMI_ENCODING_MIXIN)) return mods.getModFileById("emi") != null;
         if (mixinClassName.equals(JEI_ENCODING_MIXIN)) return mods.getModFileById("jei") != null;
+        // duplicate checks against the universal ME input; no effect without one
+        if (mixinClassName.startsWith(STOCKING_MIXIN_PREFIX)) return true;
+        // bridged capabilities (e.g. chemicals) in the pattern buffer; no effect without a bridge
+        if (mixinClassName.startsWith(PATTERN_BUFFER_MIXIN_PREFIX)) return true;
         // everything else is the sticky card
         if (!EarlyConfig.AE2_STICKY_CARD) return false;
         // ExtendedAE's mod id is still the old name of its 1.20.1 fork

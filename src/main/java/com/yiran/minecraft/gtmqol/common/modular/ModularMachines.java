@@ -19,6 +19,8 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
+import com.yiran.minecraft.gtmqol.gregification.Gregification;
+import com.yiran.minecraft.gtmqol.gregification.GregificationModifiers;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -95,12 +97,15 @@ public final class ModularMachines {
                 .durationMultiplier(generator ? 8.0 : 0.125)
                 .build();
 
+        // gregified machines keep their own recipe logic
+        boolean gregified = Gregification.allGregified(recipeTypes);
+        RecipeModifier overclock = generator ? GENERATOR_OVERCLOCK :
+                gregified ? GregificationModifiers.OVERCLOCK : GTRecipeModifiers.OC_PERFECT_SUBTICK;
+
         MultiblockMachineDefinition modular = GTMQoLAddon.multiblock(modularName, ModularMachine::new)
                 .rotationState(RotationState.ALL)
                 .recipeTypes(recipeTypes)
-                .recipeModifiers(startModifier,
-                        generator ? GENERATOR_OVERCLOCK : GTRecipeModifiers.OC_PERFECT_SUBTICK,
-                        GTRecipeModifiers.BATCH_MODE)
+                .recipeModifiers(startModifier, overclock, GTRecipeModifiers.BATCH_MODE)
                 .generator(generator)
                 .regressWhenWaiting(!generator)
                 .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)

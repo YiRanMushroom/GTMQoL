@@ -52,7 +52,8 @@ public final class AdvancedSteamMachines {
     private static final String TIER_TOOLTIP_KEY = "gtmqol.multiblock.advanced_steam.tooltip.tier";
     private static final String MODIFIER_TOOLTIP_KEY = "gtmqol.multiblock.advanced_steam.tooltip.modifier";
     private static final String PARALLEL_TOOLTIP_KEY = "gtmqol.multiblock.advanced_steam.tooltip.parallel";
-    private static final String HATCH_TOOLTIP_KEY = "gtmqol.machine.steam_parallel_hatch.tooltip";
+    // Not "<ns>.machine.<id>.tooltip": gtceu adds that key to the tooltip by itself (without the arguments).
+    private static final String HATCH_TOOLTIP_KEY = "gtmqol.machine.steam_parallel_hatch.desc";
 
     public static final PartAbility STEAM_PARALLEL = new PartAbility("steam_parallel_hatch");
 

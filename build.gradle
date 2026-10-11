@@ -275,12 +275,25 @@ dependencies {
     modLocalRuntime("maven.modrinth:cucumber:${project.cucumber_version}") {
         transitive = false
     }
-    // Optional: GT circuit tags and Mekanism's forge:circuits/* tags are merged (see CircuitTags). That is
-    // plain tag data, so nothing is compiled against Mekanism; it's only in the dev runs for testing.
+    // Optional: chemicals are a recipe capability (common/stacklike/mekanism), only touched when Mekanism is
+    // loaded; GT circuit tags and Mekanism's forge:circuits/* tags are merged (CircuitTags). Not in mods.toml.
+    modCompileOnly("mekanism:Mekanism:${project.minecraft_version}-${project.mekanism_version}") {
+        transitive = false
+    }
     modLocalRuntime("mekanism:Mekanism:${project.minecraft_version}-${project.mekanism_version}") {
         transitive = false
     }
-    // Block info overlay; GTCEu has its own Jade plugin (recipe progress, energy).
+    // Optional: chemicals in AE (pattern buffer, ME parts) go through its MekanismKey
+    // (integration/ae2/stacklike/AppMekChemicalBridge), only touched when appmek is loaded. Not in mods.toml.
+    modCompileOnly("maven.modrinth:applied-mekanistics:${project.appmek_version}") {
+        transitive = false
+    }
+    modLocalRuntime("maven.modrinth:applied-mekanistics:${project.appmek_version}") {
+        transitive = false
+    }
+    // Block info overlay; GTCEu has its own Jade plugin (recipe progress, energy). Compiled against for our
+    // plugin (integration/jade), which Jade only loads when it is installed.
+    modCompileOnly "maven.modrinth:jade:${project.jade_version}"
     modLocalRuntime "maven.modrinth:jade:${project.jade_version}"
     // Optional: wireless networks are shared per FTB team when it is installed. We compile against
     // FTB Teams and Architectury (its events are Architectury Events) but never require them; the dev

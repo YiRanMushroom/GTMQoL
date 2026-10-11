@@ -206,7 +206,7 @@
   "gtmqol.item.sticky_card.tooltip.2": "The only difference is the storage system still checks storage in priority order, and will only stop inserting when a storage bus has a Sticky Card, the content is partitioned there, no higher priority storage can accept it, and the content cannot be stored in that location.",
   "gtmqol.item.sticky_card.tooltip.3": "Specifically, if multiple storage locations have the same priority, storage locations with a Sticky Card are checked first.",
   "gtmqol.machine.greenhouse.tooltip": "Grows the seed or sapling in its input slot, which is not consumed.",
-  "gtmqol.machine.steam_parallel_hatch.tooltip": "Sets the parallels of an advanced steam multiblock, from %s to %s",
+  "gtmqol.machine.steam_parallel_hatch.desc":"Sets the parallels of an advanced steam multiblock, from %s to %s",
   "gtmqol.magical_assembler": "Magical Assembler",
   "gtmqol.me_assembler": "ME Assembler",
   "gtmqol.me_circuit_slicer": "ME Circuit Slicer",
