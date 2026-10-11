@@ -186,7 +186,12 @@ public class MEDualInputPartMachine extends MEStockingBusPartMachine {
                 }
             }
         }
-        return false;
+        return MEUniversalInputPartMachine.configuredInAny(this, config);
+    }
+
+    /** For {@link MEUniversalInputPartMachine}'s duplicate check. */
+    boolean hasFluidInConfig(GenericStack config) {
+        return fluidList.hasStackInConfig(config, false);
     }
 
     @Override

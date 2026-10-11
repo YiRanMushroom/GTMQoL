@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMac
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.ProxySlotRecipeHandler;
 import com.yiran.minecraft.gtmqol.core.mixins.recipedb.MEPatternBufferPartMachineAccessor;
 import com.yiran.minecraft.gtmqol.core.mixins.recipedb.MEPatternBufferWorkerAccessor;
+import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
+import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.PatternBufferStackLikeSlot;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -43,6 +45,11 @@ final class PatternBufferIngredients {
                     slot);
             list.addContents(FluidRecipeCapability.CAP, new ArrayList<Object>(internalSlot.getFluids()), kind, owner,
                     slot);
+            var stackLike = (PatternBufferStackLikeSlot) internalSlot;
+            for (var bridge : AEStackLikeBridges.all()) {
+                list.addContents(bridge.cap(), stackLike.gtmqol$getStackLikeHandler(bridge).getContents(), kind,
+                        owner, slot);
+            }
         }
         return true;
     }

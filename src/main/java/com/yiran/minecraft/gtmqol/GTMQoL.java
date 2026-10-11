@@ -2,6 +2,7 @@ package com.yiran.minecraft.gtmqol;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -27,13 +28,19 @@ import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.integration.KubeJSDataGenFix;
+import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
+import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AppMekChemicalBridge;
 import com.yiran.minecraft.gtmqol.data.recipe.MiscRecipes;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
+import com.yiran.minecraft.gtmqol.common.stacklike.GenericStackLikeRecipeCapability;
+import com.yiran.minecraft.gtmqol.common.stacklike.mekanism.ChemicalStackLike;
 import com.yiran.minecraft.gtmqol.common.steam.AdvancedSteamMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessCovers;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessNetworks;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
+import com.yiran.minecraft.gtmqol.gregification.Gregification;
+import com.yiran.minecraft.gtmqol.gregification.mekanism.MekanismGregification;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -64,6 +71,12 @@ public final class GTMQoL {
         if (config.circuits.controlCircuits) ControlCircuits.init();
         if (config.circuits.mekanismCircuitTags) CircuitTags.init();
         MaterialAliasTags.init();
+        if (ModList.get().isLoaded("mekanism")) ChemicalStackLike.init();
+        // before our own listeners, so ModularMachines sees the gregified recipe types
+        Gregification.init(modBus);
+        if (config.gregification.mekanism && ModList.get().isLoaded("mekanism")) {
+            Gregification.addSource(MekanismGregification::types);
+        }
         if (GTCEu.Mods.isAE2Loaded() && config.ae2.processing) {
             AEProcessing.initItems();
         }
@@ -71,6 +84,7 @@ public final class GTMQoL {
             StickyCardItem.init();
             modBus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(StickyCardItem::registerUpgrades));
         }
+        modBus.addGenericListener(RecipeCapability.class, this::onRegisterRecipeCapabilities);
         modBus.addGenericListener(RecipeConditionType.class, this::onRegisterRecipeConditions);
         modBus.addGenericListener(GTRecipeType.class, this::onRegisterRecipeTypes);
         modBus.addGenericListener(CoverDefinition.class, this::onRegisterCovers);
@@ -106,6 +120,11 @@ public final class GTMQoL {
             path = FormattingUtil.toLowerCaseUnderscore(path);
         }
         return TEMPLATE_LOCATION.withPath(path);
+    }
+
+    /** Posted by {@code GTRecipeCapabilities.init()} before it freezes the capability registry. */
+    private void onRegisterRecipeCapabilities(GTCEuAPI.RegisterEvent<ResourceLocation, RecipeCapability<?>> event) {
+        GenericStackLikeRecipeCapability.registerAll(event);
     }
 
     /** Posted by {@code GTRecipeConditions.init()} before it freezes the condition registry. */
@@ -150,6 +169,10 @@ public final class GTMQoL {
         if (config.wireless.steam) WirelessSteamMachines.init();
         if (config.wireless.energy) WirelessEnergyMachines.init();
         if (GTCEu.Mods.isAE2Loaded()) {
+            // Before any machine exists: the universal parts attach one handler per bridge when constructed.
+            if (ModList.get().isLoaded("mekanism") && ModList.get().isLoaded("appmek")) {
+                AEStackLikeBridges.register(AppMekChemicalBridge.INSTANCE);
+            }
             if (config.ae2.overclockedPatternBuffer) AE2Machines.init();
             if (config.ae2.processing) AEProcessing.initMachines();
             if (config.ae2.dualHatches) AEDualParts.init();

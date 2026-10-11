@@ -10,6 +10,7 @@
     "GTMachineUtilsMixin",
     "GTMultiMachinesMixin",
     "GTRecipeModifiersMixin",
+    "GTRecipeTypeUILayoutBuilderMixin",
     "GTRecipeViewerWidgetMixin",
     "GTSingleblockMachinePanelsMixin",
     "MachineBuilderMixin",
@@ -17,13 +18,17 @@
     "MEPatternBufferPartMachineMixin",
     "MEPatternBufferReturnMixin",
     "OverclockingLogicMixin",
+    "RecipeManagerHandlerMixin",
     "RecipeRemovalMixin",
     "SimpleSteamMachineMixin",
     "SteamItemBusPartMachineMixin",
     "WorkableElectricMultiblockMachineMixin",
-    "gtceufix.EnergyContainerListMixin"
+    "gtceufix.EnergyContainerListMixin",
+    "mekanism.TaggedChemicalStackIngredientAccessor"
   ],
   "client": [
+    "GTEmiRecipeStackLikeMixin",
+    "GTRecipeJEICategoryStackLikeMixin",
     "gtceufix.BaseSchemaRendererMixin"
   ],
   "injectors": {

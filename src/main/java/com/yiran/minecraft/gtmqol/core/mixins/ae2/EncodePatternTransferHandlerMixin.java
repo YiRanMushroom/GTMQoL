@@ -10,9 +10,11 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.yiran.minecraft.gtmqol.common.stacklike.GenericStackLikeRecipeCapability;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.ArrayList;
@@ -21,7 +23,8 @@ import java.util.List;
 /**
  * Processing patterns encoded from JEI leave out the inputs that aren't consumed (chance 0). JEI's slots don't know
  * about chances, so they are matched back to the recipe's contents: {@code GTRecipeJEICategory} adds one input slot
- * per stack of each item content, then of each fluid content. AE2 skips empty input slots.
+ * per stack of each item content, then of each fluid content, then {@code StackLikeJei} one per stack-like content
+ * (e.g. chemicals, encoded through AppMek's converter). AE2 skips empty input slots.
  */
 @Mixin(EncodePatternTransferHandler.class)
 public class EncodePatternTransferHandlerMixin {
@@ -46,6 +49,8 @@ public class EncodePatternTransferHandlerMixin {
                     .mapIngredientToEntryList(FluidRecipeCapability.CAP.of(content.content()))).size();
             for (int i = 0; i < slots; i++) consumed.add(content.chance() != 0);
         }
+        // StackLikeJei adds them after the items and fluids, one slot per content with stacks
+        for (var cap : GenericStackLikeRecipeCapability.ALL) gtmqol$addStackLike(consumed, cap, recipe);
         // a layout we don't know
         if (consumed.size() != inputs.size()) return inputs;
 
@@ -54,5 +59,13 @@ public class EncodePatternTransferHandlerMixin {
             result.add(consumed.get(i) ? inputs.get(i) : List.of());
         }
         return result;
+    }
+
+    @Unique
+    private static <S, I> void gtmqol$addStackLike(List<Boolean> consumed, GenericStackLikeRecipeCapability<S, I> cap,
+                                                   GTRecipe recipe) {
+        for (Content content : recipe.getInputContents(cap)) {
+            if (!cap.type.getStacks(cap.of(content.content())).isEmpty()) consumed.add(content.chance() != 0);
+        }
     }
 }

@@ -99,6 +99,18 @@ public final class GTMQoLConfig {
     }
 
     @Configurable
+    @Configurable.Comment("GT recipe types and machines running other mods' machine recipes")
+    public Gregification gregification = new Gregification();
+
+    public static class Gregification {
+
+        @Configurable
+        @Configurable.Comment({ "Mekanism's machine recipes on GT multiblocks, at LV voltage", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean mekanism = true;
+    }
+
+    @Configurable
     @Configurable.Comment("Wireless networks shared by an FTB team. Requires a restart.")
     public Wireless wireless = new Wireless();
 
