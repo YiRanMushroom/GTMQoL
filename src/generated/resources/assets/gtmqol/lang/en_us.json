@@ -95,6 +95,8 @@
   "block.gtmqol.max_wireless_energy_output_hatch": "§c§lMAX Wireless Dynamo Hatch",
   "block.gtmqol.me_dual_input": "ME Dual Input",
   "block.gtmqol.me_dual_output": "ME Dual Output",
+  "block.gtmqol.me_universal_input": "ME Universal Input",
+  "block.gtmqol.me_universal_output": "ME Universal Output",
   "block.gtmqol.mv_greenhouse": "§bAdvanced Greenhouse §r",
   "block.gtmqol.mv_magical_assembler": "§bAdvanced Magical Assembler §r",
   "block.gtmqol.mv_me_assembler": "§bAdvanced Me Assembler §r",
@@ -206,7 +208,9 @@
   "gtmqol.item.sticky_card.tooltip.2": "The only difference is the storage system still checks storage in priority order, and will only stop inserting when a storage bus has a Sticky Card, the content is partitioned there, no higher priority storage can accept it, and the content cannot be stored in that location.",
   "gtmqol.item.sticky_card.tooltip.3": "Specifically, if multiple storage locations have the same priority, storage locations with a Sticky Card are checked first.",
   "gtmqol.machine.greenhouse.tooltip": "Grows the seed or sapling in its input slot, which is not consumed.",
-  "gtmqol.machine.steam_parallel_hatch.desc":"Sets the parallels of an advanced steam multiblock, from %s to %s",
+  "gtmqol.machine.me_universal_input.desc": "Stocks items, fluids and other ME types (e.g. Mekanism chemicals) in 36 slots",
+  "gtmqol.machine.me_universal_output.desc": "Outputs items, fluids and other ME types (e.g. Mekanism chemicals) to the ME network",
+  "gtmqol.machine.steam_parallel_hatch.desc": "Sets the parallels of an advanced steam multiblock, from %s to %s",
   "gtmqol.magical_assembler": "Magical Assembler",
   "gtmqol.me_assembler": "ME Assembler",
   "gtmqol.me_circuit_slicer": "ME Circuit Slicer",
@@ -357,5 +361,6 @@
   "item.gtmqol.wireless_steam_output_cover": "Wireless Steam Output Cover",
   "item.gtmqol.zpm_universal_circuit": "ZPM Universal Circuit",
   "item.gtmqol.zpm_wireless_energy_input_cover": "§cZPM Wireless Energy Input Cover",
-  "item.gtmqol.zpm_wireless_energy_output_cover": "§cZPM Wireless Energy Output Cover"
+  "item.gtmqol.zpm_wireless_energy_output_cover": "§cZPM Wireless Energy Output Cover",
+  "recipe.capability.chemical.name": "Chemical"
 }
