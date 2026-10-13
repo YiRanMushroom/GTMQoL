@@ -150,6 +150,62 @@ Config `gregification.mekanism`, only when `mekanism` is loaded. It uses the che
   fission, fusion, SPS, pumps, antimatter (nucleosynthesizer), energy and chemical conversion (item → energy/chemical
   in slots).
 
+### Productive Bees (`productivebees/ProductiveBeesGregification`)
+
+Config `gregification.productiveBees`, only when `productivebees` is loaded. Dependency: `compileOnly` +
+`localRuntime` Modrinth `productivebees` (`hpPcu64f`), plus `compileOnly` ProductiveLib from
+`libs/productivelib-1.21.1-0.2.0.jar` (PB's API exposes its classes: `TagOutputRecipe`, `LibItems`; PB jar-in-jars it
+at runtime).
+
+Four tiered single blocks (so also modular machines), all crafted from the GT counterpart + a PB catalyst:
+
+| Type | Counterpart / model | Catalyst | Recipes |
+|---|---|---|---|
+| `pb_centrifuge` | centrifuge | powered centrifuge | PB centrifuge recipes, converted |
+| `pb_incubator` | autoclave | incubator | `IncubatorLogic` |
+| `pb_gene_extractor` | extractor | gene indexer | `GeneExtractorLogic` |
+| `pb_beehive` | brewery | advanced oak beehive | `BeehiveLogic` |
+
+The last three have no proxy and no converter (both nullable in `ForeignMachineType`); all their recipes come from
+gtceu custom recipe logic (`withRecipeType(b -> b.addCustomRecipeLogic(...))`), which also builds representative
+recipes for EMI. PB's server config isn't loaded at the first datapack load, so `config()` falls back to defaults.
+
+- Centrifuge: converted at recipe load, before tags are bound, so outputs stay PB's ingredients (no `getItems()` on
+  tags; vanilla caches it and would poison PB's own ingredient). A tag output thus shows/gives GT's first item, not
+  PB's mod preference. `VA[LV]`, duration = PB's processing time / 3 (powered centrifuge). Chances include PB's base
+  stability bonus (`(0 + 1) * stabilityChanceIncrease`), ranges become `IntProviderIngredient`. Comb ingredients that
+  are plain items or component ingredients also get a comb block recipe (like the heated centrifuge): ×4 outputs and
+  time, no wax.
+- Incubator (`VA[ULV]`, 12000 t): egg + honey treat with a type gene → spawn egg, chance = PB's `purity + 1` %; caged
+  baby (`Age < 0`) + `incubatorTreatUse` plain treats → grown-up cage. Gene-applying treats are not done.
+- Gene extractor (`VA[LV]`, 600 t): filled cage → empty cage + type gene + every other attribute gene, all 100%
+  purity. Type id as PB's gene bottle.
+- Beehive (`VA[LV]`, 1200 t × time modifier): filled cage and up to 4 upgrades (productivity I–IV, time, comb block;
+  taken in that order), none consumed. Outputs are the expected value of a hive trip of PB's last matching
+  advanced-beehive recipe: productivity upgrades as `upgradeMod` (expected rolls), chance, uniform count and the
+  productivity gene as in `AdvancedBeehiveBlockEntity.beeReleasePostAction`. Whole part fixed, fraction chanced. Comb
+  block mode turns a comb into its block at the same count, like PB. Bees without a hive recipe (lumber, quarry,
+  dye, ...) and babies get nothing. Gene sampler and breeding upgrades are not done.
+  The bee needs its flower, not consumed: an item slot (block item, bucket or flower item, matched by PB's own
+  `ProductiveBee.isFlowerItem`, the feeder check; vanilla bees `ItemTags.FLOWERS`) or 1000 mB in the fluid slot
+  (accepted if its bucket item is). Bees with mob flowers (`flowerType` `entity_types`) need none. EMI shows the flower
+  from the bee data (`flowerTag`/`flowerBlock`/`flowerItem`/`flowerFluid`; non-configurable bees: the flowering tag
+  filtered by the bee), not by trying every item. Layout: bee + flower on top, a blank row, then 4 upgrade slots
+  (`setLayoutGridBuilder`, not enforced: the logic scans every slot), plus an EMI line saying it works like PB's hive
+  (runtime lang entry). 6 item inputs, 1 fluid input.
+- Canner (`CannerBeeLogic`, added to gtceu's `CANNER_RECIPES` runners at common setup, `VA[ULV]`, 100 t): filled
+  cage → empty cage + spawn egg (`BeeCreator.getSpawnEgg`) whose `ENTITY_DATA` is the cage's tag minus the cage's own
+  keys (`entity`, `name`, `HivePos`, `isProductiveBee`, `mod`) plus `id`; the cage already dropped UUID/Pos/etc., so
+  genes (NeoForge attachment) and name survive. Reverse: bee spawn egg + empty cage → the bee created from the egg
+  (`CustomData.loadInto`, as spawning does) captured into that cage.
+- All cage checks are `BeeCage.isFilled` / `instanceof BeeCage`, and outputs reuse `cage.getItem()`, so the sturdy
+  cage (`SturdyBeeCage extends BeeCage`) works everywhere; EMI only shows the plain cage.
+
+PB ships gtceu recipes (the ore bees: `data/gtceu/recipe/{alloy_smelter,centrifuge,...}`) in the gtceu 1.x format with
+bare capability keys (`"item"`, `"eu"`), which v8 reads as registry ids (`minecraft:item`) and rejects.
+`integration/productivebees/LegacyCapabilityAliases` adds `minecraft:<path>` → `gtceu:<path>` aliases to
+`GTRegistries.RECIPE_CAPABILITIES` (NeoForge `Registry.addAlias`) at common setup, whenever PB is loaded.
+
 ## Adding
 
 A type to an existing source: add an entry to its table (MI) or `types()` list (Mek). The fields are slot counts,
@@ -182,3 +238,6 @@ A source for a new mod:
   - `mekanism/api/recipes/` (recipe classes);
   - `MekanismRecipeTypes`;
   - `mekanism/common/tile/machine/TileEntity*` (`BASE_TICKS_REQUIRED`, per-tick usage).
+- Productive Bees: a source clone at `E:\code\Minecraft\.pb-src\pb-121` (`common/block/entity/` for the machines,
+  `util/BeeHelper.getBeeProduce`, `common/item/{BeeCage,Gene,HoneyTreat}`); ProductiveLib via `javap` on the jar in
+  `libs/`.
