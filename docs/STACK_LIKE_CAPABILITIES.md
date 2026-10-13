@@ -129,6 +129,98 @@ key by itself, so it showed twice. Ours end in `.desc`.
    Without it the slots stay empty and EMI lookup and AE encoding skip the type.
 6. Recipe types using it: `setMaxSize(IO, CAP, n)` (gregification: `ForeignMachineType.withRecipeType`).
 
+## 1.20.1 port (in progress)
+
+Agreed with the user on 2026-10-10. Same design as above; only the differences are listed here.
+
+Status: everything is written but not built yet: core, chemical cap, viewer mixins, JEMI converter, gregification
++ Mek machines, the AE bridge/universal parts/pattern buffer, and Jade.
+
+Code differences from 1.21:
+- Registration: `register` only creates the cap and its lang. `registerAll` is a `RecipeCapability`
+  `GTCEuAPI.RegisterEvent` listener (`GTMQoL` constructor).
+- No `registerMapIngredient`, because `getFrom` falls back to `getDefaultMapIngredient` for the interface content class.
+- `GenericStackLikeType` has `writeIngredient` / `readIngredient` (`FriendlyByteBuf`) instead of a `StreamCodec`.
+- JEI lookup: `StackLikeJei` + `GTRecipeJEICategoryStackLikeMixin`, which targets the full descriptor and not the
+  generic bridge.
+- Gregification (no MI on 1.20.1, only Mekanism):
+  - Recipe types are registered with the same three `GTRegistries.register` calls as `GTRecipeTypes.register`, on
+    GTCEu's recipe type `RegisterEvent`. `Gregification.init` must run before our own listeners so `ModularMachines`
+    sees the gregified types.
+  - GTCEu 1.20.1 converts proxied recipes in `RecipeManagerHandler.addProxyRecipesToLookup`, one GT recipe per
+    foreign recipe. `RecipeManagerHandlerMixin` cancels it for `GregifiedRecipeType` only and adds `toGTRecipes`
+    instead (rotary makes two).
+  - Recipes are built with `buildRawRecipe` (no JSON round trip). Ids are `gtmqol:/gregification/...`, not in the
+    recipe manager.
+  - Dedicated server: the converted recipes aren't synced, so `GregificationClient` converts the synced foreign
+    recipes on `RecipesUpdatedEvent` (HIGHEST, before the viewers reload) and puts them in the category map.
+  - Mek machines use the 10.4 recipe classes and tick constants (`BASE_TICKS_REQUIRED` etc.); items and fluids go
+    through Mek's `Single`/`Multi`/`Tagged` ingredient classes (not API, cast).
+- Jade: same provider as 1.21, with plain `NbtOps.INSTANCE` (no registry ops). Jade is `modCompileOnly` now.
+- AE (`integration/ae2/stacklike/`, universal parts, pattern buffer):
+  - The bridge is registered at the top of the AE2 block in `GTMQoL.onRegisterMachines`, when Mek and appmek are
+    loaded.
+  - gtceu is `:slim`, so there is no access transformer for it: the gtceu mixins are `remap = false`, the
+    package-private `MEPatternBufferPartMachine$Worker` is `@Coerce Object` + `MEPatternBufferWorkerSlotAccessor`,
+    `$InternalSlot` reaches its buffer through `@Shadow this$0`.
+  - 1.20.1 gtceu has no `getActionSource()`; `IActionSource.ofMachine(buffer.getMainNode()::getNode)` instead.
+  - `UniversalConfigWidget` takes JEI drags (through AE2's `IngredientConverters`) as well as EMI ones.
+  - `EncodePatternTransferHandlerMixin` counts the chemical slots in JEI encoding (assumes items, fluids, then one
+    slot per stack-like content; falls back to keeping every input).
+  - The universal parts' blockstates, models, lang and recipes need a `runData`.
+
+### Chemicals on Mekanism 10.4
+
+- Mek 10.4 has four chemical kinds (Gas, InfuseType, Pigment, Slurry), each with its own stack and ingredient
+  classes. There is still **one** cap, `gtmqol:chemical`: `S = ChemicalStack<?>`, `I = ChemicalStackIngredient<?, ?>`.
+- Dispatch is by Mek's own `ChemicalType` (`getTypeFor(stack / ingredient)`), the way Mek handles mixed chemicals:
+  - ingredients: `IngredientCreatorAccess.getCreatorForType(type)` (`read`, `deserialize`, `from`);
+  - stacks: `BoxedChemicalStack` (`box`, `read`, `write`) for NBT.
+- `lookupKey` is the chemical object; Gas and InfuseType instances never collide.
+- Codecs, unclean but accepted:
+  - Mek 10.4 has no codecs. The ingredient codec wraps Mek's JSON (`serialize()` / `deserialize`) through
+    `ExtraCodecs.JSON`, with an added `chemicalType` field (`ChemicalType.getSerializedName()`). Mek's JSON alone
+    can't tell the kind of a tag ingredient.
+  - The stack codec goes through `CompoundTag.CODEC` and `BoxedChemicalStack`.
+  - Network: the `ChemicalType` ordinal, then Mek's `write(buf)` / `read(buf)`.
+  - `withAmount`: Mek's API has no way to change an ingredient's amount, and ingredients are shared and immutable,
+    so it builds a new one with Mek's creator from the parts of the old one:
+    - single: `getInputRaw()` is used as is.
+    - tag: the private `tag` field is read through `core/mixins/mekanism/TaggedChemicalStackIngredientAccessor`.
+      `GTMQoLMixinPlugin` only applies `mekanism/` mixins when Mek is loaded.
+    - multi: `IMultiIngredient.getIngredients()` is mapped recursively and joined with `creator.from(Stream)`. That
+      method builds the array with the kind's own ingredient class; `createMulti` on a raw array would throw
+      `ClassCastException`.
+
+    Every element of a multi ingredient gets the same amount. `ingredientAmount` is the first representation's
+    amount.
+  - `test` checks that the `ChemicalType`s match before `testType`, because an ingredient of one kind may cast the
+    stack to its own stack class.
+  - `ChemicalStackLike` uses raw types and unchecked casts internally, because the four kinds share no common
+    generic type that the cap can name.
+- Applied Mekanistics 1.4.3 (Modrinth version `9n9p68Qq`): `MekanismKey` also wraps a `ChemicalStack<?>`, so there
+  is one bridge.
+
+### Recipe viewers
+
+- JEI (the dev viewer):
+  - Slots: MUI's `JeiRecipeViewerSlot` passes the entries to JEI's `addIngredientsUnsafe`, and JEI finds the type by
+    class. Mek registers `GasStack`, `InfusionStack`, `PigmentStack` and `SlurryStack` as JEI ingredients, so the
+    slots are real JEI slots (render, tooltip, R/U, bookmarks) with no converter.
+  - Lookup: JEI indexes recipes through `GTRecipeJEICategory.setupRecipeIngredients`, which lists items and fluids
+    only. A TAIL mixin adds the stack-like contents (the JEI counterpart of `GTEmiRecipeStackLikeMixin`).
+  - AE2 encoding reads the JEI slots; AppMek's JEI converter handles chemicals.
+- EMI: Mek 10.4 has no EMI integration (no `IMekanismEmiHelper`). Mek chemicals only exist in EMI through JEMI,
+  EMI's built-in JEI plugin loader, so they need JEI installed.
+  - When EMI is loaded, GTCEu skips its JEI categories and MUI picks the EMI slot handler, so GT recipes are
+    `GTEmiRecipe`s with `EmiRecipeViewerSlot`s.
+  - The converter wraps `dev.emi.emi.jemi.JemiUtil.getStack(chemicalStack)` (a `JemiStack` using Mek's JEI
+    renderer and helper), then sets the amount. `convertFrom` unwraps `JemiStack.ingredient`. AppMek's EMI converter
+    does the same.
+  - Registered only when EMI, JEI and Mekanism are all loaded. `JemiPlugin.runtime` is null until the JEI runtime
+    exists; the converter returns `EmiStack.EMPTY` then.
+  - EMI without JEI: no chemical slots, no lookup, no encoding. Mek chemicals don't exist in EMI at all then.
+
 ## Where to look
 
 - gtceu 1.21 sources, unpacked in `.gtceu-src-1.21/com/gregtechceu/gtceu/`:

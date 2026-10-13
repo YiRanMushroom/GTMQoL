@@ -282,6 +282,11 @@ public final class GTMQoLConfig {
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean feInput = true;
+
+        @Configurable
+        @Configurable.Comment({ "Auto-build button on multiblock controllers: places the structure from the player's inventory.",
+                "Default: true" })
+        public boolean autoBuild = true;
     }
 
     @Configurable

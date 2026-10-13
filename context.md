@@ -10,8 +10,9 @@ that first. This file is an index: what exists, where the details are, and what 
   - 1.20.1: `migrate/gtceu-v8-runtime-generation` (worktree `E:\code\Minecraft\GTMQoL-1.20.1`). Forge 47, Loom 1.13,
     Java 17. `master` is stale.
 - GTCEu v8 snapshot on both (pinned, see `gradle.properties`). Java only, no Kotlin.
-- 1.21 only so far: stack-like capabilities (Mekanism chemicals), gregification, the universal ME parts, the
-  restructured source layout (1.20.1 still has the old flat layout; apply the move there before cherry-picking).
+- 1.21 only so far: stack-like capabilities (Mekanism chemicals), gregification, the universal ME parts, Jade.
+  1.20.1 has everything up to "tag alias and AE Encoder fix" (synced by hand, same source layout as here). Its
+  `context.md` is older; treat this one as the reference.
 - The old implementation is archived under `reference/` as research material. Do not migrate it wholesale and do not
   modify it.
 
@@ -83,6 +84,17 @@ src/main/java/com/yiran/minecraft/gtmqol/
 - **Stack-like capabilities** (1.21): Mekanism chemicals as a real recipe capability, in ME parts, pattern buffers,
   EMI and Jade. → `STACK_LIKE_CAPABILITIES.md`
 - **Gregification** (1.21): MI and Mekanism machine recipes on gregified GT machines. → `GREGIFICATION.md`
+- **Survival auto-build** (1.21 first, `common/autobuild/`, config `misc.autoBuild`): a terminal-icon button on every
+  multiblock controller (`MachineUIPanelBuilderMixin`). Left click places up to 64 blocks from the player's
+  inventory, shift+left toggles a job (64 blocks every 5 ticks), right click is reserved for a settings window.
+  - `StructurePlanner`: GTCEu's structure helpers (anonymous subclasses override `getMinCount`/`getMaxCount`) with
+    ability predicates at 0 (type name `Ability`/`TieredAbility`); ability-only positions are left empty. Sorted by
+    y, then distance to the controller. Logs planning time.
+  - `AutoBuilder`: places only into air/replaceable blocks (anything solid counts as done), fires
+    `EntityPlaceEvent`, `checkAndFormStructure` only at the end, reports missing items. Jobs are keyed by
+    dimension + controller pos and stop when done, formed, stuck, player away/offline, or controller gone.
+  - `BuildSettings` (slice repeats / expandable bounds, clamped by the planner) is the hook for the settings window:
+    transient client-side data per multiblock type, sent with the click. Only `DEFAULT_STRUCTURE`, no substructures.
 
 ## Mekanism gregification (1.21, `gregification/mekanism/MekanismGregification`)
 
@@ -106,7 +118,11 @@ Config `gregification.mekanism`. Design and durations (per-tick machines: 1 t, u
   - KubeJS machines registered after the modular machines are declared.
   - Electric implosion copies of KubeJS recipes (1.20.1 has no late regeneration, so none there).
 - Crystal growth: a KubeJS binding for `CenterBlockCondition`.
-- Stack-like: external chemical hatches; the 1.20.1 port.
+- Survival auto-build: written, not built or run yet. After it works in game: port to 1.20.1, then the right-click
+  settings window (maybe reusing GTCEu's `MultiblockPreviewWidget`/`MultiblockSchemaInfo`), then substructures.
+- Stack-like: external chemical hatches. The 1.20.1 port (stack-like, Mek chemicals, gregification
+  + Mek machines, AE/pattern buffer, Jade) is fully written but not built or run yet; next is fixing compile errors one
+  at a time, then `runData` for the universal parts (see `docs/STACK_LIKE_CAPABILITIES.md`).
 - Known bug, not fixed. The user said leave it for now; the workaround is not to reload client resources, and to
   restart if it happens.
   - After a client resource reload, every GTCEu bronze/steel themed UI fails to open with

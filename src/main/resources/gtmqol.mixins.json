@@ -15,6 +15,7 @@
     "GTSingleblockMachinePanelsMixin",
     "MachineBuilderAccessor",
     "MachineBuilderMixin",
+    "MachineUIPanelBuilderMixin",
     "ManualCompressionMixin",
     "MEPatternBufferPartMachineMixin",
     "MEPatternBufferReturnMixin",
