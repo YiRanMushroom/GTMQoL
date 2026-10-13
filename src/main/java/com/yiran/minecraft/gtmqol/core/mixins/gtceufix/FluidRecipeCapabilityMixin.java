@@ -1,5 +1,6 @@
 package com.yiran.minecraft.gtmqol.core.mixins.gtceufix;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -20,7 +21,7 @@ import java.util.List;
  * gtceu 1.21 bug: {@code inputFluids(FluidStack)} with components (potions in the brewery and canner) makes a component
  * ingredient over the fluid's tag, which the recipe viewer gets as a tag list. EMI merges the tag's stacks (potion and
  * flowing potion) back into the tag by fluid alone, dropping the components, so every potion slot showed Uncraftable
- * Potion and U on a potion found all of them. List only the source fluids instead, so there's nothing to merge.
+ * Potion and U on a potion found all of them. List a single source fluid instead, so there's nothing to merge.
  * Remove once gtceu fixes it.
  */
 @Mixin(value = FluidRecipeCapability.class, remap = false)
@@ -36,6 +37,14 @@ public class FluidRecipeCapabilityMixin {
         List<FluidStack> sources = Arrays.stream(ingredient.getFluids())
                 .filter(stack -> stack.getFluid().isSource(stack.getFluid().defaultFluidState()))
                 .toList();
-        if (!sources.isEmpty()) cir.setReturnValue(FluidStackList.of(sources));
+        if (sources.isEmpty()) return;
+        // other mods' fluids in the tag (IE and Create potions in ATM10) would be merged the same way, so show only
+        // one, gtceu's if there is one, which is also what a pattern transfer then takes
+        FluidStack shown = sources.stream()
+                .filter(stack -> stack.getFluid().builtInRegistryHolder().getKey().location().getNamespace()
+                        .equals(GTCEu.MOD_ID))
+                .findFirst()
+                .orElse(sources.getFirst());
+        cir.setReturnValue(FluidStackList.of(shown));
     }
 }

@@ -215,6 +215,7 @@
   "gtmqol.fishing_pond.tooltip.3": "Never loses progress for lack of power.",
   "gtmqol.fishing_pond.treasure.off": "Treasure mode: off",
   "gtmqol.fishing_pond.treasure.on": "Treasure mode: on (4× EU)",
+  "gtmqol.gui.content.any_mod_fluid": "Any mod's version works",
   "gtmqol.gui.dual_input.fluids": "Fluids",
   "gtmqol.gui.dual_input.items": "Items",
   "gtmqol.gui.pattern_buffer.return.disabled": "Outputs go to the ME network: off",

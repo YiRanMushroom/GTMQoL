@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.List;
 
-/** Potion to splash potion, splash to lingering, for the canner. */
+/** Potion to splash potion, splash to lingering, for the brewery. */
 @Mixin(PotionBrewing.class)
 public interface PotionBrewingContainerMixesAccessor {
 
