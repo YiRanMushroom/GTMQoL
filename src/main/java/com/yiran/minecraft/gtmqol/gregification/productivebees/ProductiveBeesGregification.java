@@ -30,6 +30,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -119,8 +120,10 @@ public final class ProductiveBeesGregification {
     private static void convertCentrifuge(RecipeHolder<?> holder, ForeignRecipeConverter.Output output) {
         if (!(holder.value() instanceof CentrifugeRecipe recipe)) return;
         int duration = Math.max(1, config(ProductiveBeesConfig.GENERAL.centrifugeProcessingTime) / 3);
+        ItemStack comb = componentComb(recipe.ingredient);
         output.add(builder -> {
-            builder.inputItems(recipe.ingredient);
+            if (comb.isEmpty()) builder.inputItems(recipe.ingredient);
+            else builder.inputItems(comb);
             if (!addCentrifugeOutputs(builder, recipe, 1)) return false;
             builder.EUt(VA[LV]).duration(duration);
             return true;
@@ -160,6 +163,19 @@ public final class ProductiveBeesGregification {
             any = true;
         }
         return any;
+    }
+
+    /**
+     * The comb a configurable comb's component ingredient stands for. gtceu's recipe lookup compares a partial
+     * component ingredient's components with all of the input's instead of testing the input, so it never finds
+     * these recipes; the comb itself becomes a strict ingredient, which it does find.
+     */
+    private static ItemStack componentComb(Ingredient comb) {
+        if (!(comb.getCustomIngredient() instanceof DataComponentIngredient components) || components.isStrict()) {
+            return ItemStack.EMPTY;
+        }
+        ItemStack[] items = comb.getItems();
+        return items.length == 1 ? items[0] : ItemStack.EMPTY;
     }
 
     /**
