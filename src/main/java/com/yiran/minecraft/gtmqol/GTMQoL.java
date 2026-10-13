@@ -10,6 +10,7 @@ import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
 import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
 import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AppMekChemicalBridge;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
+import com.yiran.minecraft.gtmqol.common.autobuild.AutoBuilder;
 import com.yiran.minecraft.gtmqol.data.tag.CircuitTags;
 import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
@@ -61,6 +62,8 @@ public final class GTMQoL {
         // Always on: the void miner uses the wireless EU network too.
         WirelessNetworks.init();
         if (config.misc.feInput) FEInputProvider.init(modBus);
+        // always: the button itself checks config.misc.autoBuild
+        AutoBuilder.init();
         if (config.circuits.universalCircuits) UniversalCircuits.init();
         if (config.circuits.controlCircuits) ControlCircuits.init();
         if (config.circuits.mekanismCircuitTags) CircuitTags.init();
