@@ -171,10 +171,20 @@ later: gene sampler upgrade in the beehive, gene-applying treats in the incubato
   FluidRecipeCapabilityMixin` lists only the source fluids instead; both branches, not built. Potion fluid names:
   `gtceufix/PotionFluidTypeMixin` (1.21 only) uses the potion item's keys (gtceu's own `fluid.gtceu.potion.effect.*`
   have no translations); `PotionFluidNameMixin` (both) appends the first effect's potency and duration so normal /
-  long / strong differ. Not built. Splash / lingering potions: `CannerLogicMixin` also runs vanilla's container mixes
-  in the canner (potion + gunpowder → splash, splash + dragon's breath → lingering + glass bottle, contents kept),
-  injected at the head of `createCustomRecipe` (gtceu would drain the potion first), plus EMI recipes per potion; the
-  brewery has no item output. Mixes come from `PotionBrewingContainerMixesAccessor`. Both branches, not built.
+  long / strong differ. Not built. In ATM10 the brewery EMI input was still wrong: other mods' potion fluids
+  (Immersive Engineering first, Create) are in `c:potion` too, so several sources were left and EMI merged them again;
+  pattern transfer took IE's. The mixin now lists a single fluid, gtceu's if present (user's choice; display only,
+  gtceu's brewery still takes other mods' potions through the tag). `GTRecipeViewerWidgetMixin` adds "Any mod's
+  version works" to such an input slot's tooltip when the tag has other mods' fluids (lang in `PotionContainers`,
+  needs `runData`). 1.21 only, not built; port to 1.20.1 after.
+  Splash / lingering potions are made in the brewery (user's choice; a canner item-to-item version was written and
+  removed). `common/potion/PotionContainers`: data component `gtmqol:potion_container` (the potion Item) on gtceu's
+  potion fluid, absent = plain potion. `BreweryLogicMixin`: vanilla's container mixes (from
+  `PotionBrewingContainerMixesAccessor`, `PotionBrewing$Mix` opened by our AT) on potion fluids, 750 mB like gtceu,
+  when gtceu found nothing; EMI recipes per potion. Dragon's breath's bottle is lost (brewery has no item output).
+  Marked fluids aren't brewed further (gtceu compares all components). `BottleItemFluidHandlerMixin` (fill into the
+  marked item), `PotionItemFluidHandlerMixin` (splash / lingering drain to the marked fluid), canner EMI fill / drain
+  for each container, `PotionFluidNameMixin` names them like the item. 1.21 only, not built; 1.20.1 port after.
 - Universal ME parts recipe: dual part + 16k ME storage component (was dual + ME bus), both branches; needs
   `runData`.
 - Stack-like: external chemical hatches. The 1.20.1 port (stack-like, Mek chemicals, gregification

@@ -27,6 +27,7 @@ import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
+import com.yiran.minecraft.gtmqol.common.potion.PotionContainers;
 import com.yiran.minecraft.gtmqol.common.stacklike.mekanism.ChemicalStackLike;
 import com.yiran.minecraft.gtmqol.common.steam.AdvancedSteamMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessCovers;
@@ -70,6 +71,7 @@ public final class GTMQoL {
         if (config.circuits.controlCircuits) ControlCircuits.init();
         if (config.circuits.mekanismCircuitTags) CircuitTags.init();
         MaterialAliasTags.init();
+        PotionContainers.init(modBus);
         if (ModList.get().isLoaded("mekanism")) ChemicalStackLike.init();
         ModularMachines.init(modBus);
         Gregification.init(modBus);
