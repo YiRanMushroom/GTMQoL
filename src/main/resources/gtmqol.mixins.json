@@ -31,6 +31,7 @@
     "gtceufix.EmiCallWrapperMixin",
     "gtceufix.GameDataMixin",
     "gtceufix.GTRecipeCategoryMixin",
+    "gtceufix.GTRecipeTypeMixin",
     "gtceufix.GTMuiWidgetsMixin",
     "gtceufix.MEPatternBufferInternalSlotMixin"
   ],
