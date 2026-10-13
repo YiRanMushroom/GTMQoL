@@ -14,6 +14,7 @@ import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
+import com.yiran.minecraft.gtmqol.common.autobuild.AutoBuilder;
 import com.yiran.minecraft.gtmqol.data.tag.CircuitTags;
 import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
@@ -67,6 +68,8 @@ public final class GTMQoL {
         GTMQoLAddon.registrate().registerEventListeners(modBus);
         WirelessNetworks.init();
         if (config.misc.feInput) FEInputProvider.init();
+        // always: the button itself checks config.misc.autoBuild
+        AutoBuilder.init();
         if (config.circuits.universalCircuits) UniversalCircuits.init();
         if (config.circuits.controlCircuits) ControlCircuits.init();
         if (config.circuits.mekanismCircuitTags) CircuitTags.init();
