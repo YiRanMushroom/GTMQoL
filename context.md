@@ -133,6 +133,10 @@ Config `gregification.mekanism`. Design and durations (per-tick machines: 1 t, u
 - Survival auto-build: placing and the settings window work in game (1.21); `AbstractWidgetMenuMixin` not verified.
   The 1.20.1 port is written, not built or run yet. Next: substructures, then block choices for expandable
   patterns.
+- gtceu custom recipe logic (1.21, `gtceufix/GTRecipeTypeMixin`): forming press naming verified in game.
+  Brewery output components: `gtceufix/GTRecipeBuilderMixin` (recipe) built; `gtceufix/GTEmiRecipeMixin` (EMI R
+  lookup) and canner potion bottling/draining in EMI (`CannerLogicMixin`) verified in game. Both ported to 1.20.1
+  (not built); 1.20.1 doesn't need the other two.
 - Universal ME parts recipe: dual part + 16k ME storage component (was dual + ME bus), both branches; needs
   `runData`.
 - Stack-like: external chemical hatches. The 1.20.1 port (stack-like, Mek chemicals, gregification

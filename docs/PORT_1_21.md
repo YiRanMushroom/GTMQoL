@@ -53,8 +53,9 @@ Keep these in mind when cherry-picking.
 
 ## Gtceu bug workarounds (`core/mixins/gtceufix/`)
 
-Delete each one once upstream fixes it. All are 1.21 only, except `BaseSchemaRendererMixin` and
-`AbstractWidgetMenuMixin`.
+Delete each one once upstream fixes it. All are 1.21 only, except `BaseSchemaRendererMixin`,
+`AbstractWidgetMenuMixin` and `GTEmiRecipeMixin`. The canner's potion representative recipes (`CannerLogicMixin`, a
+feature, not in `gtceufix/`) are on both branches too.
 
 - `EmiCallWrapperMixin`: clicking the recipe type button in a machine UI makes gtceu call the private
   `EmiApi.setPages` through `EmiApiAccessor`. That invoker is never applied to `EmiApi`, so the click throws
@@ -78,6 +79,15 @@ Delete each one once upstream fixes it. All are 1.21 only, except `BaseSchemaRen
   named casting mold, rotor recycling in the macerator/arc furnace, canner, brewery, data stick copying. Their
   representative recipes are missing from EMI too. The mixin copies the list at the end of the constructor.
   1.20.1's `addCustomRecipeLogic` adds to the type directly, so it isn't affected.
+- `GTRecipeBuilderMixin`: `GTRecipeBuilder.outputFluids(FluidStack)` uses NeoForge's `SizedFluidIngredient.of`, which
+  keeps only the fluid (`FluidIngredient.single(stack.getFluid())`). Output data components are dropped. The
+  brewery's potion outputs come out as a potion fluid with no contents, and EMI can't look up the recipe from a
+  specific potion. For stacks with components, the mixin uses a strict `DataComponentFluidIngredient`. Inputs go
+  through `RecipeHelper.makeFluidIngredient` and keep their components. 1.20.1's gtceu `FluidIngredient.of` keeps the
+  NBT.
+- `GTEmiRecipeMixin` (`client`, **both branches**; 1.20.1 keeps the NBT): `GTEmiRecipe.getOutputs` builds fluid outputs with `EmiStack.of(fluid, amount)`, again
+  dropping components. EMI looks recipes up (R / click) by `getOutputs`, so a potion fluid showed its uses (U, via
+  `getInputs` and ModularUI's `EmiStackConverter`) but no recipes. The mixin passes the components through.
 - `AbstractWidgetMenuMixin` (ModularUI bug): a menu button's menu panel stays open after the button is disposed, and
   the next click crashes in `MenuPanel.closeAllMenus` with `ContextMenuButton#<name> is not in a valid state`. GTCEu
   hits it with the structure error list in `GTMultiblockTextUtil.addUnformedWarning`: a `DynamicWidget` rebuilt
