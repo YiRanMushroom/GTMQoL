@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.yiran.minecraft.gtmqol.core.GTMQoLMixinPlugin",
   "mixins": [
+    "CannerLogicMixin",
     "FusionReactorMachineMixin",
     "GTMachinesMixin",
     "GTMachineUtilsMixin",
@@ -30,6 +31,7 @@
     "gtceufix.EnergyContainerListMixin",
     "gtceufix.EmiCallWrapperMixin",
     "gtceufix.GameDataMixin",
+    "gtceufix.GTRecipeBuilderMixin",
     "gtceufix.GTRecipeCategoryMixin",
     "gtceufix.GTRecipeTypeMixin",
     "gtceufix.GTMuiWidgetsMixin",
@@ -37,6 +39,7 @@
   ],
   "client": [
     "GTEmiRecipeStackLikeMixin",
+    "gtceufix.GTEmiRecipeMixin",
     "gtceufix.BaseSchemaRendererMixin"
   ],
   "injectors": {
