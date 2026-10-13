@@ -43,12 +43,18 @@ Keep these in mind when cherry-picking.
   default tab is SEARCH, so otherwise every item adds itself to it a second time and NeoForge throws
   `already exists in the tab's list`.
 - `KubeJSDataGenFix` is removed, since NeoForge's `DatagenModLoader` sets the flag correctly.
+- Auto-build (`common/autobuild/`): 1.20.1 uses `FriendlyByteBuf` (blocks via `writeId`/`readById` on
+  `BuiltInRegistries.BLOCK`), Forge 47 events (`TickEvent.ServerTickEvent` END phase, `ServerStoppedEvent`,
+  `ForgeEventFactory.onBlockPlace`). The 1.20.1 gtceu snapshot's `MultiPredicate` has no `getParent()`, so
+  `StructurePlanner` keeps a node → root `IdentityHashMap`. For block patterns it comes from `getPredicates()`. For
+  expandable patterns it takes one extra plain `populate` pass and asks `getPredicateFromPos` for every position.
 - 1.21 only features: gregification (`GREGIFICATION.md`), stack-like capabilities
   (`STACK_LIKE_CAPABILITIES.md`), the universal ME parts, AE integration-mod recipes.
 
 ## Gtceu bug workarounds (`core/mixins/gtceufix/`)
 
-Delete each one once upstream fixes it. All are 1.21 only, except `BaseSchemaRendererMixin`.
+Delete each one once upstream fixes it. All are 1.21 only, except `BaseSchemaRendererMixin` and
+`AbstractWidgetMenuMixin`.
 
 - `EmiCallWrapperMixin`: clicking the recipe type button in a machine UI makes gtceu call the private
   `EmiApi.setPages` through `EmiApiAccessor`. That invoker is never applied to `EmiApi`, so the click throws
@@ -67,6 +73,12 @@ Delete each one once upstream fixes it. All are 1.21 only, except `BaseSchemaRen
 - `GTMuiWidgetsMixin`: in `GTMuiWidgets.createCircuitSlotSyncValue` the setter calls
   `IntCircuitBehaviour.stack(v, current.getCount())`. When the slot is empty the count is 0, which gives an empty
   stack, so the ghost circuit can never be set. The mixin clamps the count to ≥1. 1.20 uses `stack(v)`.
+- `AbstractWidgetMenuMixin` (ModularUI bug): a menu button's menu panel stays open after the button is disposed, and
+  the next click crashes in `MenuPanel.closeAllMenus` with `ContextMenuButton#<name> is not in a valid state`. GTCEu
+  hits it with the structure error list in `GTMultiblockTextUtil.addUnformedWarning`: a `DynamicWidget` rebuilt
+  whenever the errors change, with a hover-opened `ContextMenuButton` per missing part ability (e.g.
+  `export_fluids`). Auto-build changes the errors while the UI is open. The mixin closes the menu at the head of
+  `dispose`, while the button is still valid. Not verified in game yet.
 - `BaseSchemaRendererMixin` (`client`, **both branches**) works around a ModularUI bug. `BaseSchemaRenderer.draw`
   computes the GL viewport from MUI's own `transformX/Y` only. The recipe UI that EMI/JEI embeds is translated
   through `PoseStack`, so the multiblock preview was drawn at the screen's top-left. The mixin WrapOperations

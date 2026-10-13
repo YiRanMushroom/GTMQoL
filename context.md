@@ -84,7 +84,8 @@ src/main/java/com/yiran/minecraft/gtmqol/
 - **Stack-like capabilities** (1.21): Mekanism chemicals as a real recipe capability, in ME parts, pattern buffers,
   EMI and Jade. → `STACK_LIKE_CAPABILITIES.md`
 - **Gregification** (1.21): MI and Mekanism machine recipes on gregified GT machines. → `GREGIFICATION.md`
-- **Survival auto-build** (1.21 first, `common/autobuild/`, config `misc.autoBuild`): a terminal-icon button on every
+- **Survival auto-build** (both branches, `common/autobuild/`, config `misc.autoBuild`; 1.20.1 differences in
+  `docs/PORT_1_21.md`): a terminal-icon button on every
   multiblock controller (`MachineUIPanelBuilderMixin`). Left click places up to 64 blocks from the player's
   inventory, shift+left toggles a job (64 blocks every 5 ticks), right click opens the settings window.
   - `StructurePlanner`: GTCEu's structure helpers (anonymous subclasses override `getMinCount`/`getMaxCount`) with
@@ -101,7 +102,9 @@ src/main/java/com/yiran/minecraft/gtmqol/
     an item. The server ignores choices not in it and clamps repeats/bounds.
   - A choice puts the `BlockInfo` into `getBlockPreferences()` keyed by the node that holds the predicate (GTCEu
     looks up by the node it walks, not the root) and gives the root's other non-ability predicates counts of 0.
-  - `AutoBuildPanel`: `IPanelHandler.simple` sub panel, no synced values, no 3D preview (GTCEu's preview is buggy).
+  - `AutoBuildPanel`: `IPanelHandler.simple` sub panel centered on screen, no synced values, no 3D preview (GTCEu's
+    preview is buggy). The user doesn't want implementation details (tick counts, "kept until restart") in the UI
+    text.
     Sliders + item toggle buttons; selecting a selected toggle goes back to the default. Expandable patterns only
     get size sliders for now.
 
@@ -127,8 +130,11 @@ Config `gregification.mekanism`. Design and durations (per-tick machines: 1 t, u
   - KubeJS machines registered after the modular machines are declared.
   - Electric implosion copies of KubeJS recipes (1.20.1 has no late regeneration, so none there).
 - Crystal growth: a KubeJS binding for `CenterBlockCondition`.
-- Survival auto-build: placing works in game (1.21). The settings window is written, not built or run yet. Next:
-  port both to 1.20.1, then substructures, then block choices for expandable patterns.
+- Survival auto-build: placing and the settings window work in game (1.21); `AbstractWidgetMenuMixin` not verified.
+  The 1.20.1 port is written, not built or run yet. Next: substructures, then block choices for expandable
+  patterns.
+- Universal ME parts recipe: dual part + 16k ME storage component (was dual + ME bus), both branches; needs
+  `runData`.
 - Stack-like: external chemical hatches. The 1.20.1 port (stack-like, Mek chemicals, gregification
   + Mek machines, AE/pattern buffer, Jade) is fully written but not built or run yet; next is fixing compile errors one
   at a time, then `runData` for the universal parts (see `docs/STACK_LIKE_CAPABILITIES.md`).

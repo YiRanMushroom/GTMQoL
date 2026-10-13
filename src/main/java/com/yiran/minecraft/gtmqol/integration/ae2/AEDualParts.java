@@ -12,6 +12,8 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 
 import net.minecraft.data.recipes.RecipeOutput;
+
+import appeng.core.definitions.AEItems;
 import net.minecraft.network.chat.Component;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -124,7 +126,7 @@ public final class AEDualParts {
 
         type.recipeBuilder(GTMQoL.id("me_universal_input"))
                 .inputItems(ME_DUAL_INPUT)
-                .inputItems(GTAEMachines.STOCKING_IMPORT_BUS_ME)
+                .inputItems(AEItems.CELL_COMPONENT_16K.asItem())
                 .inputFluids(Glue, 1000)
                 .inputFluids(SolderingAlloy, L)
                 .outputItems(ME_UNIVERSAL_INPUT)
@@ -134,7 +136,7 @@ public final class AEDualParts {
 
         type.recipeBuilder(GTMQoL.id("me_universal_output"))
                 .inputItems(ME_DUAL_OUTPUT)
-                .inputItems(GTAEMachines.ITEM_EXPORT_BUS_ME)
+                .inputItems(AEItems.CELL_COMPONENT_16K.asItem())
                 .inputFluids(Glue, 1000)
                 .inputFluids(SolderingAlloy, L)
                 .outputItems(ME_UNIVERSAL_OUTPUT)
