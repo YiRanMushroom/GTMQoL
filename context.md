@@ -127,9 +127,10 @@ Config `gregification.mekanism`. Design and durations (per-tick machines: 1 t, u
 
 Config `gregification.productiveBees`. Design in `GREGIFICATION.md`. Comb centrifuge (converted PB recipes),
 industrial incubator, gene extractor and beehive (custom recipe logic, no proxy); the GT canner moves bees between
-cages and spawn eggs (genes kept). The PB machines ran in game ("总体可以"); the canner, beehive layout and the
-capability alias fix for PB's bundled old-format gtceu recipes (`integration/productivebees/`) are written, not built.
-Sturdy cages work everywhere (`BeeCage` subclass). Possible later: gene sampler upgrade in the beehive, gene-applying
+cages and spawn eggs (genes kept). The PB machines, the beehive layout (upgrades column, then bee/flower/fluid) and
+its machine tooltip were checked in game. The capability alias fix for PB's bundled old-format gtceu recipes is in
+`integration/productivebees/`. Sturdy cages work everywhere (`BeeCage` subclass).
+Ported to 1.20.1 (PB 1.20.1-12.6.0), not built yet; the differences are in that branch's `context.md`. Possible later: gene sampler upgrade in the beehive, gene-applying
 treats in the incubator.
 
 ## Pending / open
