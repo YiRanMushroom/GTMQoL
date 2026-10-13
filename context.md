@@ -176,7 +176,7 @@ later: gene sampler upgrade in the beehive, gene-applying treats in the incubato
   pattern transfer took IE's. The mixin now lists a single fluid, gtceu's if present (user's choice; display only,
   gtceu's brewery still takes other mods' potions through the tag). `GTRecipeViewerWidgetMixin` adds "Any mod's
   version works" (flashing green, via MUI's tooltip auto-update) to such an input slot's tooltip when the tag has other mods' fluids (lang in `PotionContainers`,
-  needs `runData`). 1.21 only, not built; port to 1.20.1 after.
+  needs `runData`). Ported to 1.20.1 (not built there).
   Splash / lingering potions are made in the brewery (user's choice; a canner item-to-item version was written and
   removed). `common/potion/PotionContainers`: data component `gtmqol:potion_container` (the potion Item) on gtceu's
   potion fluid, absent = plain potion. `BreweryLogicMixin`: vanilla's container mixes (from
