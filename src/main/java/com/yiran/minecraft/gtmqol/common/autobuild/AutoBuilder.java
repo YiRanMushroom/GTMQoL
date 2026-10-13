@@ -93,15 +93,14 @@ public final class AutoBuilder {
 
         var registrate = GTMQoLAddon.registrate();
         registrate.addRawLang(BUTTON_KEY, "Auto build");
-        registrate.addRawLang(TOOLTIP_KEY + "0", "Left click: place up to %s blocks from your inventory");
-        registrate.addRawLang(TOOLTIP_KEY + "1", "Shift + left click: start or stop placing %s blocks every %s ticks");
+        registrate.addRawLang(TOOLTIP_KEY + "0", "Left click: place blocks from your inventory");
+        registrate.addRawLang(TOOLTIP_KEY + "1", "Shift + left click: keep building until done, again to stop");
         registrate.addRawLang(TOOLTIP_KEY + "2", "Hatches, buses and other parts are not placed");
-        registrate.addRawLang(TOOLTIP_KEY + "3", "Right click: settings (layers, size, block variants)");
+        registrate.addRawLang(TOOLTIP_KEY + "3", "Right click: settings");
         registrate.addRawLang(AutoBuildPanel.TITLE_KEY, "Auto build settings");
-        registrate.addRawLang(AutoBuildPanel.HINT_KEY, "Kept per multiblock type until you quit the game");
         registrate.addRawLang(AutoBuildPanel.LAYER_KEY, "Layer %s: %s");
         registrate.addRawLang(AutoBuildPanel.SIZE_KEY, "Size %s: %s");
-        registrate.addRawLang(AutoBuildPanel.BLOCKS_KEY, "Block %s (none selected: default)");
+        registrate.addRawLang(AutoBuildPanel.BLOCKS_KEY, "Block %s");
         registrate.addRawLang(AutoBuildPanel.RESET_KEY, "Reset");
         registrate.addRawLang(AutoBuildPanel.NOTHING_KEY, "Nothing to configure");
         registrate.addRawLang(PROGRESS_KEY, "Auto build: placed %s, %s left");

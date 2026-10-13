@@ -28,15 +28,14 @@ public final class AutoBuildButton {
         var request = new BuildRequest(controller);
         syncManager.syncValue("gtmqol_auto_build", request);
         IPanelHandler settingsPanel = syncManager.isClient() ?
-                IPanelHandler.simple(panel, (parent, player) -> AutoBuildPanel.build(parent, controller), true) :
+                IPanelHandler.simple(panel, (parent, player) -> AutoBuildPanel.build(controller), true) :
                 null;
         panel.getRightConfiguratorPanel().child(new ButtonWidget<>()
                 .size(18, 18)
                 .overlay(new ItemDrawable(GTItems.TERMINAL.get()))
                 .tooltipDynamic(t -> t.addLine(Component.translatable(AutoBuilder.BUTTON_KEY))
-                        .addLine(Component.translatable(AutoBuilder.TOOLTIP_KEY + "0", AutoBuilder.BLOCKS_PER_BATCH))
-                        .addLine(Component.translatable(AutoBuilder.TOOLTIP_KEY + "1", AutoBuilder.BLOCKS_PER_BATCH,
-                                AutoBuilder.INTERVAL))
+                        .addLine(Component.translatable(AutoBuilder.TOOLTIP_KEY + "0"))
+                        .addLine(Component.translatable(AutoBuilder.TOOLTIP_KEY + "1"))
                         .addLine(Component.translatable(AutoBuilder.TOOLTIP_KEY + "3"))
                         .addLine(Component.translatable(AutoBuilder.TOOLTIP_KEY + "2")))
                 // only ever called on the client
