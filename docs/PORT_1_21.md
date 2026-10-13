@@ -73,6 +73,11 @@ Delete each one once upstream fixes it. All are 1.21 only, except `BaseSchemaRen
 - `GTMuiWidgetsMixin`: in `GTMuiWidgets.createCircuitSlotSyncValue` the setter calls
   `IntCircuitBehaviour.stack(v, current.getCount())`. When the slot is empty the count is 0, which gives an empty
   stack, so the ghost circuit can never be set. The mixin clamps the count to ≥1. 1.20 uses `stack(v)`.
+- `GTRecipeTypeMixin`: `GTRecipeTypeBuilder.addCustomRecipeLogic` only adds to `GTRecipeType.Properties`, and the
+  constructor never copies that list into the type. So no custom recipe logic runs: forming press naming with a
+  named casting mold, rotor recycling in the macerator/arc furnace, canner, brewery, data stick copying. Their
+  representative recipes are missing from EMI too. The mixin copies the list at the end of the constructor.
+  1.20.1's `addCustomRecipeLogic` adds to the type directly, so it isn't affected.
 - `AbstractWidgetMenuMixin` (ModularUI bug): a menu button's menu panel stays open after the button is disposed, and
   the next click crashes in `MenuPanel.closeAllMenus` with `ContextMenuButton#<name> is not in a valid state`. GTCEu
   hits it with the structure error list in `GTMultiblockTextUtil.addUnformedWarning`: a `DynamicWidget` rebuilt
