@@ -11,6 +11,7 @@ import com.yiran.minecraft.gtmqol.common.overclock.Overclocking;
 import com.yiran.minecraft.gtmqol.common.potion.PotionContainers;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -57,8 +58,10 @@ public class GTRecipeViewerWidgetMixin {
         if (io == IO.IN && widget instanceof RecipeViewerSlotWidget<?, ?> slot &&
                 content.content() instanceof SizedFluidIngredient ingredient && gtmqol$anyMod(ingredient) &&
                 gtmqol$hinted.add(widget)) {
-            slot.tooltipBuilder(tooltip -> tooltip.addLine(
-                    Component.translatable(PotionContainers.ANY_MOD_KEY).withStyle(ChatFormatting.GRAY)));
+            // rebuilt every frame so the hint can flash
+            slot.tooltipAutoUpdate(true);
+            slot.tooltipBuilder(tooltip -> tooltip.addLine(Component.translatable(PotionContainers.ANY_MOD_KEY)
+                    .withStyle(Util.getMillis() / 500 % 2 == 0 ? ChatFormatting.GREEN : ChatFormatting.WHITE)));
         }
     }
 
