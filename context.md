@@ -86,15 +86,24 @@ src/main/java/com/yiran/minecraft/gtmqol/
 - **Gregification** (1.21): MI and Mekanism machine recipes on gregified GT machines. → `GREGIFICATION.md`
 - **Survival auto-build** (1.21 first, `common/autobuild/`, config `misc.autoBuild`): a terminal-icon button on every
   multiblock controller (`MachineUIPanelBuilderMixin`). Left click places up to 64 blocks from the player's
-  inventory, shift+left toggles a job (64 blocks every 5 ticks), right click is reserved for a settings window.
+  inventory, shift+left toggles a job (64 blocks every 5 ticks), right click opens the settings window.
   - `StructurePlanner`: GTCEu's structure helpers (anonymous subclasses override `getMinCount`/`getMaxCount`) with
     ability predicates at 0 (type name `Ability`/`TieredAbility`); ability-only positions are left empty. Sorted by
     y, then distance to the controller. Logs planning time.
   - `AutoBuilder`: places only into air/replaceable blocks (anything solid counts as done), fires
     `EntityPlaceEvent`, `checkAndFormStructure` only at the end, reports missing items. Jobs are keyed by
     dimension + controller pos and stop when done, formed, stuck, player away/offline, or controller gone.
-  - `BuildSettings` (slice repeats / expandable bounds, clamped by the planner) is the hook for the settings window:
-    transient client-side data per multiblock type, sent with the click. Only `DEFAULT_STRUCTURE`, no substructures.
+  - `BuildSettings`: slice repeats, expandable bounds, block choices (pattern char → index in `root.expand()` +
+    block). Transient client-side data per multiblock definition id (`AutoBuildPanel.SETTINGS`), sent with every
+    click through a C2S `SyncHandler` (`AutoBuildButton.BuildRequest`). Only `DEFAULT_STRUCTURE`, no substructures.
+  - `BuildOptions`: what the window offers, computed the same way on both sides. Slices with min < max, expandable
+    bounds, and chars (not air/any/controller) whose non-ability predicates have at least 2 distinct blocks with
+    an item. The server ignores choices not in it and clamps repeats/bounds.
+  - A choice puts the `BlockInfo` into `getBlockPreferences()` keyed by the node that holds the predicate (GTCEu
+    looks up by the node it walks, not the root) and gives the root's other non-ability predicates counts of 0.
+  - `AutoBuildPanel`: `IPanelHandler.simple` sub panel, no synced values, no 3D preview (GTCEu's preview is buggy).
+    Sliders + item toggle buttons; selecting a selected toggle goes back to the default. Expandable patterns only
+    get size sliders for now.
 
 ## Mekanism gregification (1.21, `gregification/mekanism/MekanismGregification`)
 
@@ -118,8 +127,8 @@ Config `gregification.mekanism`. Design and durations (per-tick machines: 1 t, u
   - KubeJS machines registered after the modular machines are declared.
   - Electric implosion copies of KubeJS recipes (1.20.1 has no late regeneration, so none there).
 - Crystal growth: a KubeJS binding for `CenterBlockCondition`.
-- Survival auto-build: written, not built or run yet. After it works in game: port to 1.20.1, then the right-click
-  settings window (maybe reusing GTCEu's `MultiblockPreviewWidget`/`MultiblockSchemaInfo`), then substructures.
+- Survival auto-build: placing works in game (1.21). The settings window is written, not built or run yet. Next:
+  port both to 1.20.1, then substructures, then block choices for expandable patterns.
 - Stack-like: external chemical hatches. The 1.20.1 port (stack-like, Mek chemicals, gregification
   + Mek machines, AE/pattern buffer, Jade) is fully written but not built or run yet; next is fixing compile errors one
   at a time, then `runData` for the universal parts (see `docs/STACK_LIKE_CAPABILITIES.md`).

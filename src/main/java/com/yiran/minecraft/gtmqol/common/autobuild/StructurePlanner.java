@@ -24,6 +24,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +42,10 @@ import java.util.Set;
  * Abilities (hatches, buses, mufflers, ...) are never placed: a position that also takes a normal block gets that
  * block, a position that only takes abilities is left empty. "Ability" is decided by the predicate's type name, which
  * is what {@code Predicates.abilities}/{@code ability} produce. That is a heuristic, but this is only the default.
+ * <p>
+ * A block choice from the settings becomes GTCEu's block preference for its predicate, and the other non-ability
+ * predicates of the same char get counts of 0. If one of those had a minimum count, the structure will not form; that
+ * is the player's choice.
  */
 public final class StructurePlanner {
 
@@ -97,20 +102,24 @@ public final class StructurePlanner {
                 int max = Math.max(min, slices[i].getMaxRepeats());
                 repeats.put(i, Mth.clamp(settings.sliceRepeats().getOrDefault(i, min), min, max));
             }
-            return new BlockPatternHelper(repeats) {
+            // root -> the chosen predicate; the root's other non-ability predicates get no blocks
+            Map<MultiPredicate, BasePredicate> chosen = new IdentityHashMap<>();
+            BlockPatternHelper helper = new BlockPatternHelper(repeats) {
 
                 @Override
                 protected int getMinCount(MultiPredicate predicate, BasePredicate basePredicate) {
-                    return abilities.suppress(predicate, basePredicate) ? 0 :
-                            super.getMinCount(predicate, basePredicate);
+                    return abilities.suppress(predicate, basePredicate) || excluded(chosen, predicate, basePredicate) ?
+                            0 : super.getMinCount(predicate, basePredicate);
                 }
 
                 @Override
                 protected int getMaxCount(MultiPredicate predicate, BasePredicate basePredicate) {
-                    return abilities.suppress(predicate, basePredicate) ? 0 :
-                            super.getMaxCount(predicate, basePredicate);
+                    return abilities.suppress(predicate, basePredicate) || excluded(chosen, predicate, basePredicate) ?
+                            0 : super.getMaxCount(predicate, basePredicate);
                 }
             };
+            applyChoices(blockPattern, settings, helper, chosen);
+            return helper;
         }
         if (pattern instanceof ExpandablePattern expandable) {
             List<IntIntPair> bounds = expandable.getBoundsConstraints() == null ? List.of() :
@@ -140,6 +149,46 @@ public final class StructurePlanner {
         throw new IllegalStateException("unsupported pattern type " + pattern.getClass().getSimpleName());
     }
 
+    /** Choices that are not offered by {@link BuildOptions} (stale client, other pattern) are ignored. */
+    private static void applyChoices(BlockPattern pattern, BuildSettings settings, AbstractStructureHelper helper,
+                                     Map<MultiPredicate, BasePredicate> chosen) {
+        if (settings.blocks().isEmpty()) return;
+        BuildOptions options = BuildOptions.of(pattern);
+        for (var entry : settings.blocks().char2ObjectEntrySet()) {
+            BuildOptions.ChoicePoint point = options.choice(entry.getCharKey());
+            BuildOptions.Option option = point == null ? null : point.find(entry.getValue());
+            if (option == null) continue;
+            MultiPredicate node = findNode(point.root(), option.predicate());
+            if (node == null) continue;
+            chosen.put(point.root(), option.predicate());
+            // GTCEu looks preferences up by the node it is walking, which is the one holding the predicate
+            helper.getBlockPreferences().put(node, option.predicate(), option.info());
+        }
+    }
+
+    private static boolean excluded(Map<MultiPredicate, BasePredicate> chosen, MultiPredicate predicate,
+                                    BasePredicate basePredicate) {
+        if (chosen.isEmpty()) return false;
+        BasePredicate choice = chosen.get(root(predicate));
+        return choice != null && choice != basePredicate && !BuildOptions.isAbility(basePredicate);
+    }
+
+    private static @Nullable MultiPredicate findNode(MultiPredicate node, BasePredicate predicate) {
+        for (BasePredicate p : node.predicates()) {
+            if (p == predicate) return node;
+        }
+        for (MultiPredicate child : node.children()) {
+            MultiPredicate found = findNode(child, predicate);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    private static MultiPredicate root(MultiPredicate predicate) {
+        while (predicate.getParent() != null) predicate = predicate.getParent();
+        return predicate;
+    }
+
     private static BlockPos findController(MultiblockControllerMachine controller, AbstractStructureHelper helper,
                                            IBlockPattern pattern, Map<BlockPos, BlockInfo> structure,
                                            Direction front, Direction up, boolean flipped) {
@@ -167,29 +216,18 @@ public final class StructurePlanner {
         private final Set<Block> abilityBlocks = Collections.newSetFromMap(new IdentityHashMap<>());
 
         boolean suppress(MultiPredicate predicate, BasePredicate basePredicate) {
-            if (!isAbility(basePredicate)) return false;
+            if (!BuildOptions.isAbility(basePredicate)) return false;
             if (seen.add(basePredicate)) {
                 for (BlockInfo candidate : basePredicate.getCandidates()) {
                     abilityBlocks.add(candidate.getBlockState().getBlock());
                 }
             }
-            MultiPredicate root = root(predicate);
-            return !abilityOnly.computeIfAbsent(root,
-                    r -> r.expand().stream().allMatch(StructurePlanner::isAbility));
+            return !abilityOnly.computeIfAbsent(root(predicate),
+                    r -> r.expand().stream().allMatch(BuildOptions::isAbility));
         }
 
         boolean isAbilityBlock(Block block) {
             return abilityBlocks.contains(block);
         }
-
-        private static MultiPredicate root(MultiPredicate predicate) {
-            while (predicate.getParent() != null) predicate = predicate.getParent();
-            return predicate;
-        }
-    }
-
-    private static boolean isAbility(BasePredicate predicate) {
-        String type = predicate.getTypeName();
-        return "Ability".equals(type) || "TieredAbility".equals(type);
     }
 }

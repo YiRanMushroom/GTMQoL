@@ -96,6 +96,14 @@ public final class AutoBuilder {
         registrate.addRawLang(TOOLTIP_KEY + "0", "Left click: place up to %s blocks from your inventory");
         registrate.addRawLang(TOOLTIP_KEY + "1", "Shift + left click: start or stop placing %s blocks every %s ticks");
         registrate.addRawLang(TOOLTIP_KEY + "2", "Hatches, buses and other parts are not placed");
+        registrate.addRawLang(TOOLTIP_KEY + "3", "Right click: settings (layers, size, block variants)");
+        registrate.addRawLang(AutoBuildPanel.TITLE_KEY, "Auto build settings");
+        registrate.addRawLang(AutoBuildPanel.HINT_KEY, "Kept per multiblock type until you quit the game");
+        registrate.addRawLang(AutoBuildPanel.LAYER_KEY, "Layer %s: %s");
+        registrate.addRawLang(AutoBuildPanel.SIZE_KEY, "Size %s: %s");
+        registrate.addRawLang(AutoBuildPanel.BLOCKS_KEY, "Block %s (none selected: default)");
+        registrate.addRawLang(AutoBuildPanel.RESET_KEY, "Reset");
+        registrate.addRawLang(AutoBuildPanel.NOTHING_KEY, "Nothing to configure");
         registrate.addRawLang(PROGRESS_KEY, "Auto build: placed %s, %s left");
         registrate.addRawLang(DONE_KEY, "Auto build: every block is placed. Add the hatches to form the structure.");
         registrate.addRawLang(FORMED_KEY, "Auto build: the structure is formed");
@@ -111,7 +119,8 @@ public final class AutoBuilder {
     }
 
     /** Server side of the button. */
-    public static void onPressed(ServerPlayer player, MultiblockControllerMachine controller, boolean shift) {
+    public static void onPressed(ServerPlayer player, MultiblockControllerMachine controller, boolean shift,
+                                 BuildSettings settings) {
         if (!player.mayBuild() || !(controller.getLevel() instanceof ServerLevel level)) return;
         JobKey key = new JobKey(level.dimension(), controller.getBlockPos());
         if (shift && JOBS.remove(key) != null) {
@@ -124,7 +133,7 @@ public final class AutoBuilder {
         }
         List<StructurePlanner.Entry> plan;
         try {
-            plan = StructurePlanner.plan(controller, BuildSettings.DEFAULTS);
+            plan = StructurePlanner.plan(controller, settings);
         } catch (RuntimeException e) {
             GTMQoL.LOGGER.warn("Auto-build: cannot plan {} at {}", controller.getDefinition().getId(),
                     controller.getBlockPos(), e);
