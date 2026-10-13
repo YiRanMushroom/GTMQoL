@@ -61,7 +61,7 @@ src/main/java/com/yiran/minecraft/gtmqol/
 │   ├── steam/             advanced steam multis, steam parallel hatch, steam magical assembler
 │   ├── test/              IntegrationTests
 │   └── wireless/          binding, networks, covers; steam/ and energy/
-├── gregification/         Gregification, ForeignMachineType, GregifiedRecipeType, modifiers; mi/, mekanism/, client/
+├── gregification/         Gregification, ForeignMachineType, GregifiedRecipeType, modifiers; mi/, mekanism/, productivebees/, client/
 ├── data/                  recipe/ (MiscRecipes, EarlyGameRecipes, WirelessRecipes), tag/ (CircuitTags, MaterialAliasTags)
 ├── core/                  mixin config plugins (GTMQoL, RecipeDB, EAP, AE2, JeiRecipeSlotFix)
 │   └── mixins/            gtmqol.mixins.json; gtceufix/, recipedb/, eap/, ae2/ have their own notes in the docs
@@ -83,7 +83,8 @@ src/main/java/com/yiran/minecraft/gtmqol/
 - **RecipeDB** grouped search. → `RECIPEDB_REFACTOR.md`
 - **Stack-like capabilities** (1.21): Mekanism chemicals as a real recipe capability, in ME parts, pattern buffers,
   EMI and Jade. → `STACK_LIKE_CAPABILITIES.md`
-- **Gregification** (1.21): MI and Mekanism machine recipes on gregified GT machines. → `GREGIFICATION.md`
+- **Gregification** (1.21): MI, Mekanism and Productive Bees machine recipes on gregified GT machines.
+  → `GREGIFICATION.md`
 - **Survival auto-build** (both branches, `common/autobuild/`, config `misc.autoBuild`; 1.20.1 differences in
   `docs/PORT_1_21.md`): a terminal-icon button on every
   multiblock controller (`MachineUIPanelBuilderMixin`). Left click places up to 64 blocks from the player's
@@ -122,8 +123,20 @@ Config `gregification.mekanism`. Design and durations (per-tick machines: 1 t, u
   conversion.
 - None of the 20 new types has been run in game yet.
 
+## Productive Bees gregification (1.21, `gregification/productivebees/`)
+
+Config `gregification.productiveBees`. Design in `GREGIFICATION.md`. Comb centrifuge (converted PB recipes),
+industrial incubator, gene extractor and beehive (custom recipe logic, no proxy); the GT canner moves bees between
+cages and spawn eggs (genes kept). The PB machines ran in game ("总体可以"); the canner, beehive layout and the
+capability alias fix for PB's bundled old-format gtceu recipes (`integration/productivebees/`) are written, not built.
+Sturdy cages work everywhere (`BeeCage` subclass). Possible later: gene sampler upgrade in the beehive, gene-applying
+treats in the incubator.
+
 ## Pending / open
 
+- PB gregification: check that PB's ore-bee gtceu recipes (`gtceu:alloy_smelter/barite_bee` etc.) load without
+  `Unknown registry key ... minecraft:item`; canner cage ↔ egg both ways (genes kept), beehive slot layout and
+  flower requirement (item / bucket / 1000 mB fluid, EMI shows each bee's flower).
 - Not verified in game (1.21):
   - EMI real slots for chemicals: icons/amounts, R/U, U finding GT recipes, AE2 "+" auto-fill, no duplicate tooltips.
   - The dedicated-server path of gregification (`GregificationClient`).

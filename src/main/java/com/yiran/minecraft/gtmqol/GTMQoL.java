@@ -9,6 +9,7 @@ import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
 import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
 import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AppMekChemicalBridge;
+import com.yiran.minecraft.gtmqol.integration.productivebees.LegacyCapabilityAliases;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.common.autobuild.AutoBuilder;
 import com.yiran.minecraft.gtmqol.data.tag.CircuitTags;
@@ -36,6 +37,7 @@ import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.client.GregificationClient;
 import com.yiran.minecraft.gtmqol.gregification.mekanism.MekanismGregification;
 import com.yiran.minecraft.gtmqol.gregification.mi.MIGregification;
+import com.yiran.minecraft.gtmqol.gregification.productivebees.ProductiveBeesGregification;
 
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -76,6 +78,13 @@ public final class GTMQoL {
         }
         if (config.gregification.mekanism && ModList.get().isLoaded("mekanism")) {
             Gregification.addSource(MekanismGregification::types);
+        }
+        if (ModList.get().isLoaded("productivebees")) {
+            LegacyCapabilityAliases.init(modBus);
+            if (config.gregification.productiveBees) {
+                Gregification.addSource(ProductiveBeesGregification::types);
+                ProductiveBeesGregification.init(modBus);
+            }
         }
 
         // On 1.21 gtceu's registries are Registrate deferred registers, so content is declared right here like

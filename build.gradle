@@ -244,6 +244,15 @@ dependencies {
     localRuntime("mekanism:Mekanism:${project.minecraft_version}-${project.mekanism_version}") {
         transitive = false
     }
+    // Optional: Productive Bees' machines as GT machines (gregification/productivebees). It requires ProductiveLib,
+    // which is jar-in-jar at runtime but published nowhere, so compiling against it uses the jar PB builds with.
+    compileOnly("maven.modrinth:productivebees:${project.productivebees_version}") {
+        transitive = false
+    }
+    localRuntime("maven.modrinth:productivebees:${project.productivebees_version}") {
+        transitive = false
+    }
+    compileOnly files("libs/productivelib-${project.productivelib_version}.jar")
     // Optional: chemicals in AE (pattern buffer, ME parts) go through its MekanismKey.
     compileOnly("maven.modrinth:applied-mekanistics:${project.appmek_version}") {
         transitive = false

@@ -25,7 +25,8 @@ import java.util.function.UnaryOperator;
  * @param name        path of the GT recipe type and the machines, e.g. {@code mi_macerator}
  * @param englishName e.g. {@code MI Macerator}
  * @param proxy       the foreign recipe type, only asked for at common setup (it may not be registered when this
- *                    is declared)
+ *                    is declared); null, with a null converter, for a type whose recipes all come from custom
+ *                    recipe logic (added in {@code recipeType})
  * @param recipeType  anything else the GT recipe type needs, e.g. slot counts of other capabilities
  * @param sound       working sound, null for none
  * @param ui          recipe UI, e.g. the progress bar
@@ -34,8 +35,8 @@ import java.util.function.UnaryOperator;
  * @param model       single blocks: a GTCEu workable model, e.g. {@code gtceu:block/machines/macerator}
  * @param shape       multiblocks: the GT multiblock it is built like
  */
-public record ForeignMachineType(String name, String englishName, Supplier<? extends RecipeType<?>> proxy,
-                                 ForeignRecipeConverter converter,
+public record ForeignMachineType(String name, String englishName, @Nullable Supplier<? extends RecipeType<?>> proxy,
+                                 @Nullable ForeignRecipeConverter converter,
                                  int itemInputs, int itemOutputs, int fluidInputs, int fluidOutputs,
                                  UnaryOperator<GTRecipeTypeBuilder> recipeType,
                                  @Nullable Holder<SoundEntry> sound, UnaryOperator<GTRecipeTypeUILayout.Builder> ui,
@@ -43,12 +44,12 @@ public record ForeignMachineType(String name, String englishName, Supplier<? ext
                                  @Nullable ResourceLocation model, @Nullable MultiblockShape shape) {
 
     public static ForeignMachineType singleBlock(String name, String englishName,
-                                                 Supplier<? extends RecipeType<?>> proxy,
-                                                 ForeignRecipeConverter converter, int itemInputs,
+                                                 @Nullable Supplier<? extends RecipeType<?>> proxy,
+                                                 @Nullable ForeignRecipeConverter converter, int itemInputs,
                                                  int itemOutputs, int fluidInputs, int fluidOutputs,
                                                  @Nullable Holder<SoundEntry> sound,
                                                  UnaryOperator<GTRecipeTypeUILayout.Builder> ui,
-                                                 ResourceLocation catalyst,
+                                                 @Nullable ResourceLocation catalyst,
                                                  IntFunction<ResourceLocation> counterpart, ResourceLocation model) {
         return new ForeignMachineType(name, englishName, proxy, converter, itemInputs, itemOutputs, fluidInputs,
                 fluidOutputs, UnaryOperator.identity(), sound, ui, catalyst, counterpart, model, null);

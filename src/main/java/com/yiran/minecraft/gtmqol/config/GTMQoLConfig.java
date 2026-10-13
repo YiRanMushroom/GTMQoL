@@ -114,6 +114,12 @@ public final class GTMQoLConfig {
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean mekanism = true;
+
+        @Configurable
+        @Configurable.Comment({ "GT machines for Productive Bees: comb centrifuge, incubator, gene extractor, beehive",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean productiveBees = true;
     }
 
     @Configurable

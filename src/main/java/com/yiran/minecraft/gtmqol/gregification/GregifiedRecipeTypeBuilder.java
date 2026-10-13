@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.builder.GTRecipeTypeBuilder
 import net.minecraft.world.item.crafting.RecipeType;
 
 import com.tterrag.registrate.builders.BuilderCallback;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -16,11 +17,12 @@ import java.util.function.Supplier;
  */
 public class GregifiedRecipeTypeBuilder extends GTRecipeTypeBuilder {
 
-    private final ForeignRecipeConverter converter;
-    private final Supplier<? extends RecipeType<?>> proxy;
+    private final @Nullable ForeignRecipeConverter converter;
+    private final @Nullable Supplier<? extends RecipeType<?>> proxy;
 
     public GregifiedRecipeTypeBuilder(GTRegistrate owner, String name, BuilderCallback callback, String group,
-                                      ForeignRecipeConverter converter, Supplier<? extends RecipeType<?>> proxy) {
+                                      @Nullable ForeignRecipeConverter converter,
+                                      @Nullable Supplier<? extends RecipeType<?>> proxy) {
         super(owner, name, callback, group);
         this.converter = converter;
         this.proxy = proxy;
