@@ -190,9 +190,11 @@ recipes for EMI. PB's server config isn't loaded at the first datapack load, so 
   `ProductiveBee.isFlowerItem`, the feeder check; vanilla bees `ItemTags.FLOWERS`) or 1000 mB in the fluid slot
   (accepted if its bucket item is). Bees with mob flowers (`flowerType` `entity_types`) need none. EMI shows the flower
   from the bee data (`flowerTag`/`flowerBlock`/`flowerItem`/`flowerFluid`; non-configurable bees: the flowering tag
-  filtered by the bee), not by trying every item. Layout: bee + flower on top, a blank row, then 4 upgrade slots
-  (`setLayoutGridBuilder`, not enforced: the logic scans every slot), plus an EMI line saying it works like PB's hive
-  (runtime lang entry). 6 item inputs, 1 fluid input.
+  filtered by the bee), not by trying every item. Layout (`BeehiveUI`): a column of 4 upgrade slots on the far left,
+  then a column of bee, flower item and flower fluid, then the outputs. GT puts fluids under the item grid, so custom
+  machine and recipe-viewer layout builders place all inputs and the fluid builders skip inputs. Not enforced: the
+  logic scans every slot. "Works like PB's advanced beehive" (runtime lang entry) is both an EMI line and a machine
+  tooltip line (`ForeignMachineType.withTooltip`). 6 item inputs, 1 fluid input.
 - Canner (`CannerBeeLogic`, added to gtceu's `CANNER_RECIPES` runners at common setup, `VA[ULV]`, 100 t): filled
   cage → empty cage + spawn egg (`BeeCreator.getSpawnEgg`) whose `ENTITY_DATA` is the cage's tag minus the cage's own
   keys (`entity`, `name`, `HivePos`, `isProductiveBee`, `mod`) plus `id`; the cage already dropped UUID/Pos/etc., so

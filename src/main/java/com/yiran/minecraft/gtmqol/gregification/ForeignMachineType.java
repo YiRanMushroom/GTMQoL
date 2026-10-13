@@ -34,6 +34,7 @@ import java.util.function.UnaryOperator;
  * @param counterpart item id of the machine it is crafted from, by tier (ignored for multiblocks)
  * @param model       single blocks: a GTCEu workable model, e.g. {@code gtceu:block/machines/macerator}
  * @param shape       multiblocks: the GT multiblock it is built like
+ * @param tooltip     lang key of an extra line on the machines' tooltip, or null
  */
 public record ForeignMachineType(String name, String englishName, @Nullable Supplier<? extends RecipeType<?>> proxy,
                                  @Nullable ForeignRecipeConverter converter,
@@ -41,7 +42,8 @@ public record ForeignMachineType(String name, String englishName, @Nullable Supp
                                  UnaryOperator<GTRecipeTypeBuilder> recipeType,
                                  @Nullable Holder<SoundEntry> sound, UnaryOperator<GTRecipeTypeUILayout.Builder> ui,
                                  @Nullable ResourceLocation catalyst, IntFunction<ResourceLocation> counterpart,
-                                 @Nullable ResourceLocation model, @Nullable MultiblockShape shape) {
+                                 @Nullable ResourceLocation model, @Nullable MultiblockShape shape,
+                                 @Nullable String tooltip) {
 
     public static ForeignMachineType singleBlock(String name, String englishName,
                                                  @Nullable Supplier<? extends RecipeType<?>> proxy,
@@ -52,7 +54,7 @@ public record ForeignMachineType(String name, String englishName, @Nullable Supp
                                                  @Nullable ResourceLocation catalyst,
                                                  IntFunction<ResourceLocation> counterpart, ResourceLocation model) {
         return new ForeignMachineType(name, englishName, proxy, converter, itemInputs, itemOutputs, fluidInputs,
-                fluidOutputs, UnaryOperator.identity(), sound, ui, catalyst, counterpart, model, null);
+                fluidOutputs, UnaryOperator.identity(), sound, ui, catalyst, counterpart, model, null, null);
     }
 
     public static ForeignMachineType multiblock(String name, String englishName,
@@ -64,12 +66,17 @@ public record ForeignMachineType(String name, String englishName, @Nullable Supp
                                                 @Nullable ResourceLocation catalyst, ResourceLocation counterpart,
                                                 MultiblockShape shape) {
         return new ForeignMachineType(name, englishName, proxy, converter, itemInputs, itemOutputs, fluidInputs,
-                fluidOutputs, UnaryOperator.identity(), sound, ui, catalyst, tier -> counterpart, null, shape);
+                fluidOutputs, UnaryOperator.identity(), sound, ui, catalyst, tier -> counterpart, null, shape, null);
     }
 
     public ForeignMachineType withRecipeType(UnaryOperator<GTRecipeTypeBuilder> recipeType) {
         return new ForeignMachineType(name, englishName, proxy, converter, itemInputs, itemOutputs, fluidInputs,
-                fluidOutputs, recipeType, sound, ui, catalyst, counterpart, model, shape);
+                fluidOutputs, recipeType, sound, ui, catalyst, counterpart, model, shape, tooltip);
+    }
+
+    public ForeignMachineType withTooltip(String tooltip) {
+        return new ForeignMachineType(name, englishName, proxy, converter, itemInputs, itemOutputs, fluidInputs,
+                fluidOutputs, recipeType, sound, ui, catalyst, counterpart, model, shape, tooltip);
     }
 
     public boolean isMultiblock() {
