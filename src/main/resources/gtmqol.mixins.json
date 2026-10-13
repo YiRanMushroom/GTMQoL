@@ -14,6 +14,7 @@
     "GTRecipeViewerWidgetMixin",
     "GTSingleblockMachinePanelsMixin",
     "MachineBuilderMixin",
+    "MachineUIPanelBuilderMixin",
     "ManualCompressionMixin",
     "MEPatternBufferPartMachineMixin",
     "MEPatternBufferReturnMixin",
@@ -23,6 +24,7 @@
     "SimpleSteamMachineMixin",
     "SteamItemBusPartMachineMixin",
     "WorkableElectricMultiblockMachineMixin",
+    "gtceufix.AbstractWidgetMenuMixin",
     "gtceufix.EnergyContainerListMixin",
     "mekanism.TaggedChemicalStackIngredientAccessor"
   ],
