@@ -21,6 +21,8 @@
     "MEPatternBufferPartMachineMixin",
     "MEPatternBufferReturnMixin",
     "OverclockingLogicMixin",
+    "PotionBrewingContainerMixesAccessor",
+    "PotionFluidNameMixin",
     "RecipeManagerHandlerMixin",
     "RecipeRemovalMixin",
     "SimpleSteamMachineMixin",
@@ -30,12 +32,15 @@
     "gtceufix.AEConfigSyncHandlerMixin",
     "gtceufix.EnergyContainerListMixin",
     "gtceufix.EmiCallWrapperMixin",
+    "gtceufix.FluidRecipeCapabilityMixin",
     "gtceufix.GameDataMixin",
     "gtceufix.GTRecipeBuilderMixin",
     "gtceufix.GTRecipeCategoryMixin",
     "gtceufix.GTRecipeTypeMixin",
+    "gtceufix.ItemDataComponentMapIngredientMixin",
     "gtceufix.GTMuiWidgetsMixin",
-    "gtceufix.MEPatternBufferInternalSlotMixin"
+    "gtceufix.MEPatternBufferInternalSlotMixin",
+    "gtceufix.PotionFluidTypeMixin"
   ],
   "client": [
     "GTEmiRecipeStackLikeMixin",

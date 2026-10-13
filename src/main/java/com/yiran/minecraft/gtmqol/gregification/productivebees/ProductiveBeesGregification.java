@@ -30,7 +30,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -56,8 +55,8 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 
 /**
  * Productive Bees' machines as tiered GT single blocks (and so, through {@code ModularMachines}, modular
- * multiblocks): the comb centrifuge runs PB's centrifuge recipes, the incubator, gene extractor and beehive are
- * custom recipe logic, since what they make depends on the bee in the cage.
+ * multiblocks): the comb centrifuge runs PB's centrifuge recipes, the incubator, gene extractor, beehive and
+ * breeder are custom recipe logic, since what they make depends on the bee in the cage.
  *
  * <p>Centrifuge recipes are converted while the recipe manager loads, before tags are bound: everything here keeps
  * PB's ingredients as they are instead of resolving them to items.</p>
@@ -69,6 +68,7 @@ public final class ProductiveBeesGregification {
     static final String INCUBATOR = "pb_incubator";
     static final String GENE_EXTRACTOR = "pb_gene_extractor";
     static final String BEEHIVE = "pb_beehive";
+    static final String BREEDER = "pb_breeder";
 
     private ProductiveBeesGregification() {}
 
@@ -99,7 +99,12 @@ public final class ProductiveBeesGregification {
                                 GTSoundEntries.MIXER, BeehiveUI::layout, pb("advanced_oak_beehive"),
                                 tier -> gt(tier, "brewery"), GTCEu.id("block/machines/brewery"))
                         .withRecipeType(builder -> builder.addCustomRecipeLogic(BeehiveLogic.INSTANCE))
-                        .withTooltip(BeehiveUI.INFO));
+                        .withTooltip(BeehiveUI.INFO),
+                ForeignMachineType.singleBlock(BREEDER, "PB Industrial Breeder", null, null,
+                                BreederUI.CAGES + BreederUI.ITEMS, 16, 0, 0, GTSoundEntries.CHEMICAL,
+                                BreederUI::layout, pb("breeding_chamber"), tier -> gt(tier, "chemical_reactor"),
+                                GTCEu.id("block/machines/chemical_reactor"))
+                        .withRecipeType(builder -> builder.addCustomRecipeLogic(BreederLogic.INSTANCE)));
     }
 
     private static ResourceLocation pb(String path) {
@@ -120,10 +125,8 @@ public final class ProductiveBeesGregification {
     private static void convertCentrifuge(RecipeHolder<?> holder, ForeignRecipeConverter.Output output) {
         if (!(holder.value() instanceof CentrifugeRecipe recipe)) return;
         int duration = Math.max(1, config(ProductiveBeesConfig.GENERAL.centrifugeProcessingTime) / 3);
-        ItemStack comb = componentComb(recipe.ingredient);
         output.add(builder -> {
-            if (comb.isEmpty()) builder.inputItems(recipe.ingredient);
-            else builder.inputItems(comb);
+            builder.inputItems(recipe.ingredient);
             if (!addCentrifugeOutputs(builder, recipe, 1)) return false;
             builder.EUt(VA[LV]).duration(duration);
             return true;
@@ -163,19 +166,6 @@ public final class ProductiveBeesGregification {
             any = true;
         }
         return any;
-    }
-
-    /**
-     * The comb a configurable comb's component ingredient stands for. gtceu's recipe lookup compares a partial
-     * component ingredient's components with all of the input's instead of testing the input, so it never finds
-     * these recipes; the comb itself becomes a strict ingredient, which it does find.
-     */
-    private static ItemStack componentComb(Ingredient comb) {
-        if (!(comb.getCustomIngredient() instanceof DataComponentIngredient components) || components.isStrict()) {
-            return ItemStack.EMPTY;
-        }
-        ItemStack[] items = comb.getItems();
-        return items.length == 1 ? items[0] : ItemStack.EMPTY;
     }
 
     /**

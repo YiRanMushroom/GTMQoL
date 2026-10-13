@@ -67,8 +67,8 @@ neoForge {
     }
 }
 
-// Our AT is for other mods' private classes (see META-INF/accesstransformer.cfg). ModDevGradle only applies it to
-// Minecraft, so ModAccessor patches the jars on accessCompileOnly for javac; at runtime NeoForge applies the AT.
+// Our AT is mostly for other mods' private classes (see META-INF/accesstransformer.cfg). ModDevGradle only applies it
+// to Minecraft, so ModAccessor patches the jars on accessCompileOnly for javac; at runtime NeoForge applies the AT.
 modAccessor {
     createTransformConfiguration(configurations.compileOnly)
     accessTransformerFiles = project.files('src/main/resources/META-INF/accesstransformer.cfg')
