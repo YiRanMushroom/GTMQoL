@@ -113,7 +113,7 @@ src/main/java/com/yiran/minecraft/gtmqol/
 
 Config `gregification.mekanism`. Design and durations (per-tick machines: 1 t, unscaled) are in `GREGIFICATION.md`.
 
-- 22 `mek_*` multiblocks (`MultiblockShape.ANY_PARTS`): crusher, enrichment chamber, osmium compressor, purification
+- 22 `mek_*` multiblocks (plus the chemical converter, below) (`MultiblockShape.ANY_PARTS`): crusher, enrichment chamber, osmium compressor, purification
   chamber, chemical injection chamber, metallurgic infuser, painting machine, dissolution chamber, combiner,
   precision sawmill, crystallizer, oxidizer, pigment extractor, PRC, chemical infuser, pigment mixer, isotopic
   centrifuge, solar neutron activator, washer, electrolytic separator, rotary condensentrator (both directions in
@@ -121,6 +121,11 @@ Config `gregification.mekanism`. Design and durations (per-tick machines: 1 t, u
 - Crafted from the Mek machine with a GT hammer or through the magical assembler (circuit 5).
 - Not covered on purpose: Mek smelting, fission, fusion, SPS, pumps, antimatter/nucleosynthesizer, energy/chemical
   conversion.
+- `mek_chemical_converter` (23rd) proxies `mekanism:chemical_conversion` (item → chemical, e.g. the osmium
+  compressor's osmium from ingots/blocks). It is crafted from our `mek_chemical_oxidizer`, not Mek's oxidizer, so the
+  two hammer recipes don't clash. It is a separate machine because conversion mostly duplicates oxidizing, and on salt
+  and sulfur the two give different outputs for the same input: in one GT type, gtceu's staging set would keep a
+  random one. Duration is the oxidizer's. Not built yet.
 - None of the 20 new types has been run in game yet.
 
 ## Productive Bees gregification (1.21, `gregification/productivebees/`)
@@ -130,8 +135,17 @@ industrial incubator, gene extractor and beehive (custom recipe logic, no proxy)
 cages and spawn eggs (genes kept). The PB machines, the beehive layout (upgrades column, then bee/flower/fluid) and
 its machine tooltip were checked in game. The capability alias fix for PB's bundled old-format gtceu recipes is in
 `integration/productivebees/`. Sturdy cages work everywhere (`BeeCage` subclass).
-Ported to 1.20.1 (PB 1.20.1-12.6.0), not built yet; the differences are in that branch's `context.md`. Possible later: gene sampler upgrade in the beehive, gene-applying
-treats in the incubator.
+Industrial breeder (`BreederLogic`, not built yet): like the breeding chamber, two caged adults (not used up), each
+parent's breeding items and an empty cage give a caged baby; several possible offspring are XOR chanced outputs (16 output slots in a 4x4 grid, since gtceu wants room for
+every chanced output; one EMI recipe per parent pair). Inputs are always parent, parent, empty cage, food, food, so
+`BreederUI` can show the cages and the breeding items as two columns.
+Configurable combs (PB's `productivebees:component`, a partial `DataComponentIngredient`): gtceu's recipe lookup
+key compares component maps instead of testing them, so recipes asking for a configurable comb were never found,
+including PB's own Mek oxidizer recipes (wasted radioactive comb). Fixed for every recipe type by
+`gtceufix/ItemDataComponentMapIngredientMixin` (partial keys of the same item match when either predicate accepts the
+other's stack); the centrifuge converter keeps PB's ingredient as is. Not built yet.
+Ported to 1.20.1 (PB 1.20.1-12.6.0), not built yet; the differences are in that branch's `context.md`. Possible
+later: gene sampler upgrade in the beehive, gene-applying treats in the incubator.
 
 ## Pending / open
 
@@ -151,7 +165,16 @@ treats in the incubator.
 - gtceu custom recipe logic (1.21, `gtceufix/GTRecipeTypeMixin`): forming press naming verified in game.
   Brewery output components: `gtceufix/GTRecipeBuilderMixin` (recipe) built; `gtceufix/GTEmiRecipeMixin` (EMI R
   lookup) and canner potion bottling/draining in EMI (`CannerLogicMixin`) verified in game. Both ported to 1.20.1
-  (not built); 1.20.1 doesn't need the other two.
+  (not built); 1.20.1 doesn't need the other two. Potion fluid inputs showed Uncraftable Potion in EMI (brewery,
+  canner filling): gtceu maps a component fluid ingredient over the fluid's tag to a tag list, and EMI's
+  `EmiTags.getIngredient` merges potion + flowing potion back into `c:potion` by fluid alone. `gtceufix/
+  FluidRecipeCapabilityMixin` lists only the source fluids instead; both branches, not built. Potion fluid names:
+  `gtceufix/PotionFluidTypeMixin` (1.21 only) uses the potion item's keys (gtceu's own `fluid.gtceu.potion.effect.*`
+  have no translations); `PotionFluidNameMixin` (both) appends the first effect's potency and duration so normal /
+  long / strong differ. Not built. Splash / lingering potions: `CannerLogicMixin` also runs vanilla's container mixes
+  in the canner (potion + gunpowder → splash, splash + dragon's breath → lingering + glass bottle, contents kept),
+  injected at the head of `createCustomRecipe` (gtceu would drain the potion first), plus EMI recipes per potion; the
+  brewery has no item output. Mixes come from `PotionBrewingContainerMixesAccessor`. Both branches, not built.
 - Universal ME parts recipe: dual part + 16k ME storage component (was dual + ME bus), both branches; needs
   `runData`.
 - Stack-like: external chemical hatches. The 1.20.1 port (stack-like, Mek chemicals, gregification
