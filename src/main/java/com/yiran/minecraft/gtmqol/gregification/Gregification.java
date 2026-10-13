@@ -21,6 +21,7 @@ import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -135,6 +136,7 @@ public final class Gregification {
                     .recipeType(recipeType)
                     .recipeModifiers(GregificationModifiers.OVERCLOCK, GregificationModifiers.BATCH)
                     .workableTieredHullModel(type.model())
+                    .tooltips(tooltip(type))
                     .tooltips(workableTiered(tier, V[tier], V[tier] * 64, recipeType,
                             defaultTankSizeFunction.applyAsInt(tier), true))
                     .register();
@@ -156,8 +158,13 @@ public final class Gregification {
                 .pattern(shape::pattern)
                 .workableCasingModel(shape.casingModel, shape.overlay)
                 .langValue(type.englishName())
+                .tooltips(tooltip(type))
                 .register();
         CRAFTED.add(new Crafted(machine, type.catalyst(), type.counterpart().apply(-1)));
+    }
+
+    private static @Nullable Component tooltip(ForeignMachineType type) {
+        return type.tooltip() == null ? null : Component.translatable(type.tooltip());
     }
 
     /**

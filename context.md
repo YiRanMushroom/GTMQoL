@@ -135,7 +135,8 @@ treats in the incubator.
 ## Pending / open
 
 - PB gregification: check that PB's ore-bee gtceu recipes (`gtceu:alloy_smelter/barite_bee` etc.) load without
-  `Unknown registry key ... minecraft:item`; canner cage ↔ egg both ways (genes kept), beehive slot layout and
+  `Unknown registry key ... minecraft:item`; canner cage ↔ egg both ways (genes kept), beehive slot layout
+  (upgrades column | bee, flower, fluid column | outputs, in machine UI and EMI; "works like PB" machine tooltip) and
   flower requirement (item / bucket / 1000 mB fluid, EMI shows each bee's flower).
 - Not verified in game (1.21):
   - EMI real slots for chemicals: icons/amounts, R/U, U finding GT recipes, AE2 "+" auto-fill, no duplicate tooltips.

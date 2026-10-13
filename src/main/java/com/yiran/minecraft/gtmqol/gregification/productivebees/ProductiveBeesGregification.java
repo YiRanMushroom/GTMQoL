@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-import com.gregtechceu.gtceu.api.recipe.gui.RecipeUIModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
@@ -35,7 +34,6 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
-import brachy.modularui.api.drawable.Text;
 import cy.jdkdigital.productivebees.ProductiveBeesConfig;
 import cy.jdkdigital.productivebees.common.crafting.ingredient.BeeIngredient;
 import cy.jdkdigital.productivebees.common.crafting.ingredient.BeeIngredientFactory;
@@ -70,13 +68,12 @@ public final class ProductiveBeesGregification {
     static final String INCUBATOR = "pb_incubator";
     static final String GENE_EXTRACTOR = "pb_gene_extractor";
     static final String BEEHIVE = "pb_beehive";
-    private static final String BEEHIVE_INFO = "gtmqol.recipe.pb_beehive.info";
 
     private ProductiveBeesGregification() {}
 
     /** Lets gtceu's canner move bees between cages and spawn eggs. */
     public static void init(IEventBus modBus) {
-        RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", BEEHIVE_INFO, "Works like PB's advanced beehive");
+        RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", BeehiveUI.INFO, "Works like PB's advanced beehive");
         modBus.addListener(FMLCommonSetupEvent.class, event -> event.enqueueWork(
                 () -> GTRecipeTypes.CANNER_RECIPES.get().getCustomRecipeLogicRunners().add(CannerBeeLogic.INSTANCE)));
     }
@@ -98,14 +95,10 @@ public final class ProductiveBeesGregification {
                                 pb("gene_indexer"), tier -> gt(tier, "extractor"), GTCEu.id("block/machines/extractor"))
                         .withRecipeType(builder -> builder.addCustomRecipeLogic(GeneExtractorLogic.INSTANCE)),
                 ForeignMachineType.singleBlock(BEEHIVE, "PB Industrial Beehive", null, null, 6, 6, 1, 0,
-                                GTSoundEntries.MIXER, builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
-                                        // bee and flower on top, the upgrades a row below
-                                        .setLayoutGridBuilder(ItemRecipeCapability.CAP, IO.IN,
-                                                layout -> new String[] { "ss  ", "    ", "ssss" })
-                                        .addRecipeUIModifier(RecipeUIModifier.textLine(Text.lang(BEEHIVE_INFO))),
-                                pb("advanced_oak_beehive"), tier -> gt(tier, "brewery"),
-                                GTCEu.id("block/machines/brewery"))
-                        .withRecipeType(builder -> builder.addCustomRecipeLogic(BeehiveLogic.INSTANCE)));
+                                GTSoundEntries.MIXER, BeehiveUI::layout, pb("advanced_oak_beehive"),
+                                tier -> gt(tier, "brewery"), GTCEu.id("block/machines/brewery"))
+                        .withRecipeType(builder -> builder.addCustomRecipeLogic(BeehiveLogic.INSTANCE))
+                        .withTooltip(BeehiveUI.INFO));
     }
 
     private static ResourceLocation pb(String path) {
