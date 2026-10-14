@@ -64,7 +64,6 @@ Split out of `context.md`.
 
 ## Misc
 
-- Mekanism on 1.21 is `compileOnly` + `localRuntime` (gregification and chemicals). On 1.20.1 it is tag data only
-  (`modLocalRuntime`).
+- Mekanism is compiled against on both branches (chemicals, gregification), only touched when it is loaded.
 - Other recipe tweaks (vanilla TNT, nether star dust, manual compression, early game) are in `MULTIBLOCKS.md` and
   `STEAM.md`.

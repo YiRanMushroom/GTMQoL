@@ -43,6 +43,9 @@ claude.ai 的所有连接器（Atlassian、Microsoft 365、Gmail、Google Calend
 
 # 构建环境
 
+两个长期分支：`port/1.21.1`（1.21.1，2026-10-13 已经 PR #1 合进 `master`）和 `migrate/gtceu-v8-runtime-generation`
+（1.20.1）。
+
 **`port/1.21.1` 分支**（NeoForge 21.1，Minecraft 1.21.1）和下面不同：
 - 用 ModDevGradle（`net.neoforged.moddev`，和 GTCEu 1.21 分支、官方 1.21.1 addon 模板一致），不用 Loom。
   依赖不重映射，没有 `mod*` 配置，dev-only 模组用自建的 `localRuntime`。
@@ -55,6 +58,9 @@ claude.ai 的所有连接器（Atlassian、Microsoft 365、Gmail、Google Calend
 - Modrinth 上 Forge 和 NeoForge 构建常用同一个版本号（例如 EAP），按版本号会拿到 Forge jar
   （`is for Minecraft Forge or an older version of NeoForge`），这时改用 Modrinth 版本 ID。
 - 下面关于 Loom / 重映射 / `nameSyntheticMembers` / Java 17 的内容只适用于 1.20.1。
+- 1.20.1 分支在 `3b63374` 已经从 Loom 迁到 ModDevGradle legacyForge（和 GTCEu 1.20.1 分支一样，`mod*` 配置还在），
+  那边记为还没构建验证。下面 Loom 专属的内容（JDK 组合、fabric-loom 锁、`nameSyntheticMembers`、Loom 删清单）
+  是迁移前的，迁移跑通后再删改。
 
 Loom 1.13 要求 Gradle JVM ≥ 21，而 Minecraft 1.20.1 必须跑 Java 17，两者不能是同一个 JDK。
 IDEA 自带的 JBR 是 25，Gradle 8.12 不支持（表现为 `Could not create task ':test'`）。
@@ -141,45 +147,68 @@ net.minecraft.client.gui.Font$StringRenderOutput`。改这个值会让 Loom 重�
 
 # Mixin 约定
 
-- 普通 mixin 在 `gtmqol.mixins.json`。要能整套开关的 mixin 单独一个 config（例如 `gtmqol.recipedb.mixins.json`），
-  由它的 `plugin`（`IMixinConfigPlugin.shouldApplyMixin`）决定是否应用。新 config 要加到 `build.gradle` 的 `mixinConfig`。
+- mixin 类都在 `core/mixins/`（`ae2/`、`eap/`、`recipedb/`；绕过 GTCEu 自身 bug 的放 `gtceufix/`）。
+- 普通 mixin 在 `gtmqol.mixins.json`，它的 plugin `core/GTMQoLMixinPlugin` 只管 `overclocking.overhaul`（按类名跳过，
+  所以往那几个 OC mixin 里加别的功能，关 overhaul 时会一起没）。要能整套开关的 mixin 单独一个 config
+  （例如 `gtmqol.recipedb.mixins.json`），由它的 `plugin`（`IMixinConfigPlugin.shouldApplyMixin`）决定是否应用。
+  新 config 在 1.21.1 加到 `neoforge.mods.toml` 的 `[[mixins]]`，在 1.20.1 加到 `build.gradle`。
 - mixin config 在任何模组构造前加载，toma 的 `GTMQoLConfig` 这时还读不到。启动期开关放
   `config/gtmqol-early.properties`，用 `java.util.Properties` 读（和 GTCEu 的 `GTMixinPlugin` / `gtceu-early.properties` 一样）。
   `@Overwrite` 之类不能运行时关的改动，要么做成这样的启动期开关，要么就不给开关。
 - 绕过 GTCEu 自身 bug 的 mixin 放 `core/mixins/gtceufix/`，和功能 mixin 分开，上游修了就删。
-- mixin 包（config 里的 `package`）下只能放 mixin 类，非 mixin 的辅助代码放外面（例如 `recipedb/`），否则加载时报错。
+- mixin 包（config 里的 `package`）下只能放 mixin 类，非 mixin 的辅助代码放外面（例如 `common/recipedb/`），否则加载时报错。
 - 私有/包私有类型：`@Accessor` 按字段描述符匹配，返回类型不能用 `Object` 代替不可见的类型。对象本身可以先转成
   `Object` 再强转成 accessor 接口（`@Mixin(targets = "...$Inner")`）。
 - lambda 目标直接写 javac 的合成名（`lambda$getNext$0`）或用正则（`/^lambda\$/`），都能用；GTCEu 升级后要重新核对。
 
+# 可选依赖（通则）
+
+都不写进 `mods.toml` / `neoforge.mods.toml`，只在 `ModList`（或 `GTCEu.Mods.isXLoaded()`、mixin plugin 的
+`LoadingModList`）里有它时才碰它的类。1.20.1 用 `modCompileOnly` + `modLocalRuntime`，1.21.1 用 `compileOnly` +
+`localRuntime`；Modrinth 上的基本都 `transitive = false`，需要的前置逐个手写。下面各节没特别说明的就按这个来。
+
 # Mekanism（可选）
 
-1.20.1 只通过 tag 数据和它联动（`data/tag/CircuitTags`），不编译依赖它，所以只有 `modLocalRuntime`（modmaven，
-`mekanism:Mekanism:<mc>-<version>`），不写进 `mods.toml`。
-
-1.21.1 另外把化学品做成了 recipe capability（`common/stacklike/`，`GenericStackLikeType` 描述符 +
-`mekanism/ChemicalStackLike`），所以 Mekanism 是 `compileOnly` + `localRuntime`，只在 `ModList` 有 `mekanism`
-时才碰这些类。AE 里的化学品走 Applied Mekanistics 的 `MekanismKey`（modId `appmek`，Modrinth 版本 ID 在
-`gradle.properties` 的 `appmek_version`），同样 `compileOnly` + `localRuntime`，不写进 `neoforge.mods.toml`。
+两边都把化学品做成了 recipe capability（`common/stacklike/`，`GenericStackLikeType` 描述符 +
+`mekanism/ChemicalStackLike`），另外通过 tag 数据合并电路（`data/tag/CircuitTags`）。modmaven 的
+`mekanism:Mekanism:<mc>-<version>`。AE 里的化学品走 Applied Mekanistics 的 `MekanismKey`（modId `appmek`，Modrinth
+版本 ID 在 `gradle.properties` 的 `appmek_version`）。1.20.1 的移植（Mek 10.4）写完了还没构建。
 
 # AE2（可选依赖）
 
-`modCompileOnly` + `modLocalRuntime`，不写进 `mods.toml`。编译期需要它，是因为 GTCEu 的样板总成
-（`MEPatternBufferPartMachine`）实现了 AE2 接口，引用它的代码（`common/recipedb/PatternBufferIngredients`）没有 AE2 就编译不过
-（`cannot access ICraftingProvider`）。运行时只在 `GTCEu.Mods.isAE2Loaded()` 时才碰这些类。
+编译期需要它，是因为 GTCEu 的样板总成（`MEPatternBufferPartMachine`）实现了 AE2 接口，引用它的代码
+（`common/recipedb/PatternBufferIngredients`）没有 AE2 就编译不过（`cannot access ICraftingProvider`）。运行时只在
+`GTCEu.Mods.isAE2Loaded()` 时才碰这些类。
+
+编译期配置是 `accessCompileOnly`（1.20.1 是 `accessModCompileOnly`）：ModAccessor 插件（`dev.vfyjxf.modaccessor`，
+只在构建期）按 `META-INF/accesstransformer.cfg` 改 AE2 jar 给 javac 用，因为 MDG 只对 Minecraft 应用 AT，而
+`StorageBusPartMixin` 要 `@Shadow` 私有类型的字段。1.21.1 dev 运行时 AE2 是 19.2.18（EAP 1.6.3 要
+`AEBaseMenu.clicked`），GTCEu 自己编译用的是 19.2.8。
 
 # ExtendedAE Plus（可选依赖，smart doubling）
 
-`modCompileOnly` + `modLocalRuntime`，Modrinth maven（`maven.modrinth:extendedae-plus`），不写进 `mods.toml`。
-它 require ExtendedAE，ExtendedAE 又 require GuideMe 和 Glodium，都 `modLocalRuntime` + `transitive = false`。
+Modrinth maven（`maven.modrinth:extendedae-plus`）。它 require ExtendedAE，ExtendedAE 又 require GuideMe 和 Glodium，
+都只放 dev 运行时 + `transitive = false`。ExtendedAE 也编译期依赖（粘性卡要 mixin 它的存储总线）。
 相关 mixin 在 `gtmqol.eap.mixins.json`，由 `core/EAPMixinPlugin` 按 `LoadingModList` 是否有 `extendedae_plus` 决定。
 
-版本被 GTCEu 的 JEI mixin 卡住：GTCEu v8 的 `jei.FluidHelperMixin` 在新 JEI（15.59）上报 `Invalid descriptor`，
-JEI 15.62+ 还依赖没发布到 BlameJared 的 `net.mezzdev`。所以 JEI 固定 15.20.0.115（和 GTCEu 一致）；EAP 1.6.1-f1
-起声明了可选的 `jei >= 15.48.0.177`（只要装了 JEI，Forge 就检查这个范围），所以 EAP 固定 1.6.1。
+1.21.1：EAP 用 Modrinth 版本 ID（Forge 和 NeoForge 版本号相同），NeoForge 版的 `ISmartDoublingHolder` 只有上限，
+开关是我们自己 mixin 加的方法。
+
+1.20.1：版本被 GTCEu 的 JEI mixin 卡住：GTCEu v8 的 `jei.FluidHelperMixin` 在新 JEI（15.59）上报
+`Invalid descriptor`，JEI 15.62+ 还依赖没发布到 BlameJared 的 `net.mezzdev`。所以 JEI 固定 15.20.0.115（和 GTCEu
+一致）；EAP 1.6.1-f1 起声明了可选的 `jei >= 15.48.0.177`（只要装了 JEI，Forge 就检查这个范围），所以 EAP 固定 1.6.1。
 
 # FTB Teams（可选依赖）
 
-编译期 `modCompileOnly`，dev 运行时 `modLocalRuntime`（连同 FTB Library、Architectury，都 `transitive = false`），
-不写进 `mods.toml`。Maven 上的 sources jar 只有 forge 胶水层；API/事件源码看 GitHub `FTBTeam/FTB-Teams`
+编译期还要 Architectury（它的事件是 Architectury Events），dev 运行时连同 FTB Library、Architectury（maven.ftb.dev），
+都 `transitive = false`。Maven 上的 sources jar 只有 forge 胶水层；API/事件源码看 GitHub `FTBTeam/FTB-Teams`
 的 `1.20.1/dev` 分支（`common/src/main/java/dev/ftb/mods/ftbteams/`）。个人队伍的 id 就是玩家 UUID。
+
+# 其他可选依赖（都按通则）
+
+- Modern Industrialization（1.21.1）：gregification 的 MI 来源，Modrinth 版本 ID `mi_version`。
+- Productive Bees：gregification 的 PB 来源，Modrinth 版本 ID。它依赖的 ProductiveLib 运行时由 PB jar-in-jar，
+  但哪里都没发布，所以编译期用 `compileOnly files("libs/productivelib-<version>.jar")`（PB 构建用的那个 jar）。
+- Mystical Agriculture：greenhouse 读它的作物注册表（只用 API），dev 运行时还要 Cucumber。
+- Jade：`integration/jade` 的插件（`@WailaPlugin`），Jade 只在自己装了时才加载。
+- EMI（1.21.1 dev 的配方查看器）和 KubeJS：只是 dev 运行时；EMI 另外 `compileOnly`，给 `EmiCallWrapperMixin` 等用。

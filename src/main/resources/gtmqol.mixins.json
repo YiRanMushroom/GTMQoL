@@ -15,6 +15,7 @@
     "GTRecipeModifiersMixin",
     "GTRecipeTypeUILayoutBuilderMixin",
     "GTRecipeViewerWidgetMixin",
+    "GTRecipeViewerWidgetPotionMixin",
     "GTSingleblockMachinePanelsMixin",
     "MachineBuilderAccessor",
     "MachineBuilderMixin",

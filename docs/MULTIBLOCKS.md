@@ -6,8 +6,7 @@ steam multiblocks in `STEAM.md`.
 
 ## Smart Assembly Factory and DTFR
 
-These are ports of the old ones. The user  means the Smart Assembly
-Factory. Lang and models are datagen'd; their recipes are in the magical assembler.
+These are ports of the old ones. Lang and models are datagen'd; their recipes are in the magical assembler.
 
 - Smart Assembly Factory: assembly line recipes, with `PARALLEL_HATCH`, `OC_PERFECT_SUBTICK` and `BATCH_MODE`.
   - The pattern goes from 7.x `start(BACK, UP, RIGHT)` to v8 `start(RIGHT, UP, BACK)`.

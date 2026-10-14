@@ -1,6 +1,7 @@
 # Gregification
 
-1.21.1 only (`gregification/`). Other mods' machine recipes run on GT machines, converted on every recipe reload.
+`gregification/`, written on 1.21.1 (1.20.1 state in `context.md`). Other mods' machine recipes run on GT machines,
+converted on every recipe reload.
 Nothing is written to data packs or static resources. The user designed it as an abstraction layer: one source
 per mod returns `ForeignMachineType`s, and everything else is shared.
 
@@ -146,9 +147,18 @@ Config `gregification.mekanism`, only when `mekanism` is loaded. It uses the che
 - Sawmill: secondary output becomes a GT chanced output (`getSecondaryChance()` × 10000), or a plain output at 100%.
 - Rotary: one machine, `mek_rotary_condensentrator`, and a GT recipe per direction the Mek recipe has (chemical →
   fluid, fluid → chemical), so it condenses or decondenses by what goes in.
+- 23 machines: crusher, enrichment chamber, osmium compressor, purification chamber, chemical injection chamber,
+  metallurgic infuser, painting machine, dissolution chamber, combiner, precision sawmill, crystallizer, oxidizer,
+  pigment extractor, PRC, chemical infuser, pigment mixer, isotopic centrifuge, solar neutron activator, washer,
+  electrolytic separator, rotary condensentrator, thermal evaporation plant, chemical converter.
+- `mek_chemical_converter` proxies `mekanism:chemical_conversion` (item → chemical, e.g. the osmium compressor's
+  osmium from ingots/blocks). It is crafted from our `mek_chemical_oxidizer`, not Mek's oxidizer, so the two hammer
+  recipes don't clash. It is a separate machine because conversion mostly duplicates oxidizing, and on salt and
+  sulfur the two give different outputs for the same input: in one GT type, gtceu's staging set would keep a random
+  one. Duration is the oxidizer's. Not built yet.
 - Not gregified: Mek smelting (the energized smelter runs furnace recipes; GT's electric furnace covers that),
-  fission, fusion, SPS, pumps, antimatter (nucleosynthesizer), energy and chemical conversion (item → energy/chemical
-  in slots).
+  fission, fusion, SPS, pumps, antimatter (nucleosynthesizer), energy conversion (item → energy in slots).
+- 20 of them were added in one batch and none of those has been run in game yet.
 
 ### Productive Bees (`productivebees/ProductiveBeesGregification`)
 
@@ -157,7 +167,7 @@ Config `gregification.productiveBees`, only when `productivebees` is loaded. Dep
 `libs/productivelib-1.21.1-0.2.0.jar` (PB's API exposes its classes: `TagOutputRecipe`, `LibItems`; PB jar-in-jars it
 at runtime).
 
-Four tiered single blocks (so also modular machines), all crafted from the GT counterpart + a PB catalyst:
+Five tiered single blocks (so also modular machines), all crafted from the GT counterpart + a PB catalyst:
 
 | Type | Counterpart / model | Catalyst | Recipes |
 |---|---|---|---|
@@ -165,8 +175,9 @@ Four tiered single blocks (so also modular machines), all crafted from the GT co
 | `pb_incubator` | autoclave | incubator | `IncubatorLogic` |
 | `pb_gene_extractor` | extractor | gene indexer | `GeneExtractorLogic` |
 | `pb_beehive` | brewery | advanced oak beehive | `BeehiveLogic` |
+| `pb_breeder` | chemical reactor | breeding chamber | `BreederLogic` |
 
-The last three have no proxy and no converter (both nullable in `ForeignMachineType`); all their recipes come from
+The last four have no proxy and no converter (both nullable in `ForeignMachineType`); all their recipes come from
 gtceu custom recipe logic (`withRecipeType(b -> b.addCustomRecipeLogic(...))`), which also builds representative
 recipes for EMI. PB's server config isn't loaded at the first datapack load, so `config()` falls back to defaults.
 
@@ -195,6 +206,14 @@ recipes for EMI. PB's server config isn't loaded at the first datapack load, so 
   machine and recipe-viewer layout builders place all inputs and the fluid builders skip inputs. Not enforced: the
   logic scans every slot. "Works like PB's advanced beehive" (runtime lang entry) is both an EMI line and a machine
   tooltip line (`ForeignMachineType.withTooltip`). 6 item inputs, 1 fluid input.
+  The flower check also asks `isFlowerBlock` for block items: `ConfigurableBee.isFlowerItem` ignores `flowerBlock`,
+  so time crystal, sculk, silky... bees never ran before (1.20.1 already did this).
+  Layout, flowers and the tooltip were checked in game.
+- Breeder (`BreederLogic`, `VA[LV]`, PB's breeding chamber time): like the breeding chamber, two caged adults (not
+  used up), each parent's breeding items and an empty cage give a caged baby, with the type's default genes improved
+  by the parents'. Several possible offspring are XOR chanced outputs, so 16 output slots in a 4×4 grid (gtceu wants
+  room for every chanced output); one EMI recipe per parent pair. Inputs are always parent, parent, empty cage, food,
+  food, so `BreederUI` shows the cages and the breeding items as two columns. Not built yet.
 - Canner (`CannerBeeLogic`, added to gtceu's `CANNER_RECIPES` runners at common setup, `VA[ULV]`, 100 t): filled
   cage → empty cage + spawn egg (`BeeCreator.getSpawnEgg`) whose `ENTITY_DATA` is the cage's tag minus the cage's own
   keys (`entity`, `name`, `HivePos`, `isProductiveBee`, `mod`) plus `id`; the cage already dropped UUID/Pos/etc., so
@@ -207,6 +226,20 @@ PB ships gtceu recipes (the ore bees: `data/gtceu/recipe/{alloy_smelter,centrifu
 bare capability keys (`"item"`, `"eu"`), which v8 reads as registry ids (`minecraft:item`) and rejects.
 `integration/productivebees/LegacyCapabilityAliases` adds `minecraft:<path>` → `gtceu:<path>` aliases to
 `GTRegistries.RECIPE_CAPABILITIES` (NeoForge `Registry.addAlias`) at common setup, whenever PB is loaded.
+
+Configurable combs (PB's `productivebees:component`, a partial `DataComponentIngredient`): gtceu's recipe lookup key
+compares component maps instead of testing them, so recipes asking for a configurable comb were never found,
+including PB's own Mek oxidizer recipes (wasted radioactive comb). `gtceufix/ItemDataComponentMapIngredientMixin`
+fixes it for every recipe type: partial keys of the same item match when either predicate accepts the other's stack.
+The centrifuge converter keeps PB's ingredient as is. Not built yet.
+
+Still to check in game: PB's ore-bee gtceu recipes (`gtceu:alloy_smelter/barite_bee` etc.) load without
+`Unknown registry key ... minecraft:item`; canner cage ↔ egg both ways with genes kept; fluid flowers (they said
+"insufficient fluid" with the fluid present, because `notConsumableFluid(FluidStack)` builds gtceu's
+`c:<fluid path>` tag; now an exact `SizedFluidIngredient.of(fluid, 1000)`).
+
+Ported to 1.20.1 (PB 1.20.1-12.6.0), not built yet; the differences are in that branch's `context.md`. Possible
+later: gene sampler upgrade in the beehive, gene-applying treats in the incubator.
 
 ## Adding
 

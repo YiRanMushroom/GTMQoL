@@ -21,20 +21,21 @@ Split out of `context.md`.
 |---|---|
 | `machines.*` | `smartAssemblyFactory`, `dimensionallyTranscendentFusionReactor`, `voidMiner`, `fishingPond`, `crystalGrowthChamber`, `greenhouse`, `advancedSteamMachines` (one unit), `electricImplosionCompressor` |
 | `modularMachines.enabled` | `MODULAR_MACHINES.md` |
-| `gregification.*` | `modernIndustrialization`, `mekanism` |
+| `gregification.*` | `modernIndustrialization`, `mekanism`, `productiveBees` (`GREGIFICATION.md`) |
 | `wireless.energy` / `wireless.steam` | machines, covers, recipes. `WirelessNetworks.init` (events, command, stats) always runs; the void miner uses the EU network too |
 | `circuits.*` | `universalCircuits` (items + the magical assembler conversion), `controlCircuits`, `mekanismCircuitTags` |
 | `recipes.*` | `miscRecipes`, `earlyGame` (plus the kept sand → glass), `keepManualCompression`, `keepVanillaTNT`, `netherStarDust` |
 | `steamTweaks.*` | `circuitSlots`, `fluidTanks`, `noOutputLimits`, `optionalLargeBoilerParts` |
 | `overclocking.*` | `buffFusionReactor`, `enableMultiTierSkipping` (`OVERCLOCKING.md`) |
 | `ae2.*` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn`, `skipNotConsumedInputs` |
-| `misc.feInput` | |
+| `misc.*` | `feInput`, `autoBuild` (`AUTOBUILD.md`) |
 | `voidMiner.dimensionMapping` | not a toggle |
 
 The authoritative list is `GTMQoLConfig` itself; this table may lag.
 
-Always on: the magical assembler and its own recipes (creative data hatch, rubber sapling), and the GTCEu bug
-fixes. Mixins that are not `@Overwrite`s always apply and check the config at run time.
+Always on: the magical assembler and its own recipes (creative data hatch, rubber sapling), the GTCEu bug fixes,
+the potion features (`POTIONS.md`) and the Jade plugin. Mixins that are not `@Overwrite`s always apply and check the
+config at run time.
 
 ## Early config (`config/EarlyConfig`, `config/gtmqol-early.properties`)
 
@@ -43,7 +44,8 @@ the same approach as GTCEu's `gtceu-early.properties`. Missing keys are added wi
 
 - `recipeDB.groupedSearch` (default true): `core/RecipeDBMixinPlugin` applies the whole recipedb config or not.
 - `overclocking.overhaul` (default true): `core/GTMQoLMixinPlugin` skips `OverclockingLogicMixin`,
-  `GTRecipeViewerWidgetMixin` and `GTRecipeModifiersMixin` when it is off.
+  `GTRecipeViewerWidgetMixin` and `GTRecipeModifiersMixin` when it is off. It matches by class name, so anything
+  else in those three goes with it; the potion tooltip on the same widget is a separate mixin for that reason.
 - `ae2.universalCircuitEncoding`, `ae2.stickyCard` (`AE2.md`).
 
 ## Resources: datagen vs runtime generation
