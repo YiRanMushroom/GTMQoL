@@ -39,9 +39,10 @@ go through `GTRecipeTypeBuilder.setMaxSize(IO, CAP, n)`.
   feed: items, fluids, or the keys of any bridge. The slot list is the source of truth (it is also the item
   handler). The fluid tank and the per-bridge handlers are views of the slots holding their keys. Auto pull, min
   stack size and ticks per cycle are shared. The config is `UniversalConfigWidget`, drawn by AE's key renderers.
-  Recipe viewer drags go through AE's EMI converters. The duplicate check across every stocking part of a multiblock (gtceu's bus and hatch, the dual input's
-  two lists, the universal inputs) is `StockingParts.configuredElsewhere`; `MEStockingBus/HatchPartMachineMixin` add
-  it to gtceu's parts. `StockingParts` also has the sync and auto pull our lists share.
+  Recipe viewer drags go through AE's EMI converters. The ME dual input is this part without the bridged keys
+  (`AE2.md`). The duplicate check across every stocking part of a multiblock (gtceu's bus and hatch, our dual and
+  universal inputs) is `StockingParts.configuredElsewhere`; `MEStockingBus/HatchPartMachineMixin` add it to gtceu's
+  parts.
 - `MEUniversalOutputPartMachine` is the dual output plus one handler per bridge. These handlers write into the
   non-item buffer, which is already flushed, saved and shown by key. `AEKeyDisplayWidget` draws any key type.
 - Both parts carry the item/fluid import or export abilities. That is why gregified Mek multiblocks use

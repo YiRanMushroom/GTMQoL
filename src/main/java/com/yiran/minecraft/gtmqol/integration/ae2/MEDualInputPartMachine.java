@@ -1,363 +1,72 @@
 package com.yiran.minecraft.gtmqol.integration.ae2;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
-import com.gregtechceu.gtceu.integration.ae2.gui.AEConfigWidget;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingBusPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingHatchPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
-import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
-import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
+import com.yiran.minecraft.gtmqol.GTMQoL;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGrid;
-import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
-import appeng.api.storage.MEStorage;
-import brachy.modularui.api.IPanelHandler;
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.drawable.ItemDrawable;
-import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.screen.RichTooltip;
-import brachy.modularui.screen.UISettings;
-import brachy.modularui.value.sync.BooleanSyncValue;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.value.sync.SyncHandlers;
-import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.ButtonWidget;
-import brachy.modularui.widgets.ToggleButton;
-import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.textfield.TextFieldWidget;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.function.IntConsumer;
-import java.util.function.IntSupplier;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
- * ME stocking input bus and stocking input hatch in one. The item half is the stocking bus itself; the fluid half
- * is a second stocking list. The main UI shows the item list on the left and the fluid list on the right. Auto
- * pull applies to both, the minimum stack size and the cycle time are separate for items and fluids.
+ * ME stocking input for items and fluids: the universal input without the other ME types.
+ * <p>
+ * It used to be a stocking bus with a second, 16 slot fluid list beside it. Such a part loads with its items in the
+ * first slots ({@link MEUniversalInputPartMachine#loadAdditional} keeps the 36 slots) and its fluids added after them;
+ * an old data stick copy pastes the same way.
  */
-public class MEDualInputPartMachine extends MEStockingBusPartMachine {
+public class MEDualInputPartMachine extends MEUniversalInputPartMachine {
 
-    public static final String ITEMS_KEY = "gtmqol.gui.dual_input.items";
-    public static final String FLUIDS_KEY = "gtmqol.gui.dual_input.fluids";
-
-    private final StockingFluidList fluidList;
-    private Predicate<GenericStack> fluidPullTest = $ -> false;
-    // The item side is the stocking bus's own minStackSize / ticksPerCycle.
-    @SaveField
-    private int fluidMinStackSize = 1;
-    @SaveField
-    private int fluidTicksPerCycle = 40;
+    /** The old fluid list's persistent trait, under the machine's {@code traitHolder} tag. */
+    private static final String OLD_FLUID_TRAIT = "fluid_config";
 
     public MEDualInputPartMachine(BlockEntityCreationInfo info) {
-        super(info);
-        this.fluidList = new StockingFluidList(CONFIG_SIZE);
-        // attachTrait alone doesn't save the trait's data (the config would be lost on reload).
-        attachPersistentTrait("fluid_config", fluidList);
-    }
-
-    /////////////////////////////////
-    // ********** Sync ME *********//
-    /////////////////////////////////
-
-    @Override
-    public void autoIO() {
-        super.autoIO();
-        if (fluidTicksPerCycle <= 0) fluidTicksPerCycle = 40;
-        if (getOffsetTimer() % fluidTicksPerCycle == 0) {
-            if (isAutoPull()) refreshFluids();
-            syncFluids();
-        }
-    }
-
-    private void syncFluids() {
-        IGrid grid = getMainNode().getGrid();
-        if (grid == null) return;
-        StockingParts.syncStock(fluidList, grid.getStorageService().getInventory(), actionSource, fluidMinStackSize);
+        super(info, false);
     }
 
     @Override
-    public void setAutoPull(boolean autoPull) {
-        super.setAutoPull(autoPull);
-        if (!isRemote() && fluidList != null) {
-            if (!autoPull) {
-                fluidList.clearInventory(0);
-            } else if (updateMEStatus()) {
-                refreshFluids();
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        List<GenericStack> oldFluids = takeOldFluids(tag, registries);
+        super.loadAdditional(tag, registries);
+        if (!isAutoPull()) oldFluids.forEach(this::addConfig);
+    }
+
+    /**
+     * Reads the old fluid list's config with gtceu's own format (a detached list of the same type), and removes it from
+     * the tag, which would otherwise log a warning about a trait that no longer exists.
+     */
+    private List<GenericStack> takeOldFluids(CompoundTag tag, HolderLookup.Provider registries) {
+        CompoundTag traits = tag.getCompound("traitHolder");
+        if (!traits.contains(OLD_FLUID_TRAIT)) return List.of();
+        List<GenericStack> configs = new ArrayList<>();
+        try {
+            var old = new ExportOnlyAEFluidList(this, CONFIG_SIZE);
+            old.getSyncDataHolder().deserializeNBT(registries, traits.getCompound(OLD_FLUID_TRAIT));
+            for (ExportOnlyAEFluidSlot slot : old.getInventory()) {
+                if (slot.getConfig() != null) configs.add(slot.getConfig());
             }
+        } catch (RuntimeException e) {
+            GTMQoL.LOGGER.warn("ME dual input at {}: couldn't read the old fluid config", getBlockPos(), e);
         }
-    }
-
-    @Override
-    public void setAutoPullTest(Predicate<GenericStack> autoPullTest) {
-        this.fluidPullTest = autoPullTest;
-        super.setAutoPullTest(autoPullTest);
-    }
-
-    /** Same as the stocking hatch: the biggest fluids in the network become the config. */
-    private void refreshFluids() {
-        IGrid grid = getMainNode().getGrid();
-        if (grid == null) {
-            fluidList.clearInventory(0);
-            return;
-        }
-        StockingParts.autoPull(fluidList, grid.getStorageService().getInventory(), actionSource, fluidMinStackSize,
-                key -> key instanceof AEFluidKey, fluidPullTest);
-    }
-
-    /////////////////////////////////
-    // ****** Duplicate checks *****//
-    /////////////////////////////////
-
-    @Override
-    public boolean testConfiguredInOtherPart(@Nullable GenericStack config) {
-        if (config == null) return false;
-        if (!(config.what() instanceof AEFluidKey)) return super.testConfiguredInOtherPart(config);
-        // the stocking bus's rule: a distinct bus may share keys
-        return !isDistinct() && StockingParts.configuredElsewhere(this, config);
-    }
-
-    /** For {@link StockingParts#configuredElsewhere}. */
-    boolean hasFluidInConfig(GenericStack config) {
-        return fluidList.hasStackInConfig(config, false);
-    }
-
-    @Override
-    public void validateConfig() {
-        super.validateConfig();
-        for (int i = 0; i < fluidList.getConfigurableSlots(); i++) {
-            var slot = fluidList.getConfigurableSlot(i);
-            if (slot.getConfig() != null && testConfiguredInOtherPart(slot.getConfig())) {
-                slot.setConfig(null);
-                slot.setStock(null);
-            }
-        }
-    }
-
-    ////////////////////////////////
-    // ****** Configuration ******//
-    ////////////////////////////////
-
-    @Override
-    protected CompoundTag writeConfigToTag(HolderLookup.Provider provider) {
-        CompoundTag tag = super.writeConfigToTag(provider);
-        if (!isAutoPull()) {
-            CompoundTag configStacks = new CompoundTag();
-            for (int i = 0; i < CONFIG_SIZE; i++) {
-                GenericStack config = fluidList.getInventory()[i].getConfig();
-                if (config != null) configStacks.put(Integer.toString(i), GenericStack.writeTag(provider, config));
-            }
-            tag.put("FluidConfigStacks", configStacks);
-        }
-        return tag;
+        traits.remove(OLD_FLUID_TRAIT);
+        return configs;
     }
 
     @Override
     protected void readConfigFromTag(HolderLookup.Provider provider, CompoundTag tag) {
         super.readConfigFromTag(provider, tag);
-        if (tag.getBoolean("AutoPull")) return;
-        // A tag copied from a plain stocking bus has no fluids: clear them.
-        CompoundTag configStacks = tag.getCompound("FluidConfigStacks");
-        for (int i = 0; i < CONFIG_SIZE; i++) {
-            String key = Integer.toString(i);
-            fluidList.getInventory()[i].setConfig(
-                    configStacks.contains(key) ? GenericStack.readTag(provider, configStacks.getCompound(key)) : null);
-        }
-    }
-
-    ///////////////////////////////
-    // ********** GUI ***********//
-    ///////////////////////////////
-
-    // IMEStockingPart#getPanelBuilder with the settings popup split into an item and a fluid column.
-    @Override
-    public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        IPanelHandler settingsPanelHandler = syncManager.syncedPanel("stocking_settings", true,
-                (sm, sh) -> PopupPanel.createPopupPanel("stocking_settings_panel", 290, 90)
-                        .child(Flow.row()
-                                .coverChildren()
-                                .child(settingsColumn(ITEMS_KEY, this::getMinStackSize, this::setMinStackSize,
-                                        this::getTicksPerCycle, this::setTicksPerCycle).marginRight(10))
-                                .child(settingsColumn(FLUIDS_KEY, () -> fluidMinStackSize,
-                                        size -> fluidMinStackSize = size, () -> fluidTicksPerCycle,
-                                        ticks -> fluidTicksPerCycle = ticks))
-                                .margin(5)));
-
-        return MachineUIPanelBuilder.panelBuilder(this.self())
-                .rightConfigurators(f -> f
-                        .child(new ToggleButton()
-                                .value(new BooleanSyncValue(this::isAutoPull, this::setAutoPull).allowC2S())
-                                .stateOverlay(GTGuiTextures.BUTTON_AUTO_PULL)
-                                .tooltipAutoUpdate(true)
-                                .tooltipBuilder(r -> r.addLine(Text.lang("gtceu.gui.me_network.auto_pull_toggle"))))
-                        .child(new ButtonWidget<>()
-                                .size(18)
-                                .onMousePressed((context, b) -> {
-                                    settingsPanelHandler.openPanel();
-                                    return true;
-                                })
-                                .overlay(new ItemDrawable(GTItems.TOOL_DATA_STICK.asItem()).asIcon().size(16))
-                                .tooltip(new RichTooltip()
-                                        .addLine(Text.lang("gtceu.gui.me_network.stocking_settings")))));
-    }
-
-    private static Flow settingsColumn(String titleKey, IntSupplier minStack, IntConsumer setMinStack,
-                                       IntSupplier ticks, IntConsumer setTicks) {
-        return Flow.col()
-                .coverChildren()
-                .child(Text.lang(titleKey).asWidget().marginBottom(2))
-                .child(Text.lang("gtceu.gui.me_network.min_stack_size").asWidget())
-                .child(new TextFieldWidget()
-                        .size(120, 18)
-                        .value(SyncHandlers.intNumber(minStack, setMinStack).allowC2S())
-                        .setNumbers(1, Integer.MAX_VALUE))
-                .child(Text.lang("gtceu.gui.me_network.ticks_per_cycle").asWidget())
-                .child(new TextFieldWidget()
-                        .size(120, 18)
-                        .value(SyncHandlers.intNumber(ticks, setTicks).allowC2S())
-                        .setNumbers(1, 200));
-    }
-
-    // Items on the left, fluids on the right. Both lists are AEConfigWidgets, but the fluid one is our copy with
-    // its own sync names, see FluidConfigWidget.
-    @Override
-    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
-                            UISettings settings) {
-        BooleanSyncValue isOnlineValue = new BooleanSyncValue(this::isOnline, this::setOnline);
-        syncManager.syncValue("is_online", isOnlineValue);
-
-        registerConfigActions(syncManager);
-        registerFluidActions(syncManager);
-        var flow = Flow.col().coverChildren();
-        flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
-                Component.translatable("gtceu.gui.me_network.online") :
-                Component.translatable("gtceu.gui.me_network.offline"))
-                .asWidget().marginTop(2).marginBottom(4));
-        flow.child(Flow.row()
-                .coverChildren()
-                .child(Flow.col()
-                        .coverChildren()
-                        .child(Text.lang(ITEMS_KEY).asWidget().marginBottom(2))
-                        .child(new AEConfigWidget(getSlotList(), CONFIG_SIZE, false)
-                                .syncManager(syncManager)
-                                .size(8 * 18, 2 * (18 * 2 + 2)))
-                        .marginRight(8))
-                .child(Flow.col()
-                        .coverChildren()
-                        .child(Text.lang(FLUIDS_KEY).asWidget().marginBottom(2))
-                        .child(new FluidConfigWidget(fluidList, CONFIG_SIZE, this::isAutoPull)
-                                .syncManager(syncManager)
-                                .size(8 * 18, 2 * (18 * 2 + 2)))));
-        mainWidget.child(flow.center());
-    }
-
-    // MEInputHatchPartMachine#registerConfigActions, on our list, with FluidConfigWidget's names.
-    private void registerFluidActions(PanelSyncManager sm) {
-        sm.registerServerSyncedAction(FluidConfigWidget.SET, packet -> {
-            int index = packet.readVarInt();
-            if (index < 0 || index >= CONFIG_SIZE) return;
-            ItemStack held = sm.getPlayer().containerMenu.getCarried();
-            FluidUtil.getFluidContained(held)
-                    .ifPresent(fluid -> fluidList.getInventory()[index].setConfig(AEUtil.fromFluidStack(fluid)));
+        // a copy from an old dual input: its fluids were apart
+        if (isAutoPull() || !tag.contains("FluidConfigStacks")) return;
+        CompoundTag fluids = tag.getCompound("FluidConfigStacks");
+        fluids.getAllKeys().stream().sorted(Comparator.comparingInt(Integer::parseInt)).forEach(key -> {
+            GenericStack config = GenericStack.readTag(provider, fluids.getCompound(key));
+            if (config != null) addConfig(config);
         });
-        sm.registerServerSyncedAction(FluidConfigWidget.CLEAR, packet -> {
-            int index = packet.readVarInt();
-            if (index < 0 || index >= CONFIG_SIZE) return;
-            fluidList.getInventory()[index].setConfig(null);
-        });
-        sm.registerServerSyncedAction(FluidConfigWidget.SET_GHOST, packet -> {
-            int index = packet.readVarInt();
-            if (index < 0 || index >= CONFIG_SIZE) return;
-            if (packet.readBoolean()) {
-                FluidStack fluid = FluidStack.STREAM_CODEC.decode(packet);
-                if (!fluid.isEmpty()) {
-                    fluidList.getInventory()[index].setConfig(AEUtil.fromFluidStack(fluid));
-                }
-            }
-        });
-    }
-
-    ////////////////////////////////
-    // ******* Fluid slots *******//
-    ////////////////////////////////
-
-    // MEStockingHatchPartMachine's private list and slot, bound to this machine.
-    private class StockingFluidList extends ExportOnlyAEFluidList {
-
-        StockingFluidList(int slots) {
-            super(MEDualInputPartMachine.this, slots, StockingFluidSlot::new);
-        }
-
-        @Override
-        public boolean isAutoPull() {
-            return MEDualInputPartMachine.this.isAutoPull();
-        }
-
-        @Override
-        public boolean isStocking() {
-            return true;
-        }
-
-        @Override
-        public boolean hasStackInConfig(GenericStack stack, boolean checkExternal) {
-            if (super.hasStackInConfig(stack, false)) return true;
-            return checkExternal && testConfiguredInOtherPart(stack);
-        }
-    }
-
-    private class StockingFluidSlot extends ExportOnlyAEFluidSlot {
-
-        StockingFluidSlot() {
-            super();
-        }
-
-        StockingFluidSlot(@Nullable GenericStack config, @Nullable GenericStack stock) {
-            super(config, stock);
-        }
-
-        @Override
-        public ExportOnlyAEFluidSlot copy() {
-            return new StockingFluidSlot(this.config == null ? null : copy(this.config),
-                    this.stock == null ? null : copy(this.stock));
-        }
-
-        @Override
-        public FluidStack drain(int maxDrain, FluidAction action) {
-            if (this.stock != null && this.config != null) {
-                // Take from the network when the recipe is checked (simulate) or run (execute).
-                IGrid grid = getMainNode().getGrid();
-                if (!isOnline() || grid == null) return FluidStack.EMPTY;
-                MEStorage network = grid.getStorageService().getInventory();
-                var key = config.what();
-                long extracted = network.extract(key, maxDrain,
-                        Actionable.of(action), actionSource);
-                if (extracted > 0) {
-                    FluidStack result = key instanceof AEFluidKey fluidKey ?
-                            AEUtil.toFluidStack(fluidKey, extracted) : FluidStack.EMPTY;
-                    if (action.execute()) {
-                        this.stock = ExportOnlyAESlot.copy(stock, stock.amount() - extracted);
-                        if (this.stock.amount() == 0) this.stock = null;
-                        onContentsChanged();
-                    }
-                    return result;
-                }
-            }
-            return FluidStack.EMPTY;
-        }
     }
 }

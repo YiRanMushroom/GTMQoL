@@ -122,6 +122,8 @@ Not built or not checked in game yet (1.21):
   `WirelessCover`; the saved NBT is unchanged, old worlds should load), `StockingParts` (a gtceu stocking hatch now
   also refuses a fluid a dual input stocks), ranged fluid outputs into ME parts (1.21 used the ingredient's amount
   instead of the max roll), the steam multis now use our OC (×4 EU/t, ÷4 duration with the overhaul).
+- ME dual input is now the 36-slot universal input for items and fluids; old parts and old data stick copies merge
+  their item and fluid config on load (`AE2.md`). Both branches; lang regenerated.
 
 To do:
 
@@ -131,7 +133,7 @@ To do:
 - Crystal growth: a KubeJS binding for `CenterBlockCondition`.
 - Stack-like: external chemical hatches.
 - Abstractions the user agreed to but not done yet: a base for the mixin plugins' empty `IMixinConfigPlugin`
-  methods, merging `FluidConfigWidget` into `UniversalConfigWidget`, the cyclic multiblocks' popup helpers.
+  methods, the cyclic multiblocks' popup helpers. (`FluidConfigWidget` is gone with the dual input rework.)
 
 Known, not fixed:
 

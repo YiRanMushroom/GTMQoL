@@ -19,7 +19,7 @@ import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
 /**
- * What our stocking lists (the dual input's fluids, the universal input) share with gtceu's stocking bus and hatch,
+ * What our stocking inputs (universal and dual) share with gtceu's stocking bus and hatch,
  * whose versions are private: syncing and auto pulling a slot list, and the check that only one part of a multiblock
  * stocks a key (it would be counted twice).
  */
@@ -79,9 +79,9 @@ public final class StockingParts {
     }
 
     /**
-     * Whether a part of {@code self}'s multiblocks other than itself stocks the key: a non-distinct stocking bus
-     * (and a dual input's fluids), a stocking hatch, or a non-distinct universal input. gtceu's bus and hatch only
-     * check their own kind; the mixins on them ask this too.
+     * Whether a part of {@code self}'s multiblocks other than itself stocks the key: a non-distinct stocking bus, a
+     * stocking hatch, or a non-distinct universal or dual input. gtceu's bus and hatch only check their own kind; the
+     * mixins on them ask this too.
      */
     public static boolean configuredElsewhere(MultiblockPartMachine self, GenericStack config) {
         if (!self.isFormed()) return false;
@@ -95,7 +95,6 @@ public final class StockingParts {
                 } else if (part instanceof MEStockingBusPartMachine bus) {
                     if (bus.isDistinct()) continue;
                     if (bus.getSlotList().hasStackInConfig(config, false)) return true;
-                    if (bus instanceof MEDualInputPartMachine dual && dual.hasFluidInConfig(config)) return true;
                 } else if (part instanceof MEStockingHatchPartMachine hatch) {
                     if (hatch.getSlotList().hasStackInConfig(config, false)) return true;
                 }
