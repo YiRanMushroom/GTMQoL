@@ -2,7 +2,7 @@
 
 Split out of `context.md`. Toggles: `machines.advancedSteamMachines` (all of the first section as one unit) and
 `steamTweaks.*`. Modelled on GTNL's steam multis (GTNH addon, LGPL-3.0, credited in README), not a copy. A
-reference clone is at `E:\code\Minecraft\gtnl-ref`, outside the repo.
+reference clone is at `E:\code\Minecraft\gtnl-ref` on one of the user's computers, outside the repo.
 
 ## Large steam multiblocks
 

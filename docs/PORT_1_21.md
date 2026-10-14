@@ -48,8 +48,9 @@ Keep these in mind when cherry-picking.
   `ForgeEventFactory.onBlockPlace`). The 1.20.1 gtceu snapshot's `MultiPredicate` has no `getParent()`, so
   `StructurePlanner` keeps a node → root `IdentityHashMap`. For block patterns it comes from `getPredicates()`. For
   expandable patterns it takes one extra plain `populate` pass and asks `getPredicateFromPos` for every position.
-- 1.21 only features: gregification (`GREGIFICATION.md`), stack-like capabilities
-  (`STACK_LIKE_CAPABILITIES.md`), the universal ME parts, AE integration-mod recipes.
+- Written on 1.21 first: gregification (`GREGIFICATION.md`), stack-like capabilities
+  (`STACK_LIKE_CAPABILITIES.md`), the universal ME parts, Jade, the potion features (`POTIONS.md`). The 1.20.1
+  sync state is in `context.md`.
 
 ## Gtceu bug workarounds (`core/mixins/gtceufix/`)
 
