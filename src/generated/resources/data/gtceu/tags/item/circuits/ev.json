@@ -1,0 +1,10 @@
+{
+  "values": [
+    "gtmqol:ev_universal_circuit",
+    "gtmqol:elite_control_circuit",
+    {
+      "id": "mekanism:ultimate_control_circuit",
+      "required": false
+    }
+  ]
+}

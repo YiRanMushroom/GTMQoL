@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtmqol:block/machine/hp_steam_circuit_assembler",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtmqol:block/machine/hp_steam_circuit_assembler",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtmqol:block/machine/hp_steam_circuit_assembler"
+    },
+    "facing=south": {
+      "model": "gtmqol:block/machine/hp_steam_circuit_assembler",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtmqol:block/machine/hp_steam_circuit_assembler",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtmqol:block/machine/hp_steam_circuit_assembler",
+      "y": 270
+    }
+  }
+}

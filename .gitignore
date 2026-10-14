@@ -49,3 +49,21 @@ bin/
 /build
 
 /.idea
+
+### Unpacked dependency sources, kept locally for API lookups
+/.gtceu-src
+/.gtceu-src-1.21
+/.ae2-src-1.21
+/.ae2-src-1.20
+/.mek-src-1.21
+/.appmek-1.21
+/.neoforge-src
+/.registrate-src
+/.registrate-src-1.21
+/runclient.log
+/.gtmthings-src
+/.mc-src
+/.mui-src
+/.modularui-src
+/.mui-src-1.21
+/.emi-src-1.21
