@@ -10,8 +10,9 @@ reference clone is at `E:\code\Minecraft\gtnl-ref` on one of the user's computer
   `maxRecipeTier` per machine, default MV.
 - Its `recipeModifier`:
   - rejects recipes above that tier;
-  - applies non-perfect OC (×4 EU/t, ÷2 duration) from `max(tier, LV)` up to it, stopping at 1 tick. ULV gets one OC
-    less, as GTCEu does;
+  - overclocks up to it like an electric machine, through `NON_PERFECT_OVERCLOCK.getModifier` without OC
+    parallels: with the OC overhaul that is ours (×4 EU/t, ÷4 duration, no ULV penalty), without it GTCEu's
+    non-perfect OC (×4 EU/t, ÷2 duration, ULV one OC less);
   - then duration ×0.8 and EU/t ×0.75. Steam = EU × 2 mB, from the superclass.
 - Parallels: 16, or the `SteamParallelHatchPartMachine` found in `formStructure`.
   - The hatch gives 16–256, default 256, with GTCEu's parallel hatch UI (÷2/×2).

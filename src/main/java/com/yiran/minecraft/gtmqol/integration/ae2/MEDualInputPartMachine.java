@@ -1,10 +1,7 @@
 package com.yiran.minecraft.gtmqol.integration.ae2;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -27,7 +24,6 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import brachy.modularui.api.IPanelHandler;
@@ -44,11 +40,8 @@ import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Comparator;
-import java.util.PriorityQueue;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
@@ -95,19 +88,7 @@ public class MEDualInputPartMachine extends MEStockingBusPartMachine {
     private void syncFluids() {
         IGrid grid = getMainNode().getGrid();
         if (grid == null) return;
-        MEStorage networkInv = grid.getStorageService().getInventory();
-        for (ExportOnlyAEFluidSlot slot : fluidList.getInventory()) {
-            var config = slot.getConfig();
-            if (config != null) {
-                var key = config.what();
-                long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                if (extracted >= fluidMinStackSize) {
-                    slot.setStock(new GenericStack(key, extracted));
-                    continue;
-                }
-            }
-            slot.setStock(null);
-        }
+        StockingParts.syncStock(fluidList, grid.getStorageService().getInventory(), actionSource, fluidMinStackSize);
     }
 
     @Override
@@ -135,37 +116,8 @@ public class MEDualInputPartMachine extends MEStockingBusPartMachine {
             fluidList.clearInventory(0);
             return;
         }
-        MEStorage networkStorage = grid.getStorageService().getInventory();
-        PriorityQueue<Object2LongMap.Entry<AEKey>> top = new PriorityQueue<>(
-                Comparator.comparingLong(Object2LongMap.Entry<AEKey>::getLongValue));
-        for (Object2LongMap.Entry<AEKey> entry : networkStorage.getAvailableStacks()) {
-            long amount = entry.getLongValue();
-            AEKey what = entry.getKey();
-            if (amount <= 0 || !(what instanceof AEFluidKey)) continue;
-            if (networkStorage.extract(what, amount, Actionable.SIMULATE, actionSource) == 0) continue;
-            if (fluidPullTest != null && !fluidPullTest.test(new GenericStack(what, amount))) continue;
-            if (amount >= fluidMinStackSize) {
-                if (top.size() < CONFIG_SIZE) {
-                    top.offer(entry);
-                } else if (amount > top.peek().getLongValue()) {
-                    top.poll();
-                    top.offer(entry);
-                }
-            }
-        }
-        int index;
-        int count = top.size();
-        for (index = 0; index < CONFIG_SIZE; index++) {
-            if (top.isEmpty()) break;
-            Object2LongMap.Entry<AEKey> entry = top.poll();
-            AEKey what = entry.getKey();
-            long request = networkStorage.extract(what, entry.getLongValue(), Actionable.SIMULATE, actionSource);
-            // poll() gives the smallest first, show the biggest first
-            var slot = fluidList.getInventory()[count - index - 1];
-            slot.setConfig(new GenericStack(what, 1));
-            slot.setStock(new GenericStack(what, request));
-        }
-        fluidList.clearInventory(index);
+        StockingParts.autoPull(fluidList, grid.getStorageService().getInventory(), actionSource, fluidMinStackSize,
+                key -> key instanceof AEFluidKey, fluidPullTest);
     }
 
     /////////////////////////////////
@@ -176,21 +128,11 @@ public class MEDualInputPartMachine extends MEStockingBusPartMachine {
     public boolean testConfiguredInOtherPart(@Nullable GenericStack config) {
         if (config == null) return false;
         if (!(config.what() instanceof AEFluidKey)) return super.testConfiguredInOtherPart(config);
-        if (!isFormed() || isDistinct()) return false;
-        for (MultiblockControllerMachine controller : getControllers()) {
-            for (MultiblockPartMachine part : controller.getParts()) {
-                if (part instanceof MEDualInputPartMachine dual) {
-                    if (dual == this || dual.isDistinct()) continue;
-                    if (dual.fluidList.hasStackInConfig(config, false)) return true;
-                } else if (part instanceof MEStockingHatchPartMachine hatch) {
-                    if (hatch.getSlotList().hasStackInConfig(config, false)) return true;
-                }
-            }
-        }
-        return MEUniversalInputPartMachine.configuredInAny(this, config);
+        // the stocking bus's rule: a distinct bus may share keys
+        return !isDistinct() && StockingParts.configuredElsewhere(this, config);
     }
 
-    /** For {@link MEUniversalInputPartMachine}'s duplicate check. */
+    /** For {@link StockingParts#configuredElsewhere}. */
     boolean hasFluidInConfig(GenericStack config) {
         return fluidList.hasStackInConfig(config, false);
     }
@@ -398,11 +340,12 @@ public class MEDualInputPartMachine extends MEStockingBusPartMachine {
         public FluidStack drain(int maxDrain, FluidAction action) {
             if (this.stock != null && this.config != null) {
                 // Take from the network when the recipe is checked (simulate) or run (execute).
-                if (!isOnline()) return FluidStack.EMPTY;
-                MEStorage network = getMainNode().getGrid().getStorageService().getInventory();
+                IGrid grid = getMainNode().getGrid();
+                if (!isOnline() || grid == null) return FluidStack.EMPTY;
+                MEStorage network = grid.getStorageService().getInventory();
                 var key = config.what();
                 long extracted = network.extract(key, maxDrain,
-                        action.simulate() ? Actionable.SIMULATE : Actionable.MODULATE, actionSource);
+                        Actionable.of(action), actionSource);
                 if (extracted > 0) {
                     FluidStack result = key instanceof AEFluidKey fluidKey ?
                             AEUtil.toFluidStack(fluidKey, extracted) : FluidStack.EMPTY;

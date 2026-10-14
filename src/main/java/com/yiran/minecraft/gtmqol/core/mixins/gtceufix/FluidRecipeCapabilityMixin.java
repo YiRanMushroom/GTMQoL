@@ -3,6 +3,7 @@ package com.yiran.minecraft.gtmqol.core.mixins.gtceufix;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -41,8 +42,7 @@ public class FluidRecipeCapabilityMixin {
         // other mods' fluids in the tag (IE and Create potions in ATM10) would be merged the same way, so show only
         // one, gtceu's if there is one, which is also what a pattern transfer then takes
         FluidStack shown = sources.stream()
-                .filter(stack -> stack.getFluid().builtInRegistryHolder().getKey().location().getNamespace()
-                        .equals(GTCEu.MOD_ID))
+                .filter(stack -> BuiltInRegistries.FLUID.getKey(stack.getFluid()).getNamespace().equals(GTCEu.MOD_ID))
                 .findFirst()
                 .orElse(sources.getFirst());
         cir.setReturnValue(FluidStackList.of(shown));

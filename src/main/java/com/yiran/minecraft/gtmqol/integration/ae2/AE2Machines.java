@@ -14,8 +14,6 @@ import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.chat.Component;
 
-import java.util.function.Consumer;
-
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Glue;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.SolderingAlloy;

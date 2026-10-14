@@ -64,7 +64,7 @@ enum BreederLogic implements GTRecipeType.ICustomRecipeLogic {
                     if (i == j && cage1.getCount() < 2) continue;
                     var offspring = offspring(BeeCage.getBeeType(cage1), BeeCage.getBeeType(cage2), level);
                     if (offspring.isEmpty()) continue;
-                    GTRecipe recipe = recipe("", cage1, cage2, emptyCage, offspring, items, level);
+                    GTRecipe recipe = recipe(cage1, cage2, emptyCage, offspring, items, level);
                     if (recipe != null) return recipe;
                 }
             }
@@ -76,7 +76,7 @@ enum BreederLogic implements GTRecipeType.ICustomRecipeLogic {
      * @param items what the breeding items have to be found in, or null to not check (for the recipe viewer)
      * @return null if a bee can't be had or the breeding items aren't there
      */
-    private static @Nullable GTRecipe recipe(String id, ItemStack cage1, ItemStack cage2, ItemStack emptyCage,
+    private static @Nullable GTRecipe recipe(ItemStack cage1, ItemStack cage2, ItemStack emptyCage,
                                              List<BeeIngredient> offspring, @Nullable List<ItemStack> items,
                                              Level level) {
         Bee parent1 = BeeCage.getEntityFromStack(cage1, level, true);
@@ -85,7 +85,7 @@ enum BreederLogic implements GTRecipeType.ICustomRecipeLogic {
         String type1 = BeeCage.getBeeType(cage1);
         String type2 = BeeCage.getBeeType(cage2);
         var builder = recipeType(BREEDER)
-                .recipeBuilder(GTMQoL.id(path(type1) + "/" + path(type2) + id));
+                .recipeBuilder(GTMQoL.id(path(type1) + "/" + path(type2)));
         // always five inputs in this order, which BreederUI lays out as cages and breeding items
         builder.notConsumable(cage1.copyWithCount(1)).notConsumable(cage2.copyWithCount(1));
         // strict, so a filled cage isn't taken for it
@@ -200,7 +200,7 @@ enum BreederLogic implements GTRecipeType.ICustomRecipeLogic {
             if (cage1 == null || cage2 == null) continue;
             var offspring = offspring(pair.get(0), pair.get(1), level);
             if (offspring.isEmpty()) continue;
-            GTRecipe recipe = recipe("", cage1, cage2, emptyCage, offspring, null, level);
+            GTRecipe recipe = recipe(cage1, cage2, emptyCage, offspring, null, level);
             if (recipe != null) addRepresentative(type, recipe);
         }
     }

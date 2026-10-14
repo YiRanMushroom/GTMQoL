@@ -30,7 +30,7 @@ import brachy.modularui.value.sync.DynamicLinkedSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.scroll.VerticalScrollData;
-import brachy.modularui.widgets.DynamicSyncedWidget;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 
 import java.util.Collections;
@@ -97,8 +97,8 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
         updateInventorySubscription();
     }
 
-    // The superclass's item buffer is private and its own autoIO only runs every updateIntervals ticks, so go
-    // through storageIterator() (live entries of the same buffer) instead.
+    // autoIO above replaces the superclass's, which flushed its item buffer. That buffer is private, so go through
+    // storageIterator() (live entries of the same buffer); the loop is KeyStorage#insertInventory's.
     private void flushItems(MEStorage network) {
         var it = storageIterator();
         boolean changed = false;
@@ -156,7 +156,7 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
                     return col;
                 });
 
-        flow.child(new DynamicSyncedWidget<>()
+        flow.child(new DynamicWidget<>()
                 .syncHandler(dynamicHandler)
                 .size(167, 80));
 
@@ -242,7 +242,9 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
             FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;
             for (var it = left.listIterator(); it.hasNext();) {
                 var ingredient = it.next();
-                if (ingredient.ingredient().hasNoFluids()) {
+                // a ranged amount has no fluids until it is rolled (NotifiableFluidTank checks the same)
+                if (!(ingredient.ingredient() instanceof IntProviderFluidIngredient) &&
+                        ingredient.ingredient().hasNoFluids()) {
                     it.remove();
                     continue;
                 }
@@ -256,7 +258,8 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
                     it.remove();
                     continue;
                 }
-                int remaining = ingredient.amount() - storage.fill(fluids[0], action);
+                // simulating a ranged amount checks room for its max roll, the stack's amount
+                int remaining = fluids[0].getAmount() - storage.fill(fluids[0], action);
                 if (remaining > 0) it.set(new SizedFluidIngredient(ingredient.ingredient(), remaining));
                 else it.remove();
             }

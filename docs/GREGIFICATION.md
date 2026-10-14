@@ -144,7 +144,8 @@ Config `gregification.mekanism`, only when `mekanism` is loaded. It uses the che
   separator, rotary, evaporation): amounts as in Mek, duration 1 t, i.e. one operation per tick like the Mek
   machine without upgrades. Batch mode and parallels give the throughput (the user's call; not scaled up). The
   separator's duration is `getEnergyMultiplier()` ticks (energy per operation, as time at a fixed voltage).
-- Sawmill: secondary output becomes a GT chanced output (`getSecondaryChance()` × 10000), or a plain output at 100%.
+- Sawmill: secondary output becomes a GT chanced output, or a plain output at 100% (`Gregification.chancedOutput`,
+  which every source uses for probabilities; `Gregification.chance` for the bare number).
 - Rotary: one machine, `mek_rotary_condensentrator`, and a GT recipe per direction the Mek recipe has (chemical →
   fluid, fluid → chemical), so it condenses or decondenses by what goes in.
 - 23 machines: crusher, enrichment chamber, osmium compressor, purification chamber, chemical injection chamber,

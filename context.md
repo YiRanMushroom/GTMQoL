@@ -9,7 +9,7 @@ that first. This file is an index: what exists, where the details are, and what 
   - 1.21.1: `port/1.21.1` (this checkout). NeoForge 21.1, ModDevGradle, Java 21. Runs in game. Merged into `master`
     on 2026-10-13 (PR #1), so `master` is the 1.21.1 code now.
   - 1.20.1: `migrate/gtceu-v8-runtime-generation`. Forge 47, Java 17. Moved from Loom to ModDevGradle legacyForge
-    (`3b63374`), not verified there yet.
+    (`3b63374`). `compileJava` and `runData` pass (2026-10-14, written ports included), not run in game yet.
 - The user works on two computers, so the paths differ a little between them (this checkout is
   `C:\Users\yiran.wang\IdeaProjects\GTMQoL` on one and under `E:\code\Minecraft\` on the other). The 1.20.1 worktree
   sits next to this one, e.g. `..\GTMQoL-1.20.1`: look in the parent directory (or `git worktree list`) and check
@@ -118,14 +118,20 @@ Not built or not checked in game yet (1.21):
   (1.20.1 has no late regeneration, so none there).
 - `gtceufix/AbstractWidgetMenuMixin`.
 - Universal ME parts recipe: dual part + 16k ME storage component (was dual + ME bus), both branches; needs `runData`.
+- Cleanup of 2026-10-14 (both branches): the wireless rework (`WirelessPool`, `WirelessUI`, `WirelessMonitorMachine`,
+  `WirelessCover`; the saved NBT is unchanged, old worlds should load), `StockingParts` (a gtceu stocking hatch now
+  also refuses a fluid a dual input stocks), ranged fluid outputs into ME parts (1.21 used the ingredient's amount
+  instead of the max roll), the steam multis now use our OC (×4 EU/t, ÷4 duration with the overhaul).
 
 To do:
 
-- 1.20.1: build the written ports, fixing compile errors one at a time, then `runData` for the universal parts.
-  Then the PB and potion ports.
+- 1.20.1: compiles, and `runData` runs and exits with nothing to regenerate (2026-10-14). Next a test in game, then
+  the PB and potion ports.
 - Auto-build: substructures, then block choices for expandable patterns (`AUTOBUILD.md`).
 - Crystal growth: a KubeJS binding for `CenterBlockCondition`.
 - Stack-like: external chemical hatches.
+- Abstractions the user agreed to but not done yet: a base for the mixin plugins' empty `IMixinConfigPlugin`
+  methods, merging `FluidConfigWidget` into `UniversalConfigWidget`, the cyclic multiblocks' popup helpers.
 
 Known, not fixed:
 
@@ -140,8 +146,15 @@ Known, not fixed:
 
 Open questions for the user:
 
+- The user dislikes that two stocking parts of one multiblock can't stock the same key (gtceu's rule, which
+  `StockingParts` extends to ours), but has no better idea yet: both would see the full network amount and the
+  recipe check would count it twice. Revisit if a way to share it comes up.
+
 - Should the wireless accessor use the rainbow overlay?
 - Maintenance hatches on our multis: all other abilities are used. Nothing removed yet.
+
+javac runs with `-Xlint:deprecation,removal,unchecked,rawtypes`. 1.21 has no warnings; 1.20.1 only Forge's deprecation
+of `BuiltInRegistries.ITEM/BLOCK/...` (kept so the code stays the same as 1.21). Keep it that way.
 
 Jar naming: `gtmqol-<mod version>-<mc version>.jar`. `build.gradle` sets `archiveVersion` on every
 `AbstractArchiveTask`; `project.version` stays `mod_version`.

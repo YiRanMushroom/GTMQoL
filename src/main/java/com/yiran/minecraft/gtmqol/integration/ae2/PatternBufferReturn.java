@@ -99,7 +99,7 @@ public final class PatternBufferReturn {
         }
 
         Actionable mode(boolean simulate) {
-            return simulate ? Actionable.SIMULATE : Actionable.MODULATE;
+            return Actionable.ofSimulate(simulate);
         }
 
         long insert(MEStorage network, AEKey key, long amount, boolean simulate) {
@@ -183,7 +183,9 @@ public final class PatternBufferReturn {
             if (network == null) return left;
             for (var it = left.listIterator(); it.hasNext();) {
                 var ingredient = it.next();
-                if (ingredient.ingredient().hasNoFluids()) {
+                // a ranged amount has no fluids until it is rolled (NotifiableFluidTank checks the same)
+                if (!(ingredient.ingredient() instanceof IntProviderFluidIngredient) &&
+                        ingredient.ingredient().hasNoFluids()) {
                     it.remove();
                     continue;
                 }
@@ -197,8 +199,9 @@ public final class PatternBufferReturn {
                     it.remove();
                     continue;
                 }
-                long remaining = ingredient.amount() - insert(network, AEFluidKey.of(fluids[0]), ingredient.amount(),
-                        simulate);
+                // simulating a ranged amount checks room for its max roll, the stack's amount
+                int amount = fluids[0].getAmount();
+                long remaining = amount - insert(network, AEFluidKey.of(fluids[0]), amount, simulate);
                 if (remaining > 0) it.set(new SizedFluidIngredient(ingredient.ingredient(), (int) remaining));
                 else it.remove();
             }
@@ -240,7 +243,7 @@ public final class PatternBufferReturn {
             MEStorage network = network(buffer, enabled);
             AEKey key = bridge.toKey(stack);
             if (network == null || key == null) return 0;
-            return network.insert(key, amount, simulate ? Actionable.SIMULATE : Actionable.MODULATE,
+            return network.insert(key, amount, Actionable.ofSimulate(simulate),
                     buffer.getActionSource());
         }
 

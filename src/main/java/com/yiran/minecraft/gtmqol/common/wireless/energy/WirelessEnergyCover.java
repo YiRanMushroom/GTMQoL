@@ -4,20 +4,15 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IMuiCover;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.yiran.minecraft.gtmqol.common.wireless.NetworkId;
-import com.yiran.minecraft.gtmqol.common.wireless.WirelessBindingTrait;
+import com.yiran.minecraft.gtmqol.common.wireless.WirelessCover;
 
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.FakePlayer;
 
 import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -32,27 +27,18 @@ import static com.gregtechceu.gtceu.api.GTValues.V;
  * charges the machine, output drains it. Energy is added to / taken from the machine's buffer directly, so
  * the machine's input voltage doesn't matter and nothing explodes; the tier only sets the rate.
  */
-public class WirelessEnergyCover extends CoverBehavior implements IMuiCover {
+public class WirelessEnergyCover extends WirelessCover {
 
     private final int tier;
-    private final IO io;
-
-    @SaveField
-    @SyncToClient
-    public final WirelessBindingTrait binding;
 
     @SaveField
     @SyncToClient
     protected int amperage = WirelessEnergyHatchPartMachine.DEFAULT_AMPERAGE;
 
-    private @Nullable TickableSubscription subscription;
-
     public WirelessEnergyCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
                                IO io) {
-        super(definition, coverHolder, attachedSide);
+        super(definition, coverHolder, attachedSide, io);
         this.tier = tier;
-        this.io = io;
-        this.binding = new WirelessBindingTrait(this, coverHolder::isRemote);
     }
 
     public int getAmperage() {
@@ -80,31 +66,13 @@ public class WirelessEnergyCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public void onAttached(ItemStack itemStack, @Nullable ServerPlayer player) {
-        super.onAttached(itemStack, player);
-        if (player != null && !(player instanceof FakePlayer)) {
-            binding.bind(player.getUUID(), false);
-            setAmperage(WirelessEnergySavedData.get().getDefaultAmperage(player.getUUID()));
-        }
+    protected void onAttachedBy(ServerPlayer player) {
+        super.onAttachedBy(player);
+        setAmperage(WirelessEnergySavedData.get().getDefaultAmperage(player.getUUID()));
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        subscription = coverHolder.subscribeServerTick(subscription, this::update);
-    }
-
-    @Override
-    public void onRemoved() {
-        super.onRemoved();
-        if (subscription != null) {
-            subscription.unsubscribe();
-        }
-    }
-
-    private void update() {
-        NetworkId network = binding.getNetworkId();
-        if (network == null) return;
+    protected void update(NetworkId network) {
         IEnergyContainer container = getEnergyContainer();
         if (container == null) return;
         // At most V[MAX] × MAX_AMPERAGE = 2^31 × 2^24, fits a long.

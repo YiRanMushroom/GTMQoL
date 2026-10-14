@@ -26,11 +26,8 @@ import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-
-import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.gear;
@@ -88,7 +85,7 @@ public final class GTMQoLMultiblocks {
                         .sliceRepeatable(4, 4,
                                 "XXXXXXX", "RTTTTTR", "RAAAAAR", "GTTTTTG", "RAAAAAR", "RTTTTTR", "XXXXXXX")
                         .slice("XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX")
-                        .where('S', controller(blocks(definition.getBlock())))
+                        .where('S', controller(definition))
                         .where('X', blocks(CASING_STEEL_SOLID.get())
                                 .and(autoAbilities(definition.getRecipeTypes()))
                                 .and(autoAbilities(true, false, true))
@@ -130,7 +127,7 @@ public final class GTMQoLMultiblocks {
                             .slice("####CC###CC####", "###EAAXGXAAE###", "####CC###CC####")
                             .slice("######XCX######", "####GGAAAGG####", "######XCX######")
                             .slice("###############", "######XSX######", "###############")
-                            .where('S', controller(blocks(definition.getBlock())))
+                            .where('S', controller(definition))
                             .where('G', blocks(FUSION_GLASS.get()).or(casing))
                             .where('E', casing.and(abilities(PartAbility.INPUT_ENERGY,
                                     PartAbility.SUBSTATION_INPUT_ENERGY, PartAbility.INPUT_LASER)
@@ -170,7 +167,7 @@ public final class GTMQoLMultiblocks {
                         .slice("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
                         .slice("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
                         .slice("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
-                        .where('S', controller(blocks(definition.getBlock())))
+                        .where('S', controller(definition))
                         .where('X', blocks(CASING_STEEL_SOLID.get())
                                 .and(abilities(PartAbility.EXPORT_ITEMS).setMinGlobalLimited(1).setPreviewCount(1)))
                         .where('C', blocks(CASING_STEEL_SOLID.get()))
@@ -239,7 +236,7 @@ public final class GTMQoLMultiblocks {
                         .slice("XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX")
                         .sliceRepeatable(5, 5, "XXXXXXX", "X     X", "X     X", "X     X", "X     X")
                         .slice("XXXXXXX", "XXXSXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX")
-                        .where('S', controller(blocks(definition.getBlock())))
+                        .where('S', controller(definition))
                         .where('X', blocks(GCYMBlocks.CASING_WATERTIGHT.get()).setMinGlobalLimited(100)
                                 .and(abilities(PartAbility.EXPORT_ITEMS).setMinGlobalLimited(1).setPreviewCount(1))
                                 .and(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setPreviewCount(1)))
@@ -340,7 +337,6 @@ public final class GTMQoLMultiblocks {
                 .inputItems(gear, Steel, 16)
                 .outputItems(VOID_MINER)
                 .duration(1200)
-                .EUt(VA[LV])
                 .save(provider);
     }
 
