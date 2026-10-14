@@ -39,20 +39,20 @@ public final class WirelessCovers {
     private static final String ENERGY_RATE_TOOLTIP_KEY = "gtmqol.wireless.tooltip.energy_cover_rate";
     private static final String STEAM_INPUT_TOOLTIP_KEY = "gtmqol.wireless.tooltip.steam_input_cover";
     private static final String STEAM_OUTPUT_TOOLTIP_KEY = "gtmqol.wireless.tooltip.steam_output_cover";
-    private static final String COVER_BINDING_TOOLTIP_KEY = "gtmqol.wireless.tooltip.cover_binding";
+    static final String COVER_BINDING_TOOLTIP_KEY = "gtmqol.wireless.tooltip.cover_binding";
 
     private static final ResourceLocation WIRELESS_OVERLAY = GTMQoL.id("block/overlay/machine/overlay_wireless");
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static Holder<CoverDefinition>[] ENERGY_INPUT = new Holder[TIER_COUNT];
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static Holder<CoverDefinition>[] ENERGY_OUTPUT = new Holder[TIER_COUNT];
     public static Holder<CoverDefinition> STEAM_INPUT;
     public static Holder<CoverDefinition> STEAM_OUTPUT;
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static ItemEntry<ComponentItem>[] ENERGY_INPUT_ITEM = new ItemEntry[TIER_COUNT];
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static ItemEntry<ComponentItem>[] ENERGY_OUTPUT_ITEM = new ItemEntry[TIER_COUNT];
     public static ItemEntry<ComponentItem> STEAM_INPUT_ITEM;
     public static ItemEntry<ComponentItem> STEAM_OUTPUT_ITEM;
@@ -76,7 +76,7 @@ public final class WirelessCovers {
         addLang(ENERGY_INPUT_TOOLTIP_KEY, "Charges the machine from the wireless network, at any input voltage");
         addLang(ENERGY_OUTPUT_TOOLTIP_KEY, "Sends the energy stored in a generator, battery buffer or other EU source to the wireless network");
         addLang(ENERGY_RATE_TOOLTIP_KEY, "Up to %s EU/t per ampere (%s)");
-        addBindingLang();
+        WirelessUI.addSharedLang();
     }
 
     public static void initSteam() {
@@ -91,16 +91,7 @@ public final class WirelessCovers {
 
         addLang(STEAM_INPUT_TOOLTIP_KEY, "Fills the machine with steam from the wireless network");
         addLang(STEAM_OUTPUT_TOOLTIP_KEY, "Sends steam from the machine (e.g. a boiler) to the wireless network");
-        addBindingLang();
-    }
-
-    private static boolean bindingLangAdded;
-
-    // Shared by both kinds; the lang provider throws on a duplicate key.
-    private static void addBindingLang() {
-        if (bindingLangAdded) return;
-        bindingLangAdded = true;
-        addLang(COVER_BINDING_TOOLTIP_KEY, "Bound to whoever attaches it; screwdriver or shift-right-click with an empty hand opens the settings");
+        WirelessUI.addSharedLang();
     }
 
     private static Holder<CoverDefinition> register(String id, CoverDefinition.CoverBehaviourProvider behavior) {

@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.yiran.minecraft.gtmqol.GTMQoL;
+import com.yiran.minecraft.gtmqol.gregification.Gregification;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -75,12 +75,8 @@ enum IncubatorLogic implements GTRecipeType.ICustomRecipeLogic {
                     .inputItems(Tags.Items.EGGS, 1)
                     .inputItems(treat.copyWithCount(1));
             // PB rolls nextInt(100) <= purity
-            int chance = chance(Math.min(100, gene.purity() + 1) / 100.0);
-            if (chance >= ChanceLogic.getMaxChancedValue()) {
-                builder.outputItems(egg);
-            } else {
-                builder.chancedOutput(RecipeHelper.makeSizedIngredient(egg), chance);
-            }
+            Gregification.chancedOutput(builder, RecipeHelper.makeSizedIngredient(egg),
+                    Math.min(100, gene.purity() + 1) / 100.0);
             return builder.EUt(VA[ULV]).duration(DURATION).build();
         }
         return null;

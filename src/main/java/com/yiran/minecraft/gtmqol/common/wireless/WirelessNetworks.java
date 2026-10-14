@@ -18,6 +18,7 @@ import net.neoforged.bus.api.EventPriority;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -44,8 +45,7 @@ public final class WirelessNetworks {
     private static void onServerTick(ServerTickEvent.Post event) {
         int tick = event.getServer().getTickCount();
         if (tick % IOStats.SAMPLE_INTERVAL == 0) {
-            WirelessSteamSavedData.get().sampleStats(tick);
-            WirelessEnergySavedData.get().sampleStats(tick);
+            pools().forEach(pool -> pool.sampleStats(tick));
         }
     }
 
@@ -68,6 +68,11 @@ public final class WirelessNetworks {
         } else if (machine instanceof WirelessEnergyAccessorMachine accessor) {
             accessor.setAmperage(amperage);
         }
+    }
+
+    /** Every kind's pool. Server only. */
+    static List<WirelessPool> pools() {
+        return List.of(WirelessSteamSavedData.get(), WirelessEnergySavedData.get());
     }
 
     /**

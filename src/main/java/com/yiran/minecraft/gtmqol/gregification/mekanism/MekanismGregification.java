@@ -1,7 +1,7 @@
 package com.yiran.minecraft.gtmqol.gregification.mekanism;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.gui.ProgressBarTextureSet;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
@@ -11,6 +11,7 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.common.stacklike.mekanism.ChemicalStackLike;
 import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
 import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
+import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.MultiblockShape;
 
 import net.minecraft.core.Holder;
@@ -262,12 +263,7 @@ public final class MekanismGregification {
         if (!main.isEmpty()) builder.outputItems(main.getFirst());
         double chance = recipe.getSecondaryChance();
         if (!secondary.isEmpty() && chance > 0) {
-            if (chance >= 1) {
-                builder.outputItems(secondary.getFirst());
-            } else {
-                builder.chancedOutput(secondary.getFirst(),
-                        Math.max(1, (int) Math.round(chance * ChanceLogic.getMaxChancedValue())));
-            }
+            Gregification.chancedOutput(builder, RecipeHelper.makeSizedIngredient(secondary.getFirst()), chance);
         }
         builder.EUt(VA[LV]).duration(TileEntityPrecisionSawmill.BASE_TICKS_REQUIRED);
         return true;

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.yiran.minecraft.gtmqol.GTMQoL;
+import com.yiran.minecraft.gtmqol.gregification.Gregification;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -142,7 +143,7 @@ enum BeehiveLogic implements GTRecipeType.ICustomRecipeLogic {
             }
             double rest = expected - whole;
             if (Math.round(rest * 10000) > 0) {
-                builder.chancedOutput(RecipeHelper.makeSizedIngredient(stack.copyWithCount(1)), chance(rest));
+                builder.chancedOutput(RecipeHelper.makeSizedIngredient(stack.copyWithCount(1)), Gregification.chance(rest));
                 any = true;
             }
         }

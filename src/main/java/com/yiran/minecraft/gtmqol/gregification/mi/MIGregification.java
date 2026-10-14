@@ -16,6 +16,7 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
 import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
+import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.MultiblockShape;
 
 import net.minecraft.core.Holder;
@@ -251,7 +252,7 @@ public final class MIGregification {
             return;
         }
         if (probability <= 0 && !input) return;
-        int chance = probability <= 0 ? 0 : Math.clamp(Math.round(probability * 10000), 1, 10000);
+        int chance = probability <= 0 ? 0 : Gregification.chance(probability);
         int previous = builder.chance;
         builder.chance = chance;
         try {

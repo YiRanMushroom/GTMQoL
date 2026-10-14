@@ -59,7 +59,7 @@ claude.ai 的所有连接器（Atlassian、Microsoft 365、Gmail、Google Calend
   （`is for Minecraft Forge or an older version of NeoForge`），这时改用 Modrinth 版本 ID。
 - 下面关于 Loom / 重映射 / `nameSyntheticMembers` / Java 17 的内容只适用于 1.20.1。
 - 1.20.1 分支在 `3b63374` 已经从 Loom 迁到 ModDevGradle legacyForge（和 GTCEu 1.20.1 分支一样，`mod*` 配置还在），
-  那边记为还没构建验证。下面 Loom 专属的内容（JDK 组合、fabric-loom 锁、`nameSyntheticMembers`、Loom 删清单）
+  那边 `compileJava` 和 `runData` 已通过（2026-10-14），还没跑过游戏。下面 Loom 专属的内容（JDK 组合、fabric-loom 锁、`nameSyntheticMembers`、Loom 删清单）
   是迁移前的，迁移跑通后再删改。
 
 Loom 1.13 要求 Gradle JVM ≥ 21，而 Minecraft 1.20.1 必须跑 Java 17，两者不能是同一个 JDK。

@@ -11,7 +11,6 @@ import com.yiran.minecraft.gtmqol.common.potion.PotionContainers;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -67,7 +66,6 @@ public class GTRecipeViewerWidgetPotionMixin {
         return Arrays.stream(ingredient.getFluids())
                 .map(FluidStack::getFluid)
                 .filter(fluid -> fluid.isSource(fluid.defaultFluidState()))
-                .map(Fluid::builtInRegistryHolder)
                 .distinct()
                 .count() > 1;
     }

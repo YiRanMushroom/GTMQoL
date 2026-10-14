@@ -27,6 +27,7 @@ A global pool per network, inspired by GTMThings' wireless energy.
 ## Steam (`wireless/steam/`)
 
 - `WirelessSteamSavedData` holds the pools (`BigInteger` per `NetworkId`) on the overworld, server thread only.
+  The storage, stats, `moveAll` and NBT are in the shared base `WirelessPool`.
   - It also holds in-memory `IOStats` per network: cumulative inserted/extracted, sampled every 20 ticks by a server
     tick handler in `WirelessNetworks`. Rates are averaged over the last 10 samples (mB/t).
   - The stats are deliberately not saved (the user agreed). `moveAll` doesn't count as IO.
@@ -38,8 +39,10 @@ A global pool per network, inspired by GTMThings' wireless energy.
     `WirelessSteamHatchPartMachine`.
   - `wireless_steam_accessor`: standalone block, fluid handler on all sides, optional auto output to the front.
   - `wireless_steam_monitor`: shows stored steam and input/output/net rates.
-- Shared UI: `WirelessSteamUI.create(syncManager, binding, player)` shows the bound player, network, stored steam,
-  Bind/Unbind, a Private toggle and "To team". The monitor extends it with the rates.
+- Shared UI: `WirelessUI.create(syncManager, binding, player, storedKey, pool)` shows the bound player, network,
+  stored amount, Bind/Unbind, a Private toggle and "To team"; `WirelessSteamUI.create` passes the steam pool.
+  `WirelessMonitorMachine` (both monitors) adds the rates. `WirelessUI.addSharedLang` adds the lang both kinds use,
+  once, from whichever kind is enabled.
 - Textures:
   - Both hatches use only `gtmqol:block/overlay/machine/overlay_wireless`, via
     `.colorOverlaySteamHullModel(WIRELESS_OVERLAY)` with no pipe or emissive layer, so input and output look
@@ -49,9 +52,9 @@ A global pool per network, inspired by GTMThings' wireless energy.
 
 ## EU (`wireless/energy/`)
 
-The user chose concrete code alongside steam rather than a generic per-resource storage. `WirelessEnergySavedData`
-has the same shape as the steam one. `FTBTeamsCompat`, `movePrivateToTeam` and `WirelessNetworks.onServerTick`
-each call both. `IOStats` lives in `wireless/` and is shared.
+`WirelessEnergySavedData` is the other `WirelessPool` (plus the per-player default amperage). `FTBTeamsCompat` and
+`WirelessNetworks.onServerTick` go through `WirelessNetworks.pools()`; `movePrivateToTeam` calls both itself, since
+its message names both amounts. `IOStats` lives in `wireless/` and is shared.
 
 - Machines (`WirelessEnergyMachines`): one per tier in `GTMachineUtils.ALL_TIERS` (ULV..UHV, or ..MAX with GTCEu's
   high-tier config), with names like `lv_wireless_energy_input_hatch`.
@@ -105,6 +108,7 @@ each call both. `IOStats` lives in `wireless/` and is shared.
   - Amperage UI and per-player default work as for the hatches.
 - `WirelessSteamCover`: input fills the machine's fluid handler with network steam. Output drains steam (boilers)
   into the network, as much as the machine takes or gives per tick.
+- Both extend `WirelessCover`: binding, the tick subscription, and an `update(network)` while bound.
 - Binding is the placing player (`onAttached`).
   - Covers have no machine, so they hold a `WirelessBindingTrait` built with the
     `(ISyncManaged owner, BooleanSupplier isRemote)` constructor as a sync field, like GTCEu's `FilterHandler`.

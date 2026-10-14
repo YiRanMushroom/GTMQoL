@@ -1,22 +1,16 @@
 package com.yiran.minecraft.gtmqol.data.recipe;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 
 import net.minecraft.data.recipes.RecipeOutput;
 
-import java.util.function.Consumer;
-
 public class MiscRecipes {
     public static void addRecipes(RecipeOutput provider) {
-        GTRecipeTypes.BLAST_RECIPES.recipeBuilder(GTCEu.id("steel_24_wrought_iron"))
+        GTRecipeTypes.BLAST_RECIPES.recipeBuilder(GTMQoL.id("steel_24_wrought_iron"))
                 .inputItems(TagPrefix.ingot, GTMaterials.WroughtIron)
                 .circuitMeta(24)
                 .outputItems(TagPrefix.ingot, GTMaterials.Steel)
@@ -26,7 +20,7 @@ public class MiscRecipes {
                 .blastFurnaceTemp(1799)
                 .save(provider);
 
-        GTRecipeTypes.BLAST_RECIPES.recipeBuilder(GTCEu.id("steel_24_iron"))
+        GTRecipeTypes.BLAST_RECIPES.recipeBuilder(GTMQoL.id("steel_24_iron"))
                 .inputItems(TagPrefix.ingot, GTMaterials.Iron)
                 .circuitMeta(24)
                 .outputItems(TagPrefix.ingot, GTMaterials.Steel)

@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
@@ -17,6 +16,7 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
 import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
+import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.client.GregificationClient;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -152,12 +152,7 @@ public final class ProductiveBeesGregification {
             if (max <= 0) continue;
             Ingredient ingredient = min == max ? output.ingredient() :
                     IntProviderIngredient.of(output.ingredient(), UniformInt.of(min, max)).toVanilla();
-            int chance = chance(output.chance() + bonus);
-            if (chance >= ChanceLogic.getMaxChancedValue()) {
-                builder.outputItems(ingredient, max);
-            } else {
-                builder.chancedOutput(new SizedIngredient(ingredient, max), chance);
-            }
+            Gregification.chancedOutput(builder, new SizedIngredient(ingredient, max), output.chance() + bonus);
             any = true;
         }
         SizedFluidIngredient fluid = recipe.fluidOutput;
@@ -188,12 +183,6 @@ public final class ProductiveBeesGregification {
     }
 
     // Shared by the custom logic
-
-    /** GT chance out of {@link ChanceLogic#getMaxChancedValue()}, at least 1. */
-    static int chance(double chance) {
-        int max = ChanceLogic.getMaxChancedValue();
-        return (int) Math.max(1, Math.min(max, Math.round(chance * max)));
-    }
 
     /** PB's server config, which isn't loaded yet when recipes first load. */
     static <T> T config(ModConfigSpec.ConfigValue<T> value) {
