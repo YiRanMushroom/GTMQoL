@@ -1,0 +1,29 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.yiran.minecraft.gtmqol.core.mixins.ae2",
+  "plugin": "com.yiran.minecraft.gtmqol.core.AE2MixinPlugin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "EncodingHelperMixin",
+    "MEInventoryHandlerMixin",
+    "MEPatternBufferProxyStackLikeMixin",
+    "MEPatternBufferRecipeHandlerListMixin",
+    "MEPatternBufferStackLikeMixin",
+    "MEPatternBufferStackLikeSlotMixin",
+    "MEStockingBusPartMachineMixin",
+    "MEStockingHatchPartMachineMixin",
+    "NetworkStorageMixin",
+    "PartSpecialStorageBusMixin",
+    "StorageBusPartMixin"
+  ],
+  "client": [
+    "EmiEncodePatternHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixinextras": {
+    "minVersion": "0.5.3"
+  }
+}

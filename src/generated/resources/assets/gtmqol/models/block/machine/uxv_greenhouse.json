@@ -7,8 +7,11 @@
       "model": {
         "parent": "gtceu:block/casings/voltage/uxv",
         "textures": {
-          "overlay_front": "gtmqol:block/machines/greenhouse/overlay_front",
-          "overlay_front_emissive": "gtmqol:block/machines/greenhouse/overlay_front_emissive"
+          "overlay_front": "gtceu:block/machines/fermenter/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/fermenter/overlay_front_emissive",
+          "overlay_side": "gtceu:block/machines/fermenter/overlay_side",
+          "overlay_side_emissive": "gtceu:block/machines/fermenter/overlay_side_emissive",
+          "overlay_top": "gtceu:block/machines/fermenter/overlay_top"
         }
       }
     },
@@ -16,8 +19,11 @@
       "model": {
         "parent": "gtceu:block/casings/voltage/uxv",
         "textures": {
-          "overlay_front": "gtmqol:block/machines/greenhouse/overlay_front",
-          "overlay_front_emissive": "gtmqol:block/machines/greenhouse/overlay_front_emissive"
+          "overlay_front": "gtceu:block/machines/fermenter/overlay_front_paused",
+          "overlay_front_emissive": "gtceu:block/machines/fermenter/overlay_front_paused_emissive",
+          "overlay_side": "gtceu:block/machines/fermenter/overlay_side",
+          "overlay_side_emissive": "gtceu:block/machines/fermenter/overlay_side_emissive",
+          "overlay_top": "gtceu:block/machines/fermenter/overlay_top"
         }
       }
     },
@@ -25,8 +31,12 @@
       "model": {
         "parent": "gtceu:block/casings/voltage/uxv",
         "textures": {
-          "overlay_front": "gtmqol:block/machines/greenhouse/overlay_front_active",
-          "overlay_front_emissive": "gtmqol:block/machines/greenhouse/overlay_front_active_emissive"
+          "overlay_front": "gtceu:block/machines/fermenter/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/fermenter/overlay_front_active_emissive",
+          "overlay_side": "gtceu:block/machines/fermenter/overlay_side_active",
+          "overlay_side_emissive": "gtceu:block/machines/fermenter/overlay_side_active_emissive",
+          "overlay_top": "gtceu:block/machines/fermenter/overlay_top_active",
+          "overlay_top_emissive": "gtceu:block/machines/fermenter/overlay_top_active_emissive"
         }
       }
     },
@@ -34,8 +44,12 @@
       "model": {
         "parent": "gtceu:block/casings/voltage/uxv",
         "textures": {
-          "overlay_front": "gtmqol:block/machines/greenhouse/overlay_front_active",
-          "overlay_front_emissive": "gtmqol:block/machines/greenhouse/overlay_front_active_emissive"
+          "overlay_front": "gtceu:block/machines/fermenter/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/fermenter/overlay_front_active_emissive",
+          "overlay_side": "gtceu:block/machines/fermenter/overlay_side_active",
+          "overlay_side_emissive": "gtceu:block/machines/fermenter/overlay_side_active_emissive",
+          "overlay_top": "gtceu:block/machines/fermenter/overlay_top_active",
+          "overlay_top_emissive": "gtceu:block/machines/fermenter/overlay_top_active_emissive"
         }
       }
     }

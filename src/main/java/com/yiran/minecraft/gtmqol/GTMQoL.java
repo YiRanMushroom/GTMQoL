@@ -1,69 +1,167 @@
 package com.yiran.minecraft.gtmqol;
 
-import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
-import com.yiran.minecraft.gtmqol.common.item.StickyCardItem;
-import com.yiran.minecraft.gtmqol.config.ConfigHolder;
-import com.yiran.minecraft.gtmqol.init.OverclockingPatcher;
-import com.yiran.minecraft.gtmqol.predicates.JsonTextNBTPredicate;
-import com.yiran.minecraft.gtmqol.renderer.DTFRRingRenderer;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
+import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
+import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
+import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
+import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
+import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AppMekChemicalBridge;
+import com.yiran.minecraft.gtmqol.integration.productivebees.LegacyCapabilityAliases;
+import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
+import com.yiran.minecraft.gtmqol.common.autobuild.AutoBuilder;
+import com.yiran.minecraft.gtmqol.data.tag.CircuitTags;
+import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
+import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
+import com.yiran.minecraft.gtmqol.common.circuit.UniversalCircuits;
+import com.yiran.minecraft.gtmqol.client.GTMQoLClient;
+import com.yiran.minecraft.gtmqol.config.EarlyConfig;
+import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
+import com.yiran.minecraft.gtmqol.common.fe.FEInputProvider;
+import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
+import com.yiran.minecraft.gtmqol.common.test.IntegrationTests;
+import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
+import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
+import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
+import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
+import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
+import com.yiran.minecraft.gtmqol.common.potion.PotionContainers;
+import com.yiran.minecraft.gtmqol.common.stacklike.mekanism.ChemicalStackLike;
+import com.yiran.minecraft.gtmqol.common.steam.AdvancedSteamMachines;
+import com.yiran.minecraft.gtmqol.common.wireless.WirelessCovers;
+import com.yiran.minecraft.gtmqol.common.wireless.WirelessNetworks;
+import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
+import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
+import com.yiran.minecraft.gtmqol.gregification.Gregification;
+import com.yiran.minecraft.gtmqol.gregification.client.GregificationClient;
+import com.yiran.minecraft.gtmqol.gregification.mekanism.MekanismGregification;
+import com.yiran.minecraft.gtmqol.gregification.mi.MIGregification;
+import com.yiran.minecraft.gtmqol.gregification.productivebees.ProductiveBeesGregification;
+
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.data.loading.DatagenModLoader;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 @Mod(GTMQoL.MOD_ID)
-public class GTMQoL {
+public final class GTMQoL {
     public static final String MOD_ID = "gtmqol";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-    public GTMQoL(FMLJavaModLoadingContext context) {
-        IEventBus modBus = context.getModEventBus();
+    private static final ResourceLocation TEMPLATE_LOCATION = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
 
-        GTMQoLRegistrate.getREGISTRATE().registerRegistrate();
+    public GTMQoL(IEventBus modBus, ModContainer container) {
+        GTMQoLConfig config = GTMQoLConfig.get();
+        GTMQoLAddon.registrate().registerEventListeners(modBus);
+        // Always on: the void miner uses the wireless EU network too.
+        WirelessNetworks.init();
+        if (config.misc.feInput) FEInputProvider.init(modBus);
+        // always: the button itself checks config.misc.autoBuild
+        AutoBuilder.init();
+        if (config.circuits.universalCircuits) UniversalCircuits.init();
+        if (config.circuits.controlCircuits) ControlCircuits.init();
+        if (config.circuits.mekanismCircuitTags) CircuitTags.init();
+        MaterialAliasTags.init();
+        PotionContainers.init(modBus);
+        if (ModList.get().isLoaded("mekanism")) ChemicalStackLike.init();
+        ModularMachines.init(modBus);
+        Gregification.init(modBus);
+        if (config.gregification.modernIndustrialization && ModList.get().isLoaded("modern_industrialization")) {
+            Gregification.addSource(MIGregification::types);
+        }
+        if (config.gregification.mekanism && ModList.get().isLoaded("mekanism")) {
+            Gregification.addSource(MekanismGregification::types);
+        }
+        if (ModList.get().isLoaded("productivebees")) {
+            LegacyCapabilityAliases.init(modBus);
+            if (config.gregification.productiveBees) {
+                Gregification.addSource(ProductiveBeesGregification::types);
+                ProductiveBeesGregification.init(modBus);
+            }
+        }
 
-        ConfigHolder.init();
+        // On 1.21 gtceu's registries are Registrate deferred registers, so content is declared right here like
+        // gtceu's own CommonProxy does; the entries are created when the registry's RegisterEvent fires.
+        // Recipe types first, machines reference them. The magical assembler is always registered, most of our
+        // recipes use it.
+        MagicalAssembler.initRecipeType();
+        if (config.wireless.energy) WirelessCovers.initEnergy();
+        if (config.wireless.steam) WirelessCovers.initSteam();
+        MagicalAssembler.initMachines();
+        GTMQoLMultiblocks.init();
+        if (config.machines.electricImplosionCompressor) ElectricImplosion.init(modBus);
+        if (config.machines.crystalGrowthChamber) CrystalGrowth.init();
+        if (config.machines.greenhouse) Greenhouse.init();
+        if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
+        if (config.wireless.steam) WirelessSteamMachines.init();
+        if (config.wireless.energy) WirelessEnergyMachines.init();
+        if (GTCEu.Mods.isAE2Loaded()) {
+            // Before any machine exists: the universal parts attach one handler per bridge when constructed.
+            if (ModList.get().isLoaded("mekanism") && ModList.get().isLoaded("appmek")) {
+                AEStackLikeBridges.register(AppMekChemicalBridge.INSTANCE);
+            }
+            if (config.ae2.overclockedPatternBuffer) AE2Machines.init();
+            if (config.ae2.processing) {
+                AEProcessing.initItems();
+                AEProcessing.initRecipeTypes();
+                AEProcessing.initMachines();
+            }
+            if (config.ae2.dualHatches) AEDualParts.init();
+            if (config.ae2.patternBufferReturn) AEDualParts.initLang();
+            if (EarlyConfig.AE2_STICKY_CARD) {
+                StickyCardItem.init();
+                modBus.addListener(FMLCommonSetupEvent.class, event -> event.enqueueWork(StickyCardItem::registerUpgrades));
+            }
+        }
+        // do not run integration tests in data generation, They are only for testing in a running game.
+        if (config.integrationTests.enabled && !DatagenModLoader.isRunningDataGen()) {
+            IntegrationTests.registerExampleMachines();
+        }
 
-        if (ConfigHolder.getInstance().overclockingConfig.enableOverclockingDurationOverride)
-            OverclockingPatcher.init();
+        modBus.addListener(this::onRegisterDynamicResources);
 
-//        if (GTCEu.isDataGen()) {
-        DynamicRenderManager.register(GTMQoL.id("dtfr_ring"), DTFRRingRenderer.getTYPE());
-//        }
-
-//        GTMInit.init();
-
-        modBus.addListener(this::onCommonSetup);
-        modBus.addListener(this::onClientSetup);
-//        modBus.addListener(AddModularMultiblocksLogic::onAddPackFinders);
-
-        MinecraftForge.EVENT_BUS.register(this);
-        LOGGER.info("{} initializing", MOD_ID);
+        if (FMLEnvironment.dist.isClient()) {
+            GTMQoLClient.init();
+            GregificationClient.init();
+        }
     }
 
-    public static ResourceLocation id(@NotNull String string) {
-        return ResourceLocation.tryBuild(MOD_ID, string);
+    /**
+     * Same as {@code GTCEu.id}: {@code "ns:path"} is parsed as is, anything else goes under {@code gtmqol},
+     * with camelCase converted to snake_case.
+     */
+    public static ResourceLocation id(String path) {
+        if (path.isBlank()) {
+            return TEMPLATE_LOCATION;
+        }
+
+        int i = path.indexOf(':');
+        if (i > 0) {
+            return ResourceLocation.parse(path);
+        } else if (i == 0) {
+            path = path.substring(i + 1);
+        }
+        // only convert it to camel_case if it has any uppercase to begin with
+        if (FormattingUtil.hasUpperCase(path)) {
+            path = FormattingUtil.toLowerCaseUnderscore(path);
+        }
+        return TEMPLATE_LOCATION.withPath(path);
     }
 
-    private void onCommonSetup(final FMLCommonSetupEvent event) {
-        LOGGER.info("{} common setup", MOD_ID);
-
-        com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates.predicateCodecs
-                .put(JsonTextNBTPredicate.TYPE, JsonTextNBTPredicate::fromJson);
-
-        event.enqueueWork(() -> {
-            StickyCardItem.onCommonSetup();
-        });
-    }
-
-    private void onClientSetup(final FMLClientSetupEvent event) {
-        LOGGER.info("{} client setup", MOD_ID);
-
-//        DynamicRenderManager.register(GTMQoL.id("dtfr_ring"), DTFRRingRenderer.getTYPE());
+    /**
+     * GTCEu fires this from its {@code ModelManager} mixin, in mod order, right before models are
+     * baked. This is the only point where adding to {@code GTDynamicResourcePack} still has effect.
+     */
+    private void onRegisterDynamicResources(RegisterDynamicResourcesEvent event) {
+        RuntimeGeneration.generateAll();
     }
 }
