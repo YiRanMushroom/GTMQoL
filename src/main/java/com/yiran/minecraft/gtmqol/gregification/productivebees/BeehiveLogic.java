@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -164,7 +165,9 @@ enum BeehiveLogic implements GTRecipeType.ICustomRecipeLogic {
             if (fluid.getAmount() < FluidType.BUCKET_VOLUME ||
                     !isFlower(bee, new ItemStack(fluid.getFluid().getBucket())))
                 continue;
-            builder.notConsumableFluid(fluid.copyWithAmount(FluidType.BUCKET_VOLUME));
+            // not notConsumableFluid(FluidStack): GTCEu turns that into the tag c:<fluid path>, which most
+            // flower fluids aren't in
+            builder.notConsumableFluid(SizedFluidIngredient.of(fluid.getFluid(), FluidType.BUCKET_VOLUME));
             return true;
         }
         return false;
@@ -175,9 +178,14 @@ enum BeehiveLogic implements GTRecipeType.ICustomRecipeLogic {
         return !(bee instanceof ConfigurableBee configurable && configurable.getFlowerType().equals("entity_types"));
     }
 
-    /** PB's feeder check: a block item of a flower block, a bucket of a flower fluid, or a flower item. */
+    /**
+     * PB's feeder check: a block item of a flower block, a bucket of a flower fluid, or a flower item. Configurable
+     * bees' {@code isFlowerItem} ignores a {@code flowerBlock} (PB only places those), so check the block too.
+     */
     private static boolean isFlower(Bee bee, ItemStack stack) {
-        return bee instanceof ProductiveBee productive ? productive.isFlowerItem(stack) : stack.is(ItemTags.FLOWERS);
+        if (!(bee instanceof ProductiveBee productive)) return stack.is(ItemTags.FLOWERS);
+        return productive.isFlowerItem(stack) || stack.getItem() instanceof BlockItem blockItem &&
+                productive.isFlowerBlock(blockItem.getBlock().defaultBlockState());
     }
 
     private static boolean isUpgrade(ItemStack stack) {
