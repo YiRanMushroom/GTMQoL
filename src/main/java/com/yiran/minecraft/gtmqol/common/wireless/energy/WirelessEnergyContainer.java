@@ -3,6 +3,7 @@ package com.yiran.minecraft.gtmqol.common.wireless.energy;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.yiran.minecraft.gtmqol.common.wireless.NetworkId;
 
@@ -109,21 +110,56 @@ public class WirelessEnergyContainer extends NotifiableEnergyContainer {
     }
 
     /**
-     * The base class returns its own (always 0) field, and recipe handling skips input handlers with 0.
+     * What one tick can move, whatever this tick already used: the whole budget, for input no more than the
+     * network can pay.
+     */
+    private long perTick() {
+        NetworkId id = network.get();
+        if (id == null) return 0;
+        if (io == IO.OUT) return budget();
+        return Math.min(budget(), WirelessEnergySavedData.get().getAffordable(id, costMultiplier.getAsInt()));
+    }
+
+    /**
+     * The base class returns its own (always 0) field, and recipe handling skips input handlers with 0. Per tick,
+     * not what is left: see {@link #handleRecipeInner}.
      */
     @Override
     public double getTotalContentAmount() {
-        return getEnergyStored();
+        return perTick();
     }
 
     /**
      * Same total EU as the base class, without {@code EnergyContainerList.calculateVoltageAmperage}: its
      * prime factor check is linear in the amperage, which is up to 2^24 here (worst for powers of two), and this
-     * is called on every parallel calculation.
+     * is called on every parallel calculation. Per tick, like {@link #getTotalContentAmount}.
      */
     @Override
     public List<Object> getContents() {
-        return List.of(new EnergyStack(getEnergyStored()));
+        return List.of(new EnergyStack(perTick()));
+    }
+
+    /**
+     * When a recipe finishes, GTCEu checks it again in the same tick, after that tick's EU already went through.
+     * Against what is left of the budget that fails whenever the recipe uses more than half of it (which overclocking
+     * up to the voltage always does), and the machine goes idle. A check asks whether a tick of the recipe can run,
+     * and that tick gets a fresh budget, so check against the whole of it. Only the real transfer is limited to what
+     * is left.
+     */
+    @Override
+    public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
+        if (!simulate) return super.handleRecipeInner(io, recipe, left, false);
+        long perTick = perTick();
+        for (var it = left.listIterator(); it.hasNext();) {
+            EnergyStack stack = it.next();
+            long rest = stack.getTotalEU() - perTick;
+            if (stack.isEmpty() || rest <= 0) {
+                it.remove();
+            } else {
+                it.set(new EnergyStack(rest));
+            }
+        }
+        return left;
     }
 
     @Override

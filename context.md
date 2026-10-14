@@ -134,7 +134,9 @@ Config `gregification.productiveBees`. Design in `GREGIFICATION.md`. Comb centri
 industrial incubator, gene extractor and beehive (custom recipe logic, no proxy); the GT canner moves bees between
 cages and spawn eggs (genes kept). The PB machines, the beehive layout (upgrades column, then bee/flower/fluid) and
 its machine tooltip were checked in game. The capability alias fix for PB's bundled old-format gtceu recipes is in
-`integration/productivebees/`. Sturdy cages work everywhere (`BeeCage` subclass).
+`integration/productivebees/`. Sturdy cages work everywhere (`BeeCage` subclass). The beehive's flower check also
+asks `isFlowerBlock` for block items: `ConfigurableBee.isFlowerItem` ignores `flowerBlock` (time crystal, sculk, silky
+... bees never ran before; 1.20.1 already did this).
 Industrial breeder (`BreederLogic`, not built yet): like the breeding chamber, two caged adults (not used up), each
 parent's breeding items and an empty cage give a caged baby; several possible offspring are XOR chanced outputs (16 output slots in a 4x4 grid, since gtceu wants room for
 every chanced output; one EMI recipe per parent pair). Inputs are always parent, parent, empty cage, food, food, so
@@ -152,7 +154,12 @@ later: gene sampler upgrade in the beehive, gene-applying treats in the incubato
 - PB gregification: check that PB's ore-bee gtceu recipes (`gtceu:alloy_smelter/barite_bee` etc.) load without
   `Unknown registry key ... minecraft:item`; canner cage ↔ egg both ways (genes kept), beehive slot layout
   (upgrades column | bee, flower, fluid column | outputs, in machine UI and EMI; "works like PB" machine tooltip) and
-  flower requirement (item / bucket / 1000 mB fluid, EMI shows each bee's flower).
+  flower requirement (item / bucket / 1000 mB fluid, EMI shows each bee's flower). Fluid flowers said "insufficient
+  fluid" with the fluid present: `notConsumableFluid(FluidStack)` builds gtceu's `c:<fluid path>` tag, now an exact
+  `SizedFluidIngredient.of(fluid, 1000)` (1.21 only; 1.20.1 already used `FluidIngredient.of(fluid, 1000)`). Not built.
+- Random idle with wireless hatches (both branches, not built): the hatch checked recipes against what was left of
+  the tick's budget, and GTCEu re-checks a finished recipe in the same tick, so OC'd machines and generators went
+  idle; checks now see the whole budget (`WIRELESS.md`). Plus `gtceufix/RecipeLogicMixin` (lost `lastOriginRecipe`).
 - Not verified in game (1.21):
   - EMI real slots for chemicals: icons/amounts, R/U, U finding GT recipes, AE2 "+" auto-fill, no duplicate tooltips.
   - The dedicated-server path of gregification (`GregificationClient`).

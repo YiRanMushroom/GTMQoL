@@ -70,6 +70,11 @@ each call both. `IOStats` lives in `wireless/` and is shared.
 - `WirelessEnergyContainer` (hatches) reports a **per-tick budget** of V × A as stored/capacity, not the pool. The
   power substation drains `getEnergyStored()` every tick, and `EnergyContainerList` sums all hatches, so reporting
   the pool would count it once per hatch.
+  - Recipe checks (simulate `handleRecipeInner`, `getContents`, `getTotalContentAmount`) see the **whole** budget
+    (input: capped by what the network can pay), not what is left of this tick. GTCEu re-checks a finished recipe in
+    the same tick its EU already went through; with OC filling the voltage, the leftover was too small and the
+    machine went idle (generators through the output hatch too). Only the real transfer is limited to the leftover.
+    Not built yet.
 - Hatch settings (amperage, overclock) are edited in the UI and applied by the Save button or on UI close
   (`applySettings`).
   - Multiblocks snapshot voltage/amperage/tier when they form. So applying re-forms every formed controller the

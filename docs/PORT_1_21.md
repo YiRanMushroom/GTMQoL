@@ -118,6 +118,17 @@ feature, not in `gtceufix/`) are on both branches too.
   it is O(amperage). The multiblock UI's energy line rebuilds the list every tick, and with wireless hatches'
   amperage that was 77% of a profile. The mixin replaces it with "is not a power of two". Odd primes differ, but
   the caller ends at the same `amperage = 1` for them. See also `WIRELESS.md`.
+- `RecipeRunnerMixin` (both branches): the OR / XOR chance logics compute `times * chance` as an int. Above about
+  215k runs (parallel × batch, 100% output) it goes negative and chanced outputs are silently lost. The mixin wraps
+  the `ChanceLogic.roll` call in `fillContentMatchList` and rolls in chunks that don't overflow. Then it merges the
+  chunks' results: the same item or fluid is summed and split only at `Integer.MAX_VALUE`. Unmerged, every chunk
+  added entries, and gtceu's `NotifiableItemStackHandler.handleRecipe` is quadratic in the number of entries, which
+  cost about 10 mspt on the ME outputs. Ranged (IntProvider) outputs and other capabilities aren't merged. Not built yet.
+- `RecipeLogicMixin` (both branches): when `findAndHandleRecipe` restarts the last recipe, it clears
+  `lastOriginRecipe` and never sets it back. The next `onRecipeFinish` (`alwaysTryModifyRecipe`) then marks the recipe
+  dirty and goes idle. Seen in the beehive log: a finish whose re-check failed on energy (our wireless hatch checked
+  against what was left of the tick's budget, see `WIRELESS.md`) went idle, restarted through that path, and the next
+  finish went idle again. The mixin keeps the origin (`@Share` from HEAD, restored after `setupRecipe` if it started). Not built yet.
 - `gtmqol.jeifix.mixins.json` (`gtceufix/jei/JeiRecipeSlotMixin`, gated by `core/JeiRecipeSlotFixPlugin`): JEI
   19.46+ dropped the `RecipeSlot.allIngredients/displayIngredients` fields (replaced by `RecipeSlotIngredients`).
   ModularUI's `jei.RecipeSlotAccessor`, in a required config, still targets them. So `RecipeSlot` failed to load,

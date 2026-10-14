@@ -43,7 +43,9 @@
     "gtceufix.ItemDataComponentMapIngredientMixin",
     "gtceufix.GTMuiWidgetsMixin",
     "gtceufix.MEPatternBufferInternalSlotMixin",
-    "gtceufix.PotionFluidTypeMixin"
+    "gtceufix.PotionFluidTypeMixin",
+    "gtceufix.RecipeLogicMixin",
+    "gtceufix.RecipeRunnerMixin"
   ],
   "client": [
     "GTEmiRecipeStackLikeMixin",
