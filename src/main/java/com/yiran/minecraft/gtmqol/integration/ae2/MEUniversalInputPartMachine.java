@@ -53,6 +53,7 @@ import java.util.function.Predicate;
  * and the keys of every {@link AEStackLikeBridge} (e.g. chemicals). One list of slots is the source of truth (it is
  * also the item handler, like gtceu's stocking bus); the fluid tank and the per-bridge handlers are views of the
  * slots holding their keys. Auto pull, the minimum stack size and the cycle time apply to all of them.
+ * {@link MEDualInputPartMachine} is the same for items and fluids only.
  */
 public class MEUniversalInputPartMachine extends MEInputBusPartMachine implements IMEStockingPart {
 
@@ -60,6 +61,8 @@ public class MEUniversalInputPartMachine extends MEInputBusPartMachine implement
     private static final int VISIBLE_ROWS = 2;
 
     private final UniversalList list;
+    /** Whether the bridged keys (e.g. chemicals) are allowed; the dual input only takes items and fluids. */
+    private final boolean bridged;
     private final NotifiableFluidTank fluidView;
     private final List<BridgedView<?, ?>> bridgedViews = new ArrayList<>();
 
@@ -73,20 +76,48 @@ public class MEUniversalInputPartMachine extends MEInputBusPartMachine implement
     private Predicate<GenericStack> autoPullTest = $ -> false;
 
     public MEUniversalInputPartMachine(BlockEntityCreationInfo info) {
+        this(info, true);
+    }
+
+    protected MEUniversalInputPartMachine(BlockEntityCreationInfo info, boolean bridged) {
         super(info, new UniversalList(SLOTS));
         this.list = (UniversalList) getInventory();
         this.aeItemHandler = list;
+        this.bridged = bridged;
         list.bind(this);
         setOffsetBound(ticksPerCycle);
         this.fluidView = attachTrait(new FluidView(this));
-        for (var bridge : AEStackLikeBridges.all()) {
-            bridgedViews.add(attachTrait(new BridgedView<>(this, bridge)));
+        if (bridged) {
+            for (var bridge : AEStackLikeBridges.all()) {
+                bridgedViews.add(attachTrait(new BridgedView<>(this, bridge)));
+            }
         }
     }
 
     /** Whether a slot can hold the key: the recipe handlers only see items, fluids and bridged keys. */
-    public static boolean isSupported(AEKey key) {
-        return key instanceof AEItemKey || key instanceof AEFluidKey || AEStackLikeBridges.forKey(key) != null;
+    public boolean isSupported(AEKey key) {
+        return key instanceof AEItemKey || key instanceof AEFluidKey ||
+                (bridged && AEStackLikeBridges.forKey(key) != null);
+    }
+
+    // GTCEu loads a saved slot array at its saved length (16 for a dual input from before it had 36 slots): keep the
+    // 36 slots, with what was loaded.
+    @Override
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        ExportOnlyAEItemSlot[] slots = list.getInventory();
+        super.loadAdditional(tag, registries);
+        list.keepSlots(slots);
+    }
+
+    /** Puts the key into the first free slot, unless the part already has it or can't hold it. */
+    protected void addConfig(GenericStack config) {
+        if (!isSupported(config.what()) || list.hasStackInConfig(config, false)) return;
+        for (var slot : list.getInventory()) {
+            if (slot.getConfig() == null) {
+                slot.setConfig(new GenericStack(config.what(), 1));
+                return;
+            }
+        }
     }
 
     /** The slots changed: the item handler notified itself, tell the other views. */
@@ -168,7 +199,7 @@ public class MEUniversalInputPartMachine extends MEInputBusPartMachine implement
             return;
         }
         StockingParts.autoPull(list, grid.getStorageService().getInventory(), actionSource, minStackSize,
-                MEUniversalInputPartMachine::isSupported, autoPullTest);
+                this::isSupported, autoPullTest);
     }
 
     @Override
@@ -371,6 +402,17 @@ public class MEUniversalInputPartMachine extends MEInputBusPartMachine implement
         void bind(MEUniversalInputPartMachine machine) {
             this.machine = machine;
             for (var slot : inventory) ((UniversalSlot) slot).machine = machine;
+        }
+
+        /** Puts {@code full} back as the slots after loading replaced them, keeping what was loaded. */
+        void keepSlots(ExportOnlyAEItemSlot[] full) {
+            if (inventory == full) return;
+            for (int i = 0; i < Math.min(inventory.length, full.length); i++) {
+                if (inventory[i] == full[i]) continue;
+                full[i].setConfig(inventory[i].getConfig());
+                full[i].setStock(inventory[i].getStock());
+            }
+            inventory = full;
         }
 
         @Override

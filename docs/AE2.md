@@ -49,12 +49,15 @@ types in ME parts and the pattern buffer are in `STACK_LIKE_CAPABILITIES.md`.
 
 ## ME dual and universal parts (`AEDualParts`, LuV)
 
-- `me_dual_input` extends the stocking bus and adds a stocking fluid list.
-  - The main UI has items on the left and fluids on the right.
-  - `FluidConfigWidget` is a trimmed copy of GTCEu's `AEConfigWidget` with prefixed sync names. The original's
-    fixed action names collide when two widgets sit in one panel. Resync it if GTCEu changes the widget.
-  - The settings popup has item and fluid columns, with separate min stack size / ticks per cycle for fluids.
-  - The fluid list must be `attachPersistentTrait(name, trait)`; with plain `attachTrait` it was lost on reload.
+- `me_dual_input` is the universal input limited to items and fluids (`MEUniversalInputPartMachine(info, false)`):
+  36 slots, each an item or a fluid, one min stack size / ticks per cycle (2026-10-14).
+  - It used to extend the stocking bus with a separate 16-slot fluid list (persistent trait `fluid_config`) and its
+    own fluid settings. Loading such a part keeps its items in the first slots and adds its fluids after them; the
+    old fluid min stack / cycle are dropped, the item ones are kept (same NBT keys as the universal's).
+  - GTCEu loads a saved slot array at its saved length, so `MEUniversalInputPartMachine.loadAdditional` puts the
+    36-slot array back (`UniversalList.keepSlots`). The dual reads the old `traitHolder.fluid_config` tag through a
+    detached `ExportOnlyAEFluidList` and removes it, so GTCEu doesn't warn about a missing trait.
+  - An old data stick copy (`FluidConfigStacks`) pastes its fluids the same way.
 - `me_dual_output` extends the output bus and adds a fluid buffer.
   - autoIO inserts into the network every tick instead of every `updateIntervals`.
   - `buildMainUI` copies the output bus's. Its waiting list syncs a `KeyStorage` refilled from both buffers, since
@@ -63,7 +66,8 @@ types in ME parts and the pattern buffer are in `STACK_LIKE_CAPABILITIES.md`.
   handlers. See `STACK_LIKE_CAPABILITIES.md`.
 - Recipes: ME assembler (or the assembler if `ae2.processing` is off). Inputs are stocking bus + stocking hatch, or
   output bus + output hatch, plus 1000 mB glue and 144 mB (1 L) soldering alloy.
-- Data sticks share the "MEInputBus" key. Fluids only paste between duals.
+- Data sticks share the "MEInputBus" key. Dual and universal inputs paste into each other; the dual drops keys it
+  can't hold.
 - Tooltip keys end in `.desc` (`STACK_LIKE_CAPABILITIES.md`, Tooltips).
 
 ## Pattern buffer return (`PatternBufferReturn`, `MEPatternBufferReturnMixin`)
