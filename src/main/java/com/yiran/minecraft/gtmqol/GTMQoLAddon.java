@@ -99,6 +99,11 @@ public final class GTMQoLAddon implements IGTAddon {
         // Too late for machines (registry already frozen), see GTMQoL.onRegisterMachines.
     }
 
+    @Override
+    public void registerTagPrefixes() {
+        if (GTMQoLConfig.get().recipes.useLegacyPartRecipes) LegacyPartRecipes.restoreRotorAmount();
+    }
+
     /** GTCEu generates these into its runtime data pack along with its own recipes. */
     @Override
     public void addRecipes(Consumer<FinishedRecipe> provider) {
