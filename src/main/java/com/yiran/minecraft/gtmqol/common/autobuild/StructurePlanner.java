@@ -27,6 +27,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -67,8 +68,9 @@ public final class StructurePlanner {
         Direction up = controller.getUpwardsFacing();
         boolean flipped = controller.isFlipped();
 
-        AbilityFilter abilities = new AbilityFilter();
-        AbstractStructureHelper helper = createHelper(pattern, settings, abilities);
+        Map<MultiPredicate, MultiPredicate> roots = roots(pattern);
+        AbilityFilter abilities = new AbilityFilter(roots);
+        AbstractStructureHelper helper = createHelper(pattern, settings, abilities, roots);
         Map<BlockPos, BlockInfo> structure = new HashMap<>();
         helper.populate(structure, pattern, null, front, up, flipped);
 
@@ -91,7 +93,8 @@ public final class StructurePlanner {
     }
 
     private static AbstractStructureHelper createHelper(IBlockPattern pattern, BuildSettings settings,
-                                                        AbilityFilter abilities) {
+                                                        AbilityFilter abilities,
+                                                        Map<MultiPredicate, MultiPredicate> roots) {
         // Both helpers are made for subclassing (protected constructors, overridable min/max counts). Ability counts
         // go through the overrides because an expandable pattern only hands out its predicates while populating.
         if (pattern instanceof BlockPattern blockPattern) {
@@ -108,13 +111,15 @@ public final class StructurePlanner {
 
                 @Override
                 protected int getMinCount(MultiPredicate predicate, BasePredicate basePredicate) {
-                    return abilities.suppress(predicate, basePredicate) || excluded(chosen, predicate, basePredicate) ?
+                    return abilities.suppress(predicate, basePredicate) ||
+                            excluded(chosen, roots, predicate, basePredicate) ?
                             0 : super.getMinCount(predicate, basePredicate);
                 }
 
                 @Override
                 protected int getMaxCount(MultiPredicate predicate, BasePredicate basePredicate) {
-                    return abilities.suppress(predicate, basePredicate) || excluded(chosen, predicate, basePredicate) ?
+                    return abilities.suppress(predicate, basePredicate) ||
+                            excluded(chosen, roots, predicate, basePredicate) ?
                             0 : super.getMaxCount(predicate, basePredicate);
                 }
             };
@@ -166,10 +171,11 @@ public final class StructurePlanner {
         }
     }
 
-    private static boolean excluded(Map<MultiPredicate, BasePredicate> chosen, MultiPredicate predicate,
+    private static boolean excluded(Map<MultiPredicate, BasePredicate> chosen,
+                                    Map<MultiPredicate, MultiPredicate> roots, MultiPredicate predicate,
                                     BasePredicate basePredicate) {
         if (chosen.isEmpty()) return false;
-        BasePredicate choice = chosen.get(root(predicate));
+        BasePredicate choice = chosen.get(roots.getOrDefault(predicate, predicate));
         return choice != null && choice != basePredicate && !BuildOptions.isAbility(basePredicate);
     }
 
@@ -184,9 +190,21 @@ public final class StructurePlanner {
         return null;
     }
 
-    private static MultiPredicate root(MultiPredicate predicate) {
-        while (predicate.getParent() != null) predicate = predicate.getParent();
-        return predicate;
+    /**
+     * Every predicate node of the pattern, mapped to the char's predicate it belongs to. The helpers hand child nodes
+     * to the count overrides, and GTCEu's predicates no longer know their parent.
+     */
+    private static Map<MultiPredicate, MultiPredicate> roots(IBlockPattern pattern) {
+        Collection<MultiPredicate> symbols = pattern instanceof BlockPattern block ? block.getPredicates().values() :
+                pattern instanceof ExpandablePattern expandable ? expandable.getSymbolMap().values() : List.of();
+        Map<MultiPredicate, MultiPredicate> roots = new IdentityHashMap<>();
+        for (MultiPredicate symbol : symbols) addRoot(roots, symbol, symbol);
+        return roots;
+    }
+
+    private static void addRoot(Map<MultiPredicate, MultiPredicate> roots, MultiPredicate node, MultiPredicate root) {
+        roots.putIfAbsent(node, root);
+        for (MultiPredicate child : node.children()) addRoot(roots, child, root);
     }
 
     private static BlockPos findController(MultiblockControllerMachine controller, AbstractStructureHelper helper,
@@ -211,9 +229,14 @@ public final class StructurePlanner {
      */
     private static final class AbilityFilter {
 
+        private final Map<MultiPredicate, MultiPredicate> roots;
         private final Map<MultiPredicate, Boolean> abilityOnly = new IdentityHashMap<>();
         private final Set<BasePredicate> seen = Collections.newSetFromMap(new IdentityHashMap<>());
         private final Set<Block> abilityBlocks = Collections.newSetFromMap(new IdentityHashMap<>());
+
+        AbilityFilter(Map<MultiPredicate, MultiPredicate> roots) {
+            this.roots = roots;
+        }
 
         boolean suppress(MultiPredicate predicate, BasePredicate basePredicate) {
             if (!BuildOptions.isAbility(basePredicate)) return false;
@@ -222,7 +245,7 @@ public final class StructurePlanner {
                     abilityBlocks.add(candidate.getBlockState().getBlock());
                 }
             }
-            return !abilityOnly.computeIfAbsent(root(predicate),
+            return !abilityOnly.computeIfAbsent(roots.getOrDefault(predicate, predicate),
                     r -> r.expand().stream().allMatch(BuildOptions::isAbility));
         }
 

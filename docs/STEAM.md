@@ -65,8 +65,9 @@ reference clone is at `E:\code\Minecraft\gtnl-ref` on one of the user's computer
     machine UI uses the first IN fluid handler as the recipe slots, and `getTraits` is sorted by priority.
     Otherwise it drew the steam tank, and a 2-input mixer indexed past its one slot.
 - `GTMachinesMixin` / `GTMultiMachinesMixin` drop every `addOutputLimit` in GTCEu's registration (steam macerator,
-  LV–HV macerators, steam grinder, steam oven), because the user wants byproducts everywhere. Generator output
-  limits (in `GTMachineUtils`) are untouched. Toggle: `steamTweaks.noOutputLimits`.
+  steam grinder, steam oven), because the user wants byproducts everywhere. The LV–HV macerators lost their limit
+  upstream (#5528), so `GTMachinesMixin` has one call left (`require = 1`). Generator output limits (in
+  `GTMachineUtils`) are untouched. Toggle: `steamTweaks.noOutputLimits`.
 - `MagicalAssemblerUI` builds its 4-slot fluid column from the first IN fluid handler.
   - On a steam machine that used to be `SteamMachine.steamTank` (1 slot), so indexing slots 1–3 threw and the UI
     didn't open.

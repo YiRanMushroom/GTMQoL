@@ -21,8 +21,8 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.Glue;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.SolderingAlloy;
 
 /**
- * ME dual input / output parts (LuV, like the other ME buses and the pattern buffer) and the lang of the
- * pattern buffer's "return to network" switch. Only touch this class when AE2 is loaded.
+ * ME dual / universal input and output parts (LuV) and the lang of the pattern buffer's "return to network" switch.
+ * Only touch this class when AE2 is loaded.
  */
 public final class AEDualParts {
 
