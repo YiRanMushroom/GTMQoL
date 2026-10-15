@@ -26,7 +26,7 @@ public class WirelessSteamTank extends CustomFluidTank {
     private final Supplier<@Nullable NetworkId> network;
 
     public WirelessSteamTank(Supplier<@Nullable NetworkId> network) {
-        super(Integer.MAX_VALUE, stack -> stack.getFluid().is(GTMaterials.Steam.getFluidTag()));
+        super(Integer.MAX_VALUE, stack -> stack.getFluid().defaultFluidState().is(GTMaterials.Steam.getFluidTag()));
         this.network = network;
     }
 

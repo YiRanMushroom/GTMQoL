@@ -26,6 +26,8 @@
     "WorkableElectricMultiblockMachineMixin",
     "gtceufix.AbstractWidgetMenuMixin",
     "gtceufix.EnergyContainerListMixin",
+    "gtceufix.RecipeLogicMixin",
+    "gtceufix.RecipeRunnerMixin",
     "mekanism.TaggedChemicalStackIngredientAccessor"
   ],
   "client": [

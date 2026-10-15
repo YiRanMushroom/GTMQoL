@@ -125,7 +125,7 @@ public final class Greenhouse {
                         .slice("XXXXX", "G#D#G", "G###G", "G###G", "XGGGX")
                         .slice("XXXXX", "G###G", "G###G", "G###G", "XGGGX")
                         .slice("XXXXX", "XGSGX", "XGGGX", "XGGGX", "XXXXX")
-                        .where('S', controller(blocks(definition.getBlock())))
+                        .where('S', controller(definition))
                         .where('X', blocks(CASING_TUNGSTENSTEEL_ROBUST.get())
                                 .and(autoAbilities(definition.getRecipeTypes()))
                                 .and(autoAbilities(true, false, true)))

@@ -4,14 +4,12 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingBusPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingHatchPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
@@ -35,7 +33,6 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.api.storage.MEStorage;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -44,13 +41,10 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.layout.Flow;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
 /**
@@ -58,6 +52,7 @@ import java.util.function.Predicate;
  * and the keys of every {@link AEStackLikeBridge} (e.g. chemicals). One list of slots is the source of truth (it is
  * also the item handler, like gtceu's stocking bus); the fluid tank and the per-bridge handlers are views of the
  * slots holding their keys. Auto pull, the minimum stack size and the cycle time apply to all of them.
+ * {@link MEDualInputPartMachine} is the same for items and fluids only.
  */
 public class MEUniversalInputPartMachine extends MEInputBusPartMachine implements IMEStockingPart {
 
@@ -65,6 +60,8 @@ public class MEUniversalInputPartMachine extends MEInputBusPartMachine implement
     private static final int VISIBLE_ROWS = 2;
 
     private final UniversalList list;
+    /** Whether the bridged keys (e.g. chemicals) are allowed; the dual input only takes items and fluids. */
+    private final boolean bridged;
     private final NotifiableFluidTank fluidView;
     private final List<BridgedView<?, ?>> bridgedViews = new ArrayList<>();
 
@@ -78,20 +75,48 @@ public class MEUniversalInputPartMachine extends MEInputBusPartMachine implement
     private Predicate<GenericStack> autoPullTest = $ -> false;
 
     public MEUniversalInputPartMachine(BlockEntityCreationInfo info) {
+        this(info, true);
+    }
+
+    protected MEUniversalInputPartMachine(BlockEntityCreationInfo info, boolean bridged) {
         super(info, new UniversalList(SLOTS));
         this.list = (UniversalList) getInventory();
         this.aeItemHandler = list;
+        this.bridged = bridged;
         list.bind(this);
         setOffsetBound(ticksPerCycle);
         this.fluidView = attachTrait(new FluidView(this));
-        for (var bridge : AEStackLikeBridges.all()) {
-            bridgedViews.add(attachTrait(new BridgedView<>(this, bridge)));
+        if (bridged) {
+            for (var bridge : AEStackLikeBridges.all()) {
+                bridgedViews.add(attachTrait(new BridgedView<>(this, bridge)));
+            }
         }
     }
 
     /** Whether a slot can hold the key: the recipe handlers only see items, fluids and bridged keys. */
-    public static boolean isSupported(AEKey key) {
-        return key instanceof AEItemKey || key instanceof AEFluidKey || AEStackLikeBridges.forKey(key) != null;
+    public boolean isSupported(AEKey key) {
+        return key instanceof AEItemKey || key instanceof AEFluidKey ||
+                (bridged && AEStackLikeBridges.forKey(key) != null);
+    }
+
+    // GTCEu loads a saved slot array at its saved length (16 for a dual input from before it had 36 slots): keep the
+    // 36 slots, with what was loaded.
+    @Override
+    public void load(CompoundTag tag) {
+        ExportOnlyAEItemSlot[] slots = list.getInventory();
+        super.load(tag);
+        list.keepSlots(slots);
+    }
+
+    /** Puts the key into the first free slot, unless the part already has it or can't hold it. */
+    protected void addConfig(GenericStack config) {
+        if (!isSupported(config.what()) || list.hasStackInConfig(config, false)) return;
+        for (var slot : list.getInventory()) {
+            if (slot.getConfig() == null) {
+                slot.setConfig(new GenericStack(config.what(), 1));
+                return;
+            }
+        }
     }
 
     /** The slots changed: the item handler notified itself, tell the other views. */
@@ -114,7 +139,7 @@ public class MEUniversalInputPartMachine extends MEInputBusPartMachine implement
         IGrid grid = getMainNode().getGrid();
         if (grid == null) return 0;
         long extracted = grid.getStorageService().getInventory().extract(config.what(), amount,
-                simulate ? Actionable.SIMULATE : Actionable.MODULATE, actionSource);
+                Actionable.ofSimulate(simulate), actionSource);
         if (extracted > 0 && !simulate) {
             long left = stock.amount() - extracted;
             slot.setStock(left > 0 ? new GenericStack(stock.what(), left) : null);
@@ -157,19 +182,7 @@ public class MEUniversalInputPartMachine extends MEInputBusPartMachine implement
     protected void syncME() {
         IGrid grid = getMainNode().getGrid();
         if (grid == null) return;
-        MEStorage networkInv = grid.getStorageService().getInventory();
-        for (ExportOnlyAEItemSlot slot : list.getInventory()) {
-            GenericStack config = slot.getConfig();
-            if (config != null) {
-                AEKey key = config.what();
-                long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                if (extracted >= minStackSize) {
-                    slot.setStock(new GenericStack(key, extracted));
-                    continue;
-                }
-            }
-            slot.setStock(null);
-        }
+        StockingParts.syncStock(list, grid.getStorageService().getInventory(), actionSource, minStackSize);
     }
 
     @Override
@@ -177,42 +190,15 @@ public class MEUniversalInputPartMachine extends MEInputBusPartMachine implement
         // nothing to send back, the stock is only a view of the network
     }
 
-    /** MEStockingBusPartMachine#refreshList over every supported key. */
+    /** Auto pull over every supported key. */
     private void refreshList() {
         IGrid grid = getMainNode().getGrid();
         if (grid == null) {
             list.clearInventory(0);
             return;
         }
-        MEStorage networkStorage = grid.getStorageService().getInventory();
-        PriorityQueue<Object2LongMap.Entry<AEKey>> top = new PriorityQueue<>(
-                Comparator.comparingLong(Object2LongMap.Entry<AEKey>::getLongValue));
-        for (Object2LongMap.Entry<AEKey> entry : networkStorage.getAvailableStacks()) {
-            long amount = entry.getLongValue();
-            AEKey what = entry.getKey();
-            if (amount <= 0 || amount < minStackSize || !isSupported(what)) continue;
-            if (networkStorage.extract(what, amount, Actionable.SIMULATE, actionSource) == 0) continue;
-            if (autoPullTest != null && !autoPullTest.test(new GenericStack(what, amount))) continue;
-            if (top.size() < SLOTS) {
-                top.offer(entry);
-            } else if (amount > top.peek().getLongValue()) {
-                top.poll();
-                top.offer(entry);
-            }
-        }
-        int index;
-        int count = top.size();
-        for (index = 0; index < SLOTS; index++) {
-            if (top.isEmpty()) break;
-            Object2LongMap.Entry<AEKey> entry = top.poll();
-            AEKey what = entry.getKey();
-            long request = networkStorage.extract(what, entry.getLongValue(), Actionable.SIMULATE, actionSource);
-            // poll() gives the smallest first, show the biggest first
-            var slot = list.getInventory()[count - index - 1];
-            slot.setConfig(new GenericStack(what, 1));
-            slot.setStock(new GenericStack(what, request));
-        }
-        list.clearInventory(index);
+        StockingParts.autoPull(list, grid.getStorageService().getInventory(), actionSource, minStackSize,
+                this::isSupported, autoPullTest);
     }
 
     @Override
@@ -289,39 +275,7 @@ public class MEUniversalInputPartMachine extends MEInputBusPartMachine implement
     // Like the stocking bus: a distinct part runs recipes on its own, so it may share keys with other parts.
     @Override
     public boolean testConfiguredInOtherPart(@Nullable GenericStack config) {
-        if (config == null || !isFormed() || isDistinct()) return false;
-        for (MultiblockControllerMachine controller : getControllers()) {
-            for (MultiblockPartMachine part : controller.getParts()) {
-                if (part == this) continue;
-                if (part instanceof MEUniversalInputPartMachine other) {
-                    if (!other.isDistinct() && other.list.hasStackInConfig(config, false)) return true;
-                } else if (part instanceof MEStockingBusPartMachine bus) {
-                    if (bus.isDistinct()) continue;
-                    if (bus.getSlotList().hasStackInConfig(config, false)) return true;
-                    if (bus instanceof MEDualInputPartMachine dual && dual.hasFluidInConfig(config)) return true;
-                } else if (part instanceof MEStockingHatchPartMachine hatch) {
-                    if (hatch.getSlotList().hasStackInConfig(config, false)) return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * For the other stocking parts' duplicate checks (see the gtceu stocking part mixins): whether a non-distinct
-     * universal input of the controllers, other than {@code self}, has the key configured.
-     */
-    public static boolean configuredInAny(MultiblockPartMachine self, GenericStack config) {
-        if (!self.isFormed()) return false;
-        for (MultiblockControllerMachine controller : self.getControllers()) {
-            for (MultiblockPartMachine part : controller.getParts()) {
-                if (part != self && part instanceof MEUniversalInputPartMachine universal &&
-                        !universal.isDistinct() && universal.list.hasStackInConfig(config, false)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return config != null && !isDistinct() && StockingParts.configuredElsewhere(this, config);
     }
 
     /** Sets a slot's config from the UI: only supported keys, and none another slot or part already has. */
@@ -447,6 +401,17 @@ public class MEUniversalInputPartMachine extends MEInputBusPartMachine implement
         void bind(MEUniversalInputPartMachine machine) {
             this.machine = machine;
             for (var slot : inventory) ((UniversalSlot) slot).machine = machine;
+        }
+
+        /** Puts {@code full} back as the slots after loading replaced them, keeping what was loaded. */
+        void keepSlots(ExportOnlyAEItemSlot[] full) {
+            if (inventory == full) return;
+            for (int i = 0; i < Math.min(inventory.length, full.length); i++) {
+                if (inventory[i] == full[i]) continue;
+                full[i].setConfig(inventory[i].getConfig());
+                full[i].setStock(inventory[i].getStock());
+            }
+            inventory = full;
         }
 
         @Override

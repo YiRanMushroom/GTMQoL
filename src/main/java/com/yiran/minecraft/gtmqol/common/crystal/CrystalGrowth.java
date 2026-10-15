@@ -82,7 +82,7 @@ public final class CrystalGrowth {
                         .slice("XXX", "XGX", "XXX")
                         .slice("XGX", "GCG", "XGX")
                         .slice("XXX", "XSX", "XXX")
-                        .where('S', controller(blocks(definition.getBlock())))
+                        .where('S', controller(definition))
                         .where('X', blocks(CASING_STEEL_SOLID.get())
                                 .and(autoAbilities(definition.getRecipeTypes()))
                                 .and(autoAbilities(true, false, false)))

@@ -201,7 +201,7 @@ public final class AdvancedSteamMachines {
                         }
                     }
                     return builder
-                            .where('S', controller(blocks(definition.getBlock())))
+                            .where('S', controller(definition))
                             // Regular buses and hatches of any tier, as well as steam buses.
                             .where('X', blocks(CASING_BRONZE_BRICKS.get()).setMinGlobalLimited(casings / 2)
                                     .and(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true,

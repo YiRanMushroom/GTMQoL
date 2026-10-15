@@ -17,7 +17,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
  */
 public final class UniversalCircuits {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static final ItemEntry<Item>[] UNIVERSAL_CIRCUITS = new ItemEntry[TIER_COUNT];
 
     private UniversalCircuits() {}

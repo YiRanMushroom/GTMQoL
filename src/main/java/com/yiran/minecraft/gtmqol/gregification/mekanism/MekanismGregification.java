@@ -1,7 +1,6 @@
 package com.yiran.minecraft.gtmqol.gregification.mekanism;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.gui.ProgressBarTextureSet;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
@@ -12,6 +11,7 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.yiran.minecraft.gtmqol.common.stacklike.mekanism.ChemicalStackLike;
 import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
 import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
+import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.MultiblockShape;
 
 import net.minecraft.resources.ResourceLocation;
@@ -269,12 +269,7 @@ public final class MekanismGregification {
         if (!main.isEmpty()) builder.outputItems(main.get(0));
         double chance = recipe.getSecondaryChance();
         if (!secondary.isEmpty() && chance > 0) {
-            if (chance >= 1) {
-                builder.outputItems(secondary.get(0));
-            } else {
-                builder.chancedOutput(secondary.get(0),
-                        Math.max(1, (int) Math.round(chance * ChanceLogic.getMaxChancedValue())));
-            }
+            Gregification.chancedOutput(builder, SizedIngredient.create(secondary.get(0)), chance);
         }
         builder.EUt(VA[LV]).duration(ELECTRIC_TICKS);
         return true;
