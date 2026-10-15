@@ -55,6 +55,13 @@ public final class LegacyPartRecipes {
         GEAR = mold("gear", "Gear");
         SMALL_GEAR = mold("small_gear", "Small Gear");
         ROTOR = mold("rotor", "Rotor");
+    }
+
+    /**
+     * From {@code GTMQoLAddon.registerTagPrefixes}: loading {@link TagPrefix} while mods are constructed registers its
+     * prefixes after gtceu froze the registry.
+     */
+    public static void restoreRotorAmount() {
         rotor.materialAmount(M * 4);
     }
 
@@ -63,7 +70,9 @@ public final class LegacyPartRecipes {
         return GTMQoLAddon.registrate().item(id, Item::new)
                 .lang("Extruder Mold (" + name + ")")
                 .model((ctx, prov) -> prov.generated(ctx, GTCEu.id("item/" + id)))
-                .onRegister(GTItems.materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, M * 4))))
+                // built on register: materials don't exist yet while mods are constructed
+                .onRegister(item -> GTItems.<Item>materialInfo(
+                        new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, M * 4))).accept(item))
                 .register();
     }
 

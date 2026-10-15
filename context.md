@@ -310,7 +310,8 @@ The user chose concrete code in parallel with steam rather than a generic per-re
 - Legacy part recipes (`part/LegacyPartRecipes`, `recipes.useLegacyPartRecipes`, default on; not built, needs
   `runData`): the rod/bolt/gear/small gear/rotor extruder molds GTCEu v8 removed, plus a long rod mold, with their
   extruder recipes, and rotors recycling into 4 ingots again. Same as 1.21, see `docs/RECIPES.md` there; only the
-  recipe consumer type and GTCEu's `NO_UNIFICATION` skip differ.
+  recipe consumer type and GTCEu's `NO_UNIFICATION` skip differ, and the rotor amount is set from
+  `GTMQoLAddon.registerTagPrefixes` (touching `TagPrefix` in the mod constructor hit its frozen registry in `runData`).
 - The large steam lathe and modular lathe run gtceu's `LatheRecipeLogic` (lubricant doubles rods) through
   `WorkableMultiblockMachineMixin`, same as 1.21 (`docs/STEAM.md` there). Not built.
 
