@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.common.stacklike.mekanism.ChemicalStackLike;
 import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
 import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
@@ -59,7 +60,8 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
  * Batch mode and parallels make up the throughput.
  *
  * <p>Left out: Mek smelting (the energized smelter runs furnace recipes, GT's electric furnace does that already),
- * fission, fusion, SPS, pumps, the nucleosynthesizer, and item to energy/chemical conversion.</p>
+ * fission, fusion, SPS, pumps, the nucleosynthesizer, item to energy and item to infuse type conversion. Item to gas
+ * conversion has its own machine, the chemical converter.</p>
  */
 public final class MekanismGregification {
 
@@ -125,6 +127,12 @@ public final class MekanismGregification {
                         (r, b) -> convertItemToChemical(r, b, OXIDIZER_TICKS),
                         1, 0, 0, 0, 0, 1, GTSoundEntries.CHEMICAL, GTGuiTextures.PROGRESS_ARROW,
                         mek("chemical_oxidizer")),
+                // what Mek machines take straight into their gas tanks (osmium for the osmium compressor...).
+                // Its own machine, crafted from the oxidizer: on salt and sulfur the two types differ
+                type("chemical_converter", "Mek Chemical Converter", MekanismRecipeType.GAS_CONVERSION,
+                        (r, b) -> convertItemToChemical(r, b, OXIDIZER_TICKS),
+                        1, 0, 0, 0, 0, 1, GTSoundEntries.CHEMICAL, GTGuiTextures.PROGRESS_ARROW,
+                        GTMQoL.id("mek_chemical_oxidizer")),
                 type("pigment_extractor", "Mek Pigment Extractor", MekanismRecipeType.PIGMENT_EXTRACTING,
                         (r, b) -> convertItemToChemical(r, b, OXIDIZER_TICKS),
                         1, 0, 0, 0, 0, 1, GTSoundEntries.MACERATOR, GTGuiTextures.PROGRESS_EXTRACT,

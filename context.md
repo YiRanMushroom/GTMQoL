@@ -13,6 +13,17 @@ shaped this way, and what is pending.
 - **Exception, written but never built or run:** the stack-like port from 1.21 (`common/stacklike/`, Mek 10.4
   chemicals, `gregification/` + Mek machines, AE bridge/universal parts/pattern buffer, `integration/jade/`).
   Design and 1.20.1 differences: `docs/STACK_LIKE_CAPABILITIES.md` on `port/1.21.1`. Universal parts need a `runData`.
+  `mek_chemical_converter` (crafted from our `mek_chemical_oxidizer`) proxies `mekanism:gas_conversion` (osmium for
+  the osmium compressor, flint → oxygen, salt/sulfur). It is a separate machine because those differ from oxidizing on
+  salt and sulfur. Mek 10.4 keeps `infusion_conversion` (item → infuse type) as a second type; 1.21 merges both into
+  `chemical_conversion`. It isn't proxied yet: one gregified type proxies one foreign type.
+- **Also written but never built:** the Productive Bees gregification ported from 1.21 (`gregification/productivebees/`:
+  comb centrifuge, incubator, gene extractor, beehive with its own UI, breeder, canner cage ↔ spawn egg;
+  `integration/productivebees/LegacyCapabilityAliases` for PB's gtceu 1.x-format recipes). PB 1.20.1-12.6.0 is
+  `modCompileOnly` + `modLocalRuntime`. Differences from 1.21: everything is NBT; PB 1.20 has no stability upgrade,
+  so the centrifuge chances get no bonus; vanilla bees have no genes (read as 0); the flower check also asks
+  `isFlowerBlock`, since configurable bees don't count their flower block's item; fluid flowers are checked through
+  the fluid's source block. ProductiveLib (jar-in-jar in PB) isn't declared; unknown yet whether dev runtime needs it.
 - Minecraft 1.20.1, Forge 47.4.1, GTCEu v8 snapshot (pinned, see `gradle.properties`), Java 17 target,
   ModDevGradle legacyForge 2.0.141 (migrated from Architectury Loom, **not built yet**, see below). Java only; no Kotlin.
 - The old implementation is archived under `reference/` as research material. Do not migrate it wholesale
@@ -49,7 +60,25 @@ src/main/java/com/yiran/minecraft/gtmqol/
 │       ├── recipedb/      RecipeDB grouped search (own config gtmqol.recipedb.mixins.json)
 │       ├── gtceufix/      workarounds for upstream bugs; delete once fixed upstream. BaseSchemaRendererMixin: MUI
 │       │                  computes the multiblock preview's GL viewport from MUI's own transform only, so in
-│       │                  EMI/JEI (pose-translated) it is drawn at the screen's top-left; now uses the graphics pose
+│       │                  EMI/JEI (pose-translated) it is drawn at the screen's top-left; now uses the graphics pose.
+│       │                  GTEmiRecipeMixin: EMI fluid outputs dropped NBT, so R on a potion fluid found nothing
+│       │                  (not built yet). CannerLogicMixin (in mixins/) adds canner potion bottling/draining
+│       │                  representative recipes (not built yet). FluidRecipeCapabilityMixin: potion fluid
+│       │                  inputs (over the fluid's tag) showed Uncraftable Potion, EMI merged potion + flowing potion
+│       │                  back into the tag by fluid alone; with other mods' potions in the tag (IE, Create) they
+│       │                  merged too, so now lists a single fluid, gtceu's if present (display only).
+│       │                  GTRecipeViewerWidgetMixin adds a flashing "Any mod's version works" to such input slots
+│       │                  (lang in common/potion/PotionContainers, needs runData). Not built yet.
+│       │                  PotionFluidNameMixin (in mixins/) appends the first effect's potency and duration to
+│       │                  potion fluid names so normal / long / strong differ (not built yet).
+│       │                  RecipeRunnerMixin: OR / XOR chance rolls overflow `times * chance` (int) above ~215k
+│       │                  runs and lose chanced outputs; rolls in chunks instead, then sums the same item/fluid
+│       │                  back up (split at int max): per-chunk entries made gtceu's quadratic output scan
+│       │                  lag (not built yet).
+│       │                  RecipeLogicMixin: findAndHandleRecipe restarting the last recipe dropped
+│       │                  lastOriginRecipe, so the next finish went idle (dirty); keeps it (not built yet).
+│       │                  TODO: splash / lingering potion fluids in the brewery, port from 1.21 once verified
+│       │                  there (PotionContainers + BreweryLogicMixin etc.; NBT marker instead of a component)
 │       └── eap/           ExtendedAE Plus smart doubling (own config gtmqol.eap.mixins.json)
 ├── data/
 │   ├── recipe/            MiscRecipes, EarlyGameRecipes, WirelessRecipes (magical assembler recipes for every wireless part)
@@ -182,7 +211,11 @@ The user chose concrete code in parallel with steam rather than a generic per-re
 - The hatch Save button is ModularUI's `GuiTextures.SAVE` (floppy) icon, label in the tooltip.
 - `WirelessEnergyContainer` (hatches) reports a **per-tick budget** of V × A as stored/capacity, not the
   pool: the power substation drains `getEnergyStored()` every tick, and `EnergyContainerList` sums all
-  hatches, so reporting the pool would be counted once per hatch.
+  hatches, so reporting the pool would be counted once per hatch. Recipe checks (simulate `handleRecipeInner`,
+  `getContents`, `getTotalContentAmount`) see the whole budget (input: capped by what the network can pay), not
+  what is left: GTCEu re-checks a finished recipe in the same tick its EU went through, and with OC filling the
+  voltage the leftover was too small, so machines (and generators on output hatches) went idle. Only the real
+  transfer is limited to the leftover. Not built yet.
 - Hatch settings (amperage, overclock) are edited in the UI and applied by the Save button or on UI close
   (`applySettings`). Multiblocks snapshot voltage/amperage/tier when they form, so applying re-forms every
   formed controller the GTCEu way (`checkStructurePattern` hits the cache, then `formStructure`), same as
