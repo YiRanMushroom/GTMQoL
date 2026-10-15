@@ -21,6 +21,7 @@ import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
+import com.yiran.minecraft.gtmqol.common.part.LegacyPartRecipes;
 import com.yiran.minecraft.gtmqol.data.recipe.MiscRecipes;
 import com.yiran.minecraft.gtmqol.common.steam.AdvancedSteamMachines;
 import com.yiran.minecraft.gtmqol.data.recipe.EarlyGameRecipes;
@@ -111,6 +112,7 @@ public final class GTMQoLAddon implements IGTAddon {
         if (config.recipes.miscRecipes) MiscRecipes.addRecipes(provider);
         if (config.recipes.earlyGame) EarlyGameRecipes.addRecipes(provider);
         if (config.recipes.netherStarDust) MiscRecipes.addNetherStarDust(provider);
+        if (config.recipes.useLegacyPartRecipes) LegacyPartRecipes.addRecipes(provider);
         if (config.machines.electricImplosionCompressor) ElectricImplosion.addRecipes(provider);
         if (config.machines.crystalGrowthChamber) CrystalGrowth.addRecipes(provider);
         if (config.machines.greenhouse) Greenhouse.addRecipes(provider);

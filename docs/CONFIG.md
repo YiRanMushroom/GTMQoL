@@ -24,7 +24,7 @@ Split out of `context.md`.
 | `gregification.*` | `modernIndustrialization`, `mekanism`, `productiveBees` (`GREGIFICATION.md`) |
 | `wireless.energy` / `wireless.steam` | machines, covers, recipes. `WirelessNetworks.init` (events, command, stats) always runs; the void miner uses the EU network too |
 | `circuits.*` | `universalCircuits` (items + the magical assembler conversion), `controlCircuits`, `mekanismCircuitTags` |
-| `recipes.*` | `miscRecipes`, `earlyGame` (plus the kept sand → glass), `keepManualCompression`, `keepVanillaTNT`, `netherStarDust` |
+| `recipes.*` | `miscRecipes`, `earlyGame` (plus the kept sand → glass), `keepManualCompression`, `keepVanillaTNT`, `netherStarDust`, `useLegacyPartRecipes` |
 | `steamTweaks.*` | `circuitSlots`, `fluidTanks`, `noOutputLimits`, `optionalLargeBoilerParts` |
 | `overclocking.*` | `buffFusionReactor`, `enableMultiTierSkipping` (`OVERCLOCKING.md`) |
 | `ae2.*` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn`, `skipNotConsumedInputs` |

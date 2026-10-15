@@ -195,6 +195,13 @@ public final class GTMQoLConfig {
         @Configurable.Comment({ "Nether star dust in the mixer (HV): 4 diamond dust + 16 silver dust", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean netherStarDust = true;
+
+        @Configurable
+        @Configurable.Comment({ "Use legacy part recipes: the rod, bolt, gear, small gear and rotor extruder molds GTCEu v8",
+                "removed, with their extruder recipes, plus a long rod extruder mold. Rotors recycle into 4 ingots",
+                "again", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean useLegacyPartRecipes = true;
     }
 
     @Configurable

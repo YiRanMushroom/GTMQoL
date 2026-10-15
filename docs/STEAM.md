@@ -54,6 +54,10 @@ reference clone is at `E:\code\Minecraft\gtnl-ref` on one of the user's computer
   - Recipes are ported from GTNL's `CircuitAssemblerRecipes` with GTCEu substitutes: cast iron → wrought iron; GT5
     circuits → NAND chip / electronic / integrated circuits, not consumed.
   - The names overlap Mekanism's basic/advanced/elite control circuits (display only, different ids).
+- The large steam lathe runs gtceu's `LatheRecipeLogic` (25 mB lubricant per parallel: 2 rods instead of a rod and
+  2 small dust), like gtceu's lathe. `SteamParallelMultiblockMachine` can't be given a recipe logic, so
+  `WorkableMultiblockMachineMixin` swaps the plain one while it is attached (also for the modular lathe). The steam
+  single block lathe has no fluid slot besides steam, so it stays plain.
 - The whole project is LGPL-3.0 like GTNL/GTNH (`LICENSE`, text copied from GTNL, also packed into the jar; authors
   "Yiran, Frosty").
 
