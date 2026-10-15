@@ -218,6 +218,7 @@
   "gtmqol.fishing_pond.treasure.off": "Treasure mode: off",
   "gtmqol.fishing_pond.treasure.on": "Treasure mode: on (4× EU)",
   "gtmqol.greenhouse": "Greenhouse",
+  "gtmqol.gui.content.any_mod_fluid": "Any mod's version works",
   "gtmqol.gui.pattern_buffer.return.disabled": "Outputs go to the ME network: off",
   "gtmqol.gui.pattern_buffer.return.enabled": "Outputs go to the ME network: on",
   "gtmqol.gui.pattern_buffer.smart_doubling": "Smart Doubling",
