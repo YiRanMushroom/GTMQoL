@@ -104,7 +104,7 @@ public final class PatternBufferReturn {
         }
 
         Actionable mode(boolean simulate) {
-            return simulate ? Actionable.SIMULATE : Actionable.MODULATE;
+            return Actionable.ofSimulate(simulate);
         }
 
         long insert(MEStorage network, AEKey key, long amount, boolean simulate) {
@@ -250,7 +250,7 @@ public final class PatternBufferReturn {
             MEStorage network = network(buffer, enabled);
             AEKey key = bridge.toKey(stack);
             if (network == null || key == null) return 0;
-            return network.insert(key, amount, simulate ? Actionable.SIMULATE : Actionable.MODULATE, source);
+            return network.insert(key, amount, Actionable.ofSimulate(simulate), source);
         }
 
         @Override

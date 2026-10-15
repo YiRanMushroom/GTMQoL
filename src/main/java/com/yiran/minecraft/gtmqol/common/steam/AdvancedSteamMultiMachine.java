@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
@@ -34,10 +35,6 @@ public class AdvancedSteamMultiMachine extends SteamParallelMultiblockMachine {
     public AdvancedSteamMultiMachine(BlockEntityCreationInfo info, int maxRecipeTier) {
         super(info, DEFAULT_PARALLELS);
         this.maxRecipeTier = maxRecipeTier;
-    }
-
-    public AdvancedSteamMultiMachine(BlockEntityCreationInfo info) {
-        this(info, GTValues.MV);
     }
 
     public int getMaxRecipeTier() {
@@ -74,22 +71,19 @@ public class AdvancedSteamMultiMachine extends SteamParallelMultiblockMachine {
         int tier = RecipeHelper.getRecipeEUtTier(recipe);
         if (tier > maxTier) return ModifierFunction.NULL;
 
-        // Like GTCEu's OverclockingLogic, a ULV recipe gets one overclock less.
-        double eutMultiplier = 1;
-        double durationMultiplier = 1;
-        for (int t = Math.max(tier, GTValues.LV); t < maxTier && recipe.duration * durationMultiplier >= 2; t++) {
-            eutMultiplier *= 4;
-            durationMultiplier /= 2;
-        }
+        // Overclocks up to maxTier like an electric machine: ours with the OC overhaul (4x EU/t for 4x speed),
+        // GTCEu's non-perfect OC without it. No OC parallels; the steam parallels come after.
+        ModifierFunction oc = OverclockingLogic.NON_PERFECT_OVERCLOCK.getModifier(machine, recipe,
+                GTValues.V[maxTier], false);
 
         int parallels = ParallelLogic.getParallelAmount(machine, recipe, steamMachine.getMaxParallels());
         if (parallels == 0) return ModifierFunction.NULL;
-        return ModifierFunction.builder()
+        return oc.andThen(ModifierFunction.builder()
                 .inputModifier(ContentModifier.multiplier(parallels))
                 .outputModifier(ContentModifier.multiplier(parallels))
-                .durationMultiplier(durationMultiplier * DURATION_MULTIPLIER)
-                .eutMultiplier(eutMultiplier * EUT_MULTIPLIER * parallels)
+                .durationMultiplier(DURATION_MULTIPLIER)
+                .eutMultiplier(EUT_MULTIPLIER * parallels)
                 .parallels(parallels)
-                .build();
+                .build());
     }
 }

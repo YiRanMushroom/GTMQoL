@@ -22,8 +22,8 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.Glue;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.SolderingAlloy;
 
 /**
- * ME dual / universal input and output parts (LuV, like the other ME buses and the pattern buffer) and the lang of
- * the pattern buffer's "return to network" switch. Only touch this class when AE2 is loaded.
+ * ME dual / universal input and output parts (LuV) and the lang of the pattern buffer's "return to network" switch.
+ * Only touch this class when AE2 is loaded.
  */
 public final class AEDualParts {
 
@@ -33,6 +33,7 @@ public final class AEDualParts {
     public static MachineDefinition ME_UNIVERSAL_OUTPUT;
 
     // Not "<ns>.machine.<id>.tooltip": gtceu adds that key to the tooltip by itself, it would show twice.
+    private static final String DUAL_INPUT_TOOLTIP = "gtmqol.machine.me_dual_input.desc";
     private static final String UNIVERSAL_INPUT_TOOLTIP = "gtmqol.machine.me_universal_input.desc";
     private static final String UNIVERSAL_OUTPUT_TOOLTIP = "gtmqol.machine.me_universal_output.desc";
 
@@ -53,7 +54,7 @@ public final class AEDualParts {
                 .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS)
                 .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_bus"))
                 .langValue("ME Dual Input")
-                .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
+                .tooltips(Component.translatable(DUAL_INPUT_TOOLTIP),
                         Component.translatable("gtceu.machine.me.item_import.tooltip"),
                         Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
                         Component.translatable("gtceu.part_sharing.enabled"))
@@ -93,8 +94,7 @@ public final class AEDualParts {
                         Component.translatable("gtceu.part_sharing.enabled"))
                 .register();
 
-        GTMQoLAddon.registrate().addRawLang(MEDualInputPartMachine.FLUIDS_KEY, "Fluids");
-        GTMQoLAddon.registrate().addRawLang(MEDualInputPartMachine.ITEMS_KEY, "Items");
+        GTMQoLAddon.registrate().addRawLang(DUAL_INPUT_TOOLTIP, "Stocks items and fluids in 36 slots");
         GTMQoLAddon.registrate().addRawLang(UNIVERSAL_INPUT_TOOLTIP,
                 "Stocks items, fluids and other ME types (e.g. Mekanism chemicals) in 36 slots");
         GTMQoLAddon.registrate().addRawLang(UNIVERSAL_OUTPUT_TOOLTIP,

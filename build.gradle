@@ -347,6 +347,8 @@ processResources {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release = 17
+    // list every warning instead of javac's one-line "uses deprecated API" summary
+    options.compilerArgs += ['-Xlint:deprecation,removal,unchecked,rawtypes', '-Xmaxwarns', '10000']
 }
 
 // Same as gtceu: the plain jar is the dev one, reobfJar produces the real one.

@@ -10,8 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 
 import java.util.function.Consumer;
 
@@ -25,11 +24,10 @@ import java.util.function.Consumer;
 @Mixin(value = RecipeRemoval.class, remap = false)
 public class RecipeRemovalMixin {
 
-    @WrapOperation(method = "hardGlassRecipes",
-                   at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V"))
-    private static void gtmqol$keepGlass(Consumer<Object> registry, Object id, Operation<Void> original) {
-        if (GTMQoLConfig.get().recipes.earlyGame && ResourceLocation.withDefaultNamespace("glass").equals(id)) return;
-        original.call(registry, id);
+    @WrapWithCondition(method = "hardGlassRecipes",
+                       at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V"))
+    private static boolean gtmqol$keepGlass(Consumer<Object> registry, Object id) {
+        return !(GTMQoLConfig.get().recipes.earlyGame && ResourceLocation.withDefaultNamespace("glass").equals(id));
     }
 
     @ModifyExpressionValue(method = "generalRemovals",

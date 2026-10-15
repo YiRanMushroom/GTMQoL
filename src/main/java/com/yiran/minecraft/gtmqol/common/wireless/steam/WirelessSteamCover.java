@@ -2,20 +2,12 @@ package com.yiran.minecraft.gtmqol.common.wireless.steam;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IMuiCover;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.yiran.minecraft.gtmqol.common.wireless.NetworkId;
-import com.yiran.minecraft.gtmqol.common.wireless.WirelessBindingTrait;
+import com.yiran.minecraft.gtmqol.common.wireless.WirelessCover;
 
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -31,20 +23,10 @@ import org.jetbrains.annotations.Nullable;
  * Moves steam between the machine it is on and the bound player's wireless network, as much as the machine
  * takes or gives each tick: input fills it, output drains it (boilers).
  */
-public class WirelessSteamCover extends CoverBehavior implements IMuiCover {
-
-    private final IO io;
-
-    @SaveField
-    @SyncToClient
-    public final WirelessBindingTrait binding;
-
-    private @Nullable TickableSubscription subscription;
+public class WirelessSteamCover extends WirelessCover {
 
     public WirelessSteamCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, IO io) {
-        super(definition, coverHolder, attachedSide);
-        this.io = io;
-        this.binding = new WirelessBindingTrait(this, coverHolder::isRemote);
+        super(definition, coverHolder, attachedSide, io);
     }
 
     private @Nullable IFluidHandler getFluidHandler() {
@@ -58,30 +40,7 @@ public class WirelessSteamCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public void onAttached(ItemStack itemStack, @Nullable ServerPlayer player) {
-        super.onAttached(itemStack, player);
-        if (player != null && !(player instanceof FakePlayer)) {
-            binding.bind(player.getUUID(), false);
-        }
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        subscription = coverHolder.subscribeServerTick(subscription, this::update);
-    }
-
-    @Override
-    public void onRemoved() {
-        super.onRemoved();
-        if (subscription != null) {
-            subscription.unsubscribe();
-        }
-    }
-
-    private void update() {
-        NetworkId network = binding.getNetworkId();
-        if (network == null) return;
+    protected void update(NetworkId network) {
         IFluidHandler handler = getFluidHandler();
         if (handler == null) return;
         var data = WirelessSteamSavedData.get();
