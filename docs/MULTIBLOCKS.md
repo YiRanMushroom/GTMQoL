@@ -11,7 +11,13 @@ These are ports of the old ones. Lang and models are datagen'd; their recipes ar
 - Smart Assembly Factory: assembly line recipes, with `PARALLEL_HATCH`, `OC_PERFECT_SUBTICK` and `BATCH_MODE`.
   - The pattern goes from 7.x `start(BACK, UP, RIGHT)` to v8 `start(RIGHT, UP, BACK)`.
   - `setRepeatable(4)` becomes `sliceRepeatable(4, 4, ...)`.
-  - The data hatch comes through `.and(dataHatchPredicate())`, which is null when research is off.
+  - Data hatches: `safDataHatches()`, 1 to 9 data access / optical data hatches, mixed as wanted (null when
+    research is off). gtceu's `dataHatchPredicate()` (assembly line) is exactly one, because in `doModifyRecipe` every
+    part can veto a recipe and a data hatch vetoes what it has no research for: with several, a recipe would need to
+    be on all of them. `WorkableMultiblockMachineMixin` makes it "any data hatch has it" on the SAF. The SAF used
+    gtceu's predicate before (exactly one by the code); the user saw more than one accepted, cause not found.
+  - `machines.easySAFRecipe` (default on): besides the normal recipe, 16 assembly lines + circuit 24 in the
+    magical assembler, 10 s at the assembler's default `VA[LV]`.
 - DTFR: fusion recipes of any tier (ignores `eu_to_start`), same modifiers.
   - `DTFRMachine` is a plain `WorkableElectricMultiblockMachine`, with no fusion buffer, heat or tier cap.
   - It holds the ring fade state itself, because the dynamic render instance is shared.

@@ -19,7 +19,7 @@ Split out of `context.md`.
 
 | Group | Keys |
 |---|---|
-| `machines.*` | `smartAssemblyFactory`, `dimensionallyTranscendentFusionReactor`, `voidMiner`, `fishingPond`, `crystalGrowthChamber`, `greenhouse`, `advancedSteamMachines` (one unit), `electricImplosionCompressor` |
+| `machines.*` | `smartAssemblyFactory`, `easySAFRecipe`, `dimensionallyTranscendentFusionReactor`, `voidMiner`, `fishingPond`, `crystalGrowthChamber`, `greenhouse`, `advancedSteamMachines` (one unit), `electricImplosionCompressor` |
 | `modularMachines.enabled` | `MODULAR_MACHINES.md` |
 | `gregification.*` | `modernIndustrialization`, `mekanism`, `productiveBees` (`GREGIFICATION.md`) |
 | `wireless.energy` / `wireless.steam` | machines, covers, recipes. `WirelessNetworks.init` (events, command, stats) always runs; the void miner uses the EU network too |
