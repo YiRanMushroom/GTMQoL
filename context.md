@@ -29,7 +29,7 @@ that first. This file is an index: what exists, where the details are, and what 
 | `docs/PORT_1_21.md` | 1.21 build setup, code differences vs 1.20.1, every `gtceufix/` workaround |
 | `docs/GTCEU_UPGRADE.md` | what to change to bump GTCEu v8 to the latest snapshot (survey 2026-10-14, not applied) |
 | `docs/CONFIG.md` | toma config, all toggles, early config, datagen vs runtime resources, datagen gotchas |
-| `docs/RECIPES.md` | where recipes come from, magical assembler + its UI, circuits, `CircuitTags`, `MaterialAliasTags`, wireless recipes |
+| `docs/RECIPES.md` | where recipes come from, magical assembler + its UI, circuits, `CircuitTags`, `MaterialAliasTags`, wireless recipes, legacy part recipes (extruder molds) |
 | `docs/STACK_LIKE_CAPABILITIES.md` | generic stack-like recipe caps (chemicals), AE bridges, universal ME parts, pattern buffer, EMI/Jade display, how to add a type |
 | `docs/GREGIFICATION.md` | foreign recipe types on GT machines: flow, pieces, modifiers, crafting, dedicated server, MI/Mek/PB sources, how to add a source |
 | `docs/MULTIBLOCKS.md` | SAF, DTFR, electric implosion + nether stars, cyclic multiblocks, void miner, fishing pond, crystal growth, greenhouse |
@@ -66,6 +66,7 @@ src/main/java/com/yiran/minecraft/gtmqol/
 │   ├── modular/           modular multiblock versions of single blocks
 │   ├── multiblock/        SAF, DTFR, cyclic multiblocks (void miner, fishing pond)
 │   ├── overclock/         replacement OC logics
+│   ├── part/              LegacyPartRecipes (extruder molds v8 removed)
 │   ├── potion/            PotionContainers (splash/lingering marker on potion fluids)
 │   ├── recipedb/          non-mixin side of the grouped search
 │   ├── stacklike/         GenericStackLikeType/RecipeCapability/handler; mekanism/ = chemicals
@@ -100,6 +101,8 @@ src/main/java/com/yiran/minecraft/gtmqol/
   settings window. → `AUTOBUILD.md`
 - **Potions**: gtceu's brewery/canner logic working on 1.21, potion fluid names, splash/lingering potions in the
   brewery. → `POTIONS.md`
+- **Legacy part recipes**: the rod/bolt/gear/small gear/rotor extruder molds v8 removed, plus a long rod mold.
+  → `RECIPES.md`
 - **gtceu bug workarounds** (`core/mixins/gtceufix/`). → `PORT_1_21.md`
 
 ## Pending / open
@@ -110,6 +113,10 @@ Not built or not checked in game yet (1.21):
 - Mek: the chemical converter and the 20 types added in one batch (`GREGIFICATION.md`).
 - Potions: fluid names, EMI potion inputs, splash/lingering (`POTIONS.md`). The "Any mod's version works" tooltip
   moved to its own mixin (`GTRecipeViewerWidgetPotionMixin`).
+- Lathe lubricant on the large steam lathe and modular lathe (`WorkableMultiblockMachineMixin`, both branches, not
+  built; `STEAM.md`).
+- Legacy part recipes (both branches, not built; needs `runData` for models/lang): molds craft and copy, extruder
+  recipes per material, rotor recycles into 4 ingots (`RECIPES.md`).
 - Random idle with wireless hatches (both branches): checks now see the tick's whole budget (`WIRELESS.md`), plus
   `gtceufix/RecipeLogicMixin` (lost `lastOriginRecipe`) and `gtceufix/RecipeRunnerMixin` (chance overflow)
   (`PORT_1_21.md`).

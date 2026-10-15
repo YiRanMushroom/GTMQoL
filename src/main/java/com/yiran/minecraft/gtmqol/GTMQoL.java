@@ -16,6 +16,7 @@ import com.yiran.minecraft.gtmqol.data.tag.CircuitTags;
 import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
 import com.yiran.minecraft.gtmqol.common.circuit.UniversalCircuits;
+import com.yiran.minecraft.gtmqol.common.part.LegacyPartRecipes;
 import com.yiran.minecraft.gtmqol.client.GTMQoLClient;
 import com.yiran.minecraft.gtmqol.config.EarlyConfig;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
@@ -69,6 +70,7 @@ public final class GTMQoL {
         AutoBuilder.init();
         if (config.circuits.universalCircuits) UniversalCircuits.init();
         if (config.circuits.controlCircuits) ControlCircuits.init();
+        if (config.recipes.useLegacyPartRecipes) LegacyPartRecipes.init();
         if (config.circuits.mekanismCircuitTags) CircuitTags.init();
         MaterialAliasTags.init();
         PotionContainers.init(modBus);

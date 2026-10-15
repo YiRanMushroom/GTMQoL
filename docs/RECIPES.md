@@ -62,6 +62,23 @@ Split out of `context.md`.
 - Steam works the same way, from GT's `STEAM_HATCH`. The output hatch uses circuit 6, since GT has no steam output
   hatch.
 
+## Legacy part recipes (`common/part/LegacyPartRecipes`, `recipes.useLegacyPartRecipes`)
+
+GTCEu v8 (both branches, from the 2026-10-13/14 snapshots) removed the rod, bolt, gear, small gear and rotor extruder
+molds: rods come from the lathe (25 mB lubricant doubles the output, `LatheRecipeLogic`), gears from the new forming
+press recipes, rotors from the welder (4 plates + a ring). The config (default on) brings them back as
+`gtmqol:<shape>_extruder_mold`, with the extruder recipes copied from v7/early v8 `MaterialRecipeHandler` /
+`PartsRecipeHandler`, plus a long rod mold (1 ingot → 1 long rod, same time and power as 2 rods; GTCEu only had its
+texture). Item models point at gtceu's textures, which are still shipped; models and lang need `runData`.
+
+- Mold crafting, file + mold like GTCEu's: v8 gave every file position around the empty mold to other molds (the old rod
+  and rotor patterns are pipe molds now), so rod = wire mold + file right, long rod = rod mold + file below, bolt =
+  rod mold + file top left, gear / small gear / rotor = ring mold + file top left / top / bottom left. Copying in the
+  forming press like GTCEu's molds.
+- Rotors: `TagPrefix.rotor.materialAmount` goes back to `M * 4` (v8: `M * 17 / 4`, for the plates + ring), so 4
+  extruded ingots don't recycle into 4.25. It applies to every rotor, welded ones too.
+- Recipe ids are ours (`gtmqol:extrude_<material>_...`), so they don't clash with anything GTCEu might add back.
+
 ## Misc
 
 - Mekanism is compiled against on both branches (chemicals, gregification), only touched when it is loaded.

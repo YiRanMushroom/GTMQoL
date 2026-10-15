@@ -32,6 +32,7 @@
     "SimpleSteamMachineMixin",
     "SteamItemBusPartMachineMixin",
     "WorkableElectricMultiblockMachineMixin",
+    "WorkableMultiblockMachineMixin",
     "gtceufix.AbstractWidgetMenuMixin",
     "gtceufix.AEConfigSyncHandlerMixin",
     "gtceufix.EnergyContainerListMixin",

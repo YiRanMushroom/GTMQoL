@@ -38,4 +38,6 @@ Split out of `context.md`. Config `modularMachines.enabled` (default true).
 - Recipes: magical assembler (circuit 5) and a hammer-shaped recipe, from the first tier.
 - `ModularMachine.getMaxVoltage()` returns `getOverclockVoltage()` (the old
   `SingleHatchTierSkippingWorkableElectricMachine`).
+- The modular lathe gets gtceu's `LatheRecipeLogic` (lubricant), through `WorkableMultiblockMachineMixin` (see
+  `STEAM.md`).
 - Not ported: the `QOL_RECIPE_MODIFIER` part ability, non-English names.
