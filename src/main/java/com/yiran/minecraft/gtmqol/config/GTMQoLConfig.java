@@ -108,6 +108,12 @@ public final class GTMQoLConfig {
         @Configurable.Comment({ "Mekanism's machine recipes on GT multiblocks, at LV voltage", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean mekanism = true;
+
+        @Configurable
+        @Configurable.Comment({ "GT machines for Productive Bees: comb centrifuge, incubator, gene extractor, beehive",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean productiveBees = true;
     }
 
     @Configurable

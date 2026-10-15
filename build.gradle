@@ -291,6 +291,14 @@ dependencies {
     modLocalRuntime("maven.modrinth:applied-mekanistics:${project.appmek_version}") {
         transitive = false
     }
+    // Optional: Productive Bees' machines as GT machines (gregification/productivebees). Not in mods.toml.
+    // Nothing we use exposes ProductiveLib (jar-in-jar in PB), so it isn't needed on compile.
+    modCompileOnly("maven.modrinth:productivebees:${project.productivebees_version}") {
+        transitive = false
+    }
+    modLocalRuntime("maven.modrinth:productivebees:${project.productivebees_version}") {
+        transitive = false
+    }
     // Block info overlay; GTCEu has its own Jade plugin (recipe progress, energy). Compiled against for our
     // plugin (integration/jade), which Jade only loads when it is installed.
     modCompileOnly "maven.modrinth:jade:${project.jade_version}"

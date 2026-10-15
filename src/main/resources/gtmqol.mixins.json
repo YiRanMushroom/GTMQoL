@@ -5,6 +5,7 @@
   "plugin": "com.yiran.minecraft.gtmqol.core.GTMQoLMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "CannerLogicMixin",
     "FusionReactorMachineMixin",
     "GTMachinesMixin",
     "GTMachineUtilsMixin",
@@ -19,6 +20,7 @@
     "MEPatternBufferPartMachineMixin",
     "MEPatternBufferReturnMixin",
     "OverclockingLogicMixin",
+    "PotionFluidNameMixin",
     "RecipeManagerHandlerMixin",
     "RecipeRemovalMixin",
     "SimpleSteamMachineMixin",
@@ -26,10 +28,14 @@
     "WorkableElectricMultiblockMachineMixin",
     "gtceufix.AbstractWidgetMenuMixin",
     "gtceufix.EnergyContainerListMixin",
+    "gtceufix.FluidRecipeCapabilityMixin",
+    "gtceufix.RecipeLogicMixin",
+    "gtceufix.RecipeRunnerMixin",
     "mekanism.TaggedChemicalStackIngredientAccessor"
   ],
   "client": [
     "GTEmiRecipeStackLikeMixin",
+    "gtceufix.GTEmiRecipeMixin",
     "GTRecipeJEICategoryStackLikeMixin",
     "gtceufix.BaseSchemaRendererMixin"
   ],

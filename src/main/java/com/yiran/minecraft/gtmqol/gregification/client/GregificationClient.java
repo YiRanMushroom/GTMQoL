@@ -8,9 +8,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +36,11 @@ public final class GregificationClient {
     public static void init() {
         // before the recipe viewers reload
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, GregificationClient::onRecipesUpdated);
+    }
+
+    /** For recipe logic in common code, which must not load client classes itself. */
+    public static @Nullable Level level() {
+        return Minecraft.getInstance().level;
     }
 
     private static void onRecipesUpdated(RecipesUpdatedEvent event) {
