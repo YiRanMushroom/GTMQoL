@@ -62,7 +62,9 @@ public final class LegacyPartRecipes {
         return GTMQoLAddon.registrate().item(id, Item::new)
                 .lang("Extruder Mold (" + name + ")")
                 .model((ctx, prov) -> prov.generated(ctx, GTCEu.id("item/" + id)))
-                .onRegister(GTItems.materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, M * 4))))
+                // built on register: materials don't exist yet while mods are constructed
+                .onRegister(item -> GTItems.<Item>materialInfo(
+                        new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, M * 4))).accept(item))
                 .register();
     }
 
