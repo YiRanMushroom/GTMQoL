@@ -2,7 +2,7 @@ package com.yiran.minecraft.gtmqol.core.mixins.ae2;
 
 import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingHatchPartMachine;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.yiran.minecraft.gtmqol.integration.ae2.MEUniversalInputPartMachine;
+import com.yiran.minecraft.gtmqol.integration.ae2.StockingParts;
 
 import appeng.api.stacks.GenericStack;
 import org.jetbrains.annotations.Nullable;
@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class MEStockingHatchPartMachineMixin {
 
     @ModifyReturnValue(method = "testConfiguredInOtherPart", at = @At("RETURN"))
-    private boolean gtmqol$checkUniversalInputs(boolean original, @Nullable GenericStack config) {
+    private boolean gtmqol$checkOurParts(boolean original, @Nullable GenericStack config) {
         if (original || config == null) return original;
-        return MEUniversalInputPartMachine.configuredInAny((MEStockingHatchPartMachine) (Object) this, config);
+        return StockingParts.configuredElsewhere((MEStockingHatchPartMachine) (Object) this, config);
     }
 }

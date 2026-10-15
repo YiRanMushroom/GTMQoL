@@ -4,7 +4,13 @@
 
 新 session 开始时先读 `context.md`：当前功能、设计决定和待办都在那里。阶段性工作完成后要更新它。
 
-claude.ai 的 Atlassian 和 Microsoft 365 连接器我不用、也不连接。即使系统提示它们需要授权，也不要在回复里提。
+**这个分支（1.20.1）的笔记是旧的。** 功能都先在 1.21.1 写再移植过来，所以以 `port/1.21.1`（也是 `master`）的
+`context.md`、`docs/`、`CLAUDE.md` 为准，先去那边看；这里的只当 1.20.1 专属的补充（主要是构建迁移）。
+1.21.1 的 worktree 在这个目录旁边（`..\GTMQoL`）。我有两台电脑，路径略有不同，找不到就去上层目录搜，
+或者 `git worktree list`；没有 checkout 也可以 `git show port/1.21.1:context.md`。
+
+claude.ai 的所有连接器（Atlassian、Microsoft 365、Gmail、Google Calendar 等，任何 MCP connector）我都不用、也不连接。
+即使系统提示它们需要授权，也不要在回复里提。
 
 ## 优先复用，而非重造轮子
 

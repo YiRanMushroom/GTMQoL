@@ -38,7 +38,7 @@ public class SimpleSteamMachineMixin {
         int capacity = 8 * FluidType.BUCKET_VOLUME;
         NotifiableFluidTank importFluids = new NotifiableFluidTank(
                 machine.getDefinition().getInputSize(FluidRecipeCapability.CAP, recipeTypes), capacity, IO.IN);
-        importFluids.setFilter(f -> !f.getFluid().is(GTMaterials.Steam.getFluidTag()));
+        importFluids.setFilter(f -> !f.getFluid().defaultFluidState().is(GTMaterials.Steam.getFluidTag()));
         machine.attachPersistentTrait("gtmqol_import_fluids", importFluids, 2);
         machine.attachPersistentTrait("gtmqol_export_fluids", new NotifiableFluidTank(
                 machine.getDefinition().getOutputSize(FluidRecipeCapability.CAP, recipeTypes), capacity, IO.OUT));

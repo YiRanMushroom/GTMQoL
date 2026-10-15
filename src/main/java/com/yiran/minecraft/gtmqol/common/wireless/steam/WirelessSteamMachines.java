@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.common.wireless.IOStats;
-import com.yiran.minecraft.gtmqol.common.wireless.WirelessBindingTrait;
+import com.yiran.minecraft.gtmqol.common.wireless.WirelessUI;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -87,28 +87,13 @@ public final class WirelessSteamMachines {
         addLang(HATCH_OUTPUT_TOOLTIP_KEY, "Sends steam produced by the multiblock to the wireless network");
         addLang(ACCESSOR_TOOLTIP_KEY, "Pipes can insert steam into or extract it from the wireless network");
         addLang(MONITOR_TOOLTIP_KEY, "Shows the steam stored in the wireless network and its input, output and net rates");
-        addLang(WirelessSteamUI.BOUND_TO_KEY, "Bound to: %s");
-        addLang(WirelessSteamUI.NETWORK_KEY, "Network: %s");
         addLang(WirelessSteamUI.STORED_KEY, "Steam: %s mB");
-        addLang(WirelessSteamUI.PRIVATE_ON_KEY, "Private: your own network, separate from any team (including your personal FTB team)");
-        addLang(WirelessSteamUI.PRIVATE_OFF_KEY, "Shared: using your team's network");
-        addLang(WirelessSteamUI.BIND_KEY, "Bind");
-        addLang(WirelessSteamUI.UNBIND_KEY, "Unbind");
-        addLang(WirelessSteamUI.MOVE_TO_TEAM_KEY, "To team");
-        addLang(WirelessSteamUI.MOVE_TO_TEAM_TOOLTIP_KEY, "Move all steam and EU in your private network into your team's network and switch this machine to team mode");
         addLang(WirelessSteamAccessorMachine.AUTO_OUTPUT_ON_KEY, "Auto output to front: on");
         addLang(WirelessSteamAccessorMachine.AUTO_OUTPUT_OFF_KEY, "Auto output to front: off");
         addLang(WirelessSteamMonitorMachine.INPUT_RATE_KEY, "Input: %s mB/t");
         addLang(WirelessSteamMonitorMachine.OUTPUT_RATE_KEY, "Output: %s mB/t");
         addLang(WirelessSteamMonitorMachine.NET_RATE_KEY, "Net: %s mB/t (" + IOStats.SAMPLES + " s avg)");
-        addLang(WirelessBindingTrait.BOUND_KEY, "Bound to %s");
-        addLang(WirelessBindingTrait.UNBOUND_KEY, "Unbound");
-        addLang(WirelessBindingTrait.ALREADY_BOUND_KEY, "Already bound to %s");
-        addLang(WirelessBindingTrait.NOT_ALLOWED_KEY, "Only the bound player (%s) can do that");
-        addLang(WirelessBindingTrait.MOVED_TO_TEAM_KEY, "Moved %s mB of steam and %s EU from your private network to %s");
-        addLang(WirelessBindingTrait.COPIED_KEY, "Wireless binding copied to the data stick");
-        addLang(WirelessBindingTrait.STICK_OTHER_PLAYER_KEY, "This data stick holds %s's binding");
-        addLang(WirelessBindingTrait.STICK_NAME_KEY, "Wireless Binding (%s)");
+        WirelessUI.addSharedLang();
     }
 
     private static void addLang(String key, String value) {

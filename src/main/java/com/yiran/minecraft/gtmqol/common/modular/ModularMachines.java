@@ -38,7 +38,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.LV;
-import static com.gregtechceu.gtceu.api.GTValues.VA;
 import static com.gregtechceu.gtceu.api.GTValues.VN;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.FRONT;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.RIGHT;
@@ -113,7 +112,7 @@ public final class ModularMachines {
                         .slice("XXX", "XXX", "XXX")
                         .slice("XXX", "XXX", "XXX")
                         .slice("XXX", "XSX", "XXX")
-                        .where('S', Predicates.controller(Predicates.blocks(definition.getBlock())))
+                        .where('S', Predicates.controller(definition))
                         .where('X', Predicates.blocks(GTBlocks.CASING_STEEL_SOLID.get(), Blocks.GLASS,
                                         GTBlocks.CASING_TEMPERED_GLASS.get()).setPreviewCount(100)
                                 .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -147,7 +146,6 @@ public final class ModularMachines {
                     .inputItems(entry.simple.asStack())
                     .outputItems(entry.modular.asStack())
                     .circuitMeta(5)
-                    .EUt(VA[LV])
                     .duration(200)
                     .save(provider);
 

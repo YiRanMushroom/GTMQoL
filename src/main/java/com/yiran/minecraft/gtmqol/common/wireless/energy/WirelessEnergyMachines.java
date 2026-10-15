@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.common.wireless.IOStats;
+import com.yiran.minecraft.gtmqol.common.wireless.WirelessUI;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -139,6 +140,7 @@ public final class WirelessEnergyMachines {
         addLang(WirelessEnergyMonitorMachine.INPUT_RATE_KEY, "Input: %s EU/t");
         addLang(WirelessEnergyMonitorMachine.OUTPUT_RATE_KEY, "Output: %s EU/t");
         addLang(WirelessEnergyMonitorMachine.NET_RATE_KEY, "Net: %s EU/t (" + IOStats.SAMPLES + " s avg)");
+        WirelessUI.addSharedLang();
     }
 
     private static void addLang(String key, String value) {

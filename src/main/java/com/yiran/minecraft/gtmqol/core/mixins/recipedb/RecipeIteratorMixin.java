@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
@@ -64,13 +65,10 @@ public class RecipeIteratorMixin {
     }
 
     // The `b -> { for (j...) stack.push(new SearchFrame(j, b)); }` passed to ifRight above.
-    @WrapOperation(method = "lambda$getNext$0",
-                   at = @At(value = "INVOKE", target = "Ljava/util/Deque;push(Ljava/lang/Object;)V"))
-    private void gtmqol$pushRelated(Deque<Object> deque, Object frame, Operation<Void> original) {
-        if (gtmqol$grouped != null &&
-                !gtmqol$grouped.canFollow(gtmqol$from, ((SearchFrameAccessor) frame).gtmqol$getIndex())) {
-            return;
-        }
-        original.call(deque, frame);
+    @WrapWithCondition(method = "lambda$getNext$0",
+                       at = @At(value = "INVOKE", target = "Ljava/util/Deque;push(Ljava/lang/Object;)V"))
+    private boolean gtmqol$pushRelated(Deque<Object> deque, Object frame) {
+        return gtmqol$grouped == null ||
+                gtmqol$grouped.canFollow(gtmqol$from, ((SearchFrameAccessor) frame).gtmqol$getIndex());
     }
 }

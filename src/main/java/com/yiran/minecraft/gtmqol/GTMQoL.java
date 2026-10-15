@@ -31,7 +31,6 @@ import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.integration.KubeJSDataGenFix;
 import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
 import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AppMekChemicalBridge;
-import com.yiran.minecraft.gtmqol.data.recipe.MiscRecipes;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
 import com.yiran.minecraft.gtmqol.common.potion.PotionContainers;
 import com.yiran.minecraft.gtmqol.common.stacklike.GenericStackLikeRecipeCapability;
