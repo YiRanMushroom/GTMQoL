@@ -85,7 +85,7 @@ public final class ElectricImplosion {
                         .slice("XXXXX", "#GAG#", "#GAG#", "#GAG#", "#GAG#", "XXXXX")
                         .slice("XXXXX", "#PGP#", "#PGP#", "#PGP#", "#PGP#", "XXXXX")
                         .slice("XXSXX", "F###F", "F###F", "F###F", "F###F", "XXXXX")
-                        .where('S', controller(blocks(definition.getBlock())))
+                        .where('S', controller(definition))
                         .where('X', blocks(CASING_TUNGSTENSTEEL_ROBUST.get())
                                 .and(autoAbilities(definition.getRecipeTypes()))
                                 .and(autoAbilities(true, false, true)))

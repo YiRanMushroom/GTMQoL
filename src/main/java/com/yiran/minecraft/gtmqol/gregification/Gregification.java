@@ -2,16 +2,19 @@ package com.yiran.minecraft.gtmqol.gregification;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.builder.ShapelessRecipeBuilder;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
@@ -185,7 +188,6 @@ public final class Gregification {
                         .inputItems(counterpartStack)
                         .outputItems(crafted.machine.asStack())
                         .circuitMeta(5)
-                        .EUt(VA[LV])
                         .duration(200)
                         .save(provider);
                 VanillaRecipeHelper.addShapedRecipe(provider, GTMQoL.id("gregification/hammer_" + id.getPath()),
@@ -220,5 +222,21 @@ public final class Gregification {
             if (!(recipeType instanceof GregifiedRecipeType)) return false;
         }
         return true;
+    }
+
+    /** A probability (1 = always) as a GT chance out of {@link ChanceLogic#getMaxChancedValue()}, at least 1. */
+    public static int chance(double probability) {
+        int max = ChanceLogic.getMaxChancedValue();
+        return (int) Math.max(1, Math.min(max, Math.round(probability * max)));
+    }
+
+    /** An item output with a probability (1 = always): chanced, or a plain output if it would always happen. */
+    public static void chancedOutput(GTRecipeBuilder builder, Ingredient output, double probability) {
+        int chance = chance(probability);
+        if (chance >= ChanceLogic.getMaxChancedValue()) {
+            builder.output(ItemRecipeCapability.CAP, output);
+        } else {
+            builder.chancedOutput(output, chance);
+        }
     }
 }

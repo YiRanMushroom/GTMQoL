@@ -40,7 +40,6 @@ public final class WirelessRecipes {
                     .circuitMeta(5)
                     .outputItems(WirelessEnergyMachines.ENERGY_INPUT_HATCH[tier])
                     .duration(200)
-                    .EUt(VA[LV])
                     .save(provider);
 
             assembler.recipeBuilder(GTMQoL.id("wireless_energy_output_hatch_" + tierName))
@@ -48,7 +47,6 @@ public final class WirelessRecipes {
                     .circuitMeta(5)
                     .outputItems(WirelessEnergyMachines.ENERGY_OUTPUT_HATCH[tier])
                     .duration(200)
-                    .EUt(VA[LV])
                     .save(provider);
 
             assembler.recipeBuilder(GTMQoL.id("wireless_energy_input_cover_" + tierName))
@@ -56,7 +54,6 @@ public final class WirelessRecipes {
                     .circuitMeta(5)
                     .outputItems(WirelessCovers.ENERGY_INPUT_ITEM[tier], 4)
                     .duration(200)
-                    .EUt(VA[LV])
                     .save(provider);
 
             assembler.recipeBuilder(GTMQoL.id("wireless_energy_output_cover_" + tierName))
@@ -64,7 +61,6 @@ public final class WirelessRecipes {
                     .circuitMeta(5)
                     .outputItems(WirelessCovers.ENERGY_OUTPUT_ITEM[tier], 4)
                     .duration(200)
-                    .EUt(VA[LV])
                     .save(provider);
 
             assembler.recipeBuilder(GTMQoL.id("wireless_energy_accessor_" + tierName))
@@ -72,7 +68,6 @@ public final class WirelessRecipes {
                     .inputItems(WirelessCovers.ENERGY_INPUT_ITEM[tier], 4)
                     .outputItems(WirelessEnergyMachines.ENERGY_ACCESSOR[tier])
                     .duration(400)
-                    .EUt(VA[LV])
                     .save(provider);
         }
 
@@ -81,7 +76,6 @@ public final class WirelessRecipes {
                 .inputItems(WirelessCovers.ENERGY_INPUT_ITEM[LV])
                 .outputItems(WirelessEnergyMachines.ENERGY_MONITOR)
                 .duration(400)
-                .EUt(VA[LV])
                 .save(provider);
     }
 
@@ -93,7 +87,6 @@ public final class WirelessRecipes {
                 .circuitMeta(5)
                 .outputItems(WirelessSteamMachines.STEAM_INPUT_HATCH)
                 .duration(200)
-                .EUt(VA[LV])
                 .save(provider);
 
         assembler.recipeBuilder(GTMQoL.id("wireless_steam_output_hatch"))
@@ -101,7 +94,6 @@ public final class WirelessRecipes {
                 .circuitMeta(6)
                 .outputItems(WirelessSteamMachines.STEAM_OUTPUT_HATCH)
                 .duration(200)
-                .EUt(VA[LV])
                 .save(provider);
 
         assembler.recipeBuilder(GTMQoL.id("wireless_steam_input_cover"))
@@ -109,7 +101,6 @@ public final class WirelessRecipes {
                 .circuitMeta(5)
                 .outputItems(WirelessCovers.STEAM_INPUT_ITEM, 4)
                 .duration(200)
-                .EUt(VA[LV])
                 .save(provider);
 
         assembler.recipeBuilder(GTMQoL.id("wireless_steam_output_cover"))
@@ -117,7 +108,6 @@ public final class WirelessRecipes {
                 .circuitMeta(5)
                 .outputItems(WirelessCovers.STEAM_OUTPUT_ITEM, 4)
                 .duration(200)
-                .EUt(VA[LV])
                 .save(provider);
 
         assembler.recipeBuilder(GTMQoL.id("wireless_steam_accessor"))
@@ -125,7 +115,6 @@ public final class WirelessRecipes {
                 .inputItems(WirelessCovers.STEAM_INPUT_ITEM, 4)
                 .outputItems(WirelessSteamMachines.STEAM_ACCESSOR)
                 .duration(400)
-                .EUt(VA[LV])
                 .save(provider);
 
         assembler.recipeBuilder(GTMQoL.id("wireless_steam_monitor"))
@@ -133,7 +122,6 @@ public final class WirelessRecipes {
                 .inputItems(WirelessCovers.STEAM_INPUT_ITEM)
                 .outputItems(WirelessSteamMachines.STEAM_MONITOR)
                 .duration(400)
-                .EUt(VA[LV])
                 .save(provider);
     }
 }

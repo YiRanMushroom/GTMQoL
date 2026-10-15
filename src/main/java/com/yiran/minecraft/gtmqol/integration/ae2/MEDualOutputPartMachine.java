@@ -30,7 +30,7 @@ import brachy.modularui.value.sync.DynamicLinkedSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.scroll.VerticalScrollData;
-import brachy.modularui.widgets.DynamicSyncedWidget;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.Nullable;
 
@@ -98,8 +98,8 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
         updateInventorySubscription();
     }
 
-    // The superclass's item buffer is private and its own autoIO only runs every updateIntervals ticks, so go
-    // through storageIterator() (live entries of the same buffer) instead.
+    // autoIO above replaces the superclass's, which flushed its item buffer. That buffer is private, so go through
+    // storageIterator() (live entries of the same buffer); the loop is KeyStorage#insertInventory's.
     private void flushItems(MEStorage network) {
         var it = storageIterator();
         boolean changed = false;
@@ -157,7 +157,7 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
                     return col;
                 });
 
-        flow.child(new DynamicSyncedWidget<>()
+        flow.child(new DynamicWidget<>()
                 .syncHandler(dynamicHandler)
                 .size(167, 80));
 

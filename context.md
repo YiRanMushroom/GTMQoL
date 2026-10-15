@@ -4,13 +4,24 @@ Handoff notes for continuing work in a new session or on another machine. Build 
 pitfalls and working rules live in `CLAUDE.md`; read that first. This file covers what exists, why it is
 shaped this way, and what is pending.
 
+## Read the 1.21.1 branch first
+
+**This file is out of date.** Features are written on 1.21.1 first and ported here, so the reference notes live on
+`port/1.21.1` (also `master` since PR #1, 2026-10-13): its `context.md` (index, state, pending, what of 1.21 is
+ported here), `docs/*.md` (one design doc per feature, with the 1.20.1 differences) and `CLAUDE.md`. Read those
+first; use this file only for 1.20.1-only details, mainly the Loom → ModDevGradle migration at the bottom.
+
+The 1.21.1 checkout is a separate worktree next to this one (`..\GTMQoL`). The user works on two computers, so the
+paths differ a little (`C:\Users\yiran.wang\IdeaProjects\` on one, `E:\code\Minecraft\` on the other): look in the
+parent directory or run `git worktree list`, and check which branch it has checked out. Without a checkout,
+`git show port/1.21.1:context.md` works too.
+
 ## State
 
-- Branch `migrate/gtceu-v8-runtime-generation`. Committed up to wireless covers and FE. Modular machines,
-  overclocking, the Smart Assembly Factory/DTFR, the circuit/alloy tags and the RecipeDB search are staged
-  but not committed yet.
-- Builds, datagen and the dev client all work. Everything below has been tested in game by the user.
-- **Exception, written but never built or run:** the stack-like port from 1.21 (`common/stacklike/`, Mek 10.4
+- Branch `migrate/gtceu-v8-runtime-generation`. What of 1.21.1 is ported is tracked in 1.21.1's `context.md`.
+- Builds, datagen and the dev client worked before the build migration. Everything below was tested in game by the
+  user.
+- **Exception, compiles and datagens (2026-10-14) but never run in game:** the stack-like port from 1.21 (`common/stacklike/`, Mek 10.4
   chemicals, `gregification/` + Mek machines, AE bridge/universal parts/pattern buffer, `integration/jade/`).
   Design and 1.20.1 differences: `docs/STACK_LIKE_CAPABILITIES.md` on `port/1.21.1`. Universal parts need a `runData`.
   `mek_chemical_converter` (crafted from our `mek_chemical_oxidizer`) proxies `mekanism:gas_conversion` (osmium for
@@ -25,7 +36,7 @@ shaped this way, and what is pending.
   `isFlowerBlock`, since configurable bees don't count their flower block's item; fluid flowers are checked through
   the fluid's source block. ProductiveLib (jar-in-jar in PB) isn't declared; unknown yet whether dev runtime needs it.
 - Minecraft 1.20.1, Forge 47.4.1, GTCEu v8 snapshot (pinned, see `gradle.properties`), Java 17 target,
-  ModDevGradle legacyForge 2.0.141 (migrated from Architectury Loom, **not built yet**, see below). Java only; no Kotlin.
+  ModDevGradle legacyForge 2.0.141 (migrated from Architectury Loom; `compileJava` and `runData` pass, the client not run yet, see below). Java only; no Kotlin.
 - The old implementation is archived under `reference/` as research material. Do not migrate it wholesale
   and do not modify it.
 
@@ -598,7 +609,7 @@ Written, not built or tested yet. Everything here only runs when `GTCEu.Mods.isA
 - The user runs all Gradle tasks (build, `runData`, `runClient`) and pastes logs back; tell them exactly
   what to look for in game.
 
-## Build migration: Loom -> ModDevGradle legacyForge (untested)
+## Build migration: Loom -> ModDevGradle legacyForge (compiles, not run yet)
 
 `build.gradle` / `settings.gradle` follow gtceu's 1.20.1 branch: plugin `net.neoforged.moddev.legacyforge`,
 `legacyForge {}` (version, parchment, runs, mods), `mixin {}` (refmap `gtmqol.refmap.json` + the four configs),
