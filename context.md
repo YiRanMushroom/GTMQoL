@@ -139,10 +139,10 @@ because values are needed during CONSTRUCT. `GTMQoLConfig.get()` registers lazil
 GTCEu static initializers read it before this mod is constructed); during datagen it returns defaults
 (`FMLLoader.getLaunchHandler().isData()`) so every feature gets its lang/models/tags.
 
-Nearly all content has a toggle, default on, all restart-only: `machines.*` (smartAssemblyFactory,
+Nearly all content has a toggle, default on, all restart-only: `machines.*` (smartAssemblyFactory, easySAFRecipe,
 dimensionallyTranscendentFusionReactor, electricImplosionCompressor, advancedSteamMachines), `modularMachines.enabled`,
 `wireless.{energy,steam}`, `circuits.*`,
-`recipes.{miscRecipes,earlyGame,keepManualCompression,keepVanillaTNT,netherStarDust}`, `steamTweaks.*`, `overclocking.*` (fusion and
+`recipes.{miscRecipes,earlyGame,keepManualCompression,keepVanillaTNT,netherStarDust,useLegacyPartRecipes}`, `steamTweaks.*`, `overclocking.*` (fusion and
 tier skipping), `ae2.{overclockedPatternBuffer,processing,dualHatches,patternBufferReturn}`, `misc.feInput`. `integrationTests.enabled` (default
 false) registers `gtmqol:runtime_single_block` and `gtmqol:runtime_multiblock`, never during datagen.
 Wireless networks/binding/stats always load (shared); machine registration is gated in `GTMQoL`'s listeners.
@@ -307,6 +307,12 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   wireless hatch + circuit 5 → 4 covers of the same direction; GT output hatch + 4 input covers →
   accessor; screen cover + LV input cover → monitor. Steam is the same from GT's `STEAM_HATCH` (output
   hatch uses circuit 6, as GT has no steam output hatch).
+- Legacy part recipes (`part/LegacyPartRecipes`, `recipes.useLegacyPartRecipes`, default on; not built, needs
+  `runData`): the rod/bolt/gear/small gear/rotor extruder molds GTCEu v8 removed, plus a long rod mold, with their
+  extruder recipes, and rotors recycling into 4 ingots again. Same as 1.21, see `docs/RECIPES.md` there; only the
+  recipe consumer type and GTCEu's `NO_UNIFICATION` skip differ.
+- The large steam lathe and modular lathe run gtceu's `LatheRecipeLogic` (lubricant doubles rods) through
+  `WorkableMultiblockMachineMixin`, same as 1.21 (`docs/STEAM.md` there). Not built.
 
 ## Modular machines (`modular/`)
 
@@ -369,7 +375,10 @@ Registered in `onRegisterMachines`, lang/models datagen'd, recipes in the magica
 
 - Smart Assembly Factory: assembly line recipes, `PARALLEL_HATCH`, `OC_PERFECT_SUBTICK`, `BATCH_MODE`.
   Pattern from 7.x `start(BACK, UP, RIGHT)` → v8 `start(RIGHT, UP, BACK)`, `setRepeatable(4)` →
-  `sliceRepeatable(4, 4, ...)`. Data hatch via `.and(dataHatchPredicate())` (null when research is off).
+  `sliceRepeatable(4, 4, ...)`. 1-9 data access / optical data hatches (`safDataHatches()`, null when research is
+  off); any one having the research is enough (`WorkableMultiblockMachineMixin`, gtceu has every data hatch veto).
+  `machines.easySAFRecipe` (default on): also 16 assembly lines + circuit 24 in the magical assembler. Same as
+  1.21 (`docs/MULTIBLOCKS.md` there). Not built.
 - DTFR: fusion recipes of any tier (ignores `eu_to_start`), same modifiers. `DTFRMachine` is a plain
   `WorkableElectricMultiblockMachine` (no fusion buffer/heat/tier cap) holding the ring fade state, because
   the dynamic render instance is shared. Fusion MK3 layout with all fluid slots as 'X'; energy slots also
