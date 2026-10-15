@@ -2,6 +2,9 @@ package com.yiran.minecraft.gtmqol.common.multiblock;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -29,6 +32,8 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 
+import org.jetbrains.annotations.Nullable;
+
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.gear;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.plateDouble;
@@ -48,6 +53,7 @@ public final class GTMQoLMultiblocks {
     private static final String DTFR_TOOLTIP_KEY = "gtmqol.multiblock.dimensionally_transcendent_fusion_reactor.tooltip";
 
     public static MachineEntry<MultiblockMachineDefinition> SMART_ASSEMBLY_FACTORY;
+    public static final int SAF_MAX_DATA_HATCHES = 9;
     public static MachineEntry<MultiblockMachineDefinition> DIMENSIONALLY_TRANSCENDENT_FUSION_REACTOR;
     public static MachineEntry<MultiblockMachineDefinition> VOID_MINER;
     public static MachineEntry<MultiblockMachineDefinition> FISHING_POND;
@@ -89,7 +95,7 @@ public final class GTMQoLMultiblocks {
                         .where('X', blocks(CASING_STEEL_SOLID.get())
                                 .and(autoAbilities(definition.getRecipeTypes()))
                                 .and(autoAbilities(true, false, true))
-                                .and(dataHatchPredicate()))
+                                .and(safDataHatches()))
                         .where('G', blocks(CASING_GRATE.get()))
                         .where('A', blocks(CASING_ASSEMBLY_CONTROL.get()))
                         .where('R', blocks(CASING_LAMINATED_GLASS.get()))
@@ -99,6 +105,21 @@ public final class GTMQoLMultiblocks {
                         GTCEu.id("block/multiblock/assembly_line"))
                 .langValue("Smart Assembly Factory")
                 .register();
+    }
+
+    /**
+     * 1 to {@link #SAF_MAX_DATA_HATCHES} data access / optical data hatches, mixed as wanted (gtceu's assembly line
+     * takes exactly one). With several, one having the research is enough ({@code WorkableMultiblockMachineMixin}).
+     */
+    private static @Nullable MultiPredicate safDataHatches() {
+        if (!ConfigHolder.INSTANCE.machines.enableResearch) return null;
+        return abilities(PartAbility.DATA_ACCESS).or(abilities(PartAbility.OPTICAL_DATA_RECEPTION))
+                .setGlobalMinMax(1, SAF_MAX_DATA_HATCHES)
+                .setPriority(1);
+    }
+
+    public static boolean isSmartAssemblyFactory(MetaMachine machine) {
+        return SMART_ASSEMBLY_FACTORY != null && machine.getDefinition() == SMART_ASSEMBLY_FACTORY.get();
     }
 
     private static void initDTFR() {
@@ -305,6 +326,14 @@ public final class GTMQoLMultiblocks {
                 .duration(2000)
                 .EUt(VA[ZPM])
                 .save(provider);
+        if (GTMQoLConfig.get().machines.easySAFRecipe) {
+            MagicalAssembler.RECIPE_TYPE.recipeBuilder(GTMQoL.id("smart_assembly_factory_easy"))
+                    .inputItems(GTMultiMachines.ASSEMBLY_LINE, 16)
+                    .circuitMeta(24)
+                    .outputItems(SMART_ASSEMBLY_FACTORY)
+                    .duration(200)
+                    .save(provider);
+        }
     }
 
     private static void addDTFRRecipe(RecipeOutput provider) {

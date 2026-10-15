@@ -113,6 +113,8 @@ Not built or not checked in game yet (1.21):
 - Mek: the chemical converter and the 20 types added in one batch (`GREGIFICATION.md`).
 - Potions: fluid names, EMI potion inputs, splash/lingering (`POTIONS.md`). The "Any mod's version works" tooltip
   moved to its own mixin (`GTRecipeViewerWidgetPotionMixin`).
+- SAF: 1-9 data hatches, any one having the research is enough; `machines.easySAFRecipe` (both branches, not
+  built; `MULTIBLOCKS.md`).
 - Lathe lubricant on the large steam lathe and modular lathe (`WorkableMultiblockMachineMixin`, both branches, not
   built; `STEAM.md`).
 - Legacy part recipes (both branches, not built; needs `runData` for models/lang): molds craft and copy, extruder
