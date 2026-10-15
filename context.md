@@ -27,6 +27,7 @@ that first. This file is an index: what exists, where the details are, and what 
 | Doc | Covers |
 |---|---|
 | `docs/PORT_1_21.md` | 1.21 build setup, code differences vs 1.20.1, every `gtceufix/` workaround |
+| `docs/GTCEU_UPGRADE.md` | what to change to bump GTCEu v8 to the latest snapshot (survey 2026-10-14, not applied) |
 | `docs/CONFIG.md` | toma config, all toggles, early config, datagen vs runtime resources, datagen gotchas |
 | `docs/RECIPES.md` | where recipes come from, magical assembler + its UI, circuits, `CircuitTags`, `MaterialAliasTags`, wireless recipes |
 | `docs/STACK_LIKE_CAPABILITIES.md` | generic stack-like recipe caps (chemicals), AE bridges, universal ME parts, pattern buffer, EMI/Jade display, how to add a type |
@@ -124,6 +125,9 @@ Not built or not checked in game yet (1.21):
   instead of the max roll), the steam multis now use our OC (×4 EU/t, ÷4 duration with the overhaul).
 - ME dual input is now the 36-slot universal input for items and fluids; old parts and old data stick copies merge
   their item and fluid config on load (`AE2.md`). Both branches; lang regenerated.
+- GTCEu bumped to the 2026-10-13/14 snapshots on both branches, with MUI (`GTCEU_UPGRADE.md`): auto-build's
+  predicate roots are now our own map (GTCEu dropped `getParent`), 1.20.1 got `RecipeRunnerMixin` and
+  `RecipeLogicMixin`. Check auto-build block choices, the void miner and the steam macerator in game.
 
 To do:
 

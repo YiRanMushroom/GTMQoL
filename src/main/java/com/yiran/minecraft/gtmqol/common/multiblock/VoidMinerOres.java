@@ -68,7 +68,8 @@ public final class VoidMinerOres {
             if (total <= 0) continue;
             for (ObjectIntPair<Material> entry : entries) {
                 Item item = ChemicalHelper.getItem(prefix, entry.left());
-                if (item == Items.AIR) continue;
+                // null since GTCEu's 2026-10 snapshots, AIR before
+                if (item == null || item == Items.AIR) continue;
                 weights.mergeDouble(item, (double) vein.weight() * entry.rightInt() / total, Double::sum);
             }
         }

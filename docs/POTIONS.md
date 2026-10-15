@@ -1,7 +1,8 @@
 # Potions: brewery, canner, potion fluids (`common/potion/`, potion mixins)
 
 Split out of `context.md`. On 1.21 none of gtceu's custom recipe logic ran at first (brewery, canner, forming press
-naming, ...); `gtceufix/GTRecipeTypeMixin` fixes that (`PORT_1_21.md`). Forming press naming is verified in game.
+naming, ...); our `gtceufix/GTRecipeTypeMixin` fixed that until GTCEu did (#5541, removed with the 2026-10-14 bump).
+Forming press naming is verified in game.
 Everything here builds on it.
 
 ## Brewery outputs keep their potion
