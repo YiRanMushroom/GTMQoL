@@ -177,8 +177,10 @@ enum BreederLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
     public void buildRepresentativeRecipes() {
-        Level level = levelWithBees();
-        if (level == null) return;
+        onLevelThread(this::buildRepresentativeRecipes);
+    }
+
+    private void buildRepresentativeRecipes(Level level) {
         GTRecipeType type = recipeType(BREEDER);
         ItemStack emptyCage = new ItemStack(ModItems.BEE_CAGE.get());
         // one recipe per pair of parents, with all their offspring, like the machine makes them
