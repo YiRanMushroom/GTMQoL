@@ -68,7 +68,7 @@ public final class MaterialAliasTags {
         return result;
     }
 
-    private static ResourceLocation alias(ResourceLocation location) {
+    public static ResourceLocation alias(ResourceLocation location) {
         String path = location.getPath();
         for (var alias : ALIASES.entrySet()) path = path.replace(alias.getKey(), alias.getValue());
         return ResourceLocation.fromNamespaceAndPath(location.getNamespace(), path);

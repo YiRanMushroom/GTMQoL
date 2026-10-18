@@ -23,6 +23,7 @@
     "ManualCompressionMixin",
     "MEPatternBufferPartMachineMixin",
     "MEPatternBufferReturnMixin",
+    "MixinHelpersMixin",
     "OverclockingLogicMixin",
     "PotionBrewingContainerMixesAccessor",
     "PotionFluidNameMixin",

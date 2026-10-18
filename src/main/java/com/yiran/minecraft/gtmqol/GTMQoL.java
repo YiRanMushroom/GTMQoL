@@ -37,6 +37,7 @@ import com.yiran.minecraft.gtmqol.common.wireless.WirelessCovers;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessNetworks;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
+import com.yiran.minecraft.gtmqol.gregification.GTMaterialTags;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.client.GregificationClient;
 import com.yiran.minecraft.gtmqol.gregification.create.CreateGregification;
@@ -85,6 +86,7 @@ public final class GTMQoL {
         Gregification.init(modBus);
         if (config.gregification.modernIndustrialization && ModList.get().isLoaded("modern_industrialization")) {
             Gregification.addSource(MIGregification::types);
+            GTMaterialTags.init();
         }
         if (config.gregification.mekanism && ModList.get().isLoaded("mekanism")) {
             Gregification.addSource(MekanismGregification::types);

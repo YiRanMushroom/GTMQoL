@@ -21,6 +21,7 @@ import com.yiran.minecraft.gtmqol.common.ghost.ItemGhostIngredient;
 import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
 import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
+import com.yiran.minecraft.gtmqol.gregification.GTMaterialTags;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.MarkCoveredRecipes;
 import com.yiran.minecraft.gtmqol.gregification.MultiblockShape;
@@ -30,7 +31,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
@@ -228,7 +232,7 @@ public final class MIGregification {
         for (var input : recipe.itemInputs) {
             if (input.ingredient().hasNoItems()) return false;
             withChance(builder, input.probability(), true,
-                    () -> builder.inputItems(new SizedIngredient(input.ingredient(), input.amount())));
+                    () -> builder.inputItems(new SizedIngredient(widenToGT(input.ingredient()), input.amount())));
         }
         for (var input : recipe.fluidInputs) {
             if (input.fluid().hasNoFluids()) return false;
@@ -272,6 +276,19 @@ public final class MIGregification {
         }
         var material = GTRegistries.MATERIALS.getOptional(GTCEu.id(name));
         return material.filter(Material::hasFluid).orElse(null);
+    }
+
+    /**
+     * An input written as one item takes the GT material tags that item has instead ({@code c:dusts/copper} for MI's
+     * copper dust), so GT's item fits too. Tags, not names: an item without such a tag stays as it is.
+     */
+    private static Ingredient widenToGT(Ingredient ingredient) {
+        if (ingredient.isCustom()) return ingredient;
+        Ingredient.Value[] values = ingredient.getValues();
+        if (values.length != 1 || !(values[0] instanceof Ingredient.ItemValue value)) return ingredient;
+        List<TagKey<Item>> tags = GTMaterialTags.of(value.item().getItem());
+        if (tags.isEmpty()) return ingredient;
+        return Ingredient.fromValues(tags.stream().map(Ingredient.TagValue::new));
     }
 
     /** A single-fluid input also accepts the same-named GT material's fluid tag. */
