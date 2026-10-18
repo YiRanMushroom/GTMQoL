@@ -56,6 +56,10 @@ public final class AE2Machines {
         addLang(SmartDoubling.TOGGLE_KEY + ".enabled", "Smart doubling: on");
         addLang(SmartDoubling.TOGGLE_KEY + ".disabled", "Smart doubling: off");
         addLang(SmartDoubling.LIMIT_KEY, "Limit (0 = none)");
+        addLang(PatternOutputMarks.TOGGLE_KEY + ".enabled", "Mark Pattern Outputs: \u00a7eEnabled");
+        addLang(PatternOutputMarks.TOGGLE_KEY + ".disabled", "Mark Pattern Outputs: \u00a7eDisabled");
+        addLang(PatternOutputMarks.TOGGLE_KEY + ".info", "If enabled, each pattern counts as a ghost " +
+                "ingredient mark for its main output, so it picks the recipe making that output.");
         addLang(SharedHatches.TOGGLE_KEY + ".enabled", "Shared Hatches: \u00a7eEnabled");
         addLang(SharedHatches.TOGGLE_KEY + ".disabled", "Shared Hatches: \u00a7eDisabled");
         addLang(SharedHatches.TOGGLE_KEY + ".info", "If enabled, patterns can also use ingredients from the " +

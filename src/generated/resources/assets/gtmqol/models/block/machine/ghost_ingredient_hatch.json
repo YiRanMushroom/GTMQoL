@@ -10,12 +10,10 @@
   "variants": {
     "is_painted=false": {
       "model": {
-        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
+        "parent": "gtceu:block/machine/template/part/hatch_machine",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/lv/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_item_hatch_input",
-          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
-          "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe",
+          "overlay": "gtceu:block/overlay/machine/overlay_maintenance_configurable",
           "side": "gtceu:block/casings/voltage/lv/side",
           "top": "gtceu:block/casings/voltage/lv/top"
         }
@@ -23,12 +21,10 @@
     },
     "is_painted=true": {
       "model": {
-        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
+        "parent": "gtceu:block/machine/template/part/hatch_machine_color_ring",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/lv/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_item_hatch_input",
-          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
-          "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe",
+          "overlay": "gtceu:block/overlay/machine/overlay_maintenance_configurable",
           "side": "gtceu:block/casings/voltage/lv/side",
           "top": "gtceu:block/casings/voltage/lv/top"
         }

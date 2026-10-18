@@ -74,6 +74,7 @@ public final class SharedHatches {
         var right = builder.rightConfigurators();
         return builder.rightConfigurators(right.andThen(f -> f.child(new ToggleButton()
                 .value(value)
+                .invertSelected(true)
                 .overlay(GTGuiTextures.BUTTON_ITEM_ALLOW_INPUT_OUTPUT)
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder(r -> r
