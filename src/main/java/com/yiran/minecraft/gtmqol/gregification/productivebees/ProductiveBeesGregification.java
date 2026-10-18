@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
@@ -283,21 +284,17 @@ public final class ProductiveBeesGregification {
     }
 
     /**
-     * {@link #level()}, with every bee's entity made and cached ({@link BeeIngredient#getCachedEntity}) on the level's
-     * own thread, where entities may only be made: recipe viewers build their recipes on a worker thread (EMI's crash
-     * otherwise: "Accessing LegacyRandomSource from multiple threads"). That thread waits for it.
+     * Runs {@code build} with {@link #level()} (if there is one) on the level's own thread, where entities may be made:
+     * recipe viewers build their recipes on a worker thread, and making a bee there crashes EMI ("Accessing
+     * LegacyRandomSource from multiple threads"). That thread waits for it.
      */
-    static @Nullable Level levelWithBees() {
+    static void onLevelThread(Consumer<Level> build) {
         Level level = level();
-        if (level == null) return null;
-        Runnable makeBees = () -> {
-            for (var bee : bees()) bee.getCachedEntity(level);
-        };
+        if (level == null) return;
         BlockableEventLoop<?> owner = level instanceof ServerLevel server ? server.getServer() :
                 GregificationClient.executor();
-        if (owner.isSameThread()) makeBees.run();
-        else owner.submit(makeBees).join();
-        return level;
+        if (owner.isSameThread()) build.accept(level);
+        else owner.submit(() -> build.accept(level)).join();
     }
 
     /** Every bee, by id. */
