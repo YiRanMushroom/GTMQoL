@@ -1,4 +1,4 @@
-package com.yiran.minecraft.gtmqol.gregification;
+package com.yiran.minecraft.gtmqol.common.singleblock;
 
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IAttachConfiguratorsTrait;
@@ -11,7 +11,8 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
 
 /**
- * Batch mode toggle for single blocks, the same button multiblocks have. Read by {@link GregificationModifiers#BATCH}.
+ * Batch mode toggle for single blocks, the same button multiblocks have. Read by
+ * {@link com.yiran.minecraft.gtmqol.gregification.GregificationModifiers#BATCH}.
  */
 public class BatchModeTrait extends MachineTrait implements IAttachConfiguratorsTrait {
 
