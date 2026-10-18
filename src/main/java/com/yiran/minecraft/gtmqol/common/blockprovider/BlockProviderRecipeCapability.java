@@ -1,6 +1,8 @@
 package com.yiran.minecraft.gtmqol.common.blockprovider;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
@@ -59,6 +61,15 @@ public final class BlockProviderRecipeCapability extends RecipeCapability<Block>
     @Override
     public boolean isRecipeSearchFilter() {
         return true;
+    }
+
+    /**
+     * Never consumed, so it doesn't limit parallels. The default ({@code Integer.MAX_VALUE}, "skip") makes gtceu's
+     * parallel logic report "no input capabilities" for recipes with no other input.
+     */
+    @Override
+    public int getMaxParallelByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int limit, boolean tick) {
+        return limit;
     }
 
     @Override

@@ -3,8 +3,11 @@ package com.yiran.minecraft.gtmqol.gregification;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.GTRecipeTypeBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
@@ -70,7 +73,7 @@ public final class Gregification {
     private static boolean declared;
 
     private record Crafted(MachineEntry<?> machine, @Nullable ResourceLocation catalyst,
-                           ResourceLocation counterpart) {}
+                           ResourceLocation counterpart, ForeignMachineType.@Nullable Crafting crafting) {}
 
     private Gregification() {}
 
@@ -110,7 +113,7 @@ public final class Gregification {
         GTRecipeTypeBuilder builder = registrate
                 .<RecipeType<?>, GTRecipeType, GTRegistrate, GTRecipeTypeBuilder>entry(name,
                         callback -> new GregifiedRecipeTypeBuilder(registrate, name, callback, GTRecipeTypes.ELECTRIC,
-                                type.converter(), type.proxy()))
+                                type.converter(), type.proxies()))
                 .setMaxIOSize(type.itemInputs(), type.itemOutputs(), type.fluidInputs(), type.fluidOutputs())
                 .setEUIO(IO.IN)
                 .UI(type.ui())
@@ -143,7 +146,7 @@ public final class Gregification {
                     .tooltips(workableTiered(tier, V[tier], V[tier] * 64, recipeType,
                             defaultTankSizeFunction.applyAsInt(tier), true))
                     .register();
-            CRAFTED.add(new Crafted(machine, type.catalyst(), type.counterpart().apply(tier)));
+            CRAFTED.add(new Crafted(machine, type.catalyst(), type.counterpart().apply(tier), type.crafting()));
         }
     }
 
@@ -153,17 +156,20 @@ public final class Gregification {
                 .multiblock(type.name(), shape.machine())
                 .dynamicallyGenerated(true);
         shape.configure(builder);
+        // GT's machine UI only shows the batch button for GT's own BATCH_MODE
+        RecipeModifier[] modifiers = type.modifiers() != null ? type.modifiers().toArray(RecipeModifier[]::new) :
+                new RecipeModifier[] { GregificationModifiers.COIL_TEMPERATURE, GregificationModifiers.OVERCLOCK,
+                        GTRecipeModifiers.BATCH_MODE };
         MachineEntry<?> machine = builder.recipeType(recipeType)
-                // GT's machine UI only shows the batch button for GT's own BATCH_MODE
-                .recipeModifiers(GregificationModifiers.COIL_TEMPERATURE, GregificationModifiers.OVERCLOCK,
-                        GTRecipeModifiers.BATCH_MODE)
+                .recipeModifiers(modifiers)
                 .appearanceBlock(shape.casing)
                 .pattern(shape::pattern)
-                .workableCasingModel(shape.casingModel, shape.overlay)
+                .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+                .model(shape.model())
                 .langValue(type.englishName())
                 .tooltips(tooltip(type))
                 .register();
-        CRAFTED.add(new Crafted(machine, type.catalyst(), type.counterpart().apply(-1)));
+        CRAFTED.add(new Crafted(machine, type.catalyst(), type.counterpart().apply(-1), type.crafting()));
     }
 
     private static @Nullable Component tooltip(ForeignMachineType type) {
@@ -172,7 +178,7 @@ public final class Gregification {
 
     /**
      * Shapeless: counterpart + catalyst (kept) = machine. Without a catalyst, like the modular machines: the
-     * counterpart hit with a GT hammer, or through the magical assembler.
+     * counterpart hit with a GT hammer, or through the magical assembler; or the type's own crafting.
      */
     public static void addRecipes(RecipeOutput provider) {
         for (Crafted crafted : CRAFTED) {
@@ -184,7 +190,12 @@ public final class Gregification {
                     continue;
                 }
                 ItemStack counterpartStack = new ItemStack(counterpart.get());
-                MagicalAssembler.RECIPE_TYPE.get().recipeBuilder(GTMQoL.id("gregification/" + id.getPath()))
+                ResourceLocation recipeId = GTMQoL.id("gregification/" + id.getPath());
+                if (crafted.crafting != null) {
+                    crafted.crafting.addRecipes(provider, recipeId, counterpartStack, crafted.machine.asStack());
+                    continue;
+                }
+                MagicalAssembler.RECIPE_TYPE.get().recipeBuilder(recipeId)
                         .inputItems(counterpartStack)
                         .outputItems(crafted.machine.asStack())
                         .circuitMeta(5)
