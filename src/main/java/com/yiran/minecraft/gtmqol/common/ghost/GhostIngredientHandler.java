@@ -6,6 +6,15 @@ import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableRecipeHandle
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.value.sync.GenericListSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.layout.Flow;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,6 +30,10 @@ public class GhostIngredientHandler extends NotifiableRecipeHandlerTrait<GhostIn
 
     @SaveField
     public final GhostIngredientList marks = new GhostIngredientList();
+
+    /** Size of {@link #buildList}. */
+    public static final int LIST_WIDTH = 168;
+    public static final int LIST_HEIGHT = 6 * GhostIngredientListWidget.ROW + 22;
 
     public GhostIngredientHandler() {
         // markAsChanged: the block entity is only saved again when marked as changed
@@ -42,6 +55,42 @@ public class GhostIngredientHandler extends NotifiableRecipeHandlerTrait<GhostIn
     @Override
     public @NotNull List<Object> getContents() {
         return new ArrayList<>(new LinkedHashSet<>(marks.view()));
+    }
+
+    /**
+     * The marks to edit, for a machine's UI: click with an item (or what it holds) to mark it, drag from the recipe
+     * viewer, or click empty-handed to remove.
+     */
+    public Flow buildList(PanelSyncManager syncManager) {
+        var list = new GenericListSyncHandler<RegistryFriendlyByteBuf, GhostIngredient<?>>(marks::view, null,
+                GhostIngredient.STREAM_CODEC, GhostIngredient.STREAM_CODEC, null, null);
+        syncManager.syncValue("ghost_marks", list);
+
+        syncManager.registerServerSyncedAction(GhostIngredientListWidget.CLICK, packet -> {
+            int index = packet.readVarInt();
+            int button = packet.readVarInt();
+            ItemStack held = syncManager.getPlayer().containerMenu.getCarried();
+            if (held.isEmpty()) {
+                marks.remove(index);
+                return;
+            }
+            GhostIngredient<?> ghost = GhostIngredient.fromHeld(held, button == 1);
+            if (ghost != null) marks.set(index, ghost);
+        });
+        syncManager.registerServerSyncedAction(GhostIngredientListWidget.SET, packet -> {
+            int index = packet.readVarInt();
+            marks.set(index, GhostIngredient.STREAM_CODEC.decode(packet));
+        });
+
+        int width = LIST_WIDTH - 8;
+        return Flow.column()
+                .size(LIST_WIDTH, LIST_HEIGHT)
+                .padding(4)
+                .childPadding(4)
+                .child(Text.lang(GhostIngredientHatchPartMachine.KEY + "title").asWidget())
+                .child(new ListWidget<>()
+                        .size(width, LIST_HEIGHT - 22)
+                        .child(new GhostIngredientListWidget(list::getValue, syncManager, width - 8)));
     }
 
     @Override

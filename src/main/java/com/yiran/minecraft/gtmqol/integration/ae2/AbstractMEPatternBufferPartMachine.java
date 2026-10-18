@@ -1,12 +1,17 @@
 package com.yiran.minecraft.gtmqol.integration.ae2;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
+import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredient;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.inventories.InternalInventory;
 import appeng.crafting.pattern.EncodedPatternItem;
 import brachy.modularui.api.drawable.Text;
@@ -17,10 +22,14 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.scroll.VerticalScrollData;
+import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * GTCEu's pattern buffer with a different number of pattern slots. GTCEu inlines its 27 (MAX_PATTERN_COUNT) in
@@ -52,8 +61,50 @@ public abstract class AbstractMEPatternBufferPartMachine extends MEPatternBuffer
         }
     };
 
+    /** See {@link PatternOutputMarks}. */
+    @SaveField
+    @SyncToClient
+    private boolean marksPatternOutputs = false;
+
     protected AbstractMEPatternBufferPartMachine(BlockEntityCreationInfo info) {
         super(info);
+        // for recipe lookup; each slot marks its own pattern when matching (MEPatternBufferOutputMarksMixin)
+        getBufferRecipeHandler().addHandlers(new PatternOutputMarks(this::allOutputMarks));
+    }
+
+    public boolean marksPatternOutputs() {
+        return marksPatternOutputs;
+    }
+
+    public void setMarksPatternOutputs(boolean marks) {
+        marksPatternOutputs = marks;
+        getSyncDataHolder().markClientSyncFieldDirty("marksPatternOutputs");
+    }
+
+    private List<GhostIngredient<?>> allOutputMarks() {
+        if (!marksPatternOutputs) return List.of();
+        List<GhostIngredient<?>> marks = new ArrayList<>();
+        for (IPatternDetails pattern : getAvailablePatterns()) {
+            GhostIngredient<?> mark = PatternOutputMarks.of(pattern);
+            if (mark != null) marks.add(mark);
+        }
+        return marks;
+    }
+
+    @Override
+    public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var builder = super.getPanelBuilder(data, syncManager, settings);
+        var value = new BooleanSyncValue(this::marksPatternOutputs, this::setMarksPatternOutputs).allowC2S();
+        var right = builder.rightConfigurators();
+        return builder.rightConfigurators(right.andThen(f -> f.child(new ToggleButton()
+                .value(value)
+                .invertSelected(true)
+                .overlay(GTGuiTextures.PATTERN_OVERLAY)
+                .tooltipAutoUpdate(true)
+                .tooltipBuilder(r -> r
+                        .addLine(Text.lang(PatternOutputMarks.TOGGLE_KEY +
+                                (value.getBoolValue() ? ".enabled" : ".disabled")))
+                        .addLine(Text.lang(PatternOutputMarks.TOGGLE_KEY + ".info"))))));
     }
 
     /**

@@ -5,6 +5,8 @@
   "plugin": "com.yiran.minecraft.gtmqol.core.AE2MixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "MEPatternBufferOutputMarksMixin",
+    "MEPatternBufferWorkerPatternAccessor",
     "FluidRecipeCapabilitySharedHatchesMixin",
     "ItemRecipeCapabilitySharedHatchesMixin",
     "MEPatternBufferProxySharedHatchesMixin",
