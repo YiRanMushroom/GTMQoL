@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.gregification.mi;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
@@ -13,10 +14,15 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.recipe.gui.GTRecipeUIModifiers;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.yiran.minecraft.gtmqol.GTMQoL;
+import com.yiran.minecraft.gtmqol.common.ghost.FluidGhostIngredient;
+import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredient;
+import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredientRecipeCapability;
+import com.yiran.minecraft.gtmqol.common.ghost.ItemGhostIngredient;
 import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
 import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
+import com.yiran.minecraft.gtmqol.gregification.MarkCoveredRecipes;
 import com.yiran.minecraft.gtmqol.gregification.MultiblockShape;
 
 import net.minecraft.core.Holder;
@@ -24,6 +30,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -40,9 +48,11 @@ import brachy.modularui.drawable.progress.CircularProgressDrawable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.UnaryOperator;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -152,13 +162,20 @@ public final class MIGregification {
             SingleBlock single = SINGLE_BLOCKS.get(path);
             Multiblock multi = MULTIBLOCKS.get(path);
             if (single != null) {
-                types.add(ForeignMachineType.singleBlock(name, englishName, () -> recipeType,
-                        ForeignRecipeConverter.single(MIGregification::convert),
+                // the assembler is picked by hand: recipes with the same inputs get a mark, see MarkCoveredRecipes
+                boolean marks = path.equals("assembler");
+                ForeignRecipeConverter converter = marks ?
+                        new MarkCoveredRecipes(MIGregification::convert, MIGregification::inputs,
+                                MIGregification::mainOutputMark) :
+                        ForeignRecipeConverter.single(MIGregification::convert);
+                var type = ForeignMachineType.singleBlock(name, englishName, () -> recipeType, converter,
                         single.itemInputs, single.itemOutputs, single.fluidInputs, single.fluidOutputs,
                         single.sound, single.ui, GUIDEBOOK,
                         tier -> ResourceLocation.parse(
                                 single.counterpart.formatted(VN[tier].toLowerCase(Locale.ROOT))),
-                        GTCEu.id("block/machines/" + single.model)));
+                        GTCEu.id("block/machines/" + single.model));
+                types.add(marks ? type.withRecipeType(
+                        builder -> builder.setMaxSize(IO.IN, GhostIngredientRecipeCapability.CAP, 1)) : type);
             } else if (multi != null) {
                 ForeignRecipeConverter converter = ForeignRecipeConverter.single(path.equals("blast_furnace") ?
                         MIGregification::convertBlastFurnace : MIGregification::convert);
@@ -172,6 +189,35 @@ public final class MIGregification {
             }
         }
         return types;
+    }
+
+    /** Per input, the items or fluids it takes. */
+    private static List<Set<Object>> inputs(Recipe<?> foreign) {
+        List<Set<Object>> inputs = new ArrayList<>();
+        if (!(foreign instanceof MachineRecipe recipe)) return inputs;
+        for (var input : recipe.itemInputs) {
+            Set<Object> items = new HashSet<>();
+            for (ItemStack stack : input.ingredient().getItems()) items.add(stack.getItem());
+            if (!items.isEmpty()) inputs.add(items);
+        }
+        for (var input : recipe.fluidInputs) {
+            Set<Object> fluids = new HashSet<>();
+            for (FluidStack stack : input.fluid().getStacks()) fluids.add(stack.getFluid());
+            if (!fluids.isEmpty()) inputs.add(fluids);
+        }
+        return inputs;
+    }
+
+    /** The first item output, or else the first fluid output. */
+    private static @Nullable GhostIngredient<?> mainOutputMark(Recipe<?> foreign) {
+        if (!(foreign instanceof MachineRecipe recipe)) return null;
+        for (var output : recipe.itemOutputs) {
+            if (!output.getStack().isEmpty()) return new ItemGhostIngredient(output.getStack());
+        }
+        for (var output : recipe.fluidOutputs) {
+            return new FluidGhostIngredient(new FluidStack(output.fluid(), 1));
+        }
+        return null;
     }
 
     private static boolean convert(RecipeHolder<?> holder, GTRecipeBuilder builder) {
