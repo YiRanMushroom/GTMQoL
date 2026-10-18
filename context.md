@@ -18,7 +18,11 @@ that first. This file is an index: what exists, where the details are, and what 
 - 1.20.1 sync (branch head 2026-10-12): everything up to "tag alias and AE Encoder fix", plus the written-not-built
   ports of auto-build, stack-like (Mek 10.4 chemicals, AE bridge, universal parts, pattern buffer), Mekanism
   gregification and Jade. The PB gregification and potion ports were written there too but are not on the branch.
-  MI gregification is 1.21 only. That branch's `context.md` is older; treat this one as the reference.
+  MI gregification is 1.21 only (MI has no Forge 1.20.1 build, `GREGIFICATION.md`). That branch's `context.md` is
+  older; treat this one as the reference.
+- Since 2026-10-17 both branches also have (compiled and `runData`'d on 1.20.1, run in ATM10 on 1.21): ghost
+  ingredients, Create gregification, pattern buffer shared hatches and output marks, `MarkCoveredRecipes`,
+  composable single blocks, runtime wire tags, the PB entity-thread fix.
 - The old implementation is archived under `reference/` as research material. Do not migrate it wholesale and do not
   modify it.
 
@@ -29,15 +33,16 @@ that first. This file is an index: what exists, where the details are, and what 
 | `docs/PORT_1_21.md` | 1.21 build setup, code differences vs 1.20.1, every `gtceufix/` workaround |
 | `docs/GTCEU_UPGRADE.md` | what to change to bump GTCEu v8 to the latest snapshot (survey 2026-10-14, not applied) |
 | `docs/CONFIG.md` | toma config, all toggles, early config, datagen vs runtime resources, datagen gotchas |
-| `docs/RECIPES.md` | where recipes come from, magical assembler + its UI, circuits, `CircuitTags`, `MaterialAliasTags`, wireless recipes, legacy part recipes (extruder molds) |
+| `docs/RECIPES.md` | where recipes come from, magical assembler + its UI, circuits, `CircuitTags`, `MaterialAliasTags`, runtime `WireTags`, wireless recipes, legacy part recipes (extruder molds) |
 | `docs/STACK_LIKE_CAPABILITIES.md` | generic stack-like recipe caps (chemicals), AE bridges, universal ME parts, pattern buffer, EMI/Jade display, how to add a type |
-| `docs/GREGIFICATION.md` | foreign recipe types on GT machines: flow, pieces, modifiers, crafting, dedicated server, MI/Mek/PB sources, how to add a source |
+| `docs/GREGIFICATION.md` | foreign recipe types on GT machines: flow, pieces, composable single blocks, modifiers, crafting, dedicated server, MI/Mek/PB/Create sources, how to add a source |
+| `docs/GHOST_INGREDIENTS.md` | ghost ingredient capability (marks that pick a recipe), hatch, single block marks, `MarkCoveredRecipes`, distinctness and the pattern buffer |
 | `docs/MULTIBLOCKS.md` | SAF, DTFR, electric implosion + nether stars, cyclic multiblocks, void miner, fishing pond, crystal growth, greenhouse |
 | `docs/STEAM.md` | advanced steam multis, steam parallel hatch, control circuits, steam single block IO/ghost circuits, early game, manual compression |
 | `docs/OVERCLOCKING.md` | OC overhaul (`@Overwrite`s), fusion buff, multi tier skipping |
 | `docs/MODULAR_MACHINES.md` | which machines get a modular multiblock and how |
 | `docs/WIRELESS.md` | wireless networks/binding, steam and EU networks, covers, EU ↔ FE |
-| `docs/AE2.md` | overclocked pattern buffer, ME processing, smart doubling, dual/universal parts, buffer return, sticky card, encoding |
+| `docs/AE2.md` | overclocked pattern buffer, shared hatches, pattern output marks, ME processing, smart doubling, dual/universal parts, buffer return, sticky card, encoding |
 | `docs/AUTOBUILD.md` | survival auto-build button, planner, builder, settings window |
 | `docs/POTIONS.md` | brewery/canner potion fixes, potion fluid names and EMI inputs, splash/lingering potions |
 | `docs/RECIPEDB_REFACTOR.md` | RecipeDB grouped search (late-game lag fix) |
@@ -53,7 +58,7 @@ src/main/java/com/yiran/minecraft/gtmqol/
 ├── GTMQoL.java            entry point, GTMQoL.id(), what gets registered (config gated), init order
 ├── GTMQoLAddon.java       @GTAddon, owns the GTRegistrate, creative tab, machine()/multiblock() helpers, addRecipes
 ├── api/generation/        runtime (dynamic) resource generation, opt-in per machine
-├── client/                client-only init and renders (DTFR ring, fishing pond water)
+├── client/                client-only init and renders (DTFR ring, fishing pond water, Create casing parts)
 ├── config/                GTMQoLConfig (toma, runtime), EarlyConfig (properties, mixin time)
 ├── common/
 │   ├── assembler/         MagicalAssembler and its UI
@@ -61,6 +66,7 @@ src/main/java/com/yiran/minecraft/gtmqol/
 │   ├── circuit/           UniversalCircuits, ControlCircuits
 │   ├── crystal/           crystal growth chamber
 │   ├── fe/                FEInputProvider
+│   ├── ghost/             ghost ingredient capability, hatch, list UI, single block marks trait
 │   ├── greenhouse/        greenhouse + industrial greenhouse
 │   ├── implosion/         electric implosion compressor
 │   ├── modular/           modular multiblock versions of single blocks
@@ -69,12 +75,15 @@ src/main/java/com/yiran/minecraft/gtmqol/
 │   ├── part/              LegacyPartRecipes (extruder molds v8 removed)
 │   ├── potion/            PotionContainers (splash/lingering marker on potion fluids)
 │   ├── recipedb/          non-mixin side of the grouped search
+│   ├── singleblock/       SingleblockFeature, ComposableTieredMachine, BatchModeTrait
 │   ├── stacklike/         GenericStackLikeType/RecipeCapability/handler; mekanism/ = chemicals
 │   ├── steam/             advanced steam multis, steam parallel hatch, steam magical assembler
 │   ├── test/              IntegrationTests
 │   └── wireless/          binding, networks, covers; steam/ and energy/
-├── gregification/         Gregification, ForeignMachineType, GregifiedRecipeType, modifiers; mi/, mekanism/, productivebees/, client/
-├── data/                  recipe/ (MiscRecipes, EarlyGameRecipes, WirelessRecipes), tag/ (CircuitTags, MaterialAliasTags)
+├── gregification/         Gregification, ForeignMachineType, GregifiedRecipeType, modifiers, MarkCoveredRecipes;
+│                          mi/, mekanism/, productivebees/, create/, client/
+├── data/                  recipe/ (MiscRecipes, EarlyGameRecipes, WirelessRecipes), tag/ (CircuitTags, MaterialAliasTags,
+│                          WireTags)
 ├── core/                  mixin config plugins (GTMQoL, RecipeDB, EAP, AE2, JeiRecipeSlotFix)
 │   └── mixins/            gtmqol.mixins.json; gtceufix/, recipedb/, eap/, ae2/ have their own notes in the docs
 └── integration/           ae2/ (+ stacklike/ bridges), jade/, mysticalagriculture/, productivebees/
@@ -91,12 +100,16 @@ src/main/java/com/yiran/minecraft/gtmqol/
 - **Multiblocks**: SAF, DTFR, electric implosion, void miner, fishing pond, crystal growth, greenhouse.
   → `MULTIBLOCKS.md`
 - **Steam**: GTNL-style large steam multis, extra steam single blocks, control circuits, early game. → `STEAM.md`
-- **AE2**: 216-slot buffer, ME processing, smart doubling, dual/universal parts, buffer return, sticky card. → `AE2.md`
+- **AE2**: 216-slot buffer, shared hatches and pattern output marks, ME processing, smart doubling, dual/universal
+  parts, buffer return, sticky card. → `AE2.md`
 - **RecipeDB** grouped search. → `RECIPEDB_REFACTOR.md`
 - **Stack-like capabilities**: Mekanism chemicals as a real recipe capability, in ME parts, pattern buffers, EMI and
   Jade. → `STACK_LIKE_CAPABILITIES.md`
-- **Gregification**: MI, Mekanism (23 machines) and Productive Bees (centrifuge, incubator, gene extractor, beehive,
-  breeder, canner bee logic) recipes on gregified GT machines. → `GREGIFICATION.md`
+- **Gregification**: MI, Mekanism (23 machines), Productive Bees (centrifuge, incubator, gene extractor, beehive,
+  breeder, canner bee logic) and Create (12 machines incl. the sequenced assembly line) recipes on gregified GT
+  machines; composable single blocks. → `GREGIFICATION.md`
+- **Ghost ingredients**: never-consumed marks that pick a recipe among ones with the same inputs; Ghost Ingredient
+  Hatch, marks list on single blocks. → `GHOST_INGREDIENTS.md`
 - **Survival auto-build**: a button on every multiblock controller that builds from the player's inventory, with a
   settings window. → `AUTOBUILD.md`
 - **Potions**: gtceu's brewery/canner logic working on 1.21, potion fluid names, splash/lingering potions in the
@@ -140,6 +153,9 @@ Not built or not checked in game yet (1.21):
   predicate roots are now our own map (GTCEu dropped `getParent`), 1.20.1 got `RecipeRunnerMixin` and
   `RecipeLogicMixin`. Check auto-build block choices, the void miner and the steam macerator in game.
 
+- 1.20.1: everything in the "Since 2026-10-17" line above compiles and `runData` passes, but nothing of it has run
+  in game there.
+
 To do:
 
 - 1.20.1: compiles, and `runData` runs and exits with nothing to regenerate (2026-10-14). Next a test in game, then
@@ -151,6 +167,8 @@ To do:
   methods, the cyclic multiblocks' popup helpers. (`FluidConfigWidget` is gone with the dual input rework.)
 
 Known, not fixed:
+
+- Proxy pattern buffers don't get the pattern output marks for the recipe lookup (`AE2.md`).
 
 - The user said leave it for now; the workaround is not to reload client resources, and to restart if it happens.
   - After a client resource reload, every GTCEu bronze/steel themed UI fails to open with

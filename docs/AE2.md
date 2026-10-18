@@ -18,6 +18,29 @@ types in ME parts and the pattern buffer are in `STACK_LIKE_CAPABILITIES.md`.
   magical assembler: 4 ME pattern buffers, 16 MV circuits, circuit 24, 576 soldering alloy, 4000 glue, 1200 t, MV.
   This matches the old `QoLMachines.kt`.
 
+## Shared hatches (`SharedHatches`, every pattern buffer)
+
+- gtceu's pattern buffer only runs a recipe from a slot that provides all of it (`BufferRecipeHandlerList.handleRecipe`
+  needs `consumeWorker` to leave nothing), so a circuit, mold or ghost mark in another bus never helped.
+- With the toggle on (default on; `MEPatternBufferSharedHatchesMixin`, saved `gtmqol$sharedHatches`), what a slot is
+  missing may come from the machine's shared parts: undyed buses/hatches that aren't distinct (the ones gtceu adds to
+  every non-distinct group) and parts whose capability bypasses distinctness. A slot still has to provide something.
+  Proxies follow their buffer (`MEPatternBufferProxySharedHatchesMixin`).
+- The rest: `MEPatternBufferSharedHatchesListMixin` (`consumeWorker` result), `RecipeRunnerSharedHatchesMixin`,
+  `Item/FluidRecipeCapabilitySharedHatchesMixin` (parallel and "insufficient" checks see the same parts).
+- Toggle: a `ToggleButton` on the right with `BUTTON_ITEM_ALLOW_INPUT_OUTPUT`, GT's look (pressed = on). Lang
+  `gtmqol.gui.pattern_buffer.shared_hatches`. Ghost ingredient hatches need it on (`GHOST_INGREDIENTS.md`).
+
+## Mark pattern outputs (`PatternOutputMarks`, overclocked pattern buffer)
+
+- `AbstractMEPatternBufferPartMachine.marksPatternOutputs` (saved, synced, default off; toggle with `PATTERN_OVERLAY`,
+  lang `gtmqol.gui.pattern_buffer.pattern_output_marks`): each slot counts as a ghost ingredient mark for its
+  pattern's primary output (`AEItemKey`/`AEFluidKey`), so it picks the recipe making it.
+- `MEPatternBufferOutputMarksMixin` answers `handlersFor(ghost cap, worker)` with the worker's pattern's mark
+  (`MEPatternBufferWorkerPatternAccessor`). An aggregate of all slots' marks is added to the buffer's handler list
+  for the recipe lookup.
+- Not for proxies: they don't get the aggregate marks for the lookup.
+
 ## ME processing (`AEProcessing`, port of the v7 ME machines)
 
 - Recipe types and SimpleTieredMachines: `gtmqol:me_assembler` (6/1/3/0) and `gtmqol:me_circuit_slicer`

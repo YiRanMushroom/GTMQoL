@@ -60,6 +60,11 @@ Delete each one once upstream fixes it. All are 1.21 only, except `BaseSchemaRen
 `FluidIngredient`). Checked against GTCEu's 2026-10-13/14 snapshots (`GTCEU_UPGRADE.md`). The canner's potion representative recipes (`CannerLogicMixin`, a
 feature, not in `gtceufix/`) are on both branches too.
 
+- `BloomSafeModeMixin` (`client`): without Sodium/Embeddium, gtceu keeps block bloom (glowing overlays) per chunk
+  section in its own buffers, outside the chunk mesh. A section's buffer was only replaced when its rebuild had bloom
+  faces, so after the last glowing face of a section went (a hatch broken) the old overlay kept drawing until the
+  chunk unloaded; F3+A didn't clear it. The mixin remembers the section in `getOrStartBloomBuffer` and, in
+  `bakeBloomChunkBuffers`, drops the old buffer (`invalidateSectionData`) when the rebuild had none.
 - `EmiCallWrapperMixin`: clicking the recipe type button in a machine UI makes gtceu call the private
   `EmiApi.setPages` through `EmiApiAccessor`. That invoker is never applied to `EmiApi`, so the click throws
   `NoSuchMethodError`. The mixin switches the call to the public `EmiApi.displayRecipeCategory(machineCategory)`.

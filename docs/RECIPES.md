@@ -53,6 +53,16 @@ Split out of `context.md`.
       `mekanism:alloys/infused`, and the latter includes the former.
     - `gtceu:circuits/ulv` includes `mekanism:alloy_infused`.
 
+## Tags (runtime)
+
+- `WireTags` (both branches, always on): GT's 1x wires (`wireGtSingle`, half an ingot like other mods' wires) join
+  `c:wires/<material>` (`forge:` on 1.20.1), and the `MaterialAliasTags` spelling too. Added by
+  `core/mixins/MixinHelpersMixin` at the end of gtceu's `MixinHelpers.generateGTDynamicTags` (gtceu's runtime material
+  tags, an `@ApiStatus.Internal` method; recheck after a GTCEu bump), so KubeJS materials get them.
+- One way: `wireGtSingle` itself has no tag, so GT recipes still take GT wires only, while other mods' `c:wires/*`
+  recipes take GT wires. The user chose this over adding a tag path to the prefix (which would make GT recipes take
+  any mod's wire).
+
 ## Wireless recipes (`WirelessRecipes`, magical assembler, LV)
 
 - GT energy input/output hatch + circuit 5 → wireless hatch.
