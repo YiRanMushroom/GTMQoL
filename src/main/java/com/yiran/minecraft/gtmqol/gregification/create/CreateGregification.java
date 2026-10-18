@@ -77,8 +77,11 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
  * assembler. Its recipes are shapeless, with the result marked as a ghost ingredient: recipes with the same items in
  * other shapes are told apart by what is marked in a Ghost Ingredient Hatch.</p>
  *
- * <p>Left out: sequenced assembly, and what Create does without recipes (the press and mixer running crafting
- * recipes, crafting recipes in mechanical crafters, potions in the spout and basin).</p>
+ * <p>Sequenced assembly is flattened into one recipe on a line like GT's assembly line, see
+ * {@link SequencedAssemblyMachine} and {@link SequencedAssemblySteps}.</p>
+ *
+ * <p>Left out: what Create does without recipes (the press and mixer running crafting recipes, crafting recipes in
+ * mechanical crafters, potions in the spout and basin).</p>
  */
 public final class CreateGregification {
 

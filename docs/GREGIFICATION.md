@@ -1,6 +1,7 @@
 # Gregification
 
-`gregification/`, written on 1.21.1 (1.20.1 state in `context.md`). Other mods' machine recipes run on GT machines,
+`gregification/`, written on 1.21.1 (1.20.1 state in `context.md`). Ghost ingredients, which several
+machines here use to pick a recipe, are in `GHOST_INGREDIENTS.md`. Other mods' machine recipes run on GT machines,
 converted on every recipe reload.
 Nothing is written to data packs or static resources. The user designed it as an abstraction layer: one source
 per mod returns `ForeignMachineType`s, and everything else is shared.
@@ -13,13 +14,14 @@ GTMQoL constructor
   Gregification.addSource(X::types)      per mod, behind its config + ModList check
 first RegisterEvent (HIGHEST)            declareAll(): every source's types (skipped in datagen)
   declare(type)                          GT recipe type + runtime lang, then machines
-    single block → declareSingleBlocks    GregifiedTieredMachine per ELECTRIC_TIERS tier
+    single block → declareSingleBlocks    GTMQoLAddon.tieredMachine per ELECTRIC_TIERS tier
     multiblock   → declareMultiblock      one controller shaped by MultiblockShape
   CRAFTED += (machine, catalyst, counterpart)
 gtceu:machine RegisterEvent              ModularMachines adds modular_<name> for the single blocks
 FMLCommonSetupEvent                      GregifiedRecipeType.resolveProxy(): foreign type → getProxyRecipes()
 every recipe reload (server)             gtceu's RecipeManagerLateMixin → addProxyRecipesToLookup, which our mixin
-                                         takes over for gregified types: toGTRecipes(holder) per foreign recipe
+                                         takes over for gregified types: prepare(all of the type's recipes), then
+                                         toGTRecipes(holder) per foreign recipe
 RecipesUpdatedEvent (remote client)      GregificationClient converts the synced foreign recipes itself
 GTMQoLAddon.addRecipes                   Gregification.addRecipes: crafting recipes for CRAFTED
 ```
@@ -37,7 +39,9 @@ reorders registries (its own and recipe types first), and we'd rather not depend
 | `ForeignRecipeConverter` | `void convert(RecipeHolder<?>, Output)`: one foreign recipe to any number of GT recipes. Each `output.add(builder -> ...)` fills a fresh builder (inputs, outputs, `EUt`, `duration`) and returns false to drop that one, so a converter that bails halfway leaves nothing behind. Adding none leaves the foreign recipe out. Most converters make one recipe: write them as `ForeignRecipeConverter.Single` (`boolean convert(holder, builder)`, the old form) and wrap with `ForeignRecipeConverter.single(...)`. Several recipes: Mek rotary (one per direction). |
 | `GregifiedRecipeType` / `GregifiedRecipeTypeBuilder` | GT recipe type that proxies the foreign one. `toGTRecipes` calls the converter, logs and returns nothing on exceptions, and sets ids `gtmqol:/gregification/<our type path>/<ns>/<path>`, plus `/<index>` from the second recipe of one foreign recipe on. Our type path keeps ids unique when two of our types proxy the same foreign type. The leading `/` marks it synthetic, so EMI (dev mode) doesn't warn that it isn't in the recipe manager. `toGTRecipe` (GTCEu's one-recipe API) returns the first or null; nothing of ours calls it. |
 | `core/mixins/RecipeManagerHandlerMixin` | HEAD inject into `RecipeManagerHandler.addProxyRecipesToLookup`, cancelled only for `GregifiedRecipeType`: the same steps as GTCEu (clear the proxy list, filter by type, add to the list and `addStaging`), but with `toGTRecipes`. GTCEu's version takes exactly one recipe per foreign recipe, which doesn't fit ours; the user chose to own this. If GTCEu changes that method, ours won't follow. Other types are untouched. |
-| `GregifiedTieredMachine` | `SimpleTieredMachine` + `BatchModeTrait` (saved flag, GT's batch button on the right configurators, default off). |
+| `common/singleblock/` | Composable electric single blocks, below. Gregified single blocks are `ComposableTieredMachine`s with `BATCH_MODE` and `GHOST_MARKS`. |
+| `ForeignRecipeConverter.prepare` | Optional: called once per reload with all recipes of the foreign type, before any `convert`. `GregifiedRecipeType.prepare` logs and swallows exceptions. Used by `MarkCoveredRecipes`. |
+| `MarkCoveredRecipes` | Converter wrapper: recipes another recipe's inputs would also run get their main output as a ghost input (`GHOST_INGREDIENTS.md`). Create's saw, MI's assembler. |
 | `MultiblockShape` | Multiblock structures: `GENERIC` (3x3x3 steel, recipe-type auto abilities), `ANY_PARTS` (same box, but takes every item/fluid import/export part plus 1–2 energy hatches whatever the slot counts; for capabilities that come in through parts of other abilities, e.g. chemicals), `ELECTRIC_BLAST_FURNACE` (coils; controller is a `CoilWorkableElectricMultiblockMachine`), `VACUUM_FREEZER`, `IMPLOSION_COMPRESSOR`, `DISTILLATION_TOWER`. The GT ones are copied from `GTMultiMachines`, because the pattern functions aren't reachable from the registered definitions. Each shape gives casing, casing model and overlay, `machine()` and `configure(builder)`. |
 | `GregificationModifiers` | `OVERCLOCK`, `BATCH`, `COIL_TEMPERATURE`, below. |
 | `CatalystShapelessRecipe` | Serializer `gtmqol:catalyst_shapeless`: a shapeless recipe whose `catalyst` stays in the grid (like a GT tool, no durability). |
@@ -60,12 +64,29 @@ properties: Mekanism creates its recipe types when they are registered, which is
 Every machine is `dynamicallyGenerated(true)`: models and lang are made at runtime, and nothing is datagen'd (the
 user wants this).
 
-- Single blocks: `<tier>_<name>` for every `ELECTRIC_TIERS` tier, with gtceu's `workableTieredHullModel(model)`,
-  `GENERAL_MACHINE` UI and modifiers `OVERCLOCK`, `BATCH`. `ModularMachines` then adds `modular_<name>`. It
-  uses `GregificationModifiers` too, because `Gregification.allGregified(recipeTypes)` is true.
+- Single blocks: `GTMQoLAddon.tieredMachine(name, tier, BATCH_MODE, GHOST_MARKS)` for every `ELECTRIC_TIERS` tier,
+  then `.workableTiered(recipeType, model)`, modifiers `OVERCLOCK`, `BATCH`. `ModularMachines` then adds
+  `modular_<name>`. It uses `GregificationModifiers` too, because `Gregification.allGregified(recipeTypes)` is true.
 - Multiblocks: `GTMQoLAddon.multiblock(name, shape.machine())`, then `shape.configure`. Modifiers are
   `COIL_TEMPERATURE`, `OVERCLOCK`, gtceu's `GTRecipeModifiers.BATCH_MODE`, plus the shape's appearance, pattern and
   `workableCasingModel`.
+
+### Composable single blocks (`common/singleblock/`)
+
+The user asked for this so that single blocks with extra features don't each need a machine class.
+
+- `SingleblockFeature`: `void attach(MetaMachine)`, run in the machine's constructor. A feature attaches a saved trait
+  (`attachPersistentTrait`); a trait that is an `IAttachConfiguratorsTrait` brings its own buttons to GT's machine UI,
+  so no UI mixin is needed.
+  - `BATCH_MODE`: `BatchModeTrait` (saved flag, GT's batch button on the right, off by default). Only does
+    something with `GregificationModifiers.BATCH` among the recipe modifiers.
+  - `GHOST_MARKS`: `GhostMarksTrait`, only if one of the machine's recipe types takes ghost ingredients.
+- `ComposableTieredMachine(info, tier, features...)`: a `SimpleTieredMachine` that attaches them.
+- `GTMQoLAddon.tieredMachine(name, tier, features...)`: `<tier>_<name>`, `tier`, `GENERAL_MACHINE` UI, `NON_Y_AXIS`.
+- `GTMQoLMachineBuilder.workableTiered(recipeType, model)`: recipe type, `workableTieredHullModel` and GT's
+  voltage/energy/tank tooltips for the builder's tier (the builder remembers `tier(int)`). Call it after the
+  machine's own tooltips to keep GT's order.
+- Used by the gregified single blocks and the greenhouse (no features). Steam machines aren't covered.
 
 ### Recipe logic (`GregificationModifiers`)
 
@@ -109,6 +130,9 @@ It does nothing when an integrated server exists. Not verified on a dedicated se
 Config `gregification.modernIndustrialization`, only when `modern_industrialization` is loaded. Dependency:
 `compileOnly` + `localRuntime` Modrinth `modern-industrialization` (`HOR1tVas` = 2.5.10).
 
+1.21 only: MI on 1.20.1 is Fabric only (1.7.0-beta to 1.8.6); its NeoForge builds start at 1.20.4 and there is no
+Forge port. Sinytra Connector would be the only way, and its Fabric fluid API would mean rewriting the converter.
+
 - Iterates `MIMachineRecipeTypes.getRecipeTypes()`, not the registry, because MI's types may not be registered
   yet. Names are `mi_<path>`, "MI <Name>". Unknown types (e.g. KubeJS) are logged and skipped.
 - 14 single blocks with MI's slot counts (`SINGLE_BLOCKS`); counterpart is the same-tier GT machine. The unpacker
@@ -121,6 +145,14 @@ Config `gregification.modernIndustrialization`, only when `modern_industrializat
   - Fluids are matched to GT by name. The GT material is the fluid id path, after `MaterialAliasTags.ALIASES`. A
     single-fluid input becomes compound(original, `#c:<material>`), and an output becomes the GT fluid. It's only a
     name guess.
+  - Items are matched by tag (`widenToGT(Ingredient)`): an input written as one item (a single `ItemValue`) that has
+    GT material tags (`c:dusts/copper`, `c:wires/copper`, ...; the `MaterialAliasTags` spellings too) takes those
+    tags instead, so GT's item fits. Tag inputs, multi-item inputs and items without such a tag stay as they are.
+    Outputs aren't changed. Recipes load before the new tags are bound to items, so `gregification/GTMaterialTags`
+    reads them from the reload's condition context (NeoForge `AddReloadListenerEvent.getConditionContext()`, the
+    same tags recipe conditions get) and indexes item → GT material tags once per reload.
+  - Assembler: `MarkCoveredRecipes` with the main output as the mark, and one ghost input slot. MI's assembler
+    picks the recipe by hand, so recipes with the same inputs would otherwise make the wrong thing.
 - Blast furnace: MI picks the coil tier by EU/t (`ElectricBlastFurnaceBlockEntity.tiers`, `maxBaseEu`). The recipe
   gets the `blastFurnaceTemp` of the GT coil with the same index (cupronickel 1800 K, kanthal 2700 K, then
   nichrome... for KubeJS tiers). The recipe UI shows GT's coil line (`GTRecipeUIModifiers.TEMP_COIL_INFO`).
@@ -220,6 +252,10 @@ recipes for EMI. PB's server config isn't loaded at the first datapack load, so 
   keys (`entity`, `name`, `HivePos`, `isProductiveBee`, `mod`) plus `id`; the cage already dropped UUID/Pos/etc., so
   genes (NeoForge attachment) and name survive. Reverse: bee spawn egg + empty cage → the bee created from the egg
   (`CustomData.loadInto`, as spawning does) captured into that cage.
+- Entities only on the level's thread: EMI builds recipes on its own worker thread, and making a bee there (Canner
+  catch recipe, Breeder babies, Incubator baby, `getCachedEntity`) crashed with "Accessing LegacyRandomSource from
+  multiple threads", the server's natural spawner using the same random. `ProductiveBeesGregification.onLevelThread`
+  runs the whole representative-recipe build on the server's (or the client's) own thread and waits for it.
 - All cage checks are `BeeCage.isFilled` / `instanceof BeeCage`, and outputs reuse `cage.getItem()`, so the sturdy
   cage (`SturdyBeeCage extends BeeCage`) works everywhere; EMI only shows the plain cage.
 
@@ -241,6 +277,35 @@ Still to check in game: PB's ore-bee gtceu recipes (`gtceu:alloy_smelter/barite_
 
 Ported to 1.20.1 (PB 1.20.1-12.6.0), not built yet; the differences are in that branch's `context.md`. Possible
 later: gene sampler upgrade in the beehive, gene-applying treats in the incubator.
+
+### Create (`create/CreateGregification`)
+
+Config `gregification.create`, both branches. Dependency `compileOnly` + `localRuntime` Modrinth `create`
+(1.21 `UjX6dr61` = 6.0.10, 1.20.1 `8amzvn9x` = 6.0.8). All are multiblocks of Create casings without maintenance
+(`MultiblockShape.CREATE` andesite 3x3x3 hollow, `CREATE_BRASS` 5x5x5, `CREATE_ASSEMBLY_LINE`).
+
+- Machines: millstone, crushing wheels, press, compactor (basin), mixer, encased fan, deployer (+ item application,
+  sandpaper polishing), spout, item drain, saw, mechanical crafter, sequenced assembly line. Most are crafted from
+  the Create machine + 2 LV circuits in the magical assembler; the crafter from 81 mechanical crafters + an IV
+  circuit, the line from a belt + 16 brass casings + a LuV circuit in GT's assembler.
+- Energy: Create recipes have none, so LV for 5 s; heated basin MV, superheated HV; sandpaper polishing LV 30 s with
+  circuit 1. Gregified overclock.
+- Fan: washing, blasting (every furnace recipe), smoking, haunting, told apart by catalysts that are never consumed
+  (water, lava, campfire/blaze burner, soul campfire; Create's catalyst tags). ULV 30 s, plain overclock, then
+  parallels as far as inputs and outputs allow.
+- Saw: `MarkCoveredRecipes`, the first output as the mark, one ghost slot (same log → planks or stairs).
+- Mechanical crafter: shapeless, with the result as a ghost input, so recipes with the same items in other shapes
+  are told apart by a Ghost Ingredient Hatch.
+- Sequenced assembly line (`SequencedAssemblyMachine`, `SequencedAssemblySteps`): a line like GT's assembly line,
+  3 to 16 slices, one bronze gearbox casing per slice. Each step's inputs over all loops and its time are flattened
+  into one GT recipe; other mods' step types register a `Step`, unknown ones use what Create's viewer shows, 5 s
+  each. Below full length (16) it only runs recipes with fewer steps than its length minus one (`STEP_LIMIT`, error
+  "Line too short for this recipe"). Pattern: `slice` then `sliceRepeatable(MIN_LENGTH - 1, MAX_LENGTH - 1, ...)`,
+  with no separate last slice, because gtceu's `sliceRepeatable` is greedy with no backtracking.
+- Rendering (`client/CasingPartRender`): the controller and formed parts draw the casing block's own model with its
+  model data, so Create's connected textures join; the controller's own casing faces are `gtceu:block/void`.
+- Left out: what Create does without recipes (press/mixer running crafting recipes, crafting in mechanical
+  crafters, potions in spout and basin).
 
 ## Adding
 
