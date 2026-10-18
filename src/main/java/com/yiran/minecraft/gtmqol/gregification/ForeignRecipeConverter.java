@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.world.item.crafting.Recipe;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -17,6 +18,12 @@ public interface ForeignRecipeConverter {
      * @param output takes each GT recipe; adding none leaves the foreign recipe out
      */
     void convert(Recipe<?> recipe, Output output);
+
+    /**
+     * Called after each reload with every recipe of one proxied type, before they are converted, e.g. to find
+     * recipes that would conflict. Nothing by default.
+     */
+    default void prepare(List<? extends Recipe<?>> recipes) {}
 
     interface Output {
 
