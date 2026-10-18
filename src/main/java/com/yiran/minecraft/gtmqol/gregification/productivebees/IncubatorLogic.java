@@ -113,11 +113,11 @@ enum IncubatorLogic implements GTRecipeType.ICustomRecipeLogic {
             GTRecipe recipe = eggRecipe(HoneyTreat.getTypeStack(bee.getBeeType().toString(), 100));
             if (recipe != null) addRepresentative(type, recipe);
         }
-        Level level = level();
-        if (level == null) return;
-        Bee baby = EntityType.BEE.create(level);
-        if (baby == null) return;
-        baby.setAge(-24000);
-        addRepresentative(type, cageRecipe(cage(baby), config(ProductiveBeesConfig.GENERAL.incubatorTreatUse)));
+        onLevelThread(level -> {
+            Bee baby = EntityType.BEE.create(level);
+            if (baby == null) return;
+            baby.setAge(-24000);
+            addRepresentative(type, cageRecipe(cage(baby), config(ProductiveBeesConfig.GENERAL.incubatorTreatUse)));
+        });
     }
 }

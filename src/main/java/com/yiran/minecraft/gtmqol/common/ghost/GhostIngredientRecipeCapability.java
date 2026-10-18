@@ -92,7 +92,10 @@ public final class GhostIngredientRecipeCapability extends RecipeCapability<Ghos
 
     @Override
     public List<AbstractMapIngredient> getDefaultMapIngredient(Object object) {
-        return object instanceof GhostIngredient<?> ghost ? List.of(new GhostMapIngredient(ghost)) : List.of();
+        // mutable: GT's recipe lookup pools these in place (MapIngredientPool.applyPooling sets list elements)
+        List<AbstractMapIngredient> list = new ArrayList<>(1);
+        if (object instanceof GhostIngredient<?> ghost) list.add(new GhostMapIngredient(ghost));
+        return list;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
