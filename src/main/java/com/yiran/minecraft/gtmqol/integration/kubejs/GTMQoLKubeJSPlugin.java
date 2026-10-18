@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.integration.kubejs;
 
 import com.yiran.minecraft.gtmqol.common.blockprovider.BlockProviderRecipeCapability;
+import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredientRecipeCapability;
 
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
@@ -17,5 +18,6 @@ public class GTMQoLKubeJSPlugin implements KubeJSPlugin {
     @Override
     public void registerBindings(BindingRegistry bindings) {
         bindings.add("BlockProviderRecipeCapability", BlockProviderRecipeCapability.class);
+        bindings.add("GhostIngredientRecipeCapability", GhostIngredientRecipeCapability.class);
     }
 }

@@ -136,30 +136,43 @@ Config `machines.fishingPond`. Forms in game on 1.21.1. On `CyclicMultiblockMach
 - Recipe (magical assembler, EV): 4 EV fishers, 8 EV circuits, 8 EV pumps, 4 EV robot arms, 32 watertight casings,
   32 double titanium plates, 16 fishing rods.
 
-## Crystal Growth Chamber (`crystal/CrystalGrowth`, `crystal/CenterBlockCondition`)
+## Crystal Growth Chamber (`crystal/CrystalGrowth`, `crystal/CrystalGrowthMachine`, `common/blockprovider/`)
 
 Config `machines.crystalGrowthChamber`. Works in game on 1.21.
 
 - Structure: 3 × 3 × 3 steel casing, controller in the middle of the front face, any block in the middle.
   - The middle of the four sides and the back: tempered glass or casing.
-  - `NON_Y_AXIS`, no extended facing: the condition reads `pos.relative(front.getOpposite())`.
+  - `NON_Y_AXIS`, no extended facing: the machine reads `pos.relative(front.getOpposite())`.
+  - No item input bus any more (0 item inputs since the block capability), so old structures with one don't form.
 - Perfect subtick OC only: no parallel hatch (`autoAbilities(true, false, false)`), no batch mode (the user's call).
 - Plain GT recipes (`gtmqol:crystal_growth`), one per budding block.
-  - Each has `CenterBlockCondition(block)` plus the shard as a `notConsumable` input, and gives 4 shards, LV, 10 s.
-  - The condition's `modifyUI` shows the block like GTCEu's `AdjacentBlockCondition`.
-- Why the shard input:
-  - `RecipeDB.addRecursive` keeps one recipe per set of item/fluid inputs and drops the rest (dev-only warning). The
-    dropped ones aren't in the category map either, so not in EMI.
-  - Recipes with no item/fluid input go into the category map but are never found by the lookup (`fromHolder`
-    returns null).
-  - Failing conditions are fine: `handleSearchingRecipes` goes on to the next match.
+  - The only input is the budding block, as a `BlockProviderRecipeCapability` (`gtmqol:block`) content with chance
+    0; gives 4 shards, LV, 10 s.
+- Block capability (`common/blockprovider/`, both branches, replaces the old `CenterBlockCondition` + `notConsumable`
+  shard; 2026-10-18, built and datagen'd on both, not run in game):
+  - Why: `RecipeDB.addRecursive` keeps one recipe per set of lookup inputs and drops the rest, and recipes with no
+    lookup input are never found. The lookup is generic over capabilities (`isRecipeSearchFilter`, `getFrom`), so a
+    block capability is a tree level of its own and the recipes are told apart by the block.
+  - `BlockProviderRecipeCapability`: content `Block`, `isRecipeSearchFilter`, bypasses distinct (default), copies
+    don't scale, parallel unlimited (default). `of()` also takes block ids (KubeJS). `registerMapIngredient(Block)`
+    is needed: `getFrom` only falls back to `getDefaultMapIngredient` for subclasses of `Block`.
+  - `BlockProviderTrait`: a controller trait giving the block at a position; `formStructure` adds controller
+    traits as handlers by itself. Nothing consumed. `CrystalGrowthMachine.onNeighborChanged` notifies it, so an
+    idle chamber searches again when the middle block changes.
+  - Display: `BlockProviderRecipeViewer` (item slot with the block's item, catalyst) through
+    `GTRecipeTypeUILayoutBuilderMixin`; recipe types need `setMaxSize(IO.IN, CAP, n)`. EMI lookup:
+    `GTEmiRecipeBlockProviderMixin` adds the item with chance 0, so AE encoding skips it. 1.20.1 also has
+    `GTRecipeJEICategoryBlockProviderMixin` (invisible catalyst).
+  - KubeJS: `integration/kubejs/GTMQoLKubeJSPlugin` (`kubejs.plugins.txt`) binds `BlockProviderRecipeCapability`;
+    `.input(BlockProviderRecipeCapability.CAP, 'minecraft:budding_amethyst')`. 1.21: gtceu's schema serializes any
+    capability through its codec (`Content.codec` calls `of`). 1.20.1 (KubeJS 6): `GTMQoLAddon.registerRecipeKeys`
+    registers `ContentJS(BlockComponent.INPUT/OUTPUT)` for it, gtceu's KubeJS only writes registered capabilities.
 - Recipes are generated at runtime (`addRecipes`): `ae2:flawless_budding_quartz` → `certus_quartz_crystal`, plus
   every `<ns>:budding_<x>` that has an `<ns>:<x>_shard`, in any namespace.
   - That covers vanilla amethyst and all 28 GeOre crystals. GeOre's `GeOreBlockReg` registers exactly these names
     on both 1.20 and 1.21, and its cluster loot is the shard.
   - Missing ids are skipped.
-- KubeJS: GTCEu registers a schema for every GT recipe type, so `event.recipes.gtmqol.crystal_growth(id)` exists. A
-  binding for the condition is still to do.
+- KubeJS: GTCEu registers a schema for every GT recipe type, so `event.recipes.gtmqol.crystal_growth(id)` exists.
 
 ## Greenhouse (`greenhouse/Greenhouse`, `integration/mysticalagriculture/MAGreenhouseRecipes`)
 

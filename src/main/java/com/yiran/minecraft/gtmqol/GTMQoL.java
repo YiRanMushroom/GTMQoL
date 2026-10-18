@@ -17,6 +17,7 @@ import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
 import com.yiran.minecraft.gtmqol.common.blockprovider.BlockProviderRecipeCapability;
 import com.yiran.minecraft.gtmqol.common.circuit.UniversalCircuits;
+import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredients;
 import com.yiran.minecraft.gtmqol.common.part.LegacyPartRecipes;
 import com.yiran.minecraft.gtmqol.client.GTMQoLClient;
 import com.yiran.minecraft.gtmqol.config.EarlyConfig;
@@ -77,6 +78,7 @@ public final class GTMQoL {
         PotionContainers.init(modBus);
         // always: KubeJS scripts may use it with any recipe type
         BlockProviderRecipeCapability.init();
+        GhostIngredients.init();
         if (ModList.get().isLoaded("mekanism")) ChemicalStackLike.init();
         ModularMachines.init(modBus);
         Gregification.init(modBus);
