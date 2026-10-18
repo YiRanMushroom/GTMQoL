@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
+import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -13,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
@@ -24,6 +26,8 @@ import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredients;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.common.part.LegacyPartRecipes;
+import com.yiran.minecraft.gtmqol.common.singleblock.ComposableTieredMachine;
+import com.yiran.minecraft.gtmqol.common.singleblock.SingleblockFeature;
 import com.yiran.minecraft.gtmqol.data.recipe.MiscRecipes;
 import com.yiran.minecraft.gtmqol.common.steam.AdvancedSteamMachines;
 import com.yiran.minecraft.gtmqol.data.recipe.EarlyGameRecipes;
@@ -44,7 +48,10 @@ import net.minecraft.world.item.CreativeModeTab;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
 
+import java.util.Locale;
 import java.util.function.Consumer;
+
+import static com.gregtechceu.gtceu.api.GTValues.VN;
 
 @GTAddon
 public final class GTMQoLAddon implements IGTAddon {
@@ -81,6 +88,20 @@ public final class GTMQoLAddon implements IGTAddon {
                                                                                          MachineInstanceFactory<M> factory) {
         return new GTMQoLMachineBuilder<>(REGISTRATE, name, MachineDefinition::new,
                 MetaMachineBlock::new, MetaMachineItem::new, factory);
+    }
+
+    /**
+     * An electric single block like GT's ({@code lv_<name>} etc.): a {@link ComposableTieredMachine} with the given
+     * features, GT's single block UI, facing sideways. Then set its recipe type with
+     * {@link GTMQoLMachineBuilder#workableTiered}.
+     */
+    public static GTMQoLMachineBuilder<MachineDefinition, ComposableTieredMachine> tieredMachine(String name, int tier,
+                                                                                               SingleblockFeature... features) {
+        return machine(VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
+                info -> new ComposableTieredMachine(info, tier, features))
+                .tier(tier)
+                .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                .rotationState(RotationState.NON_Y_AXIS);
     }
 
     /**

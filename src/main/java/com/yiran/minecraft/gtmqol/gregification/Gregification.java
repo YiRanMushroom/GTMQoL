@@ -3,7 +3,6 @@ package com.yiran.minecraft.gtmqol.gregification;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -15,7 +14,6 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.builder.ShapelessRecipeBuilder;
@@ -24,6 +22,7 @@ import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.api.generation.GTMQoLMultiblockBuilder;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
+import com.yiran.minecraft.gtmqol.common.singleblock.SingleblockFeature;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -40,7 +39,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -132,19 +130,13 @@ public final class Gregification {
 
     private static void declareSingleBlocks(ForeignMachineType type, GregifiedRecipeType recipeType) {
         for (int tier : ELECTRIC_TIERS) {
-            MachineDefinition machine = GTMQoLAddon.machine(VN[tier].toLowerCase(Locale.ROOT) + "_" + type.name(),
-                            info -> new GregifiedTieredMachine(info, tier))
+            MachineDefinition machine = GTMQoLAddon.tieredMachine(type.name(), tier,
+                            SingleblockFeature.BATCH_MODE, SingleblockFeature.GHOST_MARKS)
                     .dynamicallyGenerated(true)
-                    .tier(tier)
                     .langValue("%s %s %s".formatted(VLVH[tier], type.englishName(), VLVT[tier]))
-                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
-                    .rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(recipeType)
                     .recipeModifiers(GregificationModifiers.OVERCLOCK, GregificationModifiers.BATCH)
-                    .workableTieredHullModel(type.model())
                     .tooltips(tooltip(type))
-                    .tooltips(workableTiered(tier, V[tier], V[tier] * 64, recipeType,
-                            defaultTankSizeFunction.applyAsInt(tier), true))
+                    .workableTiered(recipeType, type.model())
                     .register();
             CRAFTED.add(new Crafted(machine, type.catalyst(), type.counterpart().apply(tier), type.crafting()));
         }

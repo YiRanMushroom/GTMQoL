@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.yiran.minecraft.gtmqol.common.singleblock.BatchModeTrait;
 
 import net.minecraft.network.chat.Component;
 
