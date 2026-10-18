@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +36,12 @@ public class RecipeManagerHandlerMixin {
         if (!(gtRecipeType instanceof GregifiedRecipeType gregified)) return;
         var lookup = gtRecipeType.getAdditionHandler();
         proxyRecipes.clear();
+        List<Recipe<?>> ofType = new ArrayList<>();
         for (Recipe<?> recipe : recipesByID.values()) {
-            if (recipe.getType() != proxyType) continue;
+            if (recipe.getType() == proxyType) ofType.add(recipe);
+        }
+        gregified.prepare(ofType);
+        for (Recipe<?> recipe : ofType) {
             for (GTRecipe gtRecipe : gregified.toGTRecipes(recipe)) {
                 proxyRecipes.add(gtRecipe);
                 lookup.addStaging(gtRecipe);

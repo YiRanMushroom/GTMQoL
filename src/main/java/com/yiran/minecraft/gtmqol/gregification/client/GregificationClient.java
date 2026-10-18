@@ -5,6 +5,7 @@ import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.GregifiedRecipeType;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -36,6 +37,11 @@ public final class GregificationClient {
     public static void init() {
         // before the recipe viewers reload
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, GregificationClient::onRecipesUpdated);
+    }
+
+    /** The client's main thread. */
+    public static BlockableEventLoop<?> executor() {
+        return Minecraft.getInstance();
     }
 
     /** For recipe logic in common code, which must not load client classes itself. */
