@@ -4,12 +4,9 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
-import com.yiran.minecraft.gtmqol.gregification.GregifiedTieredMachine;
 
-import brachy.modularui.value.sync.PanelSyncManager;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -29,17 +26,5 @@ public class GTSingleblockMachinePanelsMixin {
                                                                 Operation<MachineUIPanelBuilder> original) {
         MachineUIPanelBuilder builder = original.call(machine);
         return GTMQoLConfig.get().steamTweaks.circuitSlots ? builder.addTraitConfigurators(true) : builder;
-    }
-
-    // Gregified single blocks taking ghost ingredients get a button for their marks.
-    @WrapOperation(method = "/^lambda\\$/",
-                   at = @At(value = "INVOKE",
-                            target = "Lcom/gregtechceu/gtceu/api/machine/mui/MachineUIPanelBuilder;panelBuilder(Lcom/gregtechceu/gtceu/api/machine/MetaMachine;)Lcom/gregtechceu/gtceu/api/machine/mui/MachineUIPanelBuilder;"))
-    private static MachineUIPanelBuilder gtmqol$ghostMarksButton(MetaMachine machine,
-                                                                 Operation<MachineUIPanelBuilder> original,
-                                                                 @Local(argsOnly = true) PanelSyncManager syncManager) {
-        MachineUIPanelBuilder builder = original.call(machine);
-        return machine instanceof GregifiedTieredMachine gregified ?
-                gregified.addGhostMarksButton(builder, syncManager) : builder;
     }
 }

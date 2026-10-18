@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -15,7 +14,6 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -93,21 +91,16 @@ public final class Greenhouse {
     /** From GTCEu's machine {@code RegisterEvent}. */
     public static void initMachines() {
         var registrate = GTMQoLAddon.registrate();
-        // through GTCEu's helper, like the other tiered machines
-        MACHINES = registerTieredMachines(registrate, "greenhouse", SimpleTieredMachine::new,
-                (tier, builder) -> builder
+        MACHINES = new MachineDefinition[TIER_COUNT];
+        for (int tier : ELECTRIC_TIERS) {
+            MACHINES[tier] = GTMQoLAddon.tieredMachine("greenhouse", tier)
                     .langValue("%s Greenhouse %s".formatted(VLVH[tier], VLVT[tier]))
-                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
-                    .rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(RECIPE_TYPE)
                     .recipeModifier(OC_NON_PERFECT)
-                    .workableTieredHullModel(GTCEu.id("block/machines/fermenter"))
                     .tooltips(Component.translatable(KEY + "tooltip"))
-                    .tooltips(workableTiered(tier, V[tier], V[tier] * 64, RECIPE_TYPE,
-                            defaultTankSizeFunction.applyAsInt(tier), true))
+                    .workableTiered(RECIPE_TYPE, GTCEu.id("block/machines/fermenter"))
                     .tooltips(explosion())
-                    .register(),
-                ELECTRIC_TIERS);
+                    .register();
+        }
 
         INDUSTRIAL = GTMQoLAddon.multiblock("industrial_greenhouse", WorkableElectricMultiblockMachine::new)
                 .rotationState(RotationState.NON_Y_AXIS)
