@@ -48,6 +48,7 @@
     "gtceufix.RecipeRunnerMixin"
   ],
   "client": [
+    "GTEmiRecipeBlockProviderMixin",
     "GTEmiRecipeStackLikeMixin",
     "gtceufix.GTEmiRecipeMixin",
     "gtceufix.BaseSchemaRendererMixin"

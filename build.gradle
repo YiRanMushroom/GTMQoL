@@ -192,6 +192,8 @@ dependencies {
     // Compile-only for mixin/gtceufix/EmiCallWrapperMixin, which only runs when EMI is loaded.
     compileOnly "dev.emi:emi-neoforge:${project.emi_version}"
     localRuntime "dev.emi:emi-neoforge:${project.emi_version}"
+    // Compile-only for integration/kubejs (our KubeJS plugin), which KubeJS only loads when it is installed.
+    compileOnly "dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}"
     localRuntime "dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}"
     // Compile-only for recipedb/PatternBufferIngredients (gtceu's pattern buffer implements AE2 interfaces);
     // only used when AE2 is loaded, still not a runtime dependency of ours.

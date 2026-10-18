@@ -15,6 +15,7 @@ import com.yiran.minecraft.gtmqol.common.autobuild.AutoBuilder;
 import com.yiran.minecraft.gtmqol.data.tag.CircuitTags;
 import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
+import com.yiran.minecraft.gtmqol.common.blockprovider.BlockProviderRecipeCapability;
 import com.yiran.minecraft.gtmqol.common.circuit.UniversalCircuits;
 import com.yiran.minecraft.gtmqol.common.part.LegacyPartRecipes;
 import com.yiran.minecraft.gtmqol.client.GTMQoLClient;
@@ -74,6 +75,8 @@ public final class GTMQoL {
         if (config.circuits.mekanismCircuitTags) CircuitTags.init();
         MaterialAliasTags.init();
         PotionContainers.init(modBus);
+        // always: KubeJS scripts may use it with any recipe type
+        BlockProviderRecipeCapability.init();
         if (ModList.get().isLoaded("mekanism")) ChemicalStackLike.init();
         ModularMachines.init(modBus);
         Gregification.init(modBus);
