@@ -61,7 +61,7 @@ enum GeneExtractorLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
     public void buildRepresentativeRecipes() {
-        Level level = level();
+        Level level = levelWithBees();
         if (level == null) return;
         GTRecipeType type = recipeType(GENE_EXTRACTOR);
         for (var bee : bees()) {

@@ -29,6 +29,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
@@ -49,7 +50,10 @@ import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipe;
 import com.simibubi.create.content.processing.sequenced.SequencedRecipe;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -119,9 +123,9 @@ public final class CreateGregification {
                 machine("item_drain", "Create Item Drain", createType("emptying"),
                         CreateGregification::convertProcessing, 1, 1, 0, 1,
                         GTSoundEntries.BATH, GTGuiTextures.PROGRESS_EXTRACT, "item_drain"),
-                machine("saw", "Create Mechanical Saw", createType("cutting"),
-                        CreateGregification::convertProcessing, 1, 4, 0, 0,
-                        GTSoundEntries.CUT, GTGuiTextures.PROGRESS_CUTTER, "mechanical_saw"),
+                machine("saw", "Create Mechanical Saw", createType("cutting"), sawConverter(), 1, 4, 0, 0,
+                        GTSoundEntries.CUT, GTGuiTextures.PROGRESS_CUTTER, "mechanical_saw")
+                        .withRecipeType(builder -> builder.setMaxSize(IO.IN, GhostIngredientRecipeCapability.CAP, 1)),
                 ForeignMachineType.multiblock("create_mechanical_crafter", "Create Mechanical Crafter",
                                 createType("mechanical_crafting"),
                                 ForeignRecipeConverter.single(CreateGregification::convertMechanicalCrafting),
@@ -202,8 +206,18 @@ public final class CreateGregification {
                                               int itemOutputs, int fluidInputs, int fluidOutputs,
                                               Holder<SoundEntry> sound, ProgressBarTextureSet progressBar,
                                               String counterpart) {
+        return machine(path, englishName, proxy, ForeignRecipeConverter.single(converter), itemInputs, itemOutputs,
+                fluidInputs, fluidOutputs, sound, progressBar, counterpart);
+    }
+
+    private static ForeignMachineType machine(String path, String englishName,
+                                              Supplier<? extends RecipeType<?>> proxy,
+                                              ForeignRecipeConverter converter, int itemInputs,
+                                              int itemOutputs, int fluidInputs, int fluidOutputs,
+                                              Holder<SoundEntry> sound, ProgressBarTextureSet progressBar,
+                                              String counterpart) {
         return ForeignMachineType.multiblock("create_" + path, englishName, proxy,
-                        ForeignRecipeConverter.single(converter), itemInputs, itemOutputs, fluidInputs, fluidOutputs,
+                        converter, itemInputs, itemOutputs, fluidInputs, fluidOutputs,
                         sound, builder -> builder.setProgressBar(progressBar), null, create(counterpart),
                         MultiblockShape.CREATE)
                 .withCrafting(CreateGregification::magicalAssemble);
@@ -219,6 +233,56 @@ public final class CreateGregification {
     }
 
     // --- converters ---
+
+    /**
+     * Create's saw picks between recipes with the same input by its filter: those (e.g. planks to fences, signs and
+     * doors) mark their output as a ghost ingredient, recipes with an input of their own need no mark.
+     */
+    private static ForeignRecipeConverter sawConverter() {
+        return new ForeignRecipeConverter() {
+
+            private Set<Item> sharedInputs = Set.of();
+
+            @Override
+            public void prepare(List<? extends RecipeHolder<?>> recipes) {
+                Set<Item> seen = new HashSet<>();
+                Set<Item> shared = new HashSet<>();
+                for (var holder : recipes) {
+                    for (Item item : inputItems(holder.value())) {
+                        if (!seen.add(item)) shared.add(item);
+                    }
+                }
+                sharedInputs = shared;
+            }
+
+            @Override
+            public void convert(RecipeHolder<?> holder, Output output) {
+                output.add(builder -> convertCutting(holder, builder, sharedInputs));
+            }
+        };
+    }
+
+    private static Set<Item> inputItems(Recipe<?> recipe) {
+        Set<Item> items = new HashSet<>();
+        for (Ingredient ingredient : recipe.getIngredients()) {
+            for (ItemStack stack : ingredient.getItems()) items.add(stack.getItem());
+        }
+        return items;
+    }
+
+    private static boolean convertCutting(RecipeHolder<?> holder, GTRecipeBuilder builder, Set<Item> sharedInputs) {
+        if (!convertProcessing(holder, builder)) return false;
+        if (!(holder.value() instanceof ProcessingRecipe<?, ?> recipe) ||
+                Collections.disjoint(inputItems(recipe), sharedInputs)) {
+            return true;
+        }
+        for (ProcessingOutput output : recipe.getRollableResults()) {
+            if (output.getStack().isEmpty()) continue;
+            builder.input(GhostIngredientRecipeCapability.CAP, new ItemGhostIngredient(output.getStack()));
+            break;
+        }
+        return true;
+    }
 
     /** Item and fluid inputs and outputs as they are, LV, or MV/HV for heated/superheated basin recipes. */
     private static boolean convertProcessing(RecipeHolder<?> holder, GTRecipeBuilder builder) {

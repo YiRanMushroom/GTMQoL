@@ -26,6 +26,8 @@ import net.minecraft.world.entity.animal.Bee;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -238,6 +240,24 @@ public final class ProductiveBeesGregification {
             }
         }
         return fluids;
+    }
+
+    /**
+     * {@link #level()}, with every bee's entity made and cached ({@link BeeIngredient#getCachedEntity}) on the level's
+     * own thread, where entities may only be made: recipe viewers build their recipes on a worker thread (EMI's crash
+     * otherwise: "Accessing LegacyRandomSource from multiple threads"). That thread waits for it.
+     */
+    static @Nullable Level levelWithBees() {
+        Level level = level();
+        if (level == null) return null;
+        Runnable makeBees = () -> {
+            for (var bee : bees()) bee.getCachedEntity(level);
+        };
+        BlockableEventLoop<?> owner = level instanceof ServerLevel server ? server.getServer() :
+                GregificationClient.executor();
+        if (owner.isSameThread()) makeBees.run();
+        else owner.submit(makeBees).join();
+        return level;
     }
 
     /** Every bee, by id. */
