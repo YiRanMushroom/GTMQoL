@@ -23,7 +23,11 @@ public class GhostIngredientHandler extends NotifiableRecipeHandlerTrait<GhostIn
     public final GhostIngredientList marks = new GhostIngredientList();
 
     public GhostIngredientHandler() {
-        marks.setOnChanged(this::notifyListeners);
+        // markAsChanged: the block entity is only saved again when marked as changed
+        marks.setOnChanged(() -> {
+            markAsChanged();
+            notifyListeners();
+        });
     }
 
     @Override
