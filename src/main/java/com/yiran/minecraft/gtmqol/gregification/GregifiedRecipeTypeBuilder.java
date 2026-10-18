@@ -19,11 +19,11 @@ import java.util.function.Supplier;
 public class GregifiedRecipeTypeBuilder extends GTRecipeTypeBuilder {
 
     private final @Nullable ForeignRecipeConverter converter;
-    private final List<Supplier<? extends RecipeType<?>>> proxies;
+    private final Supplier<List<RecipeType<?>>> proxies;
 
     public GregifiedRecipeTypeBuilder(GTRegistrate owner, String name, BuilderCallback callback, String group,
                                       @Nullable ForeignRecipeConverter converter,
-                                      List<Supplier<? extends RecipeType<?>>> proxies) {
+                                      Supplier<List<RecipeType<?>>> proxies) {
         super(owner, name, callback, group);
         this.converter = converter;
         this.proxies = proxies;

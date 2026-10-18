@@ -23,11 +23,11 @@ import java.util.function.Supplier;
 public class GregifiedRecipeType extends GTRecipeType {
 
     private final @Nullable ForeignRecipeConverter converter;
-    private final List<Supplier<? extends RecipeType<?>>> proxies;
+    private final Supplier<List<RecipeType<?>>> proxies;
 
     /** Without proxies, all recipes come from custom recipe logic. */
     public GregifiedRecipeType(ResourceLocation id, Properties properties, @Nullable ForeignRecipeConverter converter,
-                               List<Supplier<? extends RecipeType<?>>> proxies) {
+                               Supplier<List<RecipeType<?>>> proxies) {
         super(id, properties);
         this.converter = converter;
         this.proxies = proxies;
@@ -39,7 +39,7 @@ public class GregifiedRecipeType extends GTRecipeType {
      * Recipes are only converted on reloads, which come later.
      */
     public void resolveProxy() {
-        for (var proxy : proxies) getProxyRecipes().computeIfAbsent(proxy.get(), type -> new ArrayList<>());
+        for (var proxy : proxies.get()) getProxyRecipes().computeIfAbsent(proxy, type -> new ArrayList<>());
     }
 
     /** Before {@link #toGTRecipes}, with every recipe of one proxied type; see {@link ForeignRecipeConverter#prepare}. */

@@ -35,7 +35,7 @@ reorders registries (its own and recipe types first), and we'd rather not depend
 
 | Class | Role |
 |---|---|
-| `ForeignMachineType` (record) | One foreign recipe type. Fields: `name` (path of the GT type and machines, e.g. `mi_macerator`, `mek_chemical_oxidizer`), `englishName`, `proxy` (supplier of the foreign `RecipeType`, only asked for at common setup), `converter`, item/fluid IO counts, `recipeType` (extra `GTRecipeTypeBuilder` setup, via `withRecipeType`), `sound`, `ui` (progress bar etc.), `catalyst` and `counterpart` (item ids), `model` (single blocks) or `shape` (multiblocks). Factories `singleBlock(...)` and `multiblock(...)`. |
+| `ForeignMachineType` (record) | One foreign recipe type. Fields: `name` (path of the GT type and machines, e.g. `mi_macerator`, `mek_chemical_oxidizer`), `englishName`, `proxies` (supplier of the foreign `RecipeType`s, only asked for at common setup; more with `withMoreProxies`, or a whole other list with `withProxies`, e.g. worked out from a registry), `converter`, item/fluid IO counts, `recipeType` (extra `GTRecipeTypeBuilder` setup, via `withRecipeType`), `sound`, `ui` (progress bar etc.), `catalyst` and `counterpart` (item ids), `model` (single blocks) or `shape` (multiblocks). Factories `singleBlock(...)` and `multiblock(...)`. |
 | `ForeignRecipeConverter` | `void convert(RecipeHolder<?>, Output)`: one foreign recipe to any number of GT recipes. Each `output.add(builder -> ...)` fills a fresh builder (inputs, outputs, `EUt`, `duration`) and returns false to drop that one, so a converter that bails halfway leaves nothing behind. Adding none leaves the foreign recipe out. Most converters make one recipe: write them as `ForeignRecipeConverter.Single` (`boolean convert(holder, builder)`, the old form) and wrap with `ForeignRecipeConverter.single(...)`. Several recipes: Mek rotary (one per direction). |
 | `GregifiedRecipeType` / `GregifiedRecipeTypeBuilder` | GT recipe type that proxies the foreign one. `toGTRecipes` calls the converter, logs and returns nothing on exceptions, and sets ids `gtmqol:/gregification/<our type path>/<ns>/<path>`, plus `/<index>` from the second recipe of one foreign recipe on. Our type path keeps ids unique when two of our types proxy the same foreign type. The leading `/` marks it synthetic, so EMI (dev mode) doesn't warn that it isn't in the recipe manager. `toGTRecipe` (GTCEu's one-recipe API) returns the first or null; nothing of ours calls it. |
 | `core/mixins/RecipeManagerHandlerMixin` | HEAD inject into `RecipeManagerHandler.addProxyRecipesToLookup`, cancelled only for `GregifiedRecipeType`: the same steps as GTCEu (clear the proxy list, filter by type, add to the list and `addStaging`), but with `toGTRecipes`. GTCEu's version takes exactly one recipe per foreign recipe, which doesn't fit ours; the user chose to own this. If GTCEu changes that method, ours won't follow. Other types are untouched. |
@@ -46,6 +46,7 @@ reorders registries (its own and recipe types first), and we'd rather not depend
 | `GregificationModifiers` | `OVERCLOCK`, `BATCH`, `COIL_TEMPERATURE`, below. |
 | `CatalystShapelessRecipe` | Serializer `gtmqol:catalyst_shapeless`: a shapeless recipe whose `catalyst` stays in the grid (like a GT tool, no durability). |
 | `client/GregificationClient` | Fills the recipe viewer categories on dedicated-server clients, below. |
+| `LoadingTags` | Tags for converters. A server reload loads recipes before the new tags are bound, so until `TagsUpdatedEvent` it reads the reload's condition context (`AddReloadListenerEvent.getConditionContext()`, NeoForge/Forge's way of giving recipe loading the tags); otherwise, and on clients, the registries' bound tags. `onChange(Runnable)` to drop caches. Used by `GTMaterialTags` (MI) and the Create fan. The user approved this as a shared helper. |
 
 ### Recipe types
 
@@ -56,8 +57,9 @@ calls `setMaxIOSize(items in, items out, fluids in, fluids out)`, `setEUIO(IN)`,
 their GT counterpart; with no counterpart, no sound and a plain arrow. Slot overlays aren't copied, because the slot
 layouts differ.
 
-The foreign type is a `Supplier` and only goes into `getProxyRecipes()` at common setup. It can't be passed to the
-properties: Mekanism creates its recipe types when they are registered, which is after we declare.
+The foreign types are a `Supplier` and only go into `getProxyRecipes()` at common setup. They can't be passed to the
+properties: Mekanism creates its recipe types when they are registered, which is after we declare, and the fan's
+depend on Create's fan processing registry.
 
 ### Machines
 
@@ -285,22 +287,30 @@ Config `gregification.create`, both branches. Dependency `compileOnly` + `localR
 (`MultiblockShape.CREATE` andesite 3x3x3 hollow, `CREATE_BRASS` 5x5x5, `CREATE_ASSEMBLY_LINE`).
 
 - Machines: millstone, crushing wheels, press, compactor (basin), mixer, encased fan, deployer (+ item application,
-  sandpaper polishing), spout, item drain, saw, mechanical crafter, sequenced assembly line. Most are crafted from
-  the Create machine + 2 LV circuits in the magical assembler; the crafter from 81 mechanical crafters + an IV
-  circuit, the line from a belt + 16 brass casings + a LuV circuit in GT's assembler.
+  sandpaper polishing), spout, item drain, saw, mechanical crafter, sequenced assembly line. All are crafted in the
+  magical assembler: the Create machine + 2 LV circuits; the crafter from 81 mechanical crafters + an IV circuit, the
+  line from a belt + 16 brass casings + a LuV circuit.
 - Energy: Create recipes have none, so LV for 5 s; heated basin MV, superheated HV; sandpaper polishing LV 30 s with
   circuit 1. Gregified overclock.
-- Fan: washing, blasting (every furnace recipe), smoking, haunting, told apart by catalysts that are never consumed
-  (water, lava, campfire/blaze burner, soul campfire; Create's catalyst tags). ULV 30 s, plain overclock, then
-  parallels as far as inputs and outputs allow.
+- Fan (`FanProcessing`): every kind in Create's `fan_processing_type` registry, Create's and addons', read at common
+  setup. A kind's recipes are the recipe type with its id (Create's smoking and blasting: vanilla smoking and
+  smelting). Its catalysts, never consumed, are the blocks of the block tag `<ns>:fan_processing_catalysts/<path>` as
+  items (blocks without an item, like fire, are skipped), or 1000 mB of the fluid tag of the same name; one GT recipe
+  per sort the kind has. Tags come from `LoadingTags`, cached per kind until they change. Addon exceptions by id, no
+  dependency: Dragons Plus freezing also takes `create_dragons_plus:passive_block_freezers` (its freezing is code
+  over that tag, powder snow comes in as its bucket), Dragons Plus sanding also runs `create:sandpaper_polishing`
+  like its fan. Kinds without a recipe type of their id (Dragons Plus coloring) are left out with an info log.
+  Recipes ending `_manual_only` are skipped, as Create does. ULV 30 s, plain overclock, then parallels as far as
+  inputs and outputs allow.
 - Saw: `MarkCoveredRecipes`, the first output as the mark, one ghost slot (same log → planks or stairs).
 - Mechanical crafter: shapeless, with the result as a ghost input, so recipes with the same items in other shapes
   are told apart by a Ghost Ingredient Hatch.
 - Sequenced assembly line (`SequencedAssemblyMachine`, `SequencedAssemblySteps`): a line like GT's assembly line,
   3 to 16 slices, one bronze gearbox casing per slice. Each step's inputs over all loops and its time are flattened
   into one GT recipe; other mods' step types register a `Step`, unknown ones use what Create's viewer shows, 5 s
-  each. Below full length (16) it only runs recipes with fewer steps than its length minus one (`STEP_LIMIT`, error
-  "Line too short for this recipe"). Pattern: `slice` then `sliceRepeatable(MIN_LENGTH - 1, MAX_LENGTH - 1, ...)`,
+  each. A recipe needs a line at least as long as its steps (at least 3; 16 runs anything): `minLength`, checked by
+  `STEP_LIMIT` (error "Line too short for this recipe") and shown in the recipe viewer as "Minimum Line Length"
+  (`LENGTH_INFO`, a `RecipeUIModifier`). Pattern: `slice` then `sliceRepeatable(MIN_LENGTH - 1, MAX_LENGTH - 1, ...)`,
   with no separate last slice, because gtceu's `sliceRepeatable` is greedy with no backtracking.
 - Rendering (`client/CasingPartRender`): the controller and formed parts draw the casing block's own model with its
   model data, so Create's connected textures join; the controller's own casing faces are `gtceu:block/void`.

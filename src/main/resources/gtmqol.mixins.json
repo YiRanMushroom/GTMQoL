@@ -54,6 +54,9 @@
     "GTEmiRecipeStackLikeMixin",
     "gtceufix.GTEmiRecipeMixin",
     "gtceufix.BaseSchemaRendererMixin",
+    "gtceufix.DummyChunkSourceMixin",
+    "gtceufix.AABBHighlightColorMixin",
+    "gtceufix.AABBHighlightSeeThroughMixin",
     "gtceufix.BloomSafeModeMixin"
   ],
   "injectors": {

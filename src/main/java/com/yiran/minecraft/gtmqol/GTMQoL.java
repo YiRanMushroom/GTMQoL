@@ -38,6 +38,7 @@ import com.yiran.minecraft.gtmqol.common.wireless.WirelessNetworks;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
 import com.yiran.minecraft.gtmqol.gregification.GTMaterialTags;
+import com.yiran.minecraft.gtmqol.gregification.LoadingTags;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.client.GregificationClient;
 import com.yiran.minecraft.gtmqol.gregification.create.CreateGregification;
@@ -83,6 +84,7 @@ public final class GTMQoL {
         GhostIngredients.init();
         if (ModList.get().isLoaded("mekanism")) ChemicalStackLike.init();
         ModularMachines.init(modBus);
+        LoadingTags.init();
         Gregification.init(modBus);
         if (config.gregification.modernIndustrialization && ModList.get().isLoaded("modern_industrialization")) {
             Gregification.addSource(MIGregification::types);
