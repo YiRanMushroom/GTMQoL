@@ -95,7 +95,7 @@ enum CannerBeeLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
     public void buildRepresentativeRecipes() {
-        Level level = level();
+        Level level = levelWithBees();
         if (level == null) return;
         GTRecipeType type = GTRecipeTypes.CANNER_RECIPES.get();
         ItemStack emptyCage = new ItemStack(ModItems.BEE_CAGE.get());

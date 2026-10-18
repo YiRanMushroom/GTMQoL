@@ -42,6 +42,16 @@ public class GregifiedRecipeType extends GTRecipeType {
         for (var proxy : proxies) getProxyRecipes().computeIfAbsent(proxy.get(), type -> new ArrayList<>());
     }
 
+    /** Before {@link #toGTRecipes}, with every recipe of one proxied type; see {@link ForeignRecipeConverter#prepare}. */
+    public void prepare(List<RecipeHolder<?>> recipes) {
+        if (converter == null) return;
+        try {
+            converter.prepare(recipes);
+        } catch (RuntimeException e) {
+            GTMQoL.LOGGER.error("Failed to prepare the recipes of {}", this, e);
+        }
+    }
+
     /** Every GT recipe for one foreign recipe; empty if the converter leaves it out or fails. */
     public List<RecipeHolder<GTRecipe>> toGTRecipes(RecipeHolder<?> holder) {
         List<RecipeHolder<GTRecipe>> recipes = new ArrayList<>();
