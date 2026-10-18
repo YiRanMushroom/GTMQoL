@@ -30,7 +30,8 @@ import java.util.function.UnaryOperator;
  * @param name        path of the GT recipe type and the machines, e.g. {@code mi_macerator}
  * @param englishName e.g. {@code MI Macerator}
  * @param proxies     the foreign recipe types, only asked for at common setup (they may not be registered when
- *                    this is declared); the converter takes the recipes of all of them. Empty, with a null
+ *                    this is declared, or may depend on a registry); the converter takes the recipes of all of
+ *                    them. None, with a null
  *                    converter, for a type whose recipes all come from custom recipe logic (added in
  *                    {@code recipeType})
  * @param recipeType  anything else the GT recipe type needs, e.g. slot counts of other capabilities
@@ -45,7 +46,7 @@ import java.util.function.UnaryOperator;
  * @param crafting    without a catalyst: the machine's recipes instead of the hammer and magical assembler ones,
  *                    or null
  */
-public record ForeignMachineType(String name, String englishName, List<Supplier<? extends RecipeType<?>>> proxies,
+public record ForeignMachineType(String name, String englishName, Supplier<List<RecipeType<?>>> proxies,
                                  @Nullable ForeignRecipeConverter converter,
                                  int itemInputs, int itemOutputs, int fluidInputs, int fluidOutputs,
                                  UnaryOperator<GTRecipeTypeBuilder> recipeType,
@@ -69,7 +70,7 @@ public record ForeignMachineType(String name, String englishName, List<Supplier<
     }
 
     public static ForeignMachineType multiblock(String name, String englishName,
-                                                Supplier<? extends RecipeType<?>> proxy,
+                                                @Nullable Supplier<? extends RecipeType<?>> proxy,
                                                 ForeignRecipeConverter converter, int itemInputs, int itemOutputs,
                                                 int fluidInputs, int fluidOutputs,
                                                 @Nullable Holder<SoundEntry> sound,
@@ -81,8 +82,8 @@ public record ForeignMachineType(String name, String englishName, List<Supplier<
                 shape, null, null, null);
     }
 
-    private static List<Supplier<? extends RecipeType<?>>> proxies(@Nullable Supplier<? extends RecipeType<?>> proxy) {
-        return proxy == null ? List.of() : List.of(proxy);
+    private static Supplier<List<RecipeType<?>>> proxies(@Nullable Supplier<? extends RecipeType<?>> proxy) {
+        return proxy == null ? List::of : () -> List.of(proxy.get());
     }
 
     public ForeignMachineType withRecipeType(UnaryOperator<GTRecipeTypeBuilder> recipeType) {
@@ -100,11 +101,19 @@ public record ForeignMachineType(String name, String englishName, List<Supplier<
     /** More foreign recipe types, all through the same converter. */
     @SafeVarargs
     public final ForeignMachineType withMoreProxies(Supplier<? extends RecipeType<?>>... more) {
-        List<Supplier<? extends RecipeType<?>>> all = new ArrayList<>(proxies);
-        all.addAll(List.of(more));
-        return new ForeignMachineType(name, englishName, List.copyOf(all), converter, itemInputs, itemOutputs,
-                fluidInputs, fluidOutputs, recipeType, sound, ui, catalyst, counterpart, model, shape, tooltip,
-                modifiers, crafting);
+        Supplier<List<RecipeType<?>>> before = proxies;
+        return withProxies(() -> {
+            List<RecipeType<?>> all = new ArrayList<>(before.get());
+            for (var proxy : more) all.add(proxy.get());
+            return all;
+        });
+    }
+
+    /** Other foreign recipe types instead, e.g. worked out from a registry. */
+    public ForeignMachineType withProxies(Supplier<List<RecipeType<?>>> proxies) {
+        return new ForeignMachineType(name, englishName, proxies, converter, itemInputs, itemOutputs, fluidInputs,
+                fluidOutputs, recipeType, sound, ui, catalyst, counterpart, model, shape, tooltip, modifiers,
+                crafting);
     }
 
     public ForeignMachineType withModifiers(RecipeModifier... modifiers) {

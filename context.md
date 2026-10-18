@@ -139,6 +139,12 @@ Not built or not checked in game yet (1.21):
   (`PORT_1_21.md`).
 - EMI real slots for chemicals: icons/amounts, R/U, U finding GT recipes, AE2 "+" auto-fill, no duplicate tooltips.
 - The dedicated-server path of gregification (`GregificationClient`).
+- Create fan from Create's fan processing registry (both branches, built, not run; `GREGIFICATION.md`): addon kinds
+  (Dragons Plus freezing/sanding/ending), catalysts from the `fan_processing_catalysts` tags through `LoadingTags`
+  (which MI's `GTMaterialTags` now uses too). 1.20.1 clients redo the conversion when tags arrive.
+- Grouped search safety (both branches, built, not run; `RECIPEDB_REFACTOR.md`): only plain RHLs and gtceu's/our
+  buffers are restricted, anything else combines with everything. Also the shared hatches / output marks fix of
+  2026-10-18.
 - KubeJS machines registered after the modular machines are declared; electric implosion copies of KubeJS recipes
   (1.20.1 has no late regeneration, so none there).
 - `gtceufix/AbstractWidgetMenuMixin`.

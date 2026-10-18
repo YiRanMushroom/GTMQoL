@@ -6,13 +6,11 @@ import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.data.tag.WireTags;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.conditions.ICondition;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -25,36 +23,25 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The GT material tags an item has ({@code c:dusts/copper}, {@code c:wires/copper}...), while recipes convert. Recipes
- * load before the new tags are bound to items, so this reads them from the reload's condition context, NeoForge's
- * way of giving recipe loading the tags.
+ * The GT material tags an item has ({@code c:dusts/copper}, {@code c:wires/copper}...), while recipes convert, from
+ * {@link LoadingTags}.
  */
 public final class GTMaterialTags {
 
-    private static @Nullable ICondition.IContext context;
     private static @Nullable Map<Item, List<TagKey<Item>>> byItem;
 
     private GTMaterialTags() {}
 
     public static void init() {
-        NeoForge.EVENT_BUS.addListener(AddReloadListenerEvent.class, event -> {
-            synchronized (GTMaterialTags.class) {
-                context = event.getConditionContext();
-                byItem = null;
-            }
-        });
+        LoadingTags.onChange(GTMaterialTags::clear);
+    }
+
+    private static synchronized void clear() {
+        byItem = null;
     }
 
     public static synchronized List<TagKey<Item>> of(Item item) {
-        if (byItem == null) {
-            if (context == null) return List.of();
-            try {
-                byItem = index(context.getAllTags(Registries.ITEM));
-            } catch (IllegalStateException e) {
-                // tags not loaded yet; recipes come after them, so this shouldn't happen
-                return List.of();
-            }
-        }
+        if (byItem == null) byItem = index(LoadingTags.all(BuiltInRegistries.ITEM));
         return byItem.getOrDefault(item, List.of());
     }
 

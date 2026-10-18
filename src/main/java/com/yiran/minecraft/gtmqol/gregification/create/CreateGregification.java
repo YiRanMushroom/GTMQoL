@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.gui.ProgressBarTextureSet;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -27,20 +26,16 @@ import com.yiran.minecraft.gtmqol.gregification.MultiblockShape;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -67,15 +62,15 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
  * LV for 5 s, heated basin recipes MV and superheated HV; sandpaper polishing LV for 30 s with circuit 1. These run
  * gregified overclocking (the same energy per recipe).
  *
- * <p>The fan does all four of Create's bulk processing kinds, told apart by what it would blow through, as inputs
- * that are never consumed: water (washing), lava (blasting), a campfire or blaze burner (smoking), a soul campfire
- * (haunting). The fluids are Create's own catalyst tags. Blasting runs every furnace recipe. Fan recipes are ULV for
- * 30 s, with a plain overclock and then as many at once as the inputs and outputs allow, at no extra cost: a fan
- * processes any amount as fast as one.</p>
+ * <p>The fan does every kind of fan processing, Create's and addons' ({@link FanProcessing}), told apart by what it
+ * would blow through, as inputs that are never consumed: any of the kind's catalyst blocks as an item, or a bucket's
+ * worth of its catalyst fluid. Blasting runs every furnace recipe. Fan recipes are ULV for 30 s, with a plain
+ * overclock and then as many at once as the inputs and outputs allow, at no extra cost: a fan processes any amount as
+ * fast as one.</p>
  *
  * <p>The mechanical crafter is 5x5x5 of brass casings, crafted from 81 mechanical crafters and an IV circuit in the
- * assembler. Its recipes are shapeless, with the result marked as a ghost ingredient: recipes with the same items in
- * other shapes are told apart by what is marked in a Ghost Ingredient Hatch.</p>
+ * magical assembler. Its recipes are shapeless, with the result marked as a ghost ingredient: recipes with the same
+ * items in other shapes are told apart by what is marked in a Ghost Ingredient Hatch.</p>
  *
  * <p>Sequenced assembly is flattened into one recipe on a line like GT's assembly line, see
  * {@link SequencedAssemblyMachine} and {@link SequencedAssemblySteps}.</p>
@@ -90,7 +85,7 @@ public final class CreateGregification {
     private static final int DURATION = 100;
     /** Fan processing and sandpaper polishing: 30 s. */
     private static final int LONG_DURATION = 600;
-    /** Washing and blasting need a bucket's worth of their fluid present. */
+    /** A catalyst fluid needs a bucket's worth present. */
     private static final int CATALYST_FLUID = 1000;
 
     private CreateGregification() {}
@@ -113,11 +108,9 @@ public final class CreateGregification {
                 machine("mixer", "Create Mechanical Mixer", createType("mixing"),
                         CreateGregification::convertProcessing, 9, 4, 2, 2,
                         GTSoundEntries.MIXER, GTGuiTextures.PROGRESS_ARROW_MULTIPLE, "mechanical_mixer"),
-                machine("fan", "Create Encased Fan", createType("splashing"),
-                        CreateGregification::convertFan, 2, 4, 1, 0,
+                machine("fan", "Create Encased Fan", null, CreateGregification::convertFan, 2, 4, 1, 0,
                         GTSoundEntries.MOTOR, GTGuiTextures.PROGRESS_ARROW, "encased_fan")
-                        .withMoreProxies(createType("haunting"), () -> RecipeType.SMOKING,
-                                () -> RecipeType.SMELTING)
+                        .withProxies(FanProcessing::recipeTypes)
                         .withModifiers(GTRecipeModifiers.OC_NON_PERFECT, AbsoluteParallel.upTo(Integer.MAX_VALUE)),
                 machine("deployer", "Create Deployer", createType("deploying"),
                         CreateGregification::convertDeploying, 2, 4, 0, 0,
@@ -144,7 +137,8 @@ public final class CreateGregification {
                                 createType("sequenced_assembly"),
                                 ForeignRecipeConverter.single(CreateGregification::convertSequencedAssembly),
                                 SEQUENCED_INPUTS, SEQUENCED_OUTPUTS, 2, 0, GTSoundEntries.ASSEMBLER,
-                                builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER), null,
+                                builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER)
+                                        .addRecipeUIModifier(SequencedAssemblyMachine.LENGTH_INFO), null,
                                 create("belt_connector"), MultiblockShape.CREATE_ASSEMBLY_LINE)
                         .withRecipeType(builder -> builder.setMaxSize(IO.IN, GhostIngredientRecipeCapability.CAP, 1))
                         .withModifiers(SequencedAssemblyMachine.STEP_LIMIT, GregificationModifiers.OVERCLOCK,
@@ -161,21 +155,22 @@ public final class CreateGregification {
 
     static {
         RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", SEQUENCED_TOOLTIP,
-                "Runs recipes with up to (length - 2) steps; at full length (16), any recipe.");
+                "Runs recipes with at most as many steps as the line is long; at full length (16), any recipe.");
         RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", SequencedAssemblyMachine.TOO_SHORT,
                 "Line too short for this recipe");
+        RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", SequencedAssemblyMachine.MIN_LENGTH_INFO,
+                "Minimum Line Length: %s");
     }
 
-    /** A Create mechanical belt, 16 brass casings and a LuV circuit. */
+    /** A Create mechanical belt, 16 brass casings and a LuV circuit, in the magical assembler. */
     private static void assembleSequencedAssembly(RecipeOutput provider, ResourceLocation id, ItemStack counterpart,
                                                   ItemStack machine) {
-        GTRecipeTypes.ASSEMBLER_RECIPES.get().recipeBuilder(id)
+        MagicalAssembler.RECIPE_TYPE.get().recipeBuilder(id)
                 .inputItems(counterpart)
                 .inputItems(Ingredient.of(BuiltInRegistries.ITEM.get(create("brass_casing"))), 16)
                 .inputItems(CustomTags.LuV_CIRCUITS)
                 .circuitMeta(16)
                 .outputItems(machine)
-                .EUt(VA[LV])
                 .duration(400)
                 .save(provider);
     }
@@ -194,14 +189,13 @@ public final class CreateGregification {
                 .save(provider);
     }
 
-    /** 81 mechanical crafters (a full 9x9) and an IV circuit. */
+    /** 81 mechanical crafters (a full 9x9) and an IV circuit, in the magical assembler. */
     private static void assembleMechanicalCrafter(RecipeOutput provider, ResourceLocation id, ItemStack counterpart,
                                                   ItemStack machine) {
-        GTRecipeTypes.ASSEMBLER_RECIPES.get().recipeBuilder(id)
+        MagicalAssembler.RECIPE_TYPE.get().recipeBuilder(id)
                 .inputItems(Ingredient.of(counterpart), 81)
                 .inputItems(CustomTags.IV_CIRCUITS)
                 .outputItems(machine)
-                .EUt(VA[LV])
                 .duration(400)
                 .save(provider);
     }
@@ -217,7 +211,7 @@ public final class CreateGregification {
     }
 
     private static ForeignMachineType machine(String path, String englishName,
-                                              Supplier<? extends RecipeType<?>> proxy,
+                                              @Nullable Supplier<? extends RecipeType<?>> proxy,
                                               ForeignRecipeConverter converter, int itemInputs,
                                               int itemOutputs, int fluidInputs, int fluidOutputs,
                                               Holder<SoundEntry> sound, ProgressBarTextureSet progressBar,
@@ -277,28 +271,31 @@ public final class CreateGregification {
         return true;
     }
 
-    /** Washing and haunting (Create's), smoking and blasting (vanilla smoking and smelting recipes). */
-    private static boolean convertFan(RecipeHolder<?> holder, GTRecipeBuilder builder) {
+    /** Once for each fan kind running the recipe's type and each sort of catalyst it has: items, or a fluid. */
+    private static void convertFan(RecipeHolder<?> holder, ForeignRecipeConverter.Output output) {
+        // as Create's fan: recipes for hand use only are skipped
+        if (holder.id().getPath().endsWith("_manual_only")) return;
         Recipe<?> foreign = holder.value();
-        RecipeType<?> type = foreign.getType();
-        if (type == RecipeType.SMOKING || type == RecipeType.SMELTING) {
-            // as Create's fan: recipes for hand use only are skipped
-            if (holder.id().getPath().endsWith("_manual_only")) return false;
-            if (!(foreign instanceof AbstractCookingRecipe cooking)) return false;
+        for (ResourceLocation kind : FanProcessing.kindsOf(foreign.getType())) {
+            FanProcessing.Catalysts catalysts = FanProcessing.catalysts(kind);
+            if (!catalysts.items().isEmpty()) {
+                Ingredient items = Ingredient.of(catalysts.items().toArray(Item[]::new));
+                output.add(builder -> fanRecipe(foreign, builder.notConsumable(items)));
+            }
+            if (catalysts.fluid() != null) {
+                SizedFluidIngredient fluid = SizedFluidIngredient.of(catalysts.fluid(), CATALYST_FLUID);
+                output.add(builder -> fanRecipe(foreign, builder.notConsumableFluid(fluid)));
+            }
+        }
+    }
+
+    /** The recipe itself: vanilla cooking or Create processing, ULV. */
+    private static boolean fanRecipe(Recipe<?> foreign, GTRecipeBuilder builder) {
+        if (foreign instanceof AbstractCookingRecipe cooking) {
             ItemStack result = cooking.getResultItem(RegistryAccess.EMPTY);
             if (cooking.getIngredients().isEmpty() || result.isEmpty()) return false;
-            if (type == RecipeType.SMELTING) {
-                builder.notConsumableFluid(catalystFluid("blasting"));
-            } else {
-                builder.notConsumable(Ingredient.of(Items.CAMPFIRE, BuiltInRegistries.ITEM.get(create("blaze_burner"))));
-            }
             builder.inputItems(cooking.getIngredients().getFirst()).outputItems(result);
         } else if (foreign instanceof ProcessingRecipe<?, ?> recipe) {
-            if (type == BuiltInRegistries.RECIPE_TYPE.get(create("splashing"))) {
-                builder.notConsumableFluid(catalystFluid("splashing"));
-            } else {
-                builder.notConsumable(Ingredient.of(Items.SOUL_CAMPFIRE));
-            }
             if (!addInputs(recipe, builder) || !addOutputs(recipe, builder)) return false;
         } else {
             return false;
@@ -376,11 +373,6 @@ public final class CreateGregification {
                 .EUt(VA[LV])
                 .duration(Math.max(1, context.duration()));
         return true;
-    }
-
-    private static SizedFluidIngredient catalystFluid(String fanType) {
-        TagKey<Fluid> tag = TagKey.create(Registries.FLUID, create("fan_processing_catalysts/" + fanType));
-        return SizedFluidIngredient.of(tag, CATALYST_FLUID);
     }
 
     /** Items and fluids; false if there are none. */

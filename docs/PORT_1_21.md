@@ -60,6 +60,19 @@ Delete each one once upstream fixes it. All are 1.21 only, except `BaseSchemaRen
 `FluidIngredient`). Checked against GTCEu's 2026-10-13/14 snapshots (`GTCEU_UPGRADE.md`). The canner's potion representative recipes (`CannerLogicMixin`, a
 feature, not in `gtceufix/`) are on both branches too.
 
+- `DummyChunkSourceMixin` (`client`, **both branches**, ModularUI bug): the multiblock preview builds its mesh on
+  background threads (a cancelled build can still be running when the next starts), and its dummy level's chunk map
+  is a plain `Long2ObjectOpenHashMap`. Two threads adding chunks crashed the game while the map grew ("Batching
+  chunks", `ArrayIndexOutOfBoundsException` in `computeIfAbsent`, seen in ATM10). `getChunk` and `clear` are
+  `@WrapMethod`ed in `synchronized (this)`.
+- `AABBHighlightColorMixin` (`client`): the in-world highlight of a missing multiblock part (button under "Invalid
+  structure") passes 0-255 ints to `LevelRenderer.renderLineBox`, which takes 0-1 floats; ×255 cut to a byte left
+  alpha at 1, so nothing showed. The mixin divides by 255 when any value is above 1 (a fixed gtceu isn't scaled
+  twice). 1.20.1's gtceu draws its own no-depth quads and isn't affected.
+- `AABBHighlightSeeThroughMixin` (`client`): the same highlight is meant to show through blocks, but gtceu only calls
+  `RenderSystem.disableDepthTest()` and adds its lines to the shared `RenderType.lines()` buffer, which is drawn later
+  with its own depth test. The mixin swaps in `client/GTMQoLRenderTypes.SEE_THROUGH_LINES` (vanilla lines, no depth
+  test or depth write, main target) and draws it at the end of `tick`, in the stage gtceu chose.
 - `BloomSafeModeMixin` (`client`): without Sodium/Embeddium, gtceu keeps block bloom (glowing overlays) per chunk
   section in its own buffers, outside the chunk mesh. A section's buffer was only replaced when its rebuild had bloom
   faces, so after the last glowing face of a section went (a hatch broken) the old overlay kept drawing until the
