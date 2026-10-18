@@ -19,6 +19,7 @@
     "ManualCompressionMixin",
     "MEPatternBufferPartMachineMixin",
     "MEPatternBufferReturnMixin",
+    "MixinHelpersMixin",
     "OverclockingLogicMixin",
     "PotionFluidNameMixin",
     "RecipeManagerHandlerMixin",
