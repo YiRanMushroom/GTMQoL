@@ -15,6 +15,7 @@ public final class GTMQoLClient {
         // Must be registered before machine models are generated or loaded, they reference the type by id.
         DynamicRenderManager.register(GTMQoL.id("dtfr_ring"), DTFRRingRender.TYPE);
         DynamicRenderManager.register(GTMQoL.id("fishing_pond_water"), FishingPondWaterRender.TYPE);
+        DynamicRenderManager.register(GTMQoL.id("casing_part"), CasingPartRender.TYPE);
         if (ModList.get().isLoaded("emi") && ModList.get().isLoaded("mekanism")) ChemicalEmiConverter.register();
     }
 }

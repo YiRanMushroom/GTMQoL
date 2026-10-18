@@ -43,6 +43,7 @@
     "gtceufix.GTRecipeCategoryMixin",
     "gtceufix.ItemDataComponentMapIngredientMixin",
     "gtceufix.MEPatternBufferInternalSlotMixin",
+    "gtceufix.PatternBufferOtherCapabilitiesMixin",
     "gtceufix.PotionFluidTypeMixin",
     "gtceufix.RecipeLogicMixin",
     "gtceufix.RecipeRunnerMixin"
@@ -52,7 +53,8 @@
     "GTEmiRecipeGhostIngredientMixin",
     "GTEmiRecipeStackLikeMixin",
     "gtceufix.GTEmiRecipeMixin",
-    "gtceufix.BaseSchemaRendererMixin"
+    "gtceufix.BaseSchemaRendererMixin",
+    "gtceufix.BloomSafeModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

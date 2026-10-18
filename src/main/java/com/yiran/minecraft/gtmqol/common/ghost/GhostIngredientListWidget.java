@@ -68,6 +68,13 @@ public class GhostIngredientListWidget extends Widget<GhostIngredientListWidget>
     }
 
     @Override
+    public void onInit() {
+        super.onInit();
+        // recipe viewer drops only reach registered ghost slots
+        getContext().getRecipeViewerSettings().addGhostIngredientSlot(this);
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
         updateSize();

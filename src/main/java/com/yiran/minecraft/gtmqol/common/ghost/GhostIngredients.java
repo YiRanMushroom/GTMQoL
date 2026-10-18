@@ -12,7 +12,6 @@ import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import static com.gregtechceu.gtceu.api.GTValues.LV;
@@ -45,11 +44,11 @@ public final class GhostIngredients {
                 .colorOverlayTieredHullModel(overlay(OVERLAY_ITEM_HATCH_INPUT), overlay("overlay_pipe"),
                         overlay("overlay_pipe_in_emissive"))
                 .langValue("Ghost Ingredient Hatch")
-                .tooltips(Component.translatable(GhostIngredientHatchPartMachine.KEY + "tooltip"))
                 .register();
 
         var lang = GTMQoLAddon.registrate();
         String key = GhostIngredientHatchPartMachine.KEY;
+        // gtceu shows <namespace>.machine.<id>.tooltip on its own
         lang.addRawLang(key + "tooltip", "Marks ingredients that tell the machine what to make. Nothing is consumed.");
         lang.addRawLang(key + "title", "Marked ingredients");
         lang.addRawLang(key + "hint.mark",

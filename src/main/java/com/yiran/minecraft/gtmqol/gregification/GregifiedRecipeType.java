@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * A GT recipe type that proxies one recipe type of another mod. After each reload, every recipe of that type goes
+ * A GT recipe type that proxies recipe types of another mod. After each reload, every recipe of those types goes
  * through {@link #toGTRecipes}, which may give any number of GT recipes (GTCEu's own proxy handling takes exactly
  * one, so {@code RecipeManagerHandlerMixin} does the adding for these types), and the results go to the recipe lookup
  * and EMI.
@@ -23,24 +23,23 @@ import java.util.function.Supplier;
 public class GregifiedRecipeType extends GTRecipeType {
 
     private final @Nullable ForeignRecipeConverter converter;
-    private final @Nullable Supplier<? extends RecipeType<?>> proxy;
+    private final List<Supplier<? extends RecipeType<?>>> proxies;
 
-    /** Without a proxy, all recipes come from custom recipe logic. */
+    /** Without proxies, all recipes come from custom recipe logic. */
     public GregifiedRecipeType(ResourceLocation id, Properties properties, @Nullable ForeignRecipeConverter converter,
-                               @Nullable Supplier<? extends RecipeType<?>> proxy) {
+                               List<Supplier<? extends RecipeType<?>>> proxies) {
         super(id, properties);
         this.converter = converter;
-        this.proxy = proxy;
+        this.proxies = proxies;
     }
 
     /**
-     * Adds the proxied type to {@link #getProxyRecipes()}, at common setup. Not in the properties: the foreign type
+     * Adds the proxied types to {@link #getProxyRecipes()}, at common setup. Not in the properties: a foreign type
      * may not exist yet when this one is declared (Mekanism creates its recipe types when they are registered).
      * Recipes are only converted on reloads, which come later.
      */
     public void resolveProxy() {
-        if (proxy == null) return;
-        getProxyRecipes().computeIfAbsent(proxy.get(), type -> new ArrayList<>());
+        for (var proxy : proxies) getProxyRecipes().computeIfAbsent(proxy.get(), type -> new ArrayList<>());
     }
 
     /** Every GT recipe for one foreign recipe; empty if the converter leaves it out or fails. */

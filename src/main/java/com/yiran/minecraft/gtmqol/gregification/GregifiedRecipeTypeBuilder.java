@@ -9,27 +9,28 @@ import net.minecraft.world.item.crafting.RecipeType;
 import com.tterrag.registrate.builders.BuilderCallback;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * {@link GTRecipeTypeBuilder} that creates a {@link GregifiedRecipeType}. The proxied type is added later, see
+ * {@link GTRecipeTypeBuilder} that creates a {@link GregifiedRecipeType}. The proxied types are added later, see
  * {@link GregifiedRecipeType#resolveProxy()}.
  */
 public class GregifiedRecipeTypeBuilder extends GTRecipeTypeBuilder {
 
     private final @Nullable ForeignRecipeConverter converter;
-    private final @Nullable Supplier<? extends RecipeType<?>> proxy;
+    private final List<Supplier<? extends RecipeType<?>>> proxies;
 
     public GregifiedRecipeTypeBuilder(GTRegistrate owner, String name, BuilderCallback callback, String group,
                                       @Nullable ForeignRecipeConverter converter,
-                                      @Nullable Supplier<? extends RecipeType<?>> proxy) {
+                                      List<Supplier<? extends RecipeType<?>>> proxies) {
         super(owner, name, callback, group);
         this.converter = converter;
-        this.proxy = proxy;
+        this.proxies = proxies;
     }
 
     @Override
     protected GTRecipeType createEntry() {
-        return new GregifiedRecipeType(getOwner().makeResourceLocation(getName()), getProperties(), converter, proxy);
+        return new GregifiedRecipeType(getOwner().makeResourceLocation(getName()), getProperties(), converter, proxies);
     }
 }

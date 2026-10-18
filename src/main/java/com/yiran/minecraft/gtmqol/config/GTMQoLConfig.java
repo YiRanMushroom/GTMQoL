@@ -126,6 +126,12 @@ public final class GTMQoLConfig {
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean productiveBees = true;
+
+        @Configurable
+        @Configurable.Comment({ "GT machines for Create's processing: millstone, crushing wheels, press, compactor,",
+                "mixer, fan, deployer, spout, item drain and saw", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean create = true;
     }
 
     @Configurable

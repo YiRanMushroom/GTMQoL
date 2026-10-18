@@ -39,6 +39,7 @@ import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.client.GregificationClient;
+import com.yiran.minecraft.gtmqol.gregification.create.CreateGregification;
 import com.yiran.minecraft.gtmqol.gregification.mekanism.MekanismGregification;
 import com.yiran.minecraft.gtmqol.gregification.mi.MIGregification;
 import com.yiran.minecraft.gtmqol.gregification.productivebees.ProductiveBeesGregification;
@@ -87,6 +88,9 @@ public final class GTMQoL {
         }
         if (config.gregification.mekanism && ModList.get().isLoaded("mekanism")) {
             Gregification.addSource(MekanismGregification::types);
+        }
+        if (config.gregification.create && ModList.get().isLoaded("create")) {
+            Gregification.addSource(CreateGregification::types);
         }
         if (ModList.get().isLoaded("productivebees")) {
             LegacyCapabilityAliases.init(modBus);
