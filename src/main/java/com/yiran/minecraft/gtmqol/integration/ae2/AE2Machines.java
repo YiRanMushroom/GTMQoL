@@ -58,7 +58,8 @@ public final class AE2Machines {
         addLang(SharedHatches.TOGGLE_KEY + ".enabled", "Shared Hatches: \u00a7eEnabled");
         addLang(SharedHatches.TOGGLE_KEY + ".disabled", "Shared Hatches: \u00a7eDisabled");
         addLang(SharedHatches.TOGGLE_KEY + ".info", "If enabled, patterns can also use ingredients from the " +
-                "machine's other buses and hatches that aren't distinct or dyed, like circuits or molds.");
+                "machine's other buses and hatches that aren't distinct or dyed, like circuits, molds or " +
+                "ghost ingredient marks.");
     }
 
     private static void addLang(String key, String value) {

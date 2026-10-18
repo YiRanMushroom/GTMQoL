@@ -43,7 +43,6 @@
     "gtceufix.GTRecipeCategoryMixin",
     "gtceufix.ItemDataComponentMapIngredientMixin",
     "gtceufix.MEPatternBufferInternalSlotMixin",
-    "gtceufix.PatternBufferOtherCapabilitiesMixin",
     "gtceufix.PotionFluidTypeMixin",
     "gtceufix.RecipeLogicMixin",
     "gtceufix.RecipeRunnerMixin"

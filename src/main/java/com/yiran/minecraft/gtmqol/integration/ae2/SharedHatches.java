@@ -18,8 +18,10 @@ import java.util.Map;
 
 /**
  * Pattern buffers stay distinct, but what a slot is missing for a recipe may come from the machine's shared parts:
- * its undyed buses and hatches that aren't distinct (the ones gtceu adds to every non-distinct group). A slot still
- * has to provide something. A toggle on the buffer, on by default; proxies follow their buffer.
+ * its undyed buses and hatches that aren't distinct (the ones gtceu adds to every non-distinct group), and the parts
+ * that bypass distinctness (ghost ingredient hatches...; a slot only matches when it takes all the contents, so these
+ * are needed here too). A slot still has to provide something. A toggle on the buffer, on by default; proxies follow
+ * their buffer.
  */
 public final class SharedHatches {
 
@@ -48,8 +50,8 @@ public final class SharedHatches {
     public static List<RecipeHandlerList> of(List<RecipeHandlerList> inputs, RecipeHandlerList self) {
         List<RecipeHandlerList> shared = new ArrayList<>();
         for (RecipeHandlerList list : inputs) {
-            if (list != self && RecipeHandlerGroupColor.UNDYED.equals(list.getGroup()) &&
-                    !list.doesCapabilityBypassDistinct()) {
+            if (list != self && (list.doesCapabilityBypassDistinct() ||
+                    RecipeHandlerGroupColor.UNDYED.equals(list.getGroup()))) {
                 shared.add(list);
             }
         }
