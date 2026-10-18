@@ -68,6 +68,15 @@ public final class GhostIngredientRecipeCapability extends RecipeCapability<Ghos
     }
 
     /**
+     * A ghost ingredient hatch is a plain non-distinct part (gtceu's default would add it to every distinct group), and
+     * pattern buffers that mark their outputs stay distinct.
+     */
+    @Override
+    public boolean shouldBypassDistinct() {
+        return false;
+    }
+
+    /**
      * Never consumed, so it doesn't limit parallels. The default ({@code Integer.MAX_VALUE}, "skip") makes gtceu's
      * parallel logic report "no input capabilities" for recipes with no other input.
      */

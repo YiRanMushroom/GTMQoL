@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
+import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredient;
 import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredientRecipeCapability;
 import com.yiran.minecraft.gtmqol.common.ghost.ItemGhostIngredient;
 import com.yiran.minecraft.gtmqol.common.modifier.AbsoluteParallel;
@@ -20,6 +21,7 @@ import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
 import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.GregificationModifiers;
+import com.yiran.minecraft.gtmqol.gregification.MarkCoveredRecipes;
 import com.yiran.minecraft.gtmqol.gregification.MultiblockShape;
 
 import net.minecraft.core.RegistryAccess;
@@ -47,8 +49,9 @@ import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipe;
 import com.simibubi.create.content.processing.sequenced.SequencedRecipe;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -236,54 +239,28 @@ public final class CreateGregification {
 
     // --- converters ---
 
-    /**
-     * Create's saw picks between recipes with the same input by its filter: those (e.g. planks to fences, signs and
-     * doors) mark their output as a ghost ingredient, recipes with an input of their own need no mark.
-     */
+    /** Create's saw picks between recipes with the same input by its filter, see {@link MarkCoveredRecipes}. */
     private static ForeignRecipeConverter sawConverter() {
-        return new ForeignRecipeConverter() {
-
-            private Set<Item> sharedInputs = Set.of();
-
-            @Override
-            public void prepare(List<? extends Recipe<?>> recipes) {
-                Set<Item> seen = new HashSet<>();
-                Set<Item> shared = new HashSet<>();
-                for (var holder : recipes) {
-                    for (Item item : inputItems(holder)) {
-                        if (!seen.add(item)) shared.add(item);
-                    }
-                }
-                sharedInputs = shared;
-            }
-
-            @Override
-            public void convert(Recipe<?> holder, Output output) {
-                output.add(builder -> convertCutting(holder, builder, sharedInputs));
-            }
-        };
+        return new MarkCoveredRecipes(CreateGregification::convertProcessing, CreateGregification::itemInputs,
+                CreateGregification::firstOutputMark);
     }
 
-    private static Set<Item> inputItems(Recipe<?> recipe) {
-        Set<Item> items = new HashSet<>();
+    private static List<Set<Object>> itemInputs(Recipe<?> recipe) {
+        List<Set<Object>> inputs = new ArrayList<>();
         for (Ingredient ingredient : recipe.getIngredients()) {
+            Set<Object> items = new HashSet<>();
             for (ItemStack stack : ingredient.getItems()) items.add(stack.getItem());
+            if (!items.isEmpty()) inputs.add(items);
         }
-        return items;
+        return inputs;
     }
 
-    private static boolean convertCutting(Recipe<?> holder, GTRecipeBuilder builder, Set<Item> sharedInputs) {
-        if (!convertProcessing(holder, builder)) return false;
-        if (!(holder instanceof ProcessingRecipe<?> recipe) ||
-                Collections.disjoint(inputItems(recipe), sharedInputs)) {
-            return true;
+    private static @Nullable GhostIngredient<?> firstOutputMark(Recipe<?> recipe) {
+        if (!(recipe instanceof ProcessingRecipe<?> processing)) return null;
+        for (ProcessingOutput output : processing.getRollableResults()) {
+            if (!output.getStack().isEmpty()) return new ItemGhostIngredient(output.getStack());
         }
-        for (ProcessingOutput output : recipe.getRollableResults()) {
-            if (output.getStack().isEmpty()) continue;
-            builder.input(GhostIngredientRecipeCapability.CAP, new ItemGhostIngredient(output.getStack()));
-            break;
-        }
-        return true;
+        return null;
     }
 
     /** Item and fluid inputs and outputs as they are, LV, or MV/HV for heated/superheated basin recipes. */

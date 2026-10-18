@@ -57,9 +57,9 @@ public final class GhostIngredients {
                 .tier(LV)
                 .abilities(GHOST_INGREDIENTS, PartAbility.IMPORT_ITEMS)
                 .modelProperty(IS_FORMED, false)
-                // gtceu's input bus textures; the String overload would look in our namespace
-                .colorOverlayTieredHullModel(overlay(OVERLAY_ITEM_HATCH_INPUT), overlay("overlay_pipe"),
-                        overlay("overlay_pipe_in_emissive"))
+                // gtceu's configurable maintenance hatch texture (a gear); the String overload would look in our
+                // namespace
+                .colorOverlayTieredHullModel(overlay("overlay_maintenance_configurable"))
                 .langValue("Ghost Ingredient Hatch")
                 // the main line is gtceu's own <namespace>.machine.<id>.tooltip
                 .tooltips(Component.translatable(GhostIngredientHatchPartMachine.KEY + "tooltip.pattern_buffer"))
