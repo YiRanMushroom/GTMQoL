@@ -98,7 +98,6 @@ public abstract class AbstractMEPatternBufferPartMachine extends MEPatternBuffer
         var right = builder.rightConfigurators();
         return builder.rightConfigurators(right.andThen(f -> f.child(new ToggleButton()
                 .value(value)
-                .invertSelected(true)
                 .overlay(GTGuiTextures.PATTERN_OVERLAY)
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder(r -> r
