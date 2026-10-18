@@ -1,14 +1,12 @@
 package com.yiran.minecraft.gtmqol.common.crystal;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -17,6 +15,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
+import com.yiran.minecraft.gtmqol.common.blockprovider.BlockProviderRecipeCapability;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -35,34 +34,24 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
 
 /**
  * Crystal Growth Chamber: a 3 × 3 × 3 multiblock with a budding block in the middle, which makes that block's
- * shards. One recipe per budding block, told apart by a {@link CenterBlockCondition}. Each recipe also has its
- * shard as a non-consumed input (like the rock breaker's cobblestone): GTCEu's recipe lookup keeps only one recipe
- * per set of item/fluid inputs and drops the rest, so recipes with the same (or no) inputs would not even load.
+ * shards. One recipe per budding block, whose only input is that block ({@link BlockProviderRecipeCapability},
+ * provided by {@link CrystalGrowthMachine}). The block is a lookup filter, so gtceu's recipe lookup tells the recipes
+ * apart by it; it keeps only one recipe per set of inputs.
  */
 public final class CrystalGrowth {
 
     private static final String KEY = "gtmqol.multiblock.crystal_growth_chamber.";
 
-    public static RecipeConditionType<CenterBlockCondition> CENTER_BLOCK;
     public static GTRecipeType RECIPE_TYPE;
     public static MultiblockMachineDefinition MACHINE;
 
     private CrystalGrowth() {}
 
-    /** From GTCEu's recipe condition {@code RegisterEvent}. */
-    public static void initCondition(GTCEuAPI.RegisterEvent<ResourceLocation, RecipeConditionType<?>> event) {
-        CENTER_BLOCK = new RecipeConditionType<>(CenterBlockCondition::new, CenterBlockCondition.CODEC);
-        event.register(GTMQoL.id("center_block"), CENTER_BLOCK);
-
-        var lang = GTMQoLAddon.registrate();
-        lang.addRawLang(CenterBlockCondition.KEY, "Center block:");
-        lang.addRawLang(CenterBlockCondition.KEY + ".tooltip", "Center block must be %s");
-    }
-
     /** From GTCEu's recipe type {@code RegisterEvent}. */
     public static void initRecipeType() {
         RECIPE_TYPE = GTRecipeTypes.register(GTMQoL.id("crystal_growth"), GTRecipeTypes.MULTIBLOCK)
-                .setMaxIOSize(1, 1, 0, 0)
+                .setMaxIOSize(0, 1, 0, 0)
+                .setMaxSize(IO.IN, BlockProviderRecipeCapability.CAP, 1)
                 .setEUIO(IO.IN)
                 .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW));
         GTMQoLAddon.registrate().addRawLang(RECIPE_TYPE.registryName.toLanguageKey(), "Crystal Growth");
@@ -70,12 +59,12 @@ public final class CrystalGrowth {
 
     /** From GTCEu's machine {@code RegisterEvent}. */
     public static void initMachine() {
-        MACHINE = GTMQoLAddon.multiblock("crystal_growth_chamber", WorkableElectricMultiblockMachine::new)
-                // the condition looks behind the controller, which only works without extended facing
+        MACHINE = GTMQoLAddon.multiblock("crystal_growth_chamber", CrystalGrowthMachine::new)
+                // the machine looks behind the controller, which only works without extended facing
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(RECIPE_TYPE)
                 .recipeModifiers(OC_PERFECT_SUBTICK, BATCH_MODE)
-                .tooltips(Component.translatable(KEY + "tooltip.0"), Component.translatable(KEY + "tooltip.1"))
+                .tooltips(Component.translatable(KEY + "tooltip.0"))
                 .appearanceBlock(CASING_STEEL_SOLID)
                 // G: the middle of the four sides and the back, glass or casing
                 .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
@@ -94,9 +83,7 @@ public final class CrystalGrowth {
                 .langValue("Crystal Growth Chamber")
                 .register();
 
-        var lang = GTMQoLAddon.registrate();
-        lang.addRawLang(KEY + "tooltip.0", "Grows the shards of the budding block in its middle.");
-        lang.addRawLang(KEY + "tooltip.1", "Needs one of those shards in an input bus, which is not consumed.");
+        GTMQoLAddon.registrate().addRawLang(KEY + "tooltip.0", "Grows the shards of the budding block in its middle.");
     }
 
     public static void addRecipes(Consumer<FinishedRecipe> provider) {
@@ -130,8 +117,9 @@ public final class CrystalGrowth {
     private static void addCrystal(Consumer<FinishedRecipe> provider, Block budding, Item shard) {
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(budding);
         RECIPE_TYPE.recipeBuilder(GTMQoL.id(id.getNamespace() + "_" + id.getPath()))
-                .notConsumable(shard)
-                .addCondition(new CenterBlockCondition(budding))
+                .chance(0)
+                .input(BlockProviderRecipeCapability.CAP, budding)
+                .chance(ChanceLogic.getMaxChancedValue())
                 // a full-grown cluster drops 4
                 .outputItems(shard, 4)
                 .duration(200)

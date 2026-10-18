@@ -3,6 +3,7 @@ package com.yiran.minecraft.gtmqol;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -19,6 +20,7 @@ import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
+import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredients;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.common.part.LegacyPartRecipes;
@@ -32,6 +34,7 @@ import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
 import com.yiran.minecraft.gtmqol.config.EarlyConfig;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
+import com.yiran.minecraft.gtmqol.integration.kubejs.GTMQoLKubeJSPlugin;
 import com.yiran.minecraft.gtmqol.data.recipe.WirelessRecipes;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
 
@@ -99,6 +102,12 @@ public final class GTMQoLAddon implements IGTAddon {
         // Too late for machines (registry already frozen), see GTMQoL.onRegisterMachines.
     }
 
+    /** Only called by gtceu's KubeJS integration, so only with KubeJS installed. */
+    @Override
+    public void registerRecipeKeys(KJSRecipeKeyEvent event) {
+        GTMQoLKubeJSPlugin.registerRecipeKeys(event);
+    }
+
     @Override
     public void registerTagPrefixes() {
         if (GTMQoLConfig.get().recipes.useLegacyPartRecipes) LegacyPartRecipes.restoreRotorAmount();
@@ -109,6 +118,7 @@ public final class GTMQoLAddon implements IGTAddon {
     public void addRecipes(Consumer<FinishedRecipe> provider) {
         GTMQoLConfig config = GTMQoLConfig.get();
         MagicalAssembler.addRecipes(provider);
+        GhostIngredients.addRecipes(provider);
         if (config.wireless.energy) WirelessRecipes.addEnergyRecipes(provider);
         if (config.wireless.steam) WirelessRecipes.addSteamRecipes(provider);
         ModularMachines.addRecipes(provider);

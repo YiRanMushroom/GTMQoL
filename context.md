@@ -417,13 +417,15 @@ Port differences:
   visibility not checked yet.
 - Same `startOffset` fishing pond pattern as 1.21.
 
-## Crystal Growth Chamber (`crystal/CrystalGrowth`, `crystal/CenterBlockCondition`)
+## Crystal Growth Chamber (`crystal/CrystalGrowth`, `crystal/CrystalGrowthMachine`, `common/blockprovider/`)
 
 Ported from 1.21 on 2026-10-07 (it works there; see its context.md for the design), written, not built yet.
 Config `machines.crystalGrowthChamber`. Port differences:
-- The condition's `CODEC` is a `Codec` (`RecordCodecBuilder.create`), not a `MapCodec`.
-- `gtmqol:center_block` is registered from GTCEu's `RegisterEvent` for `RecipeConditionType` (posted by
-  `GTRecipeConditions.init()`, same `CommonProxy.init()` as recipe types and machines), listener in `GTMQoL`.
+- 2026-10-18: the `CenterBlockCondition` + shard input became the block capability (`common/blockprovider/`, same
+  as 1.21, `docs/MULTIBLOCKS.md` there; compiles and datagens, not run). 1.20.1 differences: the capability is
+  registered from the capability `RegisterEvent` (`BlockProviderRecipeCapability.register`, lang
+  `recipe.capability.block.name`), JEI lookup via `GTRecipeJEICategoryBlockProviderMixin`, KubeJS 6 needs
+  `GTMQoLAddon.registerRecipeKeys` (`ContentJS` with KubeJS's `BlockComponent`) besides the binding plugin.
 - Recipe type via `GTRecipeTypes.register`, machine from the machine `RegisterEvent`, like the electric implosion
   compressor. GeOre's 1.20 branch uses the same `budding_<x>` / `<x>_shard` names.
 

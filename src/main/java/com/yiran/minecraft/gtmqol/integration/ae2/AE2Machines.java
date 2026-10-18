@@ -56,6 +56,11 @@ public final class AE2Machines {
         addLang(SmartDoubling.TOGGLE_KEY + ".enabled", "Smart doubling: on");
         addLang(SmartDoubling.TOGGLE_KEY + ".disabled", "Smart doubling: off");
         addLang(SmartDoubling.LIMIT_KEY, "Limit (0 = none)");
+        addLang(SharedHatches.TOGGLE_KEY + ".enabled", "Shared Hatches: \u00a7eEnabled");
+        addLang(SharedHatches.TOGGLE_KEY + ".disabled", "Shared Hatches: \u00a7eDisabled");
+        addLang(SharedHatches.TOGGLE_KEY + ".info", "If enabled, patterns can also use ingredients from the " +
+                "machine's other buses and hatches that aren't distinct or dyed, like circuits, molds or " +
+                "ghost ingredient marks.");
     }
 
     private static void addLang(String key, String value) {
