@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
@@ -18,6 +17,9 @@ import com.yiran.minecraft.gtmqol.common.autobuild.AutoBuilder;
 import com.yiran.minecraft.gtmqol.data.tag.CircuitTags;
 import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
+import com.yiran.minecraft.gtmqol.common.blockprovider.BlockProviderRecipeCapability;
+import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredientRecipeCapability;
+import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredients;
 import com.yiran.minecraft.gtmqol.common.circuit.UniversalCircuits;
 import com.yiran.minecraft.gtmqol.common.part.LegacyPartRecipes;
 import com.yiran.minecraft.gtmqol.client.GTMQoLClient;
@@ -42,6 +44,7 @@ import com.yiran.minecraft.gtmqol.common.wireless.WirelessNetworks;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
+import com.yiran.minecraft.gtmqol.gregification.create.CreateGregification;
 import com.yiran.minecraft.gtmqol.gregification.mekanism.MekanismGregification;
 import com.yiran.minecraft.gtmqol.gregification.productivebees.ProductiveBeesGregification;
 import com.yiran.minecraft.gtmqol.integration.productivebees.LegacyCapabilityAliases;
@@ -79,11 +82,17 @@ public final class GTMQoL {
         if (config.circuits.mekanismCircuitTags) CircuitTags.init();
         MaterialAliasTags.init();
         PotionContainers.init();
+        // always: KubeJS scripts may use it with any recipe type
+        BlockProviderRecipeCapability.init();
+        GhostIngredients.init();
         if (ModList.get().isLoaded("mekanism")) ChemicalStackLike.init();
         // before our own listeners, so ModularMachines sees the gregified recipe types
         Gregification.init(modBus);
         if (config.gregification.mekanism && ModList.get().isLoaded("mekanism")) {
             Gregification.addSource(MekanismGregification::types);
+        }
+        if (config.gregification.create && ModList.get().isLoaded("create")) {
+            Gregification.addSource(CreateGregification::types);
         }
         if (config.gregification.productiveBees && ModList.get().isLoaded("productivebees")) {
             Gregification.addSource(ProductiveBeesGregification::types);
@@ -97,7 +106,6 @@ public final class GTMQoL {
             modBus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(StickyCardItem::registerUpgrades));
         }
         modBus.addGenericListener(RecipeCapability.class, this::onRegisterRecipeCapabilities);
-        modBus.addGenericListener(RecipeConditionType.class, this::onRegisterRecipeConditions);
         modBus.addGenericListener(GTRecipeType.class, this::onRegisterRecipeTypes);
         modBus.addGenericListener(CoverDefinition.class, this::onRegisterCovers);
         modBus.addGenericListener(MachineDefinition.class, this::onRegisterMachines);
@@ -137,12 +145,9 @@ public final class GTMQoL {
     /** Posted by {@code GTRecipeCapabilities.init()} before it freezes the capability registry. */
     private void onRegisterRecipeCapabilities(GTCEuAPI.RegisterEvent<ResourceLocation, RecipeCapability<?>> event) {
         GenericStackLikeRecipeCapability.registerAll(event);
+        BlockProviderRecipeCapability.register(event);
+        GhostIngredientRecipeCapability.register(event);
         if (ModList.get().isLoaded("productivebees")) LegacyCapabilityAliases.register();
-    }
-
-    /** Posted by {@code GTRecipeConditions.init()} before it freezes the condition registry. */
-    private void onRegisterRecipeConditions(GTCEuAPI.RegisterEvent<ResourceLocation, RecipeConditionType<?>> event) {
-        if (GTMQoLConfig.get().machines.crystalGrowthChamber) CrystalGrowth.initCondition(event);
     }
 
     private void onRegisterRecipeTypes(GTCEuAPI.RegisterEvent<ResourceLocation, GTRecipeType> event) {
@@ -175,6 +180,7 @@ public final class GTMQoL {
         GTMQoLConfig config = GTMQoLConfig.get();
         MagicalAssembler.initMachines();
         GTMQoLMultiblocks.init();
+        GhostIngredients.registerMachines();
         if (config.machines.electricImplosionCompressor) ElectricImplosion.initMachine();
         if (config.machines.crystalGrowthChamber) CrystalGrowth.initMachine();
         if (config.machines.greenhouse) Greenhouse.initMachines();

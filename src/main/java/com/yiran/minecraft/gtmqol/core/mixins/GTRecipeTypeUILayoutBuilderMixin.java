@@ -2,6 +2,8 @@ package com.yiran.minecraft.gtmqol.core.mixins;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
+import com.yiran.minecraft.gtmqol.common.blockprovider.BlockProviderRecipeViewer;
+import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredientRecipeViewer;
 import com.yiran.minecraft.gtmqol.common.stacklike.StackLikeRecipeViewer;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,5 +18,7 @@ public class GTRecipeTypeUILayoutBuilderMixin {
     @Inject(method = "<init>", at = @At("TAIL"))
     private void gtmqol$stackLikeDefaults(GTRecipeType recipeType, CallbackInfo ci) {
         StackLikeRecipeViewer.addDefaults((GTRecipeTypeUILayout.Builder) (Object) this);
+        BlockProviderRecipeViewer.addDefaults((GTRecipeTypeUILayout.Builder) (Object) this);
+        GhostIngredientRecipeViewer.addDefaults((GTRecipeTypeUILayout.Builder) (Object) this);
     }
 }

@@ -35,8 +35,12 @@
     "mekanism.TaggedChemicalStackIngredientAccessor"
   ],
   "client": [
+    "GTEmiRecipeBlockProviderMixin",
+    "GTEmiRecipeGhostIngredientMixin",
     "GTEmiRecipeStackLikeMixin",
     "gtceufix.GTEmiRecipeMixin",
+    "GTRecipeJEICategoryBlockProviderMixin",
+    "GTRecipeJEICategoryGhostIngredientMixin",
     "GTRecipeJEICategoryStackLikeMixin",
     "gtceufix.BaseSchemaRendererMixin"
   ],

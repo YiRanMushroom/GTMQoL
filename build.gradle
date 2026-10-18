@@ -291,6 +291,14 @@ dependencies {
     modLocalRuntime("maven.modrinth:applied-mekanistics:${project.appmek_version}") {
         transitive = false
     }
+    // Optional: Create's processing recipes as GT recipe types (gregification/create). Not in mods.toml.
+    // Flywheel, Ponder and Registrate are jar-in-jar.
+    modCompileOnly("maven.modrinth:create:${project.create_version}") {
+        transitive = false
+    }
+    modLocalRuntime("maven.modrinth:create:${project.create_version}") {
+        transitive = false
+    }
     // Optional: Productive Bees' machines as GT machines (gregification/productivebees). Not in mods.toml.
     // Nothing we use exposes ProductiveLib (jar-in-jar in PB), so it isn't needed on compile.
     modCompileOnly("maven.modrinth:productivebees:${project.productivebees_version}") {
