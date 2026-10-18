@@ -115,6 +115,8 @@ Not built or not checked in game yet (1.21):
   moved to its own mixin (`GTRecipeViewerWidgetPotionMixin`).
 - SAF: 1-9 data hatches, any one having the research is enough; `machines.easySAFRecipe` (both branches, not
   built; `MULTIBLOCKS.md`).
+- Crystal growth chamber on the block capability (`common/blockprovider/`, both branches built + datagen'd, not run;
+  `MULTIBLOCKS.md`): middle block as the recipe's only input, EMI/JEI lookup, KubeJS plugin.
 - Lathe lubricant on the large steam lathe and modular lathe (`WorkableMultiblockMachineMixin`, both branches, not
   built; `STEAM.md`).
 - Legacy part recipes (both branches, not built; needs `runData` for models/lang): molds craft and copy, extruder

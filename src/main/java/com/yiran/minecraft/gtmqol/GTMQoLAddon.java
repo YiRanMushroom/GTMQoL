@@ -19,6 +19,7 @@ import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
+import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredients;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.common.part.LegacyPartRecipes;
@@ -102,6 +103,7 @@ public final class GTMQoLAddon implements IGTAddon {
     public void addRecipes(RecipeOutput provider) {
         GTMQoLConfig config = GTMQoLConfig.get();
         MagicalAssembler.addRecipes(provider);
+        GhostIngredients.addRecipes(provider);
         if (config.wireless.energy) WirelessRecipes.addEnergyRecipes(provider);
         if (config.wireless.steam) WirelessRecipes.addSteamRecipes(provider);
         ModularMachines.addRecipes(provider);
