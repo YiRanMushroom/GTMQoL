@@ -103,14 +103,21 @@ records three things for each entry:
 
 | kind        | source                                                                | group                 | slot                          |
 |-------------|-----------------------------------------------------------------------|-----------------------|-------------------------------|
-| `UNIVERSAL` | RHL with `doesCapabilityBypassDistinct()`, a cap with `shouldBypassDistinct()`, or an unknown group | — | — |
-| `DISTINCT`  | `BUS_DISTINCT` RHL                                                    | index of that RHL     | `WHOLE`, buffer worker, or `CATALYST` |
-| `POOLED`    | `RecipeHandlerGroupColor` RHL                                         | color (-1 = undyed)   | —                             |
+| `UNIVERSAL` | RHL with `doesCapabilityBypassDistinct()`, a cap with `shouldBypassDistinct()`, an unknown group, or an RHL of another class (below) | — | — |
+| `DISTINCT`  | `BUS_DISTINCT` plain RHL, or a split pattern buffer                   | index of that RHL     | `WHOLE`, buffer worker, or `CATALYST` |
+| `POOLED`    | `RecipeHandlerGroupColor` plain RHL                                   | color (-1 = undyed)   | —                             |
+
+"Plain" means the class is exactly `RecipeHandlerList`. Another mod's subclass may override `handleRecipe` and
+combine things in its own way, so it is never restricted. gtceu's only subclasses are the pattern buffer's and the
+proxy's, which `PatternBufferIngredients` handles.
+
+A `DISTINCT` entry also records whether its buffer has Shared Hatches on (`SharedHatches`, `AE2.md`).
 
 `canFollow(from, to)` says whether entry `to` may come right after entry `from`:
 
 - Anything is allowed next to a `UNIVERSAL` entry.
-- `DISTINCT` and `POOLED` never mix.
+- `DISTINCT` and `POOLED` never mix, except a buffer slot with Shared Hatches on and an undyed entry: the
+  runner then hands the buffer the machine's undyed parts.
 - Two `POOLED` entries need the same color, or one of them undyed.
 - Two `DISTINCT` entries need the same RHL, and then either the same slot or one of them a `CATALYST`.
 
@@ -128,7 +135,14 @@ v8's runner never accepts that combination, so pruning it loses nothing.
 This splits a pattern buffer's RHL, or a proxy's, the way `BufferRecipeHandlerList.handleRecipe` uses it:
 
 - the circuit slot, the shared inventory and the shared tank become `CATALYST` entries;
-- each worker's `InternalSlot` items and fluids become their own slot.
+- each worker's `InternalSlot` items and fluids become their own slot;
+- with Mark Pattern Outputs on (our buffers, not proxies), each worker's slot also gets its pattern's output
+  mark. The buffer RHL's aggregate `PatternOutputMarks` handler holds every pattern's mark, and the split doesn't
+  read the RHL's handler map, so this is added by hand.
+
+Only gtceu's own buffer (class exactly `MEPatternBufferPartMachine`), our `AbstractMEPatternBufferPartMachine`s and
+gtceu's own proxy class are split. Another mod's subclass may use its slots differently, so it is left whole, and
+as a non-plain RHL it is `UNIVERSAL`.
 
 The two RHL classes are recognised by their enclosing class. The buffer is found through the
 `getMachine()` of one of the RHL's traits; a proxy resolves it with `getBuffer()`.
@@ -137,7 +151,8 @@ The two RHL classes are recognised by their enclosing class. The buffer is found
 
 - `RecipeDBMixin`: `@Overwrite fromHolder` returns `GroupedIngredientList.fromHolder(holder)`, or null if it
   is empty, like the original. It walks `holder.getCapabilitiesForIO(IO.IN)` instead of the flattened
-  map; `addHandlerList` fills both from the same RHLs.
+  map; `addHandlerList` fills both from the same RHLs. Another mod's injection into `fromHolder` is lost; the user
+  chose not to guard against that.
 - `RecipeIteratorMixin`:
   - `<init>` RETURN keeps the list if it is a `GroupedIngredientList`. A list from `RecipeDB.find(Map, ...)`
     or from tests isn't one, so it is searched as before. This replaces 7.x's `ThreadLocal`.
@@ -155,6 +170,21 @@ The two RHL classes are recognised by their enclosing class. The buffer is found
 
 Cost: each branch still loops over all entries and allocates their frames before the filter. That is
 O(entries) per visited branch, against the combinatorial number of branches it removes.
+
+### How much it saves in v8
+
+The iterator has no visited set: a tree node is reached once for every way of picking, for each ingredient on its
+path, an entry holding it. So the cost is about the product of how many entries hold each ingredient.
+
+- 7.x: every one of the buffer's 27 slots was its own handler, so 30 pushed patterns sharing ingredients
+  (circuits, solder...) gave `30^depth` paths. That was the lag this was written for.
+- v8's buffer: one worker per buffer plus one per proxy, and AE2 only pushes a different pattern into a free
+  worker, so a buffer holds at most proxies + 1 patterns at once. Its two aggregate handlers are compressed as one,
+  which merges equal ingredients across workers. Without proxies the 7.x case can't happen, and with them the union
+  is still searched node by node, not as a product.
+- Still a product in v8: the same ingredients in many separate RHLs (distinct buses, dual hatches, several buffers or
+  ME parts on one machine). Grouped search makes that `buses × one bus's nodes`. A buffer with many proxies gains
+  less: only paths mixing workers are pruned.
 
 ### Config: `RecipeDBMixinPlugin`
 

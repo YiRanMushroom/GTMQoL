@@ -44,6 +44,7 @@ import com.yiran.minecraft.gtmqol.common.wireless.WirelessNetworks;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
+import com.yiran.minecraft.gtmqol.gregification.LoadingTags;
 import com.yiran.minecraft.gtmqol.gregification.create.CreateGregification;
 import com.yiran.minecraft.gtmqol.gregification.mekanism.MekanismGregification;
 import com.yiran.minecraft.gtmqol.gregification.productivebees.ProductiveBeesGregification;
@@ -87,6 +88,7 @@ public final class GTMQoL {
         GhostIngredients.init();
         if (ModList.get().isLoaded("mekanism")) ChemicalStackLike.init();
         // before our own listeners, so ModularMachines sees the gregified recipe types
+        LoadingTags.init();
         Gregification.init(modBus);
         if (config.gregification.mekanism && ModList.get().isLoaded("mekanism")) {
             Gregification.addSource(MekanismGregification::types);

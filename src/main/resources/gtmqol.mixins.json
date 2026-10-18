@@ -43,7 +43,8 @@
     "GTRecipeJEICategoryBlockProviderMixin",
     "GTRecipeJEICategoryGhostIngredientMixin",
     "GTRecipeJEICategoryStackLikeMixin",
-    "gtceufix.BaseSchemaRendererMixin"
+    "gtceufix.BaseSchemaRendererMixin",
+    "gtceufix.DummyChunkSourceMixin"
   ],
   "injectors": {
     "defaultRequire": 1

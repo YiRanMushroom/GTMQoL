@@ -188,9 +188,15 @@ public final class AutoBuilder {
     /** Reports a batch. @return whether there is more to do and the batch made progress */
     private static boolean afterBatch(ServerPlayer player, MultiblockControllerMachine controller, Batch batch) {
         if (batch.remaining() == 0) {
-            // only now, a structure check per batch would be wasted on a half-built structure
-            controller.getDefaultPatternState().getCache().clear();
-            controller.checkAndFormStructure();
+            // Only now, a structure check per batch would be wasted on a half-built structure. gtceu often forms it
+            // itself while the last batch goes in; then its cache must stay: gtceu only rechecks when a block in the
+            // cache changes, so with an empty one a hatch swapped later was never added. Otherwise check from scratch
+            // (the cache only reached as far as the last check got), refilling the cache before forming.
+            if (!controller.isFormed()) {
+                controller.getDefaultPatternState().getCache().clear();
+                controller.checkDefaultStructurePattern();
+                controller.checkAndFormStructure();
+            }
             player.displayClientMessage(Component.translatable(controller.isFormed() ? FORMED_KEY : DONE_KEY), false);
             return false;
         }
