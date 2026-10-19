@@ -84,7 +84,11 @@ public final class GTMQoLMultiblocks {
                 .recipeType(GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
                 .recipeModifiers(PARALLEL_HATCH, OC_PERFECT_SUBTICK, BATCH_MODE)
                 .appearanceBlock(CASING_STEEL_SOLID)
+                // startOffset is the controller -> first block of the first slice: 5 slices to its left (1 + 4
+                // repeats), S is in string 0 and char 0. Without it gtceu guesses from the controller's slice index,
+                // which counts the repeatable slice once.
                 .pattern(definition -> MultiblockPatternBuilder.start(RIGHT, UP, BACK)
+                        .startOffset(OriginOffset.of(LEFT, 5))
                         .slice("XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX")
                         .sliceRepeatable(4, 4,
                                 "XXXXXXX", "RTTTTTR", "RAAAAAR", "GTTTTTG", "RAAAAAR", "RTTTTTR", "XXXXXXX")
