@@ -11,6 +11,9 @@ These are ports of the old ones. Lang and models are datagen'd; their recipes ar
 - Smart Assembly Factory: assembly line recipes, with `PARALLEL_HATCH`, `OC_PERFECT_SUBTICK` and `BATCH_MODE`.
   - The pattern goes from 7.x `start(BACK, UP, RIGHT)` to v8 `start(RIGHT, UP, BACK)`.
   - `setRepeatable(4)` becomes `sliceRepeatable(4, 4, ...)`.
+  - The controller sits after 1 + 4 slices, so it needs `startOffset(OriginOffset.of(LEFT, 5))`. Without one,
+    gtceu guesses the start from the controller's index in the slice list, where a repeatable slice counts once
+    (2 instead of 5), and the SAF never formed (fixed 2026-10-19). Same as the fishing pond below.
   - Data hatches: `safDataHatches()`, 1 to 9 data access / optical data hatches, mixed as wanted (null when
     research is off). gtceu's `dataHatchPredicate()` (assembly line) is exactly one, because in `doModifyRecipe` every
     part can veto a recipe and a data hatch vetoes what it has no research for: with several, a recipe would need to
