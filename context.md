@@ -24,7 +24,7 @@ linked to this branch's code. Prefixes are listed in 1.21.1's `context.md`; `lay
 ## To do
 
 - First client run under ModDevGradle: the checks in `build.first-run-checks` (Jade `this$0`, EvalEx, ProductiveLib,
-  gtceu jarjar, run config). After it runs, update `CLAUDE.md`'s Loom-era build section.
+  gtceu jarjar, run config).
 
 ## Known bugs, not fixed
 
