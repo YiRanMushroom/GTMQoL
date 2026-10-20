@@ -5,6 +5,8 @@
   "plugin": "com.yiran.minecraft.gtmqol.core.GTMQoLMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "BottleItemFluidHandlerMixin",
+    "BreweryLogicMixin",
     "CannerLogicMixin",
     "FusionReactorMachineMixin",
     "GTMachinesMixin",
@@ -22,7 +24,9 @@
     "MEPatternBufferReturnMixin",
     "MixinHelpersMixin",
     "OverclockingLogicMixin",
+    "PotionBrewingContainerMixesAccessor",
     "PotionFluidNameMixin",
+    "PotionItemFluidHandlerMixin",
     "RecipeManagerHandlerMixin",
     "RecipeRemovalMixin",
     "SimpleSteamMachineMixin",

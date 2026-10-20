@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.core.mixins;
 
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
+import com.yiran.minecraft.gtmqol.common.potion.PotionContainers;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -8,7 +9,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 
 import org.spongepowered.asm.mixin.Mixin;
 
@@ -17,12 +17,14 @@ import java.util.List;
 /**
  * Potion names don't tell the normal, long and strong variants apart (potion items do it in their tooltip), which
  * fluid slots and tanks don't show. Add the first effect's potency and duration, like the item tooltip does.
+ * Splash / lingering potion fluids (see {@link PotionContainers}) are named like their item.
  */
 @Mixin(value = PotionFluid.PotionFluidType.class, remap = false)
 public class PotionFluidNameMixin {
 
     public Component getDescription(FluidStack stack) {
-        MutableComponent name = Component.translatable(((FluidType) (Object) this).getDescriptionId(stack));
+        MutableComponent name = Component.translatable(PotionUtils.getPotion(stack.getTag())
+                .getName(PotionContainers.container(stack).getDescriptionId() + ".effect."));
         List<MobEffectInstance> effects = PotionUtils.getAllEffects(stack.getTag());
         if (effects.isEmpty()) return name;
         MobEffectInstance effect = effects.get(0);
