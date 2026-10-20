@@ -6,9 +6,9 @@ Start of a session:
    a piece of work is done; it holds only general notes and current work, no "not tested yet" status and no design
    details.
 2. `index_open("<repo root>")` (agent-toolkit doc index, `.agent-index.db`; never read that file directly), then
-   `index_read` the `rules.*` entries (`index_list("rules")`): working rules and mixin conventions. Build setup:
-   `build.*`. Before working on a feature, `index_find` it. This branch's index has the same ids as 1.21.1's, linked
-   to this branch's code.
+   `index_read` the `rules.*` entries (`index_list("rules")`): working rules, mixin conventions, source layout. Build
+   setup: `build.*`. Areas: `index_keys("gtmqol")`. Before working on a feature, `index_find` it. This branch's index
+   has the same ids as 1.21.1's, linked to this branch's code.
 
 Always:
 - Reply in Chinese.

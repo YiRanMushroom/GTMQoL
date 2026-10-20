@@ -2,23 +2,13 @@ package com.yiran.minecraft.gtmqol.core;
 
 import com.yiran.minecraft.gtmqol.config.EarlyConfig;
 
-import net.minecraftforge.fml.loading.FMLLoader;
-
-import org.objectweb.asm.tree.ClassNode;
-import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
-import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-
-import java.util.List;
-import java.util.Set;
-
 /**
  * Applies {@code gtmqol.ae2.mixins.json} only when AE2 is installed: the encoding mixin if
  * {@code ae2.universalCircuitEncoding} is on, the sticky card ones if {@code ae2.stickyCard} is on (both in the
  * early config), the stocking / pattern buffer ones always, and the ExtendedAE one only when ExtendedAE is installed
- * too. Same loading mod list check as
- * {@link EAPMixinPlugin}.
+ * too.
  */
-public class AE2MixinPlugin implements IMixinConfigPlugin {
+public class AE2MixinPlugin extends GTMQoLMixinConfigPlugin {
 
     private static final String ENCODING_MIXIN = "com.yiran.minecraft.gtmqol.core.mixins.ae2.EncodingHelperMixin";
     private static final String EMI_ENCODING_MIXIN = "com.yiran.minecraft.gtmqol.core.mixins.ae2.EmiEncodePatternHandlerMixin";
@@ -28,16 +18,12 @@ public class AE2MixinPlugin implements IMixinConfigPlugin {
     private static final String PATTERN_BUFFER_MIXIN_PREFIX = "com.yiran.minecraft.gtmqol.core.mixins.ae2.MEPatternBuffer";
 
     @Override
-    public void onLoad(String mixinPackage) {}
-
-    @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        var mods = FMLLoader.getLoadingModList();
-        if (mods.getModFileById("ae2") == null) return false;
+        if (!isModLoading("ae2")) return false;
         if (mixinClassName.equals(ENCODING_MIXIN)) return EarlyConfig.AE2_UNIVERSAL_CIRCUIT_ENCODING;
         // toggled at runtime by GTMQoLConfig.ae2.skipNotConsumedInputs
-        if (mixinClassName.equals(EMI_ENCODING_MIXIN)) return mods.getModFileById("emi") != null;
-        if (mixinClassName.equals(JEI_ENCODING_MIXIN)) return mods.getModFileById("jei") != null;
+        if (mixinClassName.equals(EMI_ENCODING_MIXIN)) return isModLoading("emi");
+        if (mixinClassName.equals(JEI_ENCODING_MIXIN)) return isModLoading("jei");
         // duplicate checks against the universal ME input; no effect without one
         if (mixinClassName.startsWith(STOCKING_MIXIN_PREFIX)) return true;
         // bridged capabilities (e.g. chemicals) in the pattern buffer; no effect without a bridge
@@ -47,25 +33,6 @@ public class AE2MixinPlugin implements IMixinConfigPlugin {
         // everything else is the sticky card
         if (!EarlyConfig.AE2_STICKY_CARD) return false;
         // ExtendedAE's mod id is still the old name of its 1.20.1 fork
-        return !mixinClassName.equals(EXTENDEDAE_MIXIN) || mods.getModFileById("expatternprovider") != null;
+        return !mixinClassName.equals(EXTENDEDAE_MIXIN) || isModLoading("expatternprovider");
     }
-
-    @Override
-    public String getRefMapperConfig() {
-        return null;
-    }
-
-    @Override
-    public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {}
-
-    @Override
-    public List<String> getMixins() {
-        return null;
-    }
-
-    @Override
-    public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {}
-
-    @Override
-    public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {}
 }
