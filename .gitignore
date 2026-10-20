@@ -67,3 +67,6 @@ bin/
 /.modularui-src
 /.mui-src-1.21
 /.emi-src-1.21
+
+# agent-toolkit doc index: only the .db is committed
+.agent-index.db-journal
