@@ -35,6 +35,6 @@ Same ids and key tree as on 1.21.1, linked to this branch's code: `index_keys("g
 ## Recent
 
 - 2026-10-20: doc index reorganized like 1.21.1's (key tree, fewer keys, stale and duplicate entries removed);
-  `reference/` deleted; mixin config plugins share a base class; splash / lingering potion fluids ported. Ported
+  `reference/` deleted; mixin config plugins share a base class; splash / lingering potion fluids ported; all popups share `PopupWidgets`. Ported
   earlier the same day: the potion "any mod's version" hint, shared hatches gating fix, block provider lookup fix,
   greenhouse batch mode.
