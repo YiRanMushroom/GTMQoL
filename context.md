@@ -78,8 +78,9 @@ src/main/java/com/yiran/minecraft/gtmqol/
 │       │                  inputs (over the fluid's tag) showed Uncraftable Potion, EMI merged potion + flowing potion
 │       │                  back into the tag by fluid alone; with other mods' potions in the tag (IE, Create) they
 │       │                  merged too, so now lists a single fluid, gtceu's if present (display only).
-│       │                  GTRecipeViewerWidgetMixin adds a flashing "Any mod's version works" to such input slots
-│       │                  (lang in common/potion/PotionContainers, needs runData). Not built yet.
+│       │                  The flashing "Any mod's version works" hint on such input slots (1.21's
+│       │                  GTRecipeViewerWidgetPotionMixin) is NOT ported: only its lang key is registered
+│       │                  (common/potion/PotionContainers).
 │       │                  PotionFluidNameMixin (in mixins/) appends the first effect's potency and duration to
 │       │                  potion fluid names so normal / long / strong differ (not built yet).
 │       │                  RecipeRunnerMixin: OR / XOR chance rolls overflow `times * chance` (int) above ~215k

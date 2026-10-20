@@ -21,8 +21,8 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.IS_FORMED;
 
 /**
- * Wireless energy machines. Binding lang keys are registered by
- * {@link com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines}.
+ * Wireless energy machines. The binding lang shared by every wireless kind comes from
+ * {@link com.yiran.minecraft.gtmqol.common.wireless.WirelessUI#addSharedLang()}.
  */
 public final class WirelessEnergyMachines {
 

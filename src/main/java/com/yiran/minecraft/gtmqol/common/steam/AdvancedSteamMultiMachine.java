@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Base of the advanced steam multiblocks. Recipes up to {@link #maxRecipeTier} (MV unless the machine says
- * otherwise) are overclocked as if the machine were that tier (non-perfect: EU/t ×4, duration ÷2), then run
+ * otherwise) are overclocked as if the machine were that tier (GT's non-perfect overclock, or the OC overhaul's rules when it is on), then run
  * at {@link #DURATION_MULTIPLIER} of the time and {@link #EUT_MULTIPLIER} of the EU/t. 16 parallels, or
  * whatever a {@link SteamParallelHatchPartMachine} is set to.
  */

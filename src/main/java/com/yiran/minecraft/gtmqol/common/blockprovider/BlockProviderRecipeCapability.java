@@ -89,7 +89,10 @@ public final class BlockProviderRecipeCapability extends RecipeCapability<Block>
 
     @Override
     public List<AbstractMapIngredient> getDefaultMapIngredient(Object object) {
-        return object instanceof Block block ? List.of(new BlockMapIngredient(block)) : List.of();
+        // mutable: GT's recipe lookup pools these in place (MapIngredientPool.applyPooling sets list elements)
+        List<AbstractMapIngredient> list = new ArrayList<>(1);
+        if (object instanceof Block block) list.add(new BlockMapIngredient(block));
+        return list;
     }
 
     private enum Serializer implements IContentSerializer<Block> {

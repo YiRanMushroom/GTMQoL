@@ -42,6 +42,8 @@ public class AE2MixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.startsWith(STOCKING_MIXIN_PREFIX)) return true;
         // bridged capabilities (e.g. chemicals) in the pattern buffer; no effect without a bridge
         if (mixinClassName.startsWith(PATTERN_BUFFER_MIXIN_PREFIX)) return true;
+        // shared hatches (toggled per buffer in its UI); not all of them target the pattern buffer
+        if (mixinClassName.endsWith("SharedHatchesMixin")) return true;
         // everything else is the sticky card
         if (!EarlyConfig.AE2_STICKY_CARD) return false;
         // ExtendedAE's mod id is still the old name of its 1.20.1 fork
