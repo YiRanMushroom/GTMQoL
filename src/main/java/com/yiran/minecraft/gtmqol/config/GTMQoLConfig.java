@@ -233,7 +233,7 @@ public final class GTMQoLConfig {
         public boolean fluidTanks = true;
 
         @Configurable
-        @Configurable.Comment({ "Steam macerator, LV-HV macerators, steam grinder and steam oven keep all of a recipe's outputs",
+        @Configurable.Comment({ "Steam macerator, steam grinder and steam oven keep all of a recipe's outputs",
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean noOutputLimits = true;
