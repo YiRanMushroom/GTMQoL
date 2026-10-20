@@ -8,14 +8,11 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.common.multiblock.PendingOutputTrait.Stored;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 
-import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.DynamicDrawable;
@@ -23,7 +20,6 @@ import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.utils.Alignment;
-import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.GenericListSyncHandler;
@@ -40,6 +36,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Supplier;
+
+import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.popup;
 
 /**
  * A multiblock that works in fixed-length cycles without GTCEu's recipe logic, so overflowing outputs are kept
@@ -220,7 +218,7 @@ public abstract class CyclicMultiblockMachine extends MultiblockControllerMachin
                 .size(44, 18)
                 .overlay(Text.lang(langKey() + "stored"))
                 .onMousePressed((context, button) -> {
-                    togglePanel(panel);
+                    panel.togglePanel();
                     return true;
                 });
     }
@@ -279,45 +277,5 @@ public abstract class CyclicMultiblockMachine extends MultiblockControllerMachin
 
     protected static String seconds(int ticks) {
         return "%.2f".formatted(ticks / 20.0);
-    }
-
-    protected static void togglePanel(IPanelHandler panel) {
-        if (panel.isPanelOpen()) {
-            panel.closePanel();
-        } else {
-            panel.openPanel();
-        }
-    }
-
-    /** GTCEu's popup (background, close button top right), movable, the main UI stays usable. */
-    protected static PopupPanel popup(String name, int width, int height) {
-        return PopupPanel.createPopupPanel(name, width, height)
-                .disablePanelsBelow(false)
-                .draggable(true)
-                .closeOnOutOfBoundsClick(true);
-    }
-
-    /** {@code [-] label [+]}; Shift steps by {@code shiftStep}. */
-    protected static Flow counterRow(IntSyncValue value, int max, int shiftStep, String langKey) {
-        return Flow.row()
-                .height(18)
-                .childPadding(4)
-                .child(stepButton(value, max, shiftStep, false))
-                .child(new TextWidget<>(Text.dynamic(() -> Component.translatable(langKey, value.getIntValue())))
-                        .width(100)
-                        .verticalCenter())
-                .child(stepButton(value, max, shiftStep, true));
-    }
-
-    private static ButtonWidget<?> stepButton(IntSyncValue value, int max, int shiftStep, boolean up) {
-        return new ButtonWidget<>()
-                .size(18)
-                .overlay(Text.str(up ? "+" : "-"))
-                .onMousePressed((context, button) -> {
-                    int step = MouseData.create(button).shift() ? shiftStep : 1;
-                    int next = Mth.clamp(value.getIntValue() + (up ? step : -step), 1, max);
-                    value.setIntValue(next, true, true);
-                    return true;
-                });
     }
 }

@@ -39,6 +39,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.counterRow;
+import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.popup;
+
 /**
  * Mines the averaged ore veins of its dimension, paid from the bound wireless EU network. Each operation of a cycle
  * draws one ore and yields {@code multiplier} stacks of it. A cycle pays {@link #EU_PER_STACK} per stack up front
@@ -198,7 +201,7 @@ public class VoidMinerMachine extends CyclicMultiblockMachine implements IDataSt
                                 .size(44, 18)
                                 .overlay(Text.lang(KEY + "preview"))
                                 .onMousePressed((context, button) -> {
-                                    togglePanel(preview);
+                                    preview.togglePanel();
                                     return true;
                                 }))
                         .child(storedButton(syncManager, MAX_OPERATIONS))
@@ -206,7 +209,7 @@ public class VoidMinerMachine extends CyclicMultiblockMachine implements IDataSt
                                 .size(44, 18)
                                 .overlay(Text.lang(KEY + "config"))
                                 .onMousePressed((context, button) -> {
-                                    togglePanel(config);
+                                    config.togglePanel();
                                     return true;
                                 }))
                         .child(powerButton(syncManager))));
