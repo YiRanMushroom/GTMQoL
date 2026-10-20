@@ -2,12 +2,13 @@
 
 A personal quality-of-life addon for GregTech CEu Modern v8.
 
-| Minecraft | Loader | Branch |
-|---|---|---|
-| 1.21.1 | NeoForge 21.1 | `port/1.21.1` (also `master`) |
-| 1.20.1 | Forge 47 | `migrate/gtceu-v8-runtime-generation` |
+| Minecraft | Loader | Branch | Recipe viewer |
+|---|---|---|---|
+| 1.21.1 | NeoForge 21.1 | `1.21` | EMI |
+| 1.20.1 | Forge 47 | `1.20` | JEI or EMI |
 
-Features are written for 1.21.1 first and ported to 1.20.1; a few are 1.21.1 only (marked below).
+Both branches have the same features, except the few marked 1.21.1 only. Releases are `v<version>-1.21` and
+`v<version>-1.20`.
 
 ## Features
 
@@ -84,6 +85,16 @@ generators use their own overclock.
 
 Unlike GTCEu's, the void miner and the fishing pond never void their outputs: they wait until everything fits.
 
+### Ghost ingredients
+
+A ghost ingredient tells a machine which recipe to run when its inputs fit several, for example planks or stairs
+from the same log. It is never used up.
+
+- The **Ghost Ingredient Hatch** holds a list of marks (click or drag items and fluids from the recipe viewer).
+  It counts as an input bus, so any multiblock takes it.
+- Single blocks that need marks get a button for them in their UI.
+- Recipes that need a mark show it in the recipe viewer.
+
 ### Advanced steam multiblocks and steam tweaks
 
 - Large steam versions of 21 machines (macerator, compressor, forge hammer, extractor, alloy smelter,
@@ -109,13 +120,17 @@ Unlike GTCEu's, the void miner and the fishing pond never void their outputs: th
 - **ME processing**: an ME assembler and an ME circuit slicer, with GT-style recipes for AE2 processors and
   for GTCEu's ME parts.
 - **ME dual input/output parts**: item and fluid stocking in one part, item and fluid output in one part.
-- **Universal ME input/output parts** (1.21.1): any AE key the mod knows, including Mekanism chemicals.
+- **Universal ME input/output parts**: any AE key the mod knows, including Mekanism chemicals.
 - **Pattern buffer return**: a multiblock's outputs go straight back into the ME network for waiting crafting
   jobs. Toggle per buffer.
 - **Sticky card**: a storage bus upgrade. Items that match its partition only go into that storage bus.
   ExtendedAE's storage buses work too.
 - Pattern encoding prefers universal circuits and skips inputs that a recipe doesn't consume.
 - **Smart doubling** on pattern buffers when ExtendedAE Plus is installed, with an on/off switch and a limit.
+- **Shared hatches** (toggle per pattern buffer): a pattern can use circuits, molds and ghost marks from the
+  machine's other, undyed buses and hatches.
+- **Mark pattern outputs** (toggle on the overclocked pattern buffer): each pattern counts as a ghost mark for its
+  own output, so the machine picks the recipe the pattern is for.
 
 ### Recipe lookup performance
 
@@ -124,21 +139,27 @@ buffers this gets very slow in the late game. Grouped search only tries combinat
 pattern (plus the buffer's circuit and shared inventory) or the non-distinct pool could supply, which are
 the only ones GTCEu would run anyway. Technical details are in the source, `common/recipedb/`.
 
-### Mekanism chemicals (1.21.1)
+### Mekanism chemicals
 
 Mekanism chemicals are a real GT recipe capability. Chemicals go in and out through ME parts and pattern
 buffers (with Applied Mekanistics), show up in EMI recipes, and Jade shows them in a machine's current recipe.
 
-### Gregification (1.21.1)
+### Gregification
 
 Other mods' machine recipes run on GT machines and multiblocks, with GT overclocking, parallels and batch mode.
 Each machine is crafted from the original mod's machine.
 
-- **Modern Industrialization**: 14 single blocks and 10 multiblocks, including the blast furnace with GT coils.
+- **Modern Industrialization** (1.21.1): 14 single blocks and 10 multiblocks, including the blast furnace with GT
+  coils.
+- **Create**: 12 multiblocks of Create casings: millstone, crushing wheels, press, compactor, mixer (heated and
+  superheated recipes run at higher tiers), encased fan (every processing kind, also from addons), deployer,
+  spout, item drain, saw, mechanical crafter and a sequenced assembly line (3 to 16 slices long).
 - **Mekanism**: 23 multiblocks, from the crusher and enrichment chamber to the chemical machines, the rotary
   condensentrator and the thermal evaporation plant. They take any input/output parts.
 - **Productive Bees**: comb centrifuge, incubator, gene extractor, beehive (bees in cages, with upgrades and
   flowers) and breeder. The GT canner turns caged bees into spawn eggs and back, keeping their genes.
+
+Gregified single blocks have batch mode, and ghost marks where their recipes need them.
 
 ### Survival auto-build
 
@@ -146,17 +167,25 @@ A button on every multiblock controller builds the structure from the player's i
 64 blocks, Shift-click keeps building until the structure is done. Right click opens a window for the structure's
 size and block choices (for example the coil type).
 
-### Potions (1.21.1)
+### Potions
 
 - GTCEu's brewery and canner work with potions (outputs keep their potion, EMI finds the recipes).
 - Splash and lingering potions are brewed in the brewery and bottled in the canner.
 - Potion fluids are named after their potion, including strength and duration.
 
+### Other recipes
+
+- **Legacy part recipes**: extruder molds for rods, long rods, bolts, gears, small gears and rotors, which GTCEu
+  v8 removed.
+- GT wires count as other mods' wires (`c:wires/<material>`, `forge:` on 1.20.1), so their recipes take GT wires.
+
 ### GTCEu fixes
 
-Workarounds for GTCEu bugs, removed once fixed upstream. On 1.21.1, for example: custom recipe logic (canner,
-brewery, named casting molds) not running, the ghost circuit slot that can't be set, raw recipe category names,
-the multiblock preview drawn in the wrong place in EMI, and mod loading crashes with some modpacks.
+Workarounds for GTCEu bugs, removed once fixed upstream. Each branch has the ones its GTCEu needs. For example:
+pattern buffers failing recipes that need more than one of an item, chanced outputs lost in very large batches,
+machines going idle after repeating a recipe, a costly energy check on high-amperage energy lines, the ME stocking
+bus UI not updating, the multiblock preview drawn in the wrong place in the recipe viewer, raw recipe category
+names, and mod loading crashes with some modpacks.
 
 ## Configuration
 
@@ -165,12 +194,12 @@ the config file itself.
 
 | Group | Options |
 |---|---|
-| `machines` | one per multiblock above, plus the advanced steam machines |
+| `machines` | one per multiblock above, plus the advanced steam machines and `easySAFRecipe` |
 | `modularMachines` | `enabled` |
-| `gregification` | `modernIndustrialization`, `mekanism`, `productiveBees` |
+| `gregification` | `modernIndustrialization` (1.21.1), `mekanism`, `productiveBees`, `create` |
 | `wireless` | `energy`, `steam` |
 | `circuits` | `universalCircuits`, `controlCircuits`, `mekanismCircuitTags` |
-| `recipes` | `miscRecipes`, `earlyGame`, `keepManualCompression`, `keepVanillaTNT`, `netherStarDust` |
+| `recipes` | `miscRecipes`, `earlyGame`, `keepManualCompression`, `keepVanillaTNT`, `netherStarDust`, `useLegacyPartRecipes` |
 | `steamTweaks` | `circuitSlots`, `fluidTanks`, `noOutputLimits`, `optionalLargeBoilerParts` |
 | `overclocking` | `buffFusionReactor`, `enableMultiTierSkipping` |
 | `ae2` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn`, `skipNotConsumedInputs` |
@@ -199,13 +228,15 @@ None are required.
 - Applied Mekanistics: chemicals in ME parts and pattern buffers.
 - Modern Industrialization (1.21.1): MI gregification.
 - Productive Bees: Productive Bees gregification.
+- Create: Create gregification.
 - Mystical Agriculture: greenhouse recipes for its crops.
 - Jade: chemical outputs in the machine overlay.
-- EMI (JEI on 1.20.1): chemicals and potions in recipes, the pattern encoding tweaks.
+- EMI or JEI (1.20.1): chemicals, potions and ghost ingredients in recipes, the pattern encoding tweaks.
+- KubeJS: the block and ghost ingredient recipe capabilities in recipe scripts.
 
 ## License
 
-Copyright (C) 2026 Yiran. Licensed under the GNU Lesser General Public License v3.0, see
+Copyright (C) 2026 Yiran, Frosty. Licensed under the GNU Lesser General Public License v3.0, see
 [LICENSE](LICENSE).
 
 ## Credits
@@ -215,3 +246,5 @@ Copyright (C) 2026 Yiran. Licensed under the GNU Lesser General Public License v
 - The advanced steam multiblocks and the control circuits (items and recipes) are based on
   [GT Not Leisure](https://github.com/Darknight2333/GT-Not-Leisure1) (GTNL), a GregTech: New Horizons
   addon. The control circuit textures are taken from GTNL and are licensed under LGPL-3.0.
+- The animated rainbow overlay on the wireless hatches (`overlay_wireless.png`) is taken from GTMThings'
+  `overlay_energy_on_wireless`, which originally comes from GregTech: New Horizons.
