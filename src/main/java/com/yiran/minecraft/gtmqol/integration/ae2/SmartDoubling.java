@@ -3,7 +3,6 @@ package com.yiran.minecraft.gtmqol.integration.ae2;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.crafting.pattern.AEProcessingPattern;
@@ -24,6 +23,8 @@ import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BooleanSupplier;
+
+import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.popup;
 
 /**
  * ExtendedAE Plus smart doubling on GTCEu's pattern buffer, used by {@code mixin.eap.MEPatternBufferSmartDoublingMixin}.
@@ -61,7 +62,7 @@ public final class SmartDoubling {
                                                         ISmartDoublingHolder holder, BooleanSupplier enabled,
                                                         BooleanConsumer setEnabled) {
         IPanelHandler panelHandler = syncManager.syncedPanel("gtmqol_smart_doubling", true,
-                (syncManager1, handler) -> PopupPanel.createPopupPanel("gtmqol_smart_doubling_panel", 140, 70)
+                (syncManager1, handler) -> popup("gtmqol_smart_doubling_panel", 140, 70)
                         .child(Flow.col()
                                 .coverChildren()
                                 .child(Text.lang(TITLE_KEY).asWidget())
@@ -82,7 +83,7 @@ public final class SmartDoubling {
                 .size(18)
                 .onMousePressed((context, b) -> {
                     if (b == InputConstants.MOUSE_BUTTON_LEFT) {
-                        panelHandler.openPanel();
+                        panelHandler.togglePanel();
                         return true;
                     }
                     return false;

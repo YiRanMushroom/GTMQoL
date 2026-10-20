@@ -40,7 +40,6 @@ areas, its topics (`subkeys:`), which `index_find` narrows to.
 
 - Auto-build: substructures, then block choices for expandable patterns (`autobuild.*`).
 - Stack-like: external chemical hatches.
-- Agreed abstraction not done yet: the cyclic multiblocks' popup helpers.
 
 ## Open questions for the user
 
@@ -53,6 +52,6 @@ areas, its topics (`subkeys:`), which `index_find` narrows to.
 ## Recent
 
 - 2026-10-20: `docs/*.md` retired into the doc index, then the index reorganized (key tree, fewer keys, stale and
-  duplicate entries removed); `reference/` deleted; mixin config plugins share a base class; splash / lingering potions ported to 1.20.1. Both branches: shared
+  duplicate entries removed); `reference/` deleted; mixin config plugins share a base class; splash / lingering potions ported to 1.20.1; all popups share `PopupWidgets` (`rules.ui-popups`). Both branches: shared
   hatches gating fix, block provider lookup fix, greenhouse batch mode; 1.20.1 got the potion "any mod's version"
   hint.

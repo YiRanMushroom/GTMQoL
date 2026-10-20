@@ -53,6 +53,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.counterRow;
+import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.popup;
+
 /**
  * Fishes with the rod in its controller, every {@link #CYCLE_TICKS}. While working it fills an internal buffer from
  * its energy hatches as fast as they allow, up to {@link #CYCLE_TICKS} ticks of their combined input. At the end of a
@@ -263,7 +266,7 @@ public class FishingPondMachine extends CyclicMultiblockMachine {
                                 .size(44, 18)
                                 .overlay(Text.lang(KEY + "config"))
                                 .onMousePressed((context, button) -> {
-                                    togglePanel(config);
+                                    config.togglePanel();
                                     return true;
                                 }))
                         .child(new ToggleButton()
