@@ -4,8 +4,14 @@
 
 新 session 开始时先读 `context.md`：当前功能、设计决定和待办都在那里。阶段性工作完成后要更新它。
 
+设计文档在 agent-toolkit 的文档索引里（repo 根目录的 `.agent-index.db`，不要直接读这个文件）：开始时
+`index_open("<repo 根目录>")`，查某个功能前先 `index_find`。这个分支的索引是 1.20.1 自己的（和 1.21.1 同一功能用同一个 id），
+链接都指向这个分支的代码。学到不显然的东西优先写进源码注释，再加 entry；`docs/` 下的 md 已经退役，不要再新建。
+
+commit 默认不加 `Co-Authored-By`（PR 里也不加 Claude 的署名），除非我说要加。
+
 **这个分支（1.20.1）的笔记是旧的。** 功能都先在 1.21.1 写再移植过来，所以以 `port/1.21.1`（也是 `master`）的
-`context.md`、`docs/`、`CLAUDE.md` 为准，先去那边看；这里的只当 1.20.1 专属的补充（主要是构建迁移）。
+`context.md`、`CLAUDE.md` 为准，先去那边看；这里的只当 1.20.1 专属的补充（主要是构建迁移）。
 1.21.1 的 worktree 在这个目录旁边（`..\GTMQoL`）。我有两台电脑，路径略有不同，找不到就去上层目录搜，
 或者 `git worktree list`；没有 checkout 也可以 `git show port/1.21.1:context.md`。
 
