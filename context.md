@@ -9,8 +9,8 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 
 | Branch | Version | Notes |
 |---|---|---|
-| `port/1.21.1` (this checkout, = `master` since PR #1) | NeoForge 21.1, Java 21 | Features are written here first |
-| `migrate/gtceu-v8-runtime-generation` | Forge 47, Java 17 | ModDevGradle legacyForge; not run in game yet |
+| `1.21` (this checkout, the default branch) | NeoForge 21.1, Java 21 | Features are written here first |
+| `1.20` | Forge 47, Java 17 | ModDevGradle legacyForge; not run in game yet |
 
 - The 1.20.1 worktree sits next to this one (`..\GTMQoL-1.20.1`). The user works on two computers, so paths differ
   (`C:\Users\yiran.wang\IdeaProjects\` or `E:\code\Minecraft\`): check `git worktree list` and the checked-out branch
