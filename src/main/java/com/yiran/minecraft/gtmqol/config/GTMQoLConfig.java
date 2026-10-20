@@ -86,6 +86,18 @@ public final class GTMQoLConfig {
         public boolean electricImplosionCompressor = true;
 
         @Configurable
+        @Configurable.Comment({ "Industrial Large Chemical Reactor (large chemical reactor recipes 64x faster)",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean industrialLargeChemicalReactor = true;
+
+        @Configurable
+        @Configurable.Comment({ "Probable Certainty Device (chanced outputs always come out) and Probable Improbability",
+                "Device (chanced inputs are never consumed), parts for most multiblocks", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean probableDevices = true;
+
+        @Configurable
         @Configurable.Comment({ "Large steam multiblocks, the steam parallel hatch, the steam magical assembler and",
                 "the steam single blocks GTCEu does not have (bender, wiremill, ...)", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
@@ -257,6 +269,12 @@ public final class GTMQoLConfig {
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean enableMultiTierSkipping = true;
+
+        @Configurable
+        @Configurable.Comment({ "Parallel hatches don't raise EU/t: a multiblock runs as many parallels as its hatch allows",
+                "at the EU/t of one recipe (not generators)", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean absoluteParallelHatches = true;
     }
 
     @Configurable

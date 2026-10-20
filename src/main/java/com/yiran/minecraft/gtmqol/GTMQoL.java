@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.yiran.minecraft.gtmqol.common.probable.ProbableDevices;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
@@ -86,6 +87,7 @@ public final class GTMQoL {
         // always: KubeJS scripts may use it with any recipe type
         BlockProviderRecipeCapability.init();
         GhostIngredients.init();
+        ProbableDevices.init();
         if (ModList.get().isLoaded("mekanism")) ChemicalStackLike.init();
         // before our own listeners, so ModularMachines sees the gregified recipe types
         LoadingTags.init();
@@ -183,6 +185,7 @@ public final class GTMQoL {
         MagicalAssembler.initMachines();
         GTMQoLMultiblocks.init();
         GhostIngredients.registerMachines();
+        ProbableDevices.registerMachines();
         if (config.machines.electricImplosionCompressor) ElectricImplosion.initMachine();
         if (config.machines.crystalGrowthChamber) CrystalGrowth.initMachine();
         if (config.machines.greenhouse) Greenhouse.initMachines();

@@ -62,6 +62,8 @@ generators use their own overclock.
   - Fusion reactor buff: perfect sub-tick overclocking, the full hatch voltage instead of the tier cap, and
     substation and laser hatches in the energy slots.
   - Multi-tier skipping: a multiblock with several energy hatches runs at the voltage of all hatches summed.
+  - Absolute parallel hatches: parallels from a parallel hatch don't raise EU/t, so a multiblock runs as many as
+    the hatch allows at the EU/t of one recipe. Generators are not affected.
 
 ### Multiblocks
 
@@ -82,6 +84,12 @@ generators use their own overclock.
 - **Greenhouse** (single block, every tier) and **Industrial Greenhouse** (IV multiblock, 16× outputs, parallel
   hatches): grow crops and trees from a seed or sapling and water. Mystical Agriculture crops are supported,
   and other mods' saplings and crops are picked up by name.
+
+- **Industrial Large Chemical Reactor**: large chemical reactor recipes 64× faster, with parallel hatches,
+  perfect sub-tick overclocking and batch mode.
+- **Probable Certainty Device** (ZPM) and **Probable Improbability Device** (IV): parts that fit most multiblocks
+  (wherever their buses and hatches go). Certainty: chanced outputs always come out, and ranged outputs give their
+  largest amount. Improbability: chanced inputs are never consumed, and ranged inputs use their smallest amount.
 
 Unlike GTCEu's, the void miner and the fishing pond never void their outputs: they wait until everything fits.
 
@@ -194,14 +202,14 @@ the config file itself.
 
 | Group | Options |
 |---|---|
-| `machines` | one per multiblock above, plus the advanced steam machines and `easySAFRecipe` |
+| `machines` | one per multiblock above, `probableDevices`, the advanced steam machines and `easySAFRecipe` |
 | `modularMachines` | `enabled` |
 | `gregification` | `modernIndustrialization` (1.21.1), `mekanism`, `productiveBees`, `create` |
 | `wireless` | `energy`, `steam` |
 | `circuits` | `universalCircuits`, `controlCircuits`, `mekanismCircuitTags` |
 | `recipes` | `miscRecipes`, `earlyGame`, `keepManualCompression`, `keepVanillaTNT`, `netherStarDust`, `useLegacyPartRecipes` |
 | `steamTweaks` | `circuitSlots`, `fluidTanks`, `noOutputLimits`, `optionalLargeBoilerParts` |
-| `overclocking` | `buffFusionReactor`, `enableMultiTierSkipping` |
+| `overclocking` | `buffFusionReactor`, `enableMultiTierSkipping`, `absoluteParallelHatches` |
 | `ae2` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn`, `skipNotConsumedInputs` |
 | `misc` | `feInput`, `autoBuild` |
 | `voidMiner` | `dimensionMapping`: mine another dimension's veins (`"from=to"`) |
@@ -236,7 +244,7 @@ None are required.
 
 ## License
 
-Copyright (C) 2026 Yiran, Frosty. Licensed under the GNU Lesser General Public License v3.0, see
+Copyright (C) 2026 Yiran. Licensed under the GNU Lesser General Public License v3.0, see
 [LICENSE](LICENSE).
 
 ## Credits

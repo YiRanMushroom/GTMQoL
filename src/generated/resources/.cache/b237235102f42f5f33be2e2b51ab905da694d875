@@ -1,4 +1,4 @@
-// 1.20.1	2026-10-18T12:37:35.793907	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.20.1	2026-10-19T20:56:33.2300869	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
 09fb3a7710cbbd11f92fc4af1cdf02c52d2d0796 assets/gtmqol/blockstates/crystal_growth_chamber.json
 e61d13dc7f445fd39b88c0d72baabebd58c467a5 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
 f9870cf6218e8d4c6a301978cf03cd4e3221859d assets/gtmqol/blockstates/electric_implosion_compressor.json
@@ -34,6 +34,7 @@ a09a52fa15944f8f507df721aeca3ed0b32f796b assets/gtmqol/blockstates/hv_me_circuit
 ff96983816801b4b338c8e349dba95eed8e6fe13 assets/gtmqol/blockstates/hv_wireless_energy_input_hatch.json
 cc621999fe278bbda263a491ee3d807f0f3abd3a assets/gtmqol/blockstates/hv_wireless_energy_output_hatch.json
 8b1b0b9c7a106e38e79a5e9fd65feb8ca6c68592 assets/gtmqol/blockstates/industrial_greenhouse.json
+1275c0fadd35bd8b4719d2a3686b46b06ef0974f assets/gtmqol/blockstates/industrial_large_chemical_reactor.json
 f12d2e9f68c7ba57d91b254508fbb610c008351f assets/gtmqol/blockstates/iv_greenhouse.json
 c4638e084aba07f2689ebaf32fa1c96e5b867a38 assets/gtmqol/blockstates/iv_magical_assembler.json
 5cfbe61267d51c56ea58054765069691f44689e6 assets/gtmqol/blockstates/iv_me_assembler.json
@@ -113,6 +114,8 @@ f7a1937958776f74fdb3bb77b76b4292c6dc1aad assets/gtmqol/blockstates/opv_wireless_
 d9e41ac8ef105ccfe0bac044751ad24b634019ae assets/gtmqol/blockstates/opv_wireless_energy_input_hatch.json
 852be0a4e6e6e866652516be9eed2a87df37726e assets/gtmqol/blockstates/opv_wireless_energy_output_hatch.json
 d351c014ac58e6e5f6e1a92abf49362da99f7cc1 assets/gtmqol/blockstates/overclocked_me_pattern_buffer.json
+9cd11cb5520986889f8f0bc8ab93540c5b2bca85 assets/gtmqol/blockstates/probable_certainty_device.json
+9a987703a291a5fcb0521bc49afbada22fb5b0e9 assets/gtmqol/blockstates/probable_improbability_device.json
 d373912ea4b0c644aeda035524124f5d4afa696d assets/gtmqol/blockstates/smart_assembly_factory.json
 2d016ca4ad9ab6b6295b58b74fef0990109a1aaa assets/gtmqol/blockstates/steam_parallel_hatch.json
 2741b9190fced36aeed2858954118e44f48c1011 assets/gtmqol/blockstates/uev_greenhouse.json
@@ -166,8 +169,8 @@ e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circui
 674a583f2b29eee523d730ad4211c0134c9f8134 assets/gtmqol/blockstates/zpm_wireless_energy_accessor.json
 1136e3739fdb3b339bc80d9bedcd1bde88a780e9 assets/gtmqol/blockstates/zpm_wireless_energy_input_hatch.json
 a77ec21bfd8e4ba2dd87ea6bde687970c4039a69 assets/gtmqol/blockstates/zpm_wireless_energy_output_hatch.json
-3b9e050424fa2188edf8e96a348c83033ba92fa4 assets/gtmqol/lang/en_ud.json
-bca5521d0ab0e59d4581a6287a63c64d84fa1165 assets/gtmqol/lang/en_us.json
+7b0221779bf84c7a31f6e33f79575958a55a1bf0 assets/gtmqol/lang/en_ud.json
+e7b91f99bd369c1f4468a659ee631e931bd35d1b assets/gtmqol/lang/en_us.json
 4164843cf5260a41ff807a6f71a0269d98fdc69f assets/gtmqol/models/block/machine/crystal_growth_chamber.json
 68508e04e98fb37278a58e6e9440ba6f5cf3d12a assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
 741b8a3b73652f73a2e11b5943bc7ddeb426f178 assets/gtmqol/models/block/machine/electric_implosion_compressor.json
@@ -203,6 +206,7 @@ d89783c409545bc5a974214960053cb664ee2f53 assets/gtmqol/models/block/machine/hv_w
 df3112326d6f2bfd60c3f64db92aafd2684ceb18 assets/gtmqol/models/block/machine/hv_wireless_energy_input_hatch.json
 fc358dff0dc2b3f5afcc38a6e24a74c0f9bc6ebf assets/gtmqol/models/block/machine/hv_wireless_energy_output_hatch.json
 b7c2287f56f1e5b61fb89e32719418902be9ab92 assets/gtmqol/models/block/machine/industrial_greenhouse.json
+c6ef6e6f33ad4f31e626f5163dbf92626361affa assets/gtmqol/models/block/machine/industrial_large_chemical_reactor.json
 032e1d936949cca9f1cbdba840131b10e4d4c6e4 assets/gtmqol/models/block/machine/iv_greenhouse.json
 f533602fcec26f52a635fa64489554a243617bdd assets/gtmqol/models/block/machine/iv_magical_assembler.json
 2c60500762720146e3b48b1548a7c1822e8335d8 assets/gtmqol/models/block/machine/iv_me_assembler.json
@@ -282,6 +286,8 @@ d4a4c8fefd7b62c5439feb83557b3092320175ee assets/gtmqol/models/block/machine/opv_
 5c82ab05fe93c32703f538d40d3c0b56b5e54fdc assets/gtmqol/models/block/machine/opv_wireless_energy_input_hatch.json
 7a3c13b6b3e0e317cb3bc1bca44b63e9b2c3836d assets/gtmqol/models/block/machine/opv_wireless_energy_output_hatch.json
 2258779ffd6eeca4e3cb66ed5a931c0d41467949 assets/gtmqol/models/block/machine/overclocked_me_pattern_buffer.json
+53ca901a8c3c3afee12099f18537cfd8aedcb686 assets/gtmqol/models/block/machine/probable_certainty_device.json
+b0a732ce105fe6ca7f4cab80c45eed44f3bd3e3c assets/gtmqol/models/block/machine/probable_improbability_device.json
 747c23d3ccd800eb610554071ea5ad956614e186 assets/gtmqol/models/block/machine/smart_assembly_factory.json
 317ddee1ac26dbf07ef8dd7c786fdc3214a5c207 assets/gtmqol/models/block/machine/steam_parallel_hatch.json
 4661b12f7bf9561794595183e083b2399580449b assets/gtmqol/models/block/machine/uev_greenhouse.json
@@ -381,6 +387,7 @@ d330a83f021992102ccb236f9c246ac9e1471db9 assets/gtmqol/models/item/hv_universal_
 8b2048a623bd1ca289a42dd7a63a3dc9fbf920a4 assets/gtmqol/models/item/hv_wireless_energy_output_cover.json
 25d222b01342160d2f68abba45d357f7dd0ee8e0 assets/gtmqol/models/item/hv_wireless_energy_output_hatch.json
 e19601267f988a9aae958bdf4a7f26323a2438b9 assets/gtmqol/models/item/industrial_greenhouse.json
+d3ebd82ff0e89bc96eda7a6e471183d9326678b2 assets/gtmqol/models/item/industrial_large_chemical_reactor.json
 dc64b2b23278cdf350d316e9139c522b4837e35f assets/gtmqol/models/item/iv_greenhouse.json
 ecd0c2e311025d52c56580517fae26ba196e7b2b assets/gtmqol/models/item/iv_magical_assembler.json
 edb69371010a9a67aadb21101b72b2ccfee8632c assets/gtmqol/models/item/iv_me_assembler.json
@@ -482,6 +489,8 @@ af376ded7c00987de05e382c36b44ebac571374b assets/gtmqol/models/item/opv_magical_a
 4272f81e6c015488e7ae7a4d1fa3f9aced8663d1 assets/gtmqol/models/item/opv_wireless_energy_output_hatch.json
 c76e334a08ac58c9fe19a1a3a6375101a7814cb3 assets/gtmqol/models/item/overclocked_me_pattern_buffer.json
 693085c624963581fa683792437aa07bd9279089 assets/gtmqol/models/item/phosphorus_doped_silicon_chip.json
+f23200d07c7c48edf6468ecd434fece8d80c04f0 assets/gtmqol/models/item/probable_certainty_device.json
+284ab1edba9eb91788bef15e53c13ecf0fc3c012 assets/gtmqol/models/item/probable_improbability_device.json
 9f9c497982ea88ccbaac1f191fd5dce02f56d180 assets/gtmqol/models/item/rod_extruder_mold.json
 29201f82fdda111d54fda492e70bfde72c44248f assets/gtmqol/models/item/rotor_extruder_mold.json
 4d621027260803f2e4ebf7bf5388a58f16303c4b assets/gtmqol/models/item/silicon_chip.json

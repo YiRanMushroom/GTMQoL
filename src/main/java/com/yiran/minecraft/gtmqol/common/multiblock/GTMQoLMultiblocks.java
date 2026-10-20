@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.common.data.GCYMBlocks;
@@ -46,18 +47,20 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.createWorkableCasingMachineModel;
 
 /**
- * Smart Assembly Factory and Dimensionally Transcendent Fusion Reactor, ported from the 7.x version, the
- * Void Miner and the Industrial Fishing Pond.
+ * Smart Assembly Factory, Dimensionally Transcendent Fusion Reactor and Industrial Large Chemical Reactor, ported
+ * from the 7.x version, the Void Miner and the Industrial Fishing Pond.
  */
 public final class GTMQoLMultiblocks {
 
     private static final String DTFR_TOOLTIP_KEY = "gtmqol.multiblock.dimensionally_transcendent_fusion_reactor.tooltip";
+    private static final String ILCR_TOOLTIP_KEY = "gtmqol.multiblock.industrial_large_chemical_reactor.tooltip";
 
     public static MultiblockMachineDefinition SMART_ASSEMBLY_FACTORY;
     public static final int SAF_MAX_DATA_HATCHES = 9;
     public static MultiblockMachineDefinition DIMENSIONALLY_TRANSCENDENT_FUSION_REACTOR;
     public static MultiblockMachineDefinition VOID_MINER;
     public static MultiblockMachineDefinition FISHING_POND;
+    public static MultiblockMachineDefinition INDUSTRIAL_LARGE_CHEMICAL_REACTOR;
 
     private GTMQoLMultiblocks() {}
 
@@ -67,6 +70,7 @@ public final class GTMQoLMultiblocks {
         if (config.dimensionallyTranscendentFusionReactor) initDTFR();
         if (config.voidMiner) initVoidMiner();
         if (config.fishingPond) initFishingPond();
+        if (config.industrialLargeChemicalReactor) initIndustrialLargeChemicalReactor();
     }
 
     public static void addRecipes(Consumer<FinishedRecipe> provider) {
@@ -75,6 +79,7 @@ public final class GTMQoLMultiblocks {
         if (config.dimensionallyTranscendentFusionReactor) addDTFRRecipe(provider);
         if (config.voidMiner) addVoidMinerRecipe(provider);
         if (config.fishingPond) addFishingPondRecipe(provider);
+        if (config.industrialLargeChemicalReactor) addIndustrialLargeChemicalReactorRecipe(provider);
     }
 
     private static void initSmartAssemblyFactory() {
@@ -177,6 +182,44 @@ public final class GTMQoLMultiblocks {
 
         GTMQoLAddon.registrate().addRawLang(DTFR_TOOLTIP_KEY,
                 "Can run fusion recipes of any tier, as long as you have enough energy inputs.");
+    }
+
+    private static void initIndustrialLargeChemicalReactor() {
+        INDUSTRIAL_LARGE_CHEMICAL_REACTOR = GTMQoLAddon
+                .multiblock("industrial_large_chemical_reactor", WorkableElectricMultiblockMachine::new)
+                .rotationState(RotationState.ALL)
+                .recipeType(GTRecipeTypes.LARGE_CHEMICAL_RECIPES)
+                .recipeModifiers(PARALLEL_HATCH,
+                        (machine, recipe) -> ModifierFunction.builder().durationMultiplier(1.0 / 64).build(),
+                        OC_PERFECT_SUBTICK, BATCH_MODE)
+                .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"),
+                        Component.translatable(ILCR_TOOLTIP_KEY),
+                        Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                                Component.translatable("gtceu.large_chemical_reactor")))
+                .appearanceBlock(CASING_PTFE_INERT)
+                .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
+                        .slice("XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
+                        .slice("XPXPX", "GAAAG", "GAHAG", "GAAAG", "XPXPX")
+                        .slice("XPXPX", "GAAAG", "GAHAG", "GAAAG", "XPXPX")
+                        .slice("XPXPX", "GAAAG", "GAHAG", "GAAAG", "XPXPX")
+                        .slice("XPXPX", "GAAAG", "GAHAG", "GAAAG", "XPXPX")
+                        .slice("XPXPX", "GAAAG", "GAHAG", "GAAAG", "XPXPX")
+                        .slice("XXXXX", "XGGGX", "XGSGX", "XGGGX", "XXXXX")
+                        .where('S', controller(definition))
+                        .where('X', blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(16)
+                                .and(autoAbilities(definition.getRecipeTypes()))
+                                .and(autoAbilities(true, false, true)))
+                        .where('G', blocks(CASING_TEMPERED_GLASS.get()))
+                        .where('H', heatingCoils())
+                        .where('P', blocks(CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))
+                        .where('A', air())
+                        .build())
+                .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),
+                        GTCEu.id("block/multiblock/large_chemical_reactor"))
+                .langValue("Industrial Large Chemical Reactor")
+                .register();
+
+        GTMQoLAddon.registrate().addRawLang(ILCR_TOOLTIP_KEY, "Runs large chemical reactor recipes 64 times faster.");
     }
 
     private static void initVoidMiner() {
@@ -355,6 +398,16 @@ public final class GTMQoLMultiblocks {
                 .outputItems(DIMENSIONALLY_TRANSCENDENT_FUSION_REACTOR)
                 .duration(2000)
                 .EUt(VA[UV])
+                .save(provider);
+    }
+
+    private static void addIndustrialLargeChemicalReactorRecipe(Consumer<FinishedRecipe> provider) {
+        MagicalAssembler.RECIPE_TYPE.recipeBuilder(GTMQoL.id("industrial_large_chemical_reactor"))
+                .inputItems(GTMultiMachines.LARGE_CHEMICAL_REACTOR, 64)
+                .inputFluids(Glue.getFluid(16000))
+                .outputItems(INDUSTRIAL_LARGE_CHEMICAL_REACTOR)
+                .duration(1200)
+                .EUt(VA[HV])
                 .save(provider);
     }
 
