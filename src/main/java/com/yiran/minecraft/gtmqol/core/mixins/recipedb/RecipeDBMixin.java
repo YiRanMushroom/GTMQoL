@@ -18,7 +18,7 @@ public class RecipeDBMixin {
     /**
      * @author yiran
      * @reason Walk the holder's recipe handler lists instead of the flattened handlers, so every ingredient
-     *         remembers which group it came from. See docs/RECIPEDB_REFACTOR.md.
+     *         remembers which group it came from. Doc index: recipedb.grouped-search.
      */
     @Overwrite
     private @Nullable List<List<AbstractMapIngredient>> fromHolder(@NotNull IRecipeCapabilityHolder holder) {

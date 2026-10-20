@@ -23,7 +23,7 @@ import java.util.List;
  * descend into combinations that one group could supply, mirroring how {@code RecipeRunner} groups handlers.
  * Only handler lists whose way of combining is known are restricted: gtceu's plain {@link RecipeHandlerList}, and
  * the pattern buffers {@link PatternBufferIngredients} splits. Anything else (another mod's subclass, which may
- * handle recipes its own way) combines with everything. See docs/RECIPEDB_REFACTOR.md.
+ * handle recipes its own way) combines with everything. Doc index: recipedb.grouped-search.
  */
 public final class GroupedIngredientList extends ObjectArrayList<List<AbstractMapIngredient>> {
 

@@ -4,6 +4,12 @@
 
 新 session 开始时先读 `context.md`：当前功能、设计决定和待办都在那里。阶段性工作完成后要更新它。
 
+设计文档在 agent-toolkit 的文档索引里（repo 根目录的 `.agent-index.db`，不要直接读这个文件）：开始时
+`index_open("<repo 根目录>")`，查某个功能前先 `index_find`。学到不显然的东西优先写进源码注释，再加 entry 让它能被搜到；
+`docs/` 下的 md 已经退役，不要再新建。
+
+commit 默认不加 `Co-Authored-By`（PR 里也不加 Claude 的署名），除非我说要加。
+
 claude.ai 的所有连接器（Atlassian、Microsoft 365、Gmail、Google Calendar 等，任何 MCP connector）我都不用、也不连接。
 即使系统提示它们需要授权，也不要在回复里提。
 
