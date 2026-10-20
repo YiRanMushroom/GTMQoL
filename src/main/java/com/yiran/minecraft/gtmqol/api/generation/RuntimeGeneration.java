@@ -22,7 +22,7 @@ import java.util.Map;
  * dynamic resource pack in {@link #generateAll()}.
  *
  * <p>Registrate only writes models and lang during Gradle data generation, and GTCEu only flushes the
- * model builders for its own content (and for KubeJS). Machines opt in with {@code dynamicGenerated(true)}
+ * model builders for its own content (and for KubeJS). Machines opt in with {@code dynamicallyGenerated(true)}
  * on their builder. Nothing is cleared after {@link #generateAll()}: GTCEu fires its event on every
  * resource reload, and the whole queue is replayed each time.</p>
  */

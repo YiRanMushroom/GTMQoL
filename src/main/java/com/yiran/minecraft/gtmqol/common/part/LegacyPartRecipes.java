@@ -89,8 +89,8 @@ public final class LegacyPartRecipes {
     }
 
     /**
-     * With a file, like GTCEu's molds. v8 gave the old rod and rotor patterns on the empty mold to pipe molds, so those
-     * two start from the wire and ring molds now; bolt, gear and small gear are the old patterns.
+     * With a file, like GTCEu's molds. v8 gave the old empty-mold patterns to pipe molds, so these start from other
+     * molds: rod from the wire mold, long rod and bolt from the rod mold, gear, small gear and rotor from the ring mold.
      */
     private static void addMoldRecipes(Consumer<FinishedRecipe> provider) {
         VanillaRecipeHelper.addStrictShapedRecipe(provider, GTMQoL.id("shape_extruder_rod"), ROD.asStack(),
