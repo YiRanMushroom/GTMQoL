@@ -78,8 +78,7 @@ generators use their own overclock.
 GTCEu's recipe search tries every combination of a machine's inputs. With many distinct buses or pattern
 buffers this gets very slow in the late game. Grouped search only tries combinations that one bus, one
 pattern (plus the buffer's circuit and shared inventory) or the non-distinct pool could supply, which are
-the only ones GTCEu would run anyway. Technical details are in
-[docs/RECIPEDB_REFACTOR.md](docs/RECIPEDB_REFACTOR.md).
+the only ones GTCEu would run anyway. Technical details are in the source, `common/recipedb/`.
 
 ## Configuration
 

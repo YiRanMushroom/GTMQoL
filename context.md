@@ -8,8 +8,8 @@ shaped this way, and what is pending.
 
 **This file is out of date.** Features are written on 1.21.1 first and ported here, so the reference notes live on
 `port/1.21.1` (also `master` since PR #1, 2026-10-13): its `context.md` (index, state, pending, what of 1.21 is
-ported here), `docs/*.md` (one design doc per feature, with the 1.20.1 differences) and `CLAUDE.md`. Read those
-first; use this file only for 1.20.1-only details, mainly the Loom → ModDevGradle migration at the bottom.
+ported here) and `CLAUDE.md`. Read those first. Design docs are in this branch's own doc index (`index_*` tools,
+`.agent-index.db`; same ids as on 1.21.1, linked to this branch's code); use this file only for 1.20.1-only details, mainly the Loom → ModDevGradle migration at the bottom.
 
 The 1.21.1 checkout is a separate worktree next to this one (`..\GTMQoL`). The user works on two computers, so the
 paths differ a little (`C:\Users\yiran.wang\IdeaProjects\` on one, `E:\code\Minecraft\` on the other): look in the
@@ -23,7 +23,7 @@ parent directory or run `git worktree list`, and check which branch it has check
   user.
 - **Exception, compiles and datagens (2026-10-14) but never run in game:** the stack-like port from 1.21 (`common/stacklike/`, Mek 10.4
   chemicals, `gregification/` + Mek machines, AE bridge/universal parts/pattern buffer, `integration/jade/`).
-  Design and 1.20.1 differences: `docs/STACK_LIKE_CAPABILITIES.md` on `port/1.21.1`. Universal parts need a `runData`.
+  Design and 1.20.1 differences: `stacklike.*` in the doc index. Universal parts need a `runData`.
   `mek_chemical_converter` (crafted from our `mek_chemical_oxidizer`) proxies `mekanism:gas_conversion` (osmium for
   the osmium compressor, flint → oxygen, salt/sulfur). It is a separate machine because those differ from oxidizing on
   salt and sulfur. Mek 10.4 keeps `infusion_conversion` (item → infuse type) as a second type; 1.21 merges both into
@@ -112,8 +112,8 @@ Two mechanisms exist; use datagen by default.
 - **Runtime generation (opt-in).** `GTMQoLAddon.machine(...)` returns `GTMQoLMachineBuilder`, which has
   `.dynamicallyGenerated(true)`. `MachineBuilderMixin` then queues the builder in `RuntimeGeneration`,
   which writes models/lang into GTCEu's `GTDynamicResourcePack` on every `RegisterDynamicResourcesEvent`.
-  Used by the modular machines and the integration-test machines. Background in `docs/DYNAMIC_GENERATION.md` and
-  `docs/INTEGRATION_TESTS.md` (written early on; may be partly out of date).
+  Used by the modular machines and the integration-test machines. Background in `generation.*` and `tests.*`
+  in the doc index.
 
 Datagen gotcha, already fixed: GTCEu instantiates addons while it is itself being constructed, so a
 `GTRegistrate.create(MOD_ID)` in `GTMQoLAddon`'s static init hooked Registrate's `GatherDataEvent` listener
@@ -309,11 +309,11 @@ The user chose concrete code in parallel with steam rather than a generic per-re
   hatch uses circuit 6, as GT has no steam output hatch).
 - Legacy part recipes (`part/LegacyPartRecipes`, `recipes.useLegacyPartRecipes`, default on; not built, needs
   `runData`): the rod/bolt/gear/small gear/rotor extruder molds GTCEu v8 removed, plus a long rod mold, with their
-  extruder recipes, and rotors recycling into 4 ingots again. Same as 1.21, see `docs/RECIPES.md` there; only the
+  extruder recipes, and rotors recycling into 4 ingots again. Same as 1.21, see `recipes.legacy-parts`; only the
   recipe consumer type and GTCEu's `NO_UNIFICATION` skip differ, and the rotor amount is set from
   `GTMQoLAddon.registerTagPrefixes` (touching `TagPrefix` in the mod constructor hit its frozen registry in `runData`).
 - The large steam lathe and modular lathe run gtceu's `LatheRecipeLogic` (lubricant doubles rods) through
-  `WorkableMultiblockMachineMixin`, same as 1.21 (`docs/STEAM.md` there). Not built.
+  `WorkableMultiblockMachineMixin`, same as 1.21 (`steam.lathe-logic`). Not built.
 
 ## Modular machines (`modular/`)
 
@@ -379,7 +379,7 @@ Registered in `onRegisterMachines`, lang/models datagen'd, recipes in the magica
   `sliceRepeatable(4, 4, ...)`. 1-9 data access / optical data hatches (`safDataHatches()`, null when research is
   off); any one having the research is enough (`WorkableMultiblockMachineMixin`, gtceu has every data hatch veto).
   `machines.easySAFRecipe` (default on): also 16 assembly lines + circuit 24 in the magical assembler. Same as
-  1.21 (`docs/MULTIBLOCKS.md` there). Not built.
+  1.21 (`multiblock.saf`). Not built.
 - DTFR: fusion recipes of any tier (ignores `eu_to_start`), same modifiers. `DTFRMachine` is a plain
   `WorkableElectricMultiblockMachine` (no fusion buffer/heat/tier cap) holding the ring fade state, because
   the dynamic render instance is shared. Fusion MK3 layout with all fluid slots as 'X'; energy slots also
@@ -422,7 +422,7 @@ Port differences:
 Ported from 1.21 on 2026-10-07 (it works there; see its context.md for the design), written, not built yet.
 Config `machines.crystalGrowthChamber`. Port differences:
 - 2026-10-18: the `CenterBlockCondition` + shard input became the block capability (`common/blockprovider/`, same
-  as 1.21, `docs/MULTIBLOCKS.md` there; compiles and datagens, not run). 1.20.1 differences: the capability is
+  as 1.21, `multiblock.block-provider`; compiles and datagens, not run). 1.20.1 differences: the capability is
   registered from the capability `RegisterEvent` (`BlockProviderRecipeCapability.register`, lang
   `recipe.capability.block.name`), JEI lookup via `GTRecipeJEICategoryBlockProviderMixin`, KubeJS 6 needs
   `GTMQoLAddon.registerRecipeKeys` (`ContentJS` with KubeJS's `BlockComponent`) besides the binding plugin.
@@ -511,7 +511,7 @@ reference clone at `E:\code\Minecraft\gtnl-ref`, outside the repo), not a copy.
 ## RecipeDB grouped search (`recipedb/`, `mixin/recipedb/`)
 
 Port of the old `RecipeDBMixin` (late-game lag fix). Full write-up, including what the 7.x patches did and
-why most of them are obsolete in v8, in `docs/RECIPEDB_REFACTOR.md`. In short:
+why most of them are obsolete in v8, in `recipedb.*` (doc index). In short:
 
 - `fromHolder` is overwritten to tag each ingredient entry with its `RecipeHandlerList` group.
 - Pattern buffers are split per worker, with the circuit and shared inventories as catalysts.
