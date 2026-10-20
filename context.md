@@ -52,7 +52,7 @@ areas, its topics (`subkeys:`), which `index_find` narrows to.
 ## Recent
 
 - 2026-10-20: `docs/*.md` retired into the doc index, then the index reorganized (key tree, fewer keys, stale and
-  duplicate entries removed); `reference/` deleted; mixin config plugins share a base class; splash / lingering potions ported to 1.20.1; all popups share `PopupWidgets` (`rules.ui-popups`). 3.1.0 (not released yet): Industrial Large Chemical
-  Reactor, the probable devices and absolute parallel hatches back from 2.0.0; 3.1 releases wait for a 1.20 test. Both branches: shared
+  duplicate entries removed); `reference/` deleted; mixin config plugins share a base class; splash / lingering potions ported to 1.20.1; all popups share `PopupWidgets` (`rules.ui-popups`). Released 3.0.0 and 3.1.0 on both branches; 3.1.0 brought the Industrial
+  Large Chemical Reactor, the probable devices and absolute parallel hatches back from 2.0.0. Both branches: shared
   hatches gating fix, block provider lookup fix, greenhouse batch mode; 1.20.1 got the potion "any mod's version"
   hint.
