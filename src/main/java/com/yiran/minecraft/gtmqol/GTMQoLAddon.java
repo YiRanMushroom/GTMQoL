@@ -83,7 +83,7 @@ public final class GTMQoLAddon implements IGTAddon {
     }
 
     /**
-     * Same as {@code registrate().machine(...)}, but returns our builder so {@code dynamicGenerated} can be
+     * Same as {@code registrate().machine(...)}, but returns our builder so {@code dynamicallyGenerated} can be
      * chained.
      */
     public static <M extends MetaMachine> GTMQoLMachineBuilder<MachineDefinition, M> machine(String name,

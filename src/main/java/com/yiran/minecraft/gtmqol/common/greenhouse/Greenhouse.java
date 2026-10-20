@@ -102,7 +102,7 @@ public final class Greenhouse {
         INDUSTRIAL = GTMQoLAddon.multiblock("industrial_greenhouse", WorkableElectricMultiblockMachine::new)
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(RECIPE_TYPE)
-                .recipeModifiers(PARALLEL_HATCH, INDUSTRIAL_OUTPUT, OC_PERFECT_SUBTICK)
+                .recipeModifiers(PARALLEL_HATCH, INDUSTRIAL_OUTPUT, OC_PERFECT_SUBTICK, BATCH_MODE)
                 .tooltips(Component.translatable(INDUSTRIAL_KEY + "tooltip.0"),
                         Component.translatable(INDUSTRIAL_KEY + "tooltip.1", INDUSTRIAL_OUTPUT_MULTIPLIER),
                         Component.translatable(INDUSTRIAL_KEY + "tooltip.2"))
