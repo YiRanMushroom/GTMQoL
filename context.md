@@ -5,12 +5,12 @@ the doc index (see `CLAUDE.md`), not here.
 
 ## Branches
 
-Features are written on `port/1.21.1` (= `master`) first and ported here. Its `context.md` holds the shared to-do
+Features are written on `1.21` first and ported here. Its `context.md` holds the shared to-do
 list and open questions; read it too. The 1.21.1 worktree sits next to this one (`..\GTMQoL`); the user works on two
 computers, so paths differ (`C:\Users\yiran.wang\IdeaProjects\` or `E:\code\Minecraft\`): check
-`git worktree list`, or `git show port/1.21.1:context.md`.
+`git worktree list`, or `git show 1.21:context.md`.
 
-- This branch: `migrate/gtceu-v8-runtime-generation`. Minecraft 1.20.1, Forge 47, Java 17, ModDevGradle legacyForge.
+- This branch: `1.20`. Minecraft 1.20.1, Forge 47, Java 17, ModDevGradle legacyForge.
   GTCEu v8 snapshot pinned in `gradle.properties`. Java only. Not run in game yet.
 - Not on this branch: MI gregification (no Forge 1.20.1 build of MI); late regeneration for KubeJS machines.
   Code differences: `build.branch-differences`.
