@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBu
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
+import com.yiran.minecraft.gtmqol.common.probable.ProbableDevices;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
@@ -126,6 +127,7 @@ public final class GTMQoLAddon implements IGTAddon {
         GTMQoLConfig config = GTMQoLConfig.get();
         MagicalAssembler.addRecipes(provider);
         GhostIngredients.addRecipes(provider);
+        ProbableDevices.addRecipes(provider);
         if (config.wireless.energy) WirelessRecipes.addEnergyRecipes(provider);
         if (config.wireless.steam) WirelessRecipes.addSteamRecipes(provider);
         ModularMachines.addRecipes(provider);
