@@ -4,8 +4,8 @@ Start of a session:
 1. Read `context.md` (branches, known unfixed bugs, to-dos, open questions). Update it when a piece of work is done;
    it holds only general notes and current work, no "not tested yet" status and no design details.
 2. `index_open("<repo root>")` (agent-toolkit doc index, `.agent-index.db`; never read that file directly), then
-   `index_read` the `rules.*` entries (`index_list("rules")`): working rules and mixin conventions. Build setup:
-   `build.*`. Before working on a feature, `index_find` it.
+   `index_read` the `rules.*` entries (`index_list("rules")`): working rules, mixin conventions, source layout. Build
+   setup: `build.*`. Areas: `index_keys("gtmqol")`. Before working on a feature, `index_find` it.
 
 Always:
 - Reply in Chinese.
