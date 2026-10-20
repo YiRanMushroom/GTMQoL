@@ -26,6 +26,7 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 
 | Prefix | Covers |
 |---|---|
+| `rules.*`, `build.*` | working rules, mixin conventions; build environment, dependencies |
 | `layout.*` | source layout, where things live |
 | `gregification.*` | foreign recipe types on GT machines (MI, Mekanism, Productive Bees, Create), composable single blocks |
 | `stacklike.*` | stack-like recipe caps (Mekanism chemicals), AE bridges, universal ME parts, EMI/Jade |
@@ -65,16 +66,6 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
   count it twice.
 - Should the wireless accessor use the rainbow overlay?
 - Maintenance hatches on our multis: all other abilities are used. Nothing removed yet.
-
-## Conventions
-
-- javac runs with `-Xlint:deprecation,removal,unchecked,rawtypes`. 1.21 has no warnings; 1.20.1 only Forge's
-  deprecation of `BuiltInRegistries.ITEM/BLOCK/...` (kept so the code matches 1.21). Keep it that way.
-- Jar naming `gtmqol-<mod version>-<mc version>.jar`: `build.gradle` sets `archiveVersion` on every
-  `AbstractArchiveTask`; `project.version` stays `mod_version`.
-- `README.md` is all English. Credits for borrowed ideas and assets go in its Credits section, never in code
-  comments.
-- The user replies in Chinese, runs the game (and usually Gradle) and pastes logs back: say exactly what to look for.
 
 ## Recent
 
