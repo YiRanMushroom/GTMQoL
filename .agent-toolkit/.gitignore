@@ -1,0 +1,2 @@
+# the index cache is local; index_save writes index/ for the repo
+cache/
