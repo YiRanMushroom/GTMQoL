@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
@@ -33,6 +34,7 @@ import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.integration.KubeJSDataGenFix;
+import com.yiran.minecraft.gtmqol.integration.kubejs.GTMQoLKubeJSPlugin;
 import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
 import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AppMekChemicalBridge;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
@@ -109,6 +111,11 @@ public final class GTMQoL {
             StickyCardItem.init();
             modBus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(StickyCardItem::registerUpgrades));
         }
+        if (config.recipes.useLegacyPartRecipes) {
+            modBus.addGenericListener(TagPrefix.class, LegacyPartRecipes::onRegisterTagPrefixes);
+        }
+        // gtceu only posts it with KubeJS installed; the plugin class needs KubeJS to load
+        if (ModList.get().isLoaded("kubejs")) modBus.addListener(GTMQoLKubeJSPlugin::registerRecipeKeys);
         modBus.addGenericListener(RecipeCapability.class, this::onRegisterRecipeCapabilities);
         modBus.addGenericListener(GTRecipeType.class, this::onRegisterRecipeTypes);
         modBus.addGenericListener(CoverDefinition.class, this::onRegisterCovers);

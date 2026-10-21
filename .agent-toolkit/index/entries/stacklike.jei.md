@@ -2,6 +2,7 @@
 title = "JEI lookup and AE2 pattern encoding for stack-like contents: StackLikeJei, GTRecipeJEICategory mixin (1.20.1 only)"
 keys = [ "addingredientsunsafe", "chemicals", "setuprecipeingredients", "skipnotconsumedinputs", "stack-like viewers" ]
 updated = "2026-10-19 20:12:49"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/StackLikeJei.java"

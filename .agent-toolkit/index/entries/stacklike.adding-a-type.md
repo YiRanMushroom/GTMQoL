@@ -2,6 +2,7 @@
 title = "How to add a new stack-like type (capability, handler, AE bridge, JEI/EMI, recipe types)"
 keys = [ "external hatches", "stack-like core" ]
 updated = "2026-10-21 01:13:03"
+checked = "2026-10-21"
 +++
 1. Implement `GenericStackLikeType<S, I>` (model: `ChemicalStackLike`, stacklike.chemical), incl. codecs and `writeIngredient`/`readIngredient`. Keep it in a class touched only when the mod is loaded.
 2. Give that class a static `init()` doing `CAP = GenericStackLikeRecipeCapability.register(TYPE, color, sortIndex, name)`, called from the `GTMQoL` constructor behind `ModList.get().isLoaded(...)` (like `ChemicalStackLike.init()`). Registration into gtceu's registry is automatic (`registerAll` on the RecipeCapability RegisterEvent, stacklike.recipe-capability). Sort index between gtceu's (chemicals took 4, between cwu 3 and block_state 5).

@@ -2,6 +2,7 @@
 title = "GTEmiRecipeMixin: keep NBT on fluid outputs in EMI, so R / click on a potion fluid finds its recipe"
 keys = [ "1.21", "brewery", "emistack", "getoutputs" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/GTEmiRecipeMixin.java"

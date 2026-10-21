@@ -2,6 +2,7 @@
 title = "Splash and lingering potion fluids: gtmqol:potion_container NBT mark, brewed with vanilla container mixes"
 keys = [ "bottleitemfluidhandlermixin", "dragon's breath", "gunpowder", "potionitemfluidhandlermixin" ]
 updated = "2026-10-19 20:16:06"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/potion/PotionContainers.java"

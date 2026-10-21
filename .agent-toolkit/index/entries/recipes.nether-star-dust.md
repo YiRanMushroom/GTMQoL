@@ -1,6 +1,7 @@
 +++
 title = "recipes.netherStarDust: mixer 4 diamond + 16 silver dust -> nether star dust at HV, then GTCEu implosion"
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/data/recipe/MiscRecipes.java"

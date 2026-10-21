@@ -139,6 +139,6 @@ public final class SequencedAssemblySteps {
     }
 
     private static ResourceLocation create(String path) {
-        return new ResourceLocation("create", path);
+        return ResourceLocation.fromNamespaceAndPath("create", path);
     }
 }

@@ -2,6 +2,7 @@
 title = "GroupedIngredientList: per-entry kind/group/slot and the canFollow relation used to prune the recipe search"
 keys = [ "catalyst", "distinct", "pooled", "shared hatches", "undyed", "universal", "whole" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/recipedb/GroupedIngredientList.java"

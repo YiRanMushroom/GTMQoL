@@ -2,6 +2,7 @@
 title = "Industrial Large Chemical Reactor: LCR recipes x1/64 duration, parallel hatch, perfect subtick OC, batch; port of 2.0.0"
 keys = [ "ilcr", "industrial large chemical reactor", "large_chemical_recipes" ]
 updated = "2026-10-19 20:57:50"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/GTMQoLMultiblocks.java"

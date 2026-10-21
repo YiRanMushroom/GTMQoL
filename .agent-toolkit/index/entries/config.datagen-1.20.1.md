@@ -2,6 +2,7 @@
 title = "1.20.1 datagen gotchas: KubeJS thread keeps the JVM alive, machines only in onRegisterMachines, old IDEA run config"
 keys = [ "does not exit", "initializeaddon", "kubejsbackgroundthread", "multipleargumentsforoptionexception", "registry frozen", "rundata" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoL.java"

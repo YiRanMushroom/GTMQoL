@@ -38,10 +38,10 @@ import java.util.concurrent.ConcurrentHashMap;
 final class FanProcessing {
 
     private static final String DRAGONS_PLUS = "create_dragons_plus";
-    private static final ResourceLocation FREEZING = new ResourceLocation(DRAGONS_PLUS, "freezing");
+    private static final ResourceLocation FREEZING = ResourceLocation.fromNamespaceAndPath(DRAGONS_PLUS, "freezing");
     private static final ResourceLocation FREEZERS =
-            new ResourceLocation(DRAGONS_PLUS, "passive_block_freezers");
-    private static final ResourceLocation SANDING = new ResourceLocation(DRAGONS_PLUS, "sanding");
+            ResourceLocation.fromNamespaceAndPath(DRAGONS_PLUS, "passive_block_freezers");
+    private static final ResourceLocation SANDING = ResourceLocation.fromNamespaceAndPath(DRAGONS_PLUS, "sanding");
 
     /** Kinds by recipe type, from common setup on. */
     private static final Map<RecipeType<?>, List<ResourceLocation>> KINDS = new HashMap<>();
@@ -81,7 +81,7 @@ final class FanProcessing {
         List<RecipeType<?>> types = new ArrayList<>();
         BuiltInRegistries.RECIPE_TYPE.getOptional(kind).ifPresent(types::add);
         if (kind.equals(SANDING)) {
-            BuiltInRegistries.RECIPE_TYPE.getOptional(new ResourceLocation("create",
+            BuiltInRegistries.RECIPE_TYPE.getOptional(ResourceLocation.fromNamespaceAndPath("create",
                     "sandpaper_polishing")).ifPresent(types::add);
         }
         return types;

@@ -2,6 +2,7 @@
 title = "lp_/hp_steam_* for the 14 machines GTCEu has no steam version of (bender ... circuit assembler), with recipes"
 keys = [ "lp_steam", "registersimplesteammachines", "steam lathe", "steam single blocks", "steam wiremill" ]
 updated = "2026-10-19 20:12:38"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/steam/AdvancedSteamMachines.java"

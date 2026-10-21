@@ -2,6 +2,7 @@
 title = "Steam Parallel Control Hatch: 16-256 parallels for advanced steam multis, own PartAbility, not shareable"
 keys = [ "large steam multis", "steam_parallel", "steam_parallel_hatch" ]
 updated = "2026-10-19 20:12:38"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/steam/AdvancedSteamMachines.java"

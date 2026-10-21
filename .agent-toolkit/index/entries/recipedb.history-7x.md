@@ -2,6 +2,7 @@
 title = "How the 7.x (pre-v8) RecipeDB grouped search worked and what was not ported"
 keys = [ "catalyst handler", "expanded pattern buffer", "gtmutils", "islothint", "recipedbstatic", "reference", "targetlookup" ]
 updated = "2026-10-21 01:13:03"
+checked = "2026-10-21"
 +++
 7.x code is in git history (the `reference/` archive, removed in commit 0f6b123: `mixin/RecipeDBMixin.java`, `mixin_helper/RecipeDBStatic.java`, `api/ISlotHint.java`). 7.x had no handler groups, so the mod added its own:
 - `api/ISlotHint`: each handler got a *matching group* (default itself) and a *catalyst* flag (`NotifiableRecipeHandlerTraitMixin` @Unique field; `InternalSlotRecipeHandlerMixin` made a buffer slot's item+fluid handlers return their `InternalSlot` as group; `DualHatchPartMachineMixin` put a dual hatch's inventory and tank in one group).

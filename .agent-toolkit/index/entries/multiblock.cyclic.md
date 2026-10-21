@@ -2,6 +2,7 @@
 title = "CyclicMultiblockMachine: fixed-length cycles without recipe logic, keeps overflow; base of void miner and fishing pond"
 keys = [ "finishcycle", "multiblock base", "retry_ticks", "startcycle", "status line", "stored popup" ]
 updated = "2026-10-19 20:27:55"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/CyclicMultiblockMachine.java"

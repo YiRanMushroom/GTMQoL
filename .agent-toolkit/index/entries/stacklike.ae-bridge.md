@@ -2,6 +2,7 @@
 title = "AEStackLikeBridge: opt-in AE support for a stack-like capability (capability <-> AEKey); chemicals via AppMek"
 keys = [ "aestacklikebridges", "applied mekanistics", "mekanismkey", "stack-like ae" ]
 updated = "2026-10-19 20:12:38"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoL.java"

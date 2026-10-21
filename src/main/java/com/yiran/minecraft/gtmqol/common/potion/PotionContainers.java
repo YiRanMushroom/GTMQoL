@@ -36,7 +36,7 @@ public final class PotionContainers {
 
     public static boolean isPotion(FluidStack fluid) {
         CompoundTag tag = fluid.getTag();
-        return fluid.getFluid().is(CustomTags.POTION_FLUIDS) && tag != null && tag.contains("Potion", Tag.TAG_STRING);
+        return fluid.getFluid().defaultFluidState().is(CustomTags.POTION_FLUIDS) && tag != null && tag.contains("Potion", Tag.TAG_STRING);
     }
 
     /** The potion item {@code fluid} bottles into. */

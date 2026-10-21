@@ -2,6 +2,7 @@
 title = "Potion fluids in the recipe viewer: inputs list a single source fluid (no Uncraftable Potion), outputs keep NBT"
 keys = [ "any mod", "brewery", "create", "hint", "immersive engineering", "mapingredienttoentrylist" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/potion/PotionContainers.java"

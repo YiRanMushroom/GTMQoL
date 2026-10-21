@@ -150,8 +150,8 @@ public enum MultiblockShape {
      * 3x3x3 of Create's andesite casings, hollow, without a maintenance hatch: simple processing machines. Only use it
      * when Create is loaded; the casing is looked up when the structure is first checked.
      */
-    CREATE(() -> BuiltInRegistries.BLOCK.get(new ResourceLocation("create", "andesite_casing")),
-            new ResourceLocation("create", "block/andesite_casing"),
+    CREATE(() -> BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("create", "andesite_casing")),
+            ResourceLocation.fromNamespaceAndPath("create", "block/andesite_casing"),
             GTCEu.id("block/multiblock/gcym/large_assembler")) {
 
         @Override
@@ -173,8 +173,8 @@ public enum MultiblockShape {
         }
     },
     /** 5x5x5 of Create's brass casings, hollow, without a maintenance hatch. Only use it when Create is loaded. */
-    CREATE_BRASS(() -> BuiltInRegistries.BLOCK.get(new ResourceLocation("create", "brass_casing")),
-            new ResourceLocation("create", "block/brass_casing"),
+    CREATE_BRASS(() -> BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("create", "brass_casing")),
+            ResourceLocation.fromNamespaceAndPath("create", "block/brass_casing"),
             GTCEu.id("block/multiblock/gcym/large_assembler")) {
 
         @Override
@@ -205,8 +205,8 @@ public enum MultiblockShape {
      * casing on top in the middle (with 1-2 energy hatches).
      * Only use it when Create is loaded.
      */
-    CREATE_ASSEMBLY_LINE(() -> BuiltInRegistries.BLOCK.get(new ResourceLocation("create", "brass_casing")),
-            new ResourceLocation("create", "block/brass_casing"),
+    CREATE_ASSEMBLY_LINE(() -> BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("create", "brass_casing")),
+            ResourceLocation.fromNamespaceAndPath("create", "block/brass_casing"),
             GTCEu.id("block/multiblock/assembly_line")) {
 
         @Override

@@ -223,7 +223,7 @@ public final class CreateGregification {
     }
 
     private static ResourceLocation create(String path) {
-        return new ResourceLocation(CREATE, path);
+        return ResourceLocation.fromNamespaceAndPath(CREATE, path);
     }
 
     /** Looked up at common setup, when Create's types are registered. */

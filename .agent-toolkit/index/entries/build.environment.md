@@ -1,6 +1,7 @@
 +++
 title = "1.20.1 build: ModDevGradle legacyForge, Gradle on JDK 21 with a JDK 17 toolchain, mod* configurations, JEI/EAP pins"
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "gradle.properties"

@@ -2,6 +2,7 @@
 title = "mek_chemical_converter: separate machine for mekanism:gas_conversion, crafted from our oxidizer"
 keys = [ "infusion_conversion", "mekanism gregification", "salt", "sulfur" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/mekanism/MekanismGregification.java"

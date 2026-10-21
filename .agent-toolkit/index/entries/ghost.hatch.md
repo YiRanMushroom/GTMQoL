@@ -2,6 +2,7 @@
 title = "Ghost Ingredient Hatch: multiblock part with the marks list; counts as an input bus so any multiblock takes it"
 keys = [ "ghost_ingredients", "hatch tooltip", "import_items", "partability" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/GhostIngredientHatchPartMachine.java"

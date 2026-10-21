@@ -2,6 +2,7 @@
 title = "Mark pattern outputs: each pattern buffer slot is a ghost ingredient mark for its pattern's primary output"
 keys = [ "handlersfor", "markspatternoutputs", "recipe lookup" ]
 updated = "2026-10-19 20:12:36"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/MEPatternBufferOutputMarksMixin.java"

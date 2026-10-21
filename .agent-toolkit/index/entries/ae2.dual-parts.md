@@ -2,6 +2,7 @@
 title = "ME dual / universal input and output parts (LuV, 36 slots): legacy dual-input migration, dual output buffers"
 keys = [ "ae2.dualhatches", "data stick", "fluid_config", "fluidconfigstacks", "me_dual_input", "me_dual_output", "me_universal_input", "me_universal_output", "stocking" ]
 updated = "2026-10-19 20:12:36"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AEDualParts.java"

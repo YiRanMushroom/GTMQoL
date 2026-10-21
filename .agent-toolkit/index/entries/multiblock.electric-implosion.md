@@ -2,6 +2,7 @@
 title = "Electric Implosion Compressor: TNT implosion recipes copied without TNT at 4x duration, via implosion onRecipeBuild"
 keys = [ "_electric", "electric implosion", "electricimplosioncompressor", "onsave", "prototype builder" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/implosion/ElectricImplosion.java"

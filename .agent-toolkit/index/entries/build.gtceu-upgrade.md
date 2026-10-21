@@ -2,6 +2,7 @@
 title = "How to bump the pinned GTCEu v8 snapshot (and ModularUI with it) on 1.20.1, and what to recheck"
 keys = [ "1.21", "gtceu_min_version", "gtceu_version", "mixin targets", "modularui_version", "mui", "require", "sources jar", "version pin" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 +++
 gradle.properties pins `gtceu_version` to a timestamped snapshot (1.20.1 artifact) and `modularui_version`; both are bumped by hand. 1.21.1 does the same with its own artifact.
 

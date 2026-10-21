@@ -2,6 +2,7 @@
 title = "ForeignRecipeConverter: one foreign recipe to 0..n GT recipes; Single form and prepare() hook"
 keys = [ "gregification core", "output" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/ForeignRecipeConverter.java"

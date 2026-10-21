@@ -2,6 +2,7 @@
 title = "Wireless energy (per tier) and steam covers: bound to the attaching player, move V x A EU/t or steam each tick"
 keys = [ "boiler", "changeenergy", "onregistercovers", "wireless_energy_input", "wirelesssteamcover" ]
 updated = "2026-10-19 20:12:38"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/WirelessCover.java"

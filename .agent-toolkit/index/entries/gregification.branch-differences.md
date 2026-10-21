@@ -2,6 +2,7 @@
 title = "Gregification on 1.20.1: sources and what differs from 1.21"
 keys = [ "gregification core", "in game check", "not built", "status", "todo", "untested" ]
 updated = "2026-10-19 20:12:49"
+checked = "2026-10-21"
 +++
 Gregification on 1.20.1, what differs from 1.21:
 - Sources: Mekanism 10.4 (23 types), Create 6.0.8 (12 types), Productive Bees 1.20.1-12.6.0 (5 types + canner logic). Modern Industrialization is 1.21 only (MI on 1.20.1 is Fabric-only), so no MI source, no GTMaterialTags.

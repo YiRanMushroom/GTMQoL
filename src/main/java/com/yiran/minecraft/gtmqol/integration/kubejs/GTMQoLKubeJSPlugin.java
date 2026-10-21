@@ -25,7 +25,7 @@ public class GTMQoLKubeJSPlugin extends KubeJSPlugin {
         event.add("GhostIngredientRecipeCapability", GhostIngredientRecipeCapability.class);
     }
 
-    /** From {@code GTMQoLAddon.registerRecipeKeys}: how gtceu's KubeJS schema writes the capability's contents. */
+    /** Listened to from the {@code GTMQoL} constructor: how gtceu's KubeJS schema writes the capability's contents. */
     public static void registerRecipeKeys(KJSRecipeKeyEvent event) {
         var cap = BlockProviderRecipeCapability.CAP;
         event.registerKey(cap, Pair.of(new ContentJS<>(BlockComponent.INPUT, cap, false),
