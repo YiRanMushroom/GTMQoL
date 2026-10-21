@@ -9,6 +9,7 @@ import java.util.List;
  * {@code RecipeSlot} loads again on JEI 19.46+ (gated by {@code JeiRecipeSlotFixPlugin}). Priority 500 so this runs
  * before ModularUI's accessor (default 1000). The fields are never read by JEI; ModularUI only writes them for its
  * own JEI categories, which aren't used with EMI. The names must stay as they are (no {@code @Unique}).
+ * Remove once ModularUI's {@code RecipeSlotAccessor} stops targeting these fields.
  */
 @Mixin(targets = "mezz.jei.library.gui.ingredients.RecipeSlot", remap = false, priority = 500)
 public class JeiRecipeSlotMixin {

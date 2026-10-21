@@ -189,7 +189,8 @@ dependencies {
     localRuntime "top.theillusivec4.curios:curios-neoforge:${project.curios_version}"
 
     // Dev-only mods so the test client has recipe viewing, ME networks and KubeJS (GTCEu's optional deps).
-    // Compile-only for mixin/gtceufix/EmiCallWrapperMixin, which only runs when EMI is loaded.
+    // Compile-only for our EMI integration (EMI converters, GTEmiRecipe* mixins, pattern encoding,
+    // EmiCallWrapperMixin), which only runs when EMI is loaded.
     compileOnly "dev.emi:emi-neoforge:${project.emi_version}"
     localRuntime "dev.emi:emi-neoforge:${project.emi_version}"
     // Compile-only for integration/kubejs (our KubeJS plugin), which KubeJS only loads when it is installed.
