@@ -2,6 +2,7 @@
 title = "Upstream bug workarounds in core/mixins/gtceufix: rules, which exist on which branch, recheck after bumps"
 keys = [ "1.20.1", "both branches", "modularui bug", "remove once fixed" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 +++
 Mixins in `core/mixins/gtceufix/` work around bugs in GTCEu, ModularUI, JEI or NeoForge interplay. Each class javadoc says what it fixes and ends with "Remove once ... fixes it": delete it when upstream does (check on every GTCEu / MUI bump, see build.gtceu-upgrade).
 

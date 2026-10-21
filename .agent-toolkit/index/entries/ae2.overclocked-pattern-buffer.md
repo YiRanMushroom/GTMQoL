@@ -2,6 +2,7 @@
 title = "Overclocked ME pattern buffer (12x18 = 216 slots, LuV): resizing GTCEu's pattern buffer"
 keys = [ "27", "max_pattern_count", "overclocked_me_pattern_buffer" ]
 updated = "2026-10-19 20:08:33"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AbstractMEPatternBufferPartMachine.java"

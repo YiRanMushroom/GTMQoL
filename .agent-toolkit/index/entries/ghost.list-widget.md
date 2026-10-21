@@ -2,6 +2,7 @@
 title = "GhostIngredientListWidget: one row per mark plus an empty row; click/held container/drag from EMI to mark"
 keys = [ "ghostingredientslot", "mark ui" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/GhostIngredientListWidget.java"

@@ -2,6 +2,7 @@
 title = "Magical assembler UI: 4x4 items with a fluid column beside them via per-capability ModularUI layout builders"
 keys = [ "gtrecipetypeuilayout", "inputcolumn", "setmachinecapabilitylayoutbuilder", "setrecipeviewerlayoutcapabilitylayoutbuilder" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/assembler/MagicalAssemblerUI.java"

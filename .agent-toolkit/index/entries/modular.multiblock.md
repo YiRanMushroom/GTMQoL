@@ -2,6 +2,7 @@
 title = "The modular multiblock: 3x3x3 any-block shape, x0.125 duration + perfect subtick OC + batch, overlay, recipes"
 keys = [ "batch_mode", "getmaxvoltage", "getoverclockvoltage", "gregified", "hammer", "lathe", "latherecipelogic", "magical assembler", "oc_perfect_subtick", "overlay_front" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/modular/ModularMachines.java"

@@ -2,6 +2,7 @@
 title = "ExtendedAE Plus smart doubling on pattern buffers (ISmartDoublingHolder, ScaledProcessingPattern unwrap)"
 keys = [ "extendedae_plus", "gtmqol.eap.mixins.json", "pushpattern" ]
 updated = "2026-10-21 08:14:04"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/eap/MEPatternBufferSmartDoublingMixin.java"

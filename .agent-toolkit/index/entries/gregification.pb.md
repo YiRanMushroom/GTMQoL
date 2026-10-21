@@ -2,6 +2,7 @@
 title = "Productive Bees source: 5 tiered single blocks (centrifuge converted; incubator/extractor/beehive/breeder custom logic)"
 keys = [ "beecage", "comb", "custom recipe logic", "pb_centrifuge", "productive bees", "productivelib" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/productivebees/ProductiveBeesGregification.java"

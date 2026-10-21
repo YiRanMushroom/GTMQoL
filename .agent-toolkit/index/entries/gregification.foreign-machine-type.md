@@ -2,6 +2,7 @@
 title = "ForeignMachineType record: one foreign recipe type -> GT recipe type + single blocks or multiblock"
 keys = [ "catalyst", "counterpart", "gregification core", "singleblock", "withcrafting", "withmodifiers", "withmoreproxies", "withproxies", "withrecipetype", "withtooltip" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/ForeignMachineType.java"

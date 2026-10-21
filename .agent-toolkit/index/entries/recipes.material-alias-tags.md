@@ -2,6 +2,7 @@
 title = "MaterialAliasTags: other mods' spellings (aluminum, plutonium) as tags including GT's material tags"
 keys = [ "aliases", "aluminium", "datagen", "plutonium_239" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/data/tag/MaterialAliasTags.java"

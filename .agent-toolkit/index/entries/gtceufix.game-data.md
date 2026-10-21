@@ -2,6 +2,7 @@
 title = "GameDataMixin: duplicate gtceu:recipe_type RegisterEvent only for gtceu/kubejs; ATTRIBUTE first again"
 keys = [ "atm10", "core lib", "cyclopscore", "duplicate registration", "getregistrationorder", "modernfix", "registration order", "swim_speed" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/GameDataMixin.java"

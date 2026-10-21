@@ -2,6 +2,7 @@
 title = "Ghost circuits on steam machines: steam panel trait configurators back on, steam input bus circuit slot enabled"
 keys = [ "addtraitconfigurators", "defaultsteammachinepanelbuilder", "steam single blocks", "steamtweaks.circuitslots" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/GTSingleblockMachinePanelsMixin.java"

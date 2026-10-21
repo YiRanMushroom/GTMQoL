@@ -2,6 +2,7 @@
 title = "BlockProviderRecipeCapability (gtmqol:block): a world block as a non-consumed recipe lookup input"
 keys = [ "block capability", "blockmapingredient", "recipe search filter", "recipedb", "registermapingredient" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/blockprovider/BlockProviderRecipeCapability.java"

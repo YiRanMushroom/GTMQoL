@@ -2,6 +2,7 @@
 title = "Potion fluid inputs in EMI: list a single source fluid (no Uncraftable Potion), plus an \"Any mod's version works\" hint"
 keys = [ "atm10", "brewery", "c:potion", "emitags", "immersive engineering", "mapingredienttoentrylist" ]
 updated = "2026-10-21 08:13:50"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/FluidRecipeCapabilityMixin.java"

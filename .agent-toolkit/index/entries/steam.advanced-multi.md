@@ -2,6 +2,7 @@
 title = "AdvancedSteamMultiMachine: large steam multis with a max recipe tier, electric-style OC, 0.8x time / 0.75x EU, parallels"
 keys = [ "advanced_steam_multi", "large steam multis", "maxrecipetier", "non_perfect_overclock", "overclock", "recipemodifier", "steam multiblock", "steamparallelmultiblockmachine" ]
 updated = "2026-10-21 08:13:50"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/steam/AdvancedSteamMultiMachine.java"

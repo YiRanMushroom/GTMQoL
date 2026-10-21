@@ -2,6 +2,7 @@
 title = "GTMQoLConfig: toma YAML config (config/gtmqol.yaml), every feature toggle, defaults during datagen"
 keys = [ "configholder", "configuration", "restart" ]
 updated = "2026-10-21 08:14:03"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/config/GTMQoLConfig.java"

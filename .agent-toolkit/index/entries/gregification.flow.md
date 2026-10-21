@@ -2,6 +2,7 @@
 title = "Gregification lifecycle: sources added in constructor, declared on first RegisterEvent, proxies at common setup"
 keys = [ "addsource", "declareall", "foreign recipe types", "gregification core", "gregified" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/Gregification.java"

@@ -2,6 +2,7 @@
 title = "AdvancedSteamMachines: gtmqol:large_steam_* for 21 recipe types, hatch casing rules, magical assembler recipes"
 keys = [ "autoabilities", "bronze", "hp_steam_magical_assembler", "large steam multis", "lp_steam_magical_assembler", "steam bus", "steam multiblock" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/steam/AdvancedSteamMachines.java"

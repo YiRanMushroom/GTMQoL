@@ -2,6 +2,7 @@
 title = "ME Assembler / ME Circuit Slicer, silicon chips and v7 AE recipes (AEProcessing, config ae2.processing)"
 keys = [ "advanced_ae", "appflux", "extendedae", "me_assembler", "me_circuit_slicer", "megacells", "print", "processor" ]
 updated = "2026-10-21 08:14:03"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AEProcessing.java"

@@ -2,6 +2,7 @@
 title = "RecipeLogicMixin: restarting the last recipe dropped lastOriginRecipe, so the next finish went idle"
 keys = [ "alwaystrymodifyrecipe", "beehive", "findandhandlerecipe", "marklastrecipedirty", "onrecipefinish" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/RecipeLogicMixin.java"

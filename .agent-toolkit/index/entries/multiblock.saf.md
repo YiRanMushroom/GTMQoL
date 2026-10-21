@@ -2,6 +2,7 @@
 title = "Smart Assembly Factory: assembly line recipes with parallel hatch, perfect subtick OC, batch; port of 7.x"
 keys = [ "easysafrecipe", "smart assembly factory", "smart_assembly_factory" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/GTMQoLMultiblocks.java"

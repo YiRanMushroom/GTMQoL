@@ -2,6 +2,7 @@
 title = "ChemicalStackLike: Mekanism chemicals as recipe capability gtmqol:chemical (registered when mekanism is loaded)"
 keys = [ "chemicalstackingredient", "sort index", "stack-like core" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/mekanism/ChemicalStackLike.java"

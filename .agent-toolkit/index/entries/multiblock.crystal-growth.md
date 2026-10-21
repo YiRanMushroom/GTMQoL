@@ -2,6 +2,7 @@
 title = "Crystal Growth Chamber: 3x3x3, budding block in the middle gives 4 shards; recipes generated for every budding_x/x_shard"
 keys = [ "amethyst", "block capability", "certus quartz", "crystalgrowthchamber", "geore" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/crystal/CrystalGrowth.java"

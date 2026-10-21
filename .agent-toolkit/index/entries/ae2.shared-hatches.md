@@ -2,6 +2,7 @@
 title = "Shared hatches: pattern buffer slots take what they lack from the machine's undyed / bypass-distinct parts"
 keys = [ "bufferrecipehandlerlist", "circuit", "consumeworker", "gtmqol$sharedhatches", "mold", "proxy" ]
 updated = "2026-10-19 20:08:33"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/SharedHatches.java"

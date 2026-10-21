@@ -2,6 +2,7 @@
 title = "AE2MixinPlugin: which gtmqol.ae2.mixins.json mixins apply (AE2/EMI/ExtendedAE present, early config switches)"
 keys = [ "ae2.stickycard", "ae2.universalcircuitencoding", "gtmqol-early.properties" ]
 updated = "2026-10-19 20:08:33"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/AE2MixinPlugin.java"

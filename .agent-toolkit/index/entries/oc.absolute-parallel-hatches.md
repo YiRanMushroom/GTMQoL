@@ -2,6 +2,7 @@
 title = "overclocking.absoluteParallelHatches: parallel hatches at the EU/t of one recipe, not for generators"
 keys = [ "parallelhatchesareabsolute" ]
 updated = "2026-10-21 08:04:26"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/HatchParallelMixin.java"

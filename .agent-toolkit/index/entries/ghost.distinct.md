@@ -2,6 +2,7 @@
 title = "Ghost marks are not bypass-distinct; pattern buffers need Shared Hatches to use a ghost hatch's marks"
 keys = [ "dyed bus", "insufficient", "mark pattern outputs", "patternoutputmarks", "sharedhatches", "shouldbypassdistinct" ]
 updated = "2026-10-21 08:10:57"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/GhostIngredientRecipeCapability.java"

@@ -2,6 +2,7 @@
 title = "EMI real slots and lookup for stack-like stacks: EmiStackConverter per stack class, GTEmiRecipe inputs/outputs mixin"
 keys = [ "emirecipeviewerslot", "imekanismemihelper", "pattern encoding", "r/u", "stack-like viewers", "stacklikeemi" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/mekanism/ChemicalEmiConverter.java"

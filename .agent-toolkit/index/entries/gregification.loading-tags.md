@@ -2,6 +2,7 @@
 title = "LoadingTags / GTMaterialTags: reading tags while recipes load, before new tags are bound"
 keys = [ "addreloadlistenerevent", "getconditioncontext", "gregification core", "onchange", "tags during reload", "tagsupdatedevent" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/LoadingTags.java"

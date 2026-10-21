@@ -2,6 +2,7 @@
 title = "Create source: 12 Create-casing multiblocks (millstone, press, mixer, fan, deployer, saw, crafter, SA line...)"
 keys = [ "casingpartrender", "connected textures", "create gregification", "create_", "heated basin", "mechanical crafter", "sandpaper polishing" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/create/CreateGregification.java"

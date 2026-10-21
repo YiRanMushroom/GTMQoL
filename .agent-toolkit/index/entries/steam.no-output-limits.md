@@ -2,6 +2,7 @@
 title = "No output limits: steam macerator, steam grinder and steam oven keep all outputs (byproducts)"
 keys = [ "addoutputlimit", "nooutputlimits", "require", "steam tweaks", "steamtweaks.nooutputlimits" ]
 updated = "2026-10-21 08:13:50"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/GTMachinesMixin.java"
