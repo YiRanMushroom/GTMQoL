@@ -42,6 +42,7 @@ legacyForge {
     }
 
     runs {
+        // Untested: the client run under ModDevGradle (only the data run has been used so far)
         client {
             client()
             programArguments.addAll('--width', '1280', '--height', '720')
@@ -119,6 +120,7 @@ repositories {
         name = 'Parchment'
         url = 'https://maven.parchmentmc.org'
     }
+    // Untested: LDLib's maven repo was removed (v8 has no LDLib); if runClient can't resolve a dependency, put it back
     maven {
         name = 'tterrag'
         url = 'https://maven.tterrag.com/'
@@ -216,6 +218,7 @@ dependencies {
     // Second level of the same problem: ModularUI jar-in-jars EvalEx, which gtceu itself uses (PipeBlock)
     // but only declares compileOnly. It's a plain library, not a mod, so it goes through
     // the runtime classpath (MDG puts it on the module layer the mods can see).
+    // Untested: in a client run, no NoClassDefFoundError com/ezylang/evalex and gtceu:*_wire entries register
     runtimeOnly "com.ezylang:EvalEx:${project.evalex_version}"
     // ModularUI registers test items when !FMLLoader.isProduction(), one of which implements a Curios
     // interface, so every dev run needs Curios. gtceu's own dev setup has it as modLocalRuntime too.
@@ -297,6 +300,7 @@ dependencies {
     }
     // Optional: Productive Bees' machines as GT machines (gregification/productivebees). Not in mods.toml.
     // Nothing we use exposes ProductiveLib (jar-in-jar in PB), so it isn't needed on compile.
+    // Untested: whether the dev client loads ProductiveLib from PB's jar or PB fails to start
     modCompileOnly("maven.modrinth:productivebees:${project.productivebees_version}") {
         transitive = false
     }
@@ -306,6 +310,7 @@ dependencies {
     // Block info overlay; GTCEu has its own Jade plugin (recipe progress, energy). Compiled against for our
     // plugin (integration/jade), which Jade only loads when it is installed.
     modCompileOnly "maven.modrinth:jade:${project.jade_version}"
+    // Untested: Jade loads (Loom needed nameSyntheticMembers for its this$0 @Shadow; MDG has no such switch)
     modLocalRuntime "maven.modrinth:jade:${project.jade_version}"
     // Optional: wireless networks are shared per FTB team when it is installed. We compile against
     // FTB Teams and Architectury (its events are Architectury Events) but never require them; the dev
