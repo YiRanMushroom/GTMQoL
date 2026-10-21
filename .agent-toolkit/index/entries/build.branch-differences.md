@@ -1,7 +1,7 @@
 +++
 title = "1.20.1 vs 1.21.1 branch: code differences to keep in mind when cherry-picking"
-keys = [ "1.20", "1.21", "forge", "neoforge", "port" ]
-updated = "2026-10-19 20:40:09"
+keys = [ "forge", "neoforge", "port" ]
+updated = "2026-10-21 01:13:03"
 +++
 Two long-lived branches: `1.20` (this one, Forge 47 / MC 1.20.1, worktree `GTMQoL-1.20.1`) and `1.21` (NeoForge 21.1, the default branch). Synced by cherry-picking; 1.21.1 was branched after `87a49de` (GTNL steam machines). Most commits exist on both with different hashes (e.g. 1.20.1 `e882d08` = 1.21.1 `146115b`). Build: both use ModDevGradle now (1.20.1 `legacyForge` since `3b63374`, still with `mod*` configurations, mixin configs declared in build.gradle `mixin { config ... }`; 1.21.1 lists them in neoforge.mods.toml). Build details: build.environment, build.dependencies.
 
@@ -19,7 +19,7 @@ Data / APIs
 - Events: Forge 47 `TickEvent.ServerTickEvent` with `phase == END` (AutoBuilder, WirelessNetworks), `ServerStoppedEvent`, `ForgeEventFactory.onBlockPlace`.
 - Auto-build `StructurePlanner`: 1.20.1 keeps an `IdentityHashMap` node -> root from `getPredicates()` (no `MultiPredicate.getParent()`); 1.21.1 walks `children()`.
 - Mixin configs: `compatibilityLevel` JAVA_17, `mixinextras.minVersion` 0.5.5 (MixinExtras is jarJar'd by us; 1.21.1 uses NeoForge's 0.5.3). pack_format 15. mods.toml (not neoforge.mods.toml).
-- Mixins only on 1.20.1: JEI category mixins (`GTRecipeJEICategory*`), `EncodePatternTransferHandlerMixin` (JEI encoding), recipedb accessors for pattern buffers, `mekanism.TaggedChemicalStackIngredientAccessor`. Only on 1.21.1: the 1.21-only gtceufix mixins (see gtceufix.overview), `GTRecipeViewerWidgetPotionMixin`, `BreweryLogicMixin`, potion item/bottle fluid handler mixins, `PotionFluidTypeMixin`, `MachineBuilderAccessor`.
+- Mixins only on 1.20.1: JEI category mixins (`GTRecipeJEICategory*`), `EncodePatternTransferHandlerMixin` (JEI encoding), recipedb accessors for pattern buffers, `mekanism.TaggedChemicalStackIngredientAccessor`. Only on 1.21.1: the 1.21-only gtceufix mixins (see gtceufix.overview, incl. `PotionFluidTypeMixin`), `MachineBuilderAccessor`. The potion mixins (`BreweryLogicMixin`, `GTRecipeViewerWidgetPotionMixin`, `PotionItemFluidHandlerMixin`, `BottleItemFluidHandlerMixin`, `PotionFluidNameMixin`) are on both.
 - `KubeJSDataGenFix` only on 1.20.1 (Forge 47 never sets the datagen flag KubeJS checks), see config.datagen-1.20.1.
 - Recipe viewer in dev: 1.20.1 has JEI (pinned 15.20.0.115 with GTCEu) and EMI compile-only; 1.21.1 dev must use EMI.
 - Optional mods: Modern Industrialization gregification is 1.21.1 only; Mekanism is 10.4 on 1.20.1.

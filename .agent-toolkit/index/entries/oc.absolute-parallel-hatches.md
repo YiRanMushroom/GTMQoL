@@ -1,7 +1,7 @@
 +++
 title = "overclocking.absoluteParallelHatches: parallel hatches at the EU/t of one recipe, not for generators"
-keys = [ "absolute parallel", "absoluteparallelhatches", "hatchparallel", "parallel hatch", "parallelhatchesareabsolute" ]
-updated = "2026-10-19 20:57:50"
+keys = [ "parallelhatchesareabsolute" ]
+updated = "2026-10-21 08:08:19"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/HatchParallelMixin.java"
