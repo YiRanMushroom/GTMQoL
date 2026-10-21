@@ -1,0 +1,10 @@
++++
+title = "AutoBuildPanel: client-only right-click settings window, sliders and block toggles, no 3D preview"
+keys = [ "auto-build", "ipanelhandler.simple" ]
+updated = "2026-10-19 20:08:34"
+
+[[links]]
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/AutoBuildPanel.java"
+snippet = "public static ModularPanel<?> build(MultiblockControllerMachine controller) {"
++++
+No synced values. No 3D preview because GTCEu's preview was buggy. UI text must stay free of implementation details (tick counts, "kept until restart"), per the user.
