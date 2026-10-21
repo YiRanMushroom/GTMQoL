@@ -59,4 +59,3 @@ bin/
 /.mui-src
 
 # agent-toolkit doc index: only the .db is committed
-.agent-index.db-journal

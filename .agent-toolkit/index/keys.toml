@@ -1,0 +1,8 @@
+# Sub-keys of search keys (index_keys)
+[children]
+gregification = [ "create gregification", "gregification core", "mekanism gregification", "modern industrialization", "productive bees" ]
+gtmqol = [ "ae2", "autobuild", "build", "config", "generation", "ghost", "gregification", "gtceufix", "modular", "multiblock", "oc", "potions", "recipedb", "recipes", "rules", "stacklike", "steam", "wireless" ]
+multiblock = [ "block capability", "dtfr", "electric implosion", "fishing pond", "greenhouse", "industrial large chemical reactor", "multiblock base", "probable devices", "smart assembly factory", "void miner" ]
+stacklike = [ "stack-like ae", "stack-like core", "stack-like viewers" ]
+steam = [ "large steam multis", "steam single blocks", "steam tweaks" ]
+
