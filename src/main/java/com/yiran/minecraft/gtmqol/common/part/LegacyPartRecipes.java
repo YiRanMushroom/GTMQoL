@@ -64,6 +64,7 @@ public final class LegacyPartRecipes {
      * loading {@link TagPrefix} then registers its prefixes after gtceu froze the registry.
      */
     public static void onRegisterTagPrefixes(GTCEuAPI.RegisterEvent<ResourceLocation, TagPrefix> event) {
+        // Untested: moved from IGTAddon.registerTagPrefixes; a rotor's material info should show 4 units
         rotor.materialAmount(M * 4);
     }
 
@@ -81,6 +82,7 @@ public final class LegacyPartRecipes {
     public static void addRecipes(Consumer<FinishedRecipe> provider) {
         addMoldRecipes(provider);
         for (Material material : GTRegistries.MATERIALS) {
+            // Untested: NO_UNIFICATION materials are no longer skipped (as on 1.21); check for extra extruder recipes
             if (material.hasFlag(DISABLE_MATERIAL_RECIPES)) continue;
             addRodRecipes(provider, material);
             addBoltRecipes(provider, material);

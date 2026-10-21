@@ -17,15 +17,8 @@ computers, so paths differ (`C:\Users\yiran.wang\IdeaProjects\` or `E:\code\Mine
 
 ## To do
 
-- First client run under ModDevGradle: the checks in `build.first-run-checks`.
-- Remind the user at the start of the next session, for them to check in game (changed 2026-10-21 to clear the
-  build warnings):
-  - Legacy part recipes no longer skip materials flagged `NO_UNIFICATION` (as on 1.21): look for extra extruder
-    recipes on such materials (`recipes.legacy-parts`).
-  - Rotor material amount (M*4) and the KubeJS recipe keys now come from event listeners: a rotor's material info
-    should show 4 units; with KubeJS, a `crystal_growth` script recipe with a block input should load
-    (`multiblock.kubejs-capabilities`).
-  - The LDLib maven repo was removed from build.gradle: if `runClient` can't resolve a dependency, put it back.
+- Untested changes to remind the user of (first client run, in-game checks): `status.untested`, each item linked to
+  its `Untested:` comment in the code.
 
 ## Known bugs, not fixed
 

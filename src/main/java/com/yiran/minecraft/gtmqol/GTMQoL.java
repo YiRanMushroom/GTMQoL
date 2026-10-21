@@ -115,6 +115,7 @@ public final class GTMQoL {
             modBus.addGenericListener(TagPrefix.class, LegacyPartRecipes::onRegisterTagPrefixes);
         }
         // gtceu only posts it with KubeJS installed; the plugin class needs KubeJS to load
+        // Untested: with KubeJS, a crystal_growth script recipe with a block input should load
         if (ModList.get().isLoaded("kubejs")) modBus.addListener(GTMQoLKubeJSPlugin::registerRecipeKeys);
         modBus.addGenericListener(RecipeCapability.class, this::onRegisterRecipeCapabilities);
         modBus.addGenericListener(GTRecipeType.class, this::onRegisterRecipeTypes);
