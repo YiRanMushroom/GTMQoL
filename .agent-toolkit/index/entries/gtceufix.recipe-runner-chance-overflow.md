@@ -2,6 +2,7 @@
 title = "RecipeRunnerMixin: OR/XOR chance roll int overflow above ~215k runs lost chanced outputs; roll in chunks, merge"
 keys = [ "1.21", "batch", "chancelogic", "fillcontentmatchlist", "fluidingredient", "gettotalruns", "mspt", "parallel", "sizedingredient" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/RecipeRunnerMixin.java"

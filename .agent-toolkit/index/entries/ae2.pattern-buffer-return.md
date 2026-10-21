@@ -2,6 +2,7 @@
 title = "Pattern buffer return: multiblock outputs go straight into the ME network (extra HIGHEST-priority OUT handler list)"
 keys = [ "ae2.patternbufferreturn", "crafting cpu", "getrecipehandlers", "iactionsource" ]
 updated = "2026-10-19 20:12:36"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/MEPatternBufferReturnMixin.java"

@@ -2,6 +2,7 @@
 title = "Wireless pools and IO stats: WirelessPool SavedData (BigInteger per network) and monitor rates"
 keys = [ "moveall", "wirelessenergysaveddata", "wirelesssteamsaveddata" ]
 updated = "2026-10-19 20:12:38"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/IOStats.java"

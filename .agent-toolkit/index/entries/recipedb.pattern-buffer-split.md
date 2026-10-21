@@ -2,6 +2,7 @@
 title = "PatternBufferIngredients: splits a pattern buffer / proxy RHL into per-worker slots plus CATALYST shared inputs"
 keys = [ "1.21", "circuit slot", "grouped search", "internalslot", "mark pattern outputs", "patternoutputmarks", "shared inventory", "stack-like" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/recipedb/PatternBufferIngredients.java"

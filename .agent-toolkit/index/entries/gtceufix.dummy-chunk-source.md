@@ -2,6 +2,7 @@
 title = "DummyChunkSourceMixin: lock ModularUI preview's dummy chunk map against concurrent mesh builds (crash)"
 keys = [ "arrayindexoutofboundsexception", "batching chunks", "computeifabsent", "modularui bug", "multiblock preview" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/DummyChunkSourceMixin.java"

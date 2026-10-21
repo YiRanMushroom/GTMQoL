@@ -2,6 +2,7 @@
 title = "GTCEu v8 RecipeHandlerList groups and how RecipeRunner combines them (the rules grouped search mirrors)"
 keys = [ "addtorecipehandlermap", "bufferrecipehandlerlist", "bus_distinct", "bypass_distinct", "distinct", "dyed", "mepatternbufferpartmachine", "proxyrhl", "recipehandlergroup", "recipehandlergroupcolor", "rhl", "undyed", "worker" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 +++
 Upstream GTCEu v8 behaviour (1.20.1 sources in `.gtceu-src/`; re-verify after GTCEu bumps).
 

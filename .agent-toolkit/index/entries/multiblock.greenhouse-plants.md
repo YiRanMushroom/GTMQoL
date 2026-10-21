@@ -2,6 +2,7 @@
 title = "Greenhouse recipe sources: vanilla/GT by hand, then Mystical Agriculture, then other mods guessed by name"
 keys = [ "addguessedplants", "cropblock", "essence", "greenhouse", "planted", "saplingblock" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/greenhouse/Greenhouse.java"

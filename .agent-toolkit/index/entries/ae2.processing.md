@@ -1,7 +1,8 @@
 +++
 title = "ME Assembler / ME Circuit Slicer, silicon chips and v7 AE recipes (AEProcessing, config ae2.processing)"
 keys = [ "advanced_ae", "appflux", "extendedae_plus", "me_assembler", "me_circuit_slicer", "megacells", "print", "processor" ]
-updated = "2026-10-19 20:12:36"
+updated = "2026-10-21 08:27:56"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AEProcessing.java"
@@ -29,4 +30,4 @@ value = "1.21's c: tags became forge:; forge:silicone for the insulating resin m
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AEProcessing.java"
 snippet = "ResourceLocation.fromNamespaceAndPath(\"forge\", \"silicone\")"
 +++
-Port of v7 QoLRecipeTypes/QoLMachines/QoLRecipes. Items in the mod constructor, recipe types and machines from GTCEu's RegisterEvents. Recipes: machine crafting with an AE2 inscriber in the middle; wafer -> chips; AE2 materials -> prints; chip + print + silicon print + redstone -> processors; GTCEu ME parts from AE2 parts. Optional advanced_ae / megacells / appflux / extendedae_plus recipes use item ids not checked against their 1.20.1 builds; 1.21 also has ExtendedAE ones.
+Port of v7 QoLRecipeTypes/QoLMachines/QoLRecipes. Items in the mod constructor, recipe types and machines from GTCEu's RegisterEvents. Machine crafting with an AE2 inscriber; slicer: wafer -> chips, AE2 materials -> prints; assembler: chip + print + (silicon print or 4 copper foil) + redstone -> processors, GTCEu ME parts from AE2 parts; misc in GTCEu wiremill/polarizer/mixer/macerator/implosion/compressor. Optional advanced_ae/megacells/appflux/extendedae_plus recipes: ids unchecked on 1.20.1.

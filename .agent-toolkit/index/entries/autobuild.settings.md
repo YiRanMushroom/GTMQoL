@@ -2,6 +2,7 @@
 title = "BuildSettings: slice repeats, expandable bounds, block choices; client-side per multiblock type, sent with each click"
 keys = [ "auto-build", "autobuildpanel.settings", "blockchoice" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/AutoBuildPanel.java"

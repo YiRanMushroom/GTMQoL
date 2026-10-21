@@ -2,6 +2,7 @@
 title = "EMI slots and lookup for chemicals: ChemicalEmiConverter over JEMI stacks, GTEmiRecipe inputs/outputs mixin"
 keys = [ "1.21", "emistackconverter", "jemistack", "jemiutil", "pattern encoding", "r/u", "stack-like viewers" ]
 updated = "2026-10-19 20:12:38"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/client/GTMQoLClient.java"

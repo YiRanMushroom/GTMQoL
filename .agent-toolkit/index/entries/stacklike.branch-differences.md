@@ -2,6 +2,7 @@
 title = "Stack-like / chemicals on 1.20.1 vs 1.21: what differs (Mek 10.4 kinds, JEI/JEMI, slim gtceu in AE mixins)"
 keys = [ "mekanism 10.4", "port", "stack-like core" ]
 updated = "2026-10-19 20:12:49"
+checked = "2026-10-21"
 +++
 Same design as the 1.21.1 branch. Differences (details in the linked-code entries):
 - Registration: `register` only creates the cap; `registerAll` on gtceu's RecipeCapability RegisterEvent (stacklike.recipe-capability). No `registerMapIngredient`.

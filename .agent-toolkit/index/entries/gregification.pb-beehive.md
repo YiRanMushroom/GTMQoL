@@ -2,6 +2,7 @@
 title = "PB industrial beehive: expected hive-trip output per bee, flower requirement, upgrades, custom slot layout"
 keys = [ "advanced beehive", "comb block", "isflowerblock", "isfloweritem", "pb_beehive", "productive bees", "productivity upgrade" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/productivebees/BeehiveLogic.java"

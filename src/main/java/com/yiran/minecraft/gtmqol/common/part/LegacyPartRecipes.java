@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -15,6 +16,7 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -58,10 +60,10 @@ public final class LegacyPartRecipes {
     }
 
     /**
-     * From {@code GTMQoLAddon.registerTagPrefixes}: loading {@link TagPrefix} while mods are constructed registers its
-     * prefixes after gtceu froze the registry.
+     * Posted by {@code TagPrefix.init()} before it freezes the prefix registry. Not done while mods are constructed:
+     * loading {@link TagPrefix} then registers its prefixes after gtceu froze the registry.
      */
-    public static void restoreRotorAmount() {
+    public static void onRegisterTagPrefixes(GTCEuAPI.RegisterEvent<ResourceLocation, TagPrefix> event) {
         rotor.materialAmount(M * 4);
     }
 
@@ -79,7 +81,7 @@ public final class LegacyPartRecipes {
     public static void addRecipes(Consumer<FinishedRecipe> provider) {
         addMoldRecipes(provider);
         for (Material material : GTRegistries.MATERIALS) {
-            if (material.hasFlag(NO_UNIFICATION) || material.hasFlag(DISABLE_MATERIAL_RECIPES)) continue;
+            if (material.hasFlag(DISABLE_MATERIAL_RECIPES)) continue;
             addRodRecipes(provider, material);
             addBoltRecipes(provider, material);
             addGearRecipes(provider, material);

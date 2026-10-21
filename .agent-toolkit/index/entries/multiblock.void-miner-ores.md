@@ -2,6 +2,7 @@
 title = "VoidMinerOres: ore chances from GTCEu's ORE_VEINS registry for the dimension, weighted by vein weight; dimensionMapping"
 keys = [ "gtnh veins", "ore prefix", "void miner", "voidminer.dimensionmapping" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/VoidMinerOres.java"

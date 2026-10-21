@@ -2,6 +2,7 @@
 title = "CannerBeeLogic: gtceu canner moves bees between cages and spawn eggs, keeping genes and name"
 keys = [ "canner_recipes", "entitytag", "productive bees" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/productivebees/CannerBeeLogic.java"

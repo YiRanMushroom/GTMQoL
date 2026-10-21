@@ -2,6 +2,7 @@
 title = "GTMQoLMultiblocks: registration and recipes of SAF, DTFR, ILCR, void miner, fishing pond, behind machines.* toggles"
 keys = [ "addcyclicmachinelang", "machines config", "magical assembler recipe", "multiblock base", "onregistermachines" ]
 updated = "2026-10-21 08:15:00"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/GTMQoLMultiblocks.java"

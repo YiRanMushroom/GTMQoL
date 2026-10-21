@@ -2,6 +2,7 @@
 title = "Sticky card for storage buses: partitioned keys stop at a sticky bus instead of falling through (v7 port)"
 keys = [ "ae2.stickycard", "expatternprovider", "extendedae", "isticky", "modaccessor", "storagebusinventory" ]
 updated = "2026-10-19 20:12:36"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/NetworkStorageMixin.java"

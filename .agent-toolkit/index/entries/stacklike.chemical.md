@@ -2,6 +2,7 @@
 title = "ChemicalStackLike: Mekanism 10.4 chemicals (all four kinds) as one recipe capability gtmqol:chemical"
 keys = [ "1.21", "boxedchemicalstack", "chemicaltype", "gas", "infuse", "pigment", "slurry", "sort index", "stack-like core" ]
 updated = "2026-10-19 20:12:38"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoL.java"

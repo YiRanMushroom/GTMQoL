@@ -2,6 +2,7 @@
 title = "How to add a gregification type or a source for a new mod, and where to look in upstream sources"
 keys = [ "gregification core" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 +++
 ## A type for an existing source
 Add an entry to its `types()` list (Mek, Create, PB): slot counts, sound/UI, counterpart and shape, plus a converter if the recipe class differs.

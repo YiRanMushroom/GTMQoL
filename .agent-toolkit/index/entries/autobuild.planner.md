@@ -2,6 +2,7 @@
 title = "StructurePlanner: default structure to block list via GTCEu structure helpers, abilities never placed"
 keys = [ "ability", "abilityfilter", "addroots", "auto-build", "blockpatternhelper", "default_structure", "expandablepatternhelper", "getmincount", "roots" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/BuildOptions.java"

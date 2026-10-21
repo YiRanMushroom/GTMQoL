@@ -2,6 +2,7 @@
 title = "Industrial Fishing Pond: vanilla fishing loot every 5 s from a rod slot, energy buffer pays m x rolls"
 keys = [ "energybuffer", "fishing pond", "luck of the sea", "lure", "machines.fishingpond", "treasure mode" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/FishingPondMachine.java"

@@ -2,6 +2,7 @@
 title = "How gregified machines are crafted: counterpart + kept catalyst, hammer/magical assembler, or custom Crafting"
 keys = [ "addrecipes", "catalyst_shapeless", "gregification core" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/CatalystShapelessRecipe.java"

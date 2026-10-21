@@ -2,6 +2,7 @@
 title = "1.20.1 after the Loom -> ModDevGradle legacyForge migration: what to check on the first dev client run"
 keys = [ "in-game check", "runclient" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[items]]
 name = "jade-this0"

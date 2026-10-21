@@ -2,6 +2,7 @@
 title = "Create encased fan: every fan_processing_type kind (incl. addons), catalysts from fan_processing_catalysts tags"
 keys = [ "_manual_only", "bulk washing", "create gregification", "dragons plus", "freezing", "haunting", "sanding" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/create/CreateGregification.java"

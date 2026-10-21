@@ -2,6 +2,7 @@
 title = "Keep manual 3x3/2x2 compression: every read of GTCEu's disableManualCompression forced to false"
 keys = [ "block", "configholder", "keepmanualcompression", "nugget", "raw ore", "recipes.keepmanualcompression", "steam tweaks" ]
 updated = "2026-10-19 20:12:38"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ManualCompressionMixin.java"

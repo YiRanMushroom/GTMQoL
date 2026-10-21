@@ -2,6 +2,7 @@
 title = "Runtime generation design: registry vs. published JSON, GTCEu dynamic pack lifecycle, unbuilt server-data writer plan"
 keys = [ "collision policy", "gtdynamicdatapack", "gtdynamicresourcepack", "src/generated/resources" ]
 updated = "2026-10-19 20:12:37"
+checked = "2026-10-21"
 +++
 Goal: machine content without Gradle datagen or committed `src/generated/resources`.
 
