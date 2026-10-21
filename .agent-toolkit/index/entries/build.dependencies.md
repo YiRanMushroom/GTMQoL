@@ -2,6 +2,7 @@
 title = "Dependencies: GTCEu's jar-in-jars declared by hand, optional mods only touched when loaded, where sources are"
 keys = [ "jarjar" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "build.gradle"

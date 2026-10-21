@@ -2,6 +2,7 @@
 title = "AdvancedSteamShapes: large steam multiblock structures converted once from GTNL's .mbs files"
 keys = [ "large steam multis", "mbs1", "pattern", "sciencenotleisure", "steam_manufacturer" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/steam/AdvancedSteamShapes.java"

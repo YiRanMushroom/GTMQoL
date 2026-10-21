@@ -2,6 +2,7 @@
 title = "How to bump the pinned GTCEu v8 snapshot (and ModularUI with it), and what to recheck"
 keys = [ "1.20.1", "gtceu_version", "mixin targets", "modularui_version", "mui", "require", "sources jar", "version pin" ]
 updated = "2026-10-21 08:06:44"
+checked = "2026-10-21"
 +++
 Both branches pin GTCEu to a timestamped snapshot (`gtceu_version` in gradle.properties) and bump it by hand.
 

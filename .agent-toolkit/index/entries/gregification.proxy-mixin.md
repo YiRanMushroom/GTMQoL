@@ -2,6 +2,7 @@
 title = "RecipeManagerHandlerMixin: takes over gtceu's proxy-recipe addition for gregified types (n recipes per foreign one)"
 keys = [ "addproxyrecipestolookup", "addstaging", "gregification core", "recipemanagerlatemixin" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/RecipeManagerHandlerMixin.java"

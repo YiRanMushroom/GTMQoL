@@ -2,6 +2,7 @@
 title = "1.21.1 vs 1.20.1 branch: code differences to keep in mind when cherry-picking"
 keys = [ "forge", "neoforge", "port" ]
 updated = "2026-10-21 08:06:44"
+checked = "2026-10-21"
 +++
 Two long-lived branches: `1.21` (NeoForge 21.1, the default branch) and `1.20` (Forge 1.20.1, worktree `GTMQoL-1.20.1` next to the 1.21 one). Kept in sync by cherry-picking; 1.21 was branched from `87a49de` (GTNL steam machines). A multi-version tool (Stonecutter) is only an idea, not agreed. Build setup differences: build.environment, build.dependencies.
 

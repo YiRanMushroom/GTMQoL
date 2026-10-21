@@ -2,6 +2,7 @@
 title = "Bridged stack-like keys (chemicals) in gtceu's ME pattern buffer: per-slot handlers, aggregates, proxies"
 keys = [ "gtmqol:stack_like", "internalslot", "mepatternbufferproxystacklikemixin", "mepatternbufferstacklikemixin", "stack-like ae", "this$0" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/stacklike/PatternBufferStackLike.java"

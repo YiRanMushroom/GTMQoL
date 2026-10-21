@@ -2,6 +2,7 @@
 title = "Stack-like slots in gtceu's recipe viewer layout (EMI): default layout/content builders copied from gtceu's FLUID"
 keys = [ "background", "recipeslotrole", "recipeviewerslotwidget", "stack-like viewers", "stacklikeentrylist" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/StackLikeRecipeViewer.java"

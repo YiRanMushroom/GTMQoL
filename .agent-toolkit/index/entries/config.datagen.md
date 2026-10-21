@@ -2,6 +2,7 @@
 title = "Datagen: Registrate created without listeners, hooked to our mod bus in the constructor (else runData writes nothing)"
 keys = [ "addrawlang", "gatherdataevent", "gtregistrate", "langvalue", "registereventlisteners", "src/generated" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoLAddon.java"

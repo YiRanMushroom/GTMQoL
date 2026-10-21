@@ -2,6 +2,7 @@
 title = "GTRecipeBuilderMixin + GTEmiRecipeMixin: keep data components on fluid outputs (potion fluids, EMI recipe lookup)"
 keys = [ "brewery", "datacomponentfluidingredient", "getoutputs", "outputfluids", "sizedfluidingredient" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/GTRecipeBuilderMixin.java"

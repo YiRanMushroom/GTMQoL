@@ -2,6 +2,7 @@
 title = "1.21.1 build: ModDevGradle, Java 21, versions from GTCEu's 1.21 branch, EMI in dev, MixinExtras from NeoForge"
 keys = [ "jdk" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "gradle.properties"

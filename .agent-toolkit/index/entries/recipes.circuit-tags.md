@@ -2,6 +2,7 @@
 title = "CircuitTags: GT circuit tiers and Mekanism control circuits / infused alloy made interchangeable via item tags"
 keys = [ "alloys/advanced", "c:circuits", "datagen", "ulv" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/data/tag/CircuitTags.java"

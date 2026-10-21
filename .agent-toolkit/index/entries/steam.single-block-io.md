@@ -2,6 +2,7 @@
 title = "Steam single blocks get fluid input/output tanks and a ghost circuit slot (SimpleSteamMachineMixin)"
 keys = [ "programmablecircuitslottrait", "steam single blocks", "steamtweaks.circuitslots", "steamtweaks.fluidtanks", "trait priority" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/SimpleSteamMachineMixin.java"

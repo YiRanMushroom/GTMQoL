@@ -33,9 +33,6 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 
 ## To do
 
-- The unpacked GTCEu sources are older than the pinned snapshots: `.gtceu-src-1.21` is build 20261001 (pinned
-  20261014.192230-122), 1.20's `.gtceu-src` 20260926 (pinned 20261013.044024-319). Re-unpack from the Gradle cache
-  (ask the user first, the folders are theirs).
 - Auto-build: substructures, then block choices for expandable patterns (`autobuild.*`).
 - Stack-like: external chemical hatches.
 

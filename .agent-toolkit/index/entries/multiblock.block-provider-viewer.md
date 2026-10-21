@@ -2,6 +2,7 @@
 title = "Block capability in recipe viewers: catalyst item slot via UI layout mixin, EMI input with chance 0"
 keys = [ "ae encoding", "block capability", "setmaxsize" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/blockprovider/BlockProviderRecipeViewer.java"

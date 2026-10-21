@@ -2,6 +2,7 @@
 title = "GhostMarksTrait: ghost marks for single blocks in a popup, attached by SingleblockFeature.GHOST_MARKS"
 keys = [ "iattachconfiguratorstrait" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/GhostMarksTrait.java"

@@ -2,6 +2,7 @@
 title = "Modern Industrialization source: 14 single blocks + 10 multiblocks, energy-preserving converter, coil temps"
 keys = [ "blast furnace", "guidebook", "machinerecipe", "mi_", "mimachinerecipetypes", "modern industrialization", "widentogt" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/mi/MIGregification.java"

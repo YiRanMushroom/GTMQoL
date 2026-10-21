@@ -2,6 +2,7 @@
 title = "Wireless EU hatches and accessor: per-tick V x A budget container, overclock mode, re-form on settings change"
 keys = [ "calculatevoltageamperage", "dynamo", "energycontainerlist", "getcontents", "gettotalcontentamount", "substation", "wireless_energy_input_hatch" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/energy/WirelessEnergyContainer.java"

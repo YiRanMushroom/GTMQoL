@@ -2,6 +2,7 @@
 title = "BuildOptions: what the settings window offers, computed identically on both sides; server validates choices against it"
 keys = [ "auto-build", "block choice", "block preference", "choicepoint", "expand", "getblockpreferences" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/BuildOptions.java"

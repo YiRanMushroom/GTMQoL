@@ -2,6 +2,7 @@
 title = "Wireless EU amperage: 1..2^24 input row (x/÷ 4, Shift 16, Ctrl 2) and per-player default (/gtmqol default_amperage)"
 keys = [ "amperagerow", "max_amperage" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/energy/WirelessEnergyHatchPartMachine.java"

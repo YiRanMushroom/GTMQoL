@@ -2,6 +2,7 @@
 title = "WireTags: GT 1x wires added to c:wires/<material> at runtime via MixinHelpers.generateGTDynamicTags (one-way)"
 keys = [ "kubejs materials", "wiregtsingle" ]
 updated = "2026-10-19 20:08:35"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/data/tag/WireTags.java"

@@ -2,6 +2,7 @@
 title = "IntegrationTests: opt-in example single-block and multiblock machines whose assets are generated at runtime"
 keys = [ "dynamic resource pack", "integrationtests.enabled", "runtime_multiblock", "runtime_single_block" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/test/IntegrationTests.java"

@@ -2,6 +2,7 @@
 title = "Magical assembler: always-on recipe type and machines for GTMQoL's own recipes"
 keys = [ "circuit conversion", "creative data access hatch", "gtmqol:magical_assembler", "rubber sapling", "simplemachinebuilder" ]
 updated = "2026-10-21 08:13:50"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/assembler/MagicalAssembler.java"

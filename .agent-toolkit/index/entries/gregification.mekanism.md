@@ -2,6 +2,7 @@
 title = "Mekanism source: 23 ANY_PARTS multiblocks with chemical slots; durations from Mek's tiles or recipes"
 keys = [ "electrolytic separator", "mek_", "mekanism gregification", "pertickusage", "precision sawmill", "rotary condensentrator" ]
 updated = "2026-10-21 08:11:19"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/mekanism/MekanismGregification.java"

@@ -2,6 +2,7 @@
 title = "JeiRecipeSlotMixin: restore RecipeSlot fields ModularUI's accessor targets, so JEMI recipes work on JEI 19.46+"
 keys = [ "allingredients", "atm10", "create", "displayingredients", "gtmqol.jeifix.mixins.json", "recipeslotaccessor" ]
 updated = "2026-10-19 20:08:34"
+checked = "2026-10-21"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/jei/JeiRecipeSlotMixin.java"
