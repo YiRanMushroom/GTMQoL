@@ -120,10 +120,6 @@ repositories {
         url = 'https://maven.parchmentmc.org'
     }
     maven {
-        name = 'LDLib'
-        url = 'https://maven.firstdarkdev.xyz/snapshots/'
-    }
-    maven {
         name = 'tterrag'
         url = 'https://maven.tterrag.com/'
     }
