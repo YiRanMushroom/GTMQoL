@@ -1,7 +1,7 @@
 +++
 title = "Popups: PopupWidgets.popup (movable, main UI stays usable), opened by IPanelHandler.togglePanel; counterRow"
-keys = [ "counterrow", "popup", "popuppanel", "togglepanel", "ui" ]
-updated = "2026-10-19 20:27:45"
+keys = [ "popuppanel" ]
+updated = "2026-10-21 08:04:26"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/ui/PopupWidgets.java"

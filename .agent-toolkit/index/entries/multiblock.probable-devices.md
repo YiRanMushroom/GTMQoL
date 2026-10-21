@@ -1,7 +1,7 @@
 +++
 title = "Probable Certainty / Improbability Device: multiblock parts that make chanced outputs certain or chanced inputs free"
-keys = [ "chanced", "intprovideringredient", "modifyrecipe", "probable certainty device", "probable devices", "probable improbability device", "ranged" ]
-updated = "2026-10-19 20:57:49"
+keys = [ "intprovideringredient", "modifyrecipe", "probable certainty device", "probable devices", "probable improbability device", "ranged" ]
+updated = "2026-10-21 08:04:26"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/probable/ProbableDevicePartMachine.java"

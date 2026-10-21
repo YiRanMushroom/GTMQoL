@@ -10,7 +10,7 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 | Branch | Version | Notes |
 |---|---|---|
 | `1.21` (this checkout, the default branch) | NeoForge 21.1, Java 21 | Features are written here first |
-| `1.20` | Forge 47, Java 17 | ModDevGradle legacyForge; not run in game yet |
+| `1.20` | Forge 47, Java 17 | ModDevGradle legacyForge |
 
 - The 1.20.1 worktree sits next to this one (`..\GTMQoL-1.20.1`). The user works on two computers, so paths differ
   (`C:\Users\yiran.wang\IdeaProjects\` or `E:\code\Minecraft\`): check `git worktree list` and the checked-out branch
@@ -18,11 +18,6 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 - 1.21 only: MI gregification (MI has no Forge 1.20.1 build); KubeJS machines' late regeneration (modular and
   electric implosion copies of KubeJS recipes). Other differences: `build.branch-differences`.
 - GTCEu v8 snapshot, pinned on both (`gradle.properties`, bumps: `build.gtceu-upgrade`). Java only.
-
-## Doc index
-
-`index_keys("gtmqol")` lists the areas (one per id prefix); `index_find("<area>")` lists its entries and, for the big
-areas, its topics (`subkeys:`), which `index_find` narrows to.
 
 ## Known bugs, not fixed
 
@@ -38,6 +33,9 @@ areas, its topics (`subkeys:`), which `index_find` narrows to.
 
 ## To do
 
+- The unpacked GTCEu sources are older than the pinned snapshots: `.gtceu-src-1.21` is build 20261001 (pinned
+  20261014.192230-122), 1.20's `.gtceu-src` 20260926 (pinned 20261013.044024-319). Re-unpack from the Gradle cache
+  (ask the user first, the folders are theirs).
 - Auto-build: substructures, then block choices for expandable patterns (`autobuild.*`).
 - Stack-like: external chemical hatches.
 
@@ -48,11 +46,3 @@ areas, its topics (`subkeys:`), which `index_find` narrows to.
   count it twice.
 - GTCEu now makes the ME buses/hatches, stocking parts, pattern buffer and proxy in the assembler (#5518/#5519); our
   `AEProcessing` ME assembler recipes for the same parts are a second path. Keep or drop?
-
-## Recent
-
-- 2026-10-20: `docs/*.md` retired into the doc index, then the index reorganized (key tree, fewer keys, stale and
-  duplicate entries removed); `reference/` deleted; mixin config plugins share a base class; splash / lingering potions ported to 1.20.1; all popups share `PopupWidgets` (`rules.ui-popups`). Released 3.0.0 and 3.1.0 on both branches; 3.1.0 brought the Industrial
-  Large Chemical Reactor, the probable devices and absolute parallel hatches back from 2.0.0. Both branches: shared
-  hatches gating fix, block provider lookup fix, greenhouse batch mode; 1.20.1 got the potion "any mod's version"
-  hint.

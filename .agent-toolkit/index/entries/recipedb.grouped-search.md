@@ -1,7 +1,7 @@
 +++
 title = "RecipeDB grouped search: why GTCEu's recipe lookup explodes with many distinct buses, and the pruning idea"
 keys = [ "combinatorial", "fromholder", "lag", "pattern buffer", "performance", "recipeiterator" ]
-updated = "2026-10-19 20:08:35"
+updated = "2026-10-21 08:06:22"
 +++
 ## Problem
 GTCEu's `RecipeDB` is a tree (one ingredient per level, leaves = recipes). `RecipeDB.RecipeIterator` does a DFS:
@@ -16,7 +16,7 @@ A recipe can only run if one handler group supplies all its inputs (one distinct
 
 ## v8 savings
 - 7.x: every one of a buffer's 27 slots was its own handler, so 30 pushed patterns sharing ingredients gave `30^depth` paths (the original motivation).
-- v8 buffer: one worker per buffer plus one per proxy, AE2 only pushes a different pattern into a free worker, so a buffer holds at most proxies+1 patterns; its two aggregate handlers are compressed as one (equal ingredients merged across workers). Without proxies the 7.x case can't happen.
+- v8 buffer: one worker per buffer plus one per proxy, AE2 only pushes a different pattern into a free worker, so a buffer holds at most proxies+1 patterns. Upstream `fromHolder` compresses each of its aggregate handlers (items, fluids) on its own, merging equal ingredients across workers; with grouped search on, `PatternBufferIngredients` adds every worker as its own slot instead (compressed per worker), so the search can keep workers apart. Without proxies the 7.x case can't happen.
 - Still a product in v8: the same ingredients in many separate RHLs (distinct buses, dual hatches, several buffers/ME parts). Grouped search makes that `buses x one bus's nodes`. A buffer with many proxies gains less (only worker-mixing paths are pruned).
 
 Code: recipedb.grouped-list (relation), recipedb.pattern-buffer-split, recipedb.mixins, recipedb.toggle. GTCEu-side rules mirrored: recipedb.v8-handler-groups. History: recipedb.history-7x.

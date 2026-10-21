@@ -128,20 +128,21 @@ public final class GTMQoLConfig {
         public boolean modernIndustrialization = true;
 
         @Configurable
-        @Configurable.Comment({ "Mekanism's chemical oxidizer and metallurgic infuser recipes, at LV voltage",
+        @Configurable.Comment({ "Mekanism's machine recipes, at LV voltage",
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean mekanism = true;
 
         @Configurable
-        @Configurable.Comment({ "GT machines for Productive Bees: comb centrifuge, incubator, gene extractor, beehive",
+        @Configurable.Comment({ "GT machines for Productive Bees: comb centrifuge, incubator, gene extractor, beehive, breeder",
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean productiveBees = true;
 
         @Configurable
         @Configurable.Comment({ "GT machines for Create's processing: millstone, crushing wheels, press, compactor,",
-                "mixer, fan, deployer, spout, item drain and saw", "Default: true" })
+                "mixer, fan, deployer, spout, item drain, saw, mechanical crafter and sequenced assembly",
+                "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean create = true;
     }

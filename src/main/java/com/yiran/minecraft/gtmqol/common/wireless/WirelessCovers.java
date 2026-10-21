@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.client.renderer.cover.SimpleCoverRenderer;
-import com.gregtechceu.gtceu.common.data.GTCovers;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.behavior.TooltipBehavior;
@@ -29,8 +28,8 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.attach;
 
 /**
- * Wireless energy and steam covers and their items. Registered from GTCEu's cover {@code RegisterEvent}
- * ({@code GTCovers.init()}), which runs before items are registered, so the items can be made here too.
+ * Wireless energy and steam covers and their items, declared from the {@code GTMQoL} constructor (deferred
+ * Registrate entries, created when their registry's {@code RegisterEvent} fires).
  */
 public final class WirelessCovers {
 
