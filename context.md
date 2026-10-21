@@ -11,14 +11,9 @@ computers, so paths differ (`C:\Users\yiran.wang\IdeaProjects\` or `E:\code\Mine
 `git worktree list`, or `git show 1.21:context.md`.
 
 - This branch: `1.20`. Minecraft 1.20.1, Forge 47, Java 17, ModDevGradle legacyForge.
-  GTCEu v8 snapshot pinned in `gradle.properties`. Java only. Not run in game yet.
+  GTCEu v8 snapshot pinned in `gradle.properties`. Java only.
 - Not on this branch: MI gregification (no Forge 1.20.1 build of MI); late regeneration for KubeJS machines.
   Code differences: `build.branch-differences`.
-
-## Doc index
-
-Same ids and key tree as on 1.21.1, linked to this branch's code: `index_keys("gtmqol")` lists the areas,
-`index_find("<area>")` its entries and topics.
 
 ## To do
 
@@ -31,11 +26,3 @@ Same ids and key tree as on 1.21.1, linked to this branch's code: `index_keys("g
   1.21.1's `context.md`.
 - Proxy pattern buffers don't get the pattern output marks (as on 1.21.1).
 - Upstream: steam (BRONZE theme) panel title and GT logo squeezed, GTCEu's own steam machines too.
-
-## Recent
-
-- 2026-10-20: doc index reorganized like 1.21.1's (key tree, fewer keys, stale and duplicate entries removed);
-  `reference/` deleted; mixin config plugins share a base class; splash / lingering potion fluids ported; all popups share `PopupWidgets`. Released 3.0.0 and 3.1.0; 3.1.0
-  brought the Industrial Large Chemical Reactor, the probable devices and absolute parallel hatches back from 2.0.0. Ported
-  earlier the same day: the potion "any mod's version" hint, shared hatches gating fix, block provider lookup fix,
-  greenhouse batch mode.
