@@ -98,11 +98,7 @@ public final class AutoBuilder {
         registrate.addRawLang(TOOLTIP_KEY + "2", "Hatches, buses and other parts are not placed");
         registrate.addRawLang(TOOLTIP_KEY + "3", "Right click: settings");
         registrate.addRawLang(AutoBuildPanel.TITLE_KEY, "Auto build settings");
-        registrate.addRawLang(AutoBuildPanel.LAYER_KEY, "Layer %s: %s");
-        registrate.addRawLang(AutoBuildPanel.SIZE_KEY, "Size %s: %s");
-        registrate.addRawLang(AutoBuildPanel.BLOCKS_KEY, "Block %s");
         registrate.addRawLang(AutoBuildPanel.RESET_KEY, "Reset");
-        registrate.addRawLang(AutoBuildPanel.NOTHING_KEY, "Nothing to configure");
         registrate.addRawLang(PROGRESS_KEY, "Auto build: placed %s, %s left");
         registrate.addRawLang(DONE_KEY, "Auto build: every block is placed. Add the hatches to form the structure.");
         registrate.addRawLang(FORMED_KEY, "Auto build: the structure is formed");

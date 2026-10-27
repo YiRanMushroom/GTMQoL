@@ -2,8 +2,8 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-10-27 15:15:58"
-checked = "2026-10-21"
+updated = "2026-10-27 15:31:37"
+checked = "2026-10-27"
 
 [[items]]
 name = "legacy-parts-no-unification"
@@ -56,7 +56,7 @@ snippet = "// Untested: Jade loads (Loom needed nameSyntheticMembers for its thi
 [[items]]
 name = "autobuild-abilities"
 value = "Abilities now recognized by machine block, not predicate name (GTCEu #5337 renamed them): auto-build leaves hatch/bus/muffler spots empty and places casings elsewhere."
-path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/BuildOptions.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/StructurePlanner.java"
 snippet = "// Untested: abilities by machine block"
 
 [[items]]
@@ -64,5 +64,11 @@ name = "autobuild-5337"
 value = "Planner reworked for GTCEu #5337 (predicate filtering instead of count overrides): auto-build a fixed and an expandable multiblock, and one with a block choice (autobuild.planner)."
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/StructurePlanner.java"
 snippet = "// Untested: filtering for GTCEu #5337"
+
+[[items]]
+name = "autobuild-preview"
+value = "Auto-build settings are now GTCEu's multiblock preview (autobuild.panel): opens inside the machine UI, turned like the controller; layers, sizes, block per char and per clicked position are used by the build; Reset clears them. The old preview was buggy, see if #5337 fixed it."
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/AutoBuildPanel.java"
+snippet = "// Untested: GTCEu's preview inside our machine UI panel"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

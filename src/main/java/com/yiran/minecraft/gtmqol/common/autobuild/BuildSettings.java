@@ -1,69 +1,48 @@
 package com.yiran.minecraft.gtmqol.common.autobuild;
 
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
-import it.unimi.dsi.fastutil.chars.Char2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntMaps;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.ints.IntLists;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 /**
- * What to build. Keyed by things that stay stable for a multiblock type (slice index, the expandable pattern's bounds
- * order, pattern char + index in {@code MultiPredicate.expand()}), never by world positions, so the client keeps one
- * per multiblock type and sends it with the click. The server only treats this as a wish: {@link StructurePlanner}
- * clamps it to the pattern and drops choices that are not in {@link BuildOptions}.
+ * What to build, as edited in GTCEu's multiblock preview ({@link AutoBuildPanel}): slice repeats, the expandable
+ * pattern's dimensions, a block per pattern char, and a block per position in the controller's layout (only for the
+ * controller they were picked on). The server only treats this as a wish: {@link StructurePlanner} clamps it to the
+ * pattern and drops what doesn't fit.
  * <p>
  * Empty means the pattern's defaults: minimum repeats, minimum bounds, GTCEu's first candidates.
  */
-public record BuildSettings(Int2IntMap sliceRepeats, IntList dimensions, Char2ObjectMap<BlockChoice> blocks) {
+public record BuildSettings(Int2IntMap sliceRepeats, IntList dimensions, Char2ObjectMap<BlockState> blocks,
+                            Object2ObjectMap<BlockPos, BlockState> positions) {
 
-    public static final BuildSettings DEFAULTS = new BuildSettings(Int2IntMaps.EMPTY_MAP, IntLists.EMPTY_LIST,
-            Char2ObjectMaps.emptyMap());
-
-    /** The block {@code block} of the predicate at {@code predicate} in the char's {@code expand()} list. */
-    public record BlockChoice(int predicate, Block block) {}
-
-    /** Empty and mutable, for the client side store. */
     public static BuildSettings create() {
-        return new BuildSettings(new Int2IntArrayMap(), new IntArrayList(), new Char2ObjectArrayMap<>());
+        return new BuildSettings(new Int2IntArrayMap(), new IntArrayList(), new Char2ObjectArrayMap<>(),
+                new Object2ObjectOpenHashMap<>());
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeVarInt(sliceRepeats.size());
-        for (var entry : sliceRepeats.int2IntEntrySet()) {
-            buf.writeVarInt(entry.getIntKey());
-            buf.writeVarInt(entry.getIntValue());
-        }
-        buf.writeVarInt(dimensions.size());
-        for (int i = 0; i < dimensions.size(); i++) buf.writeVarInt(dimensions.getInt(i));
-        buf.writeVarInt(blocks.size());
-        for (var entry : blocks.char2ObjectEntrySet()) {
-            buf.writeChar(entry.getCharKey());
-            buf.writeVarInt(entry.getValue().predicate());
-            buf.writeId(BuiltInRegistries.BLOCK, entry.getValue().block());
-        }
+        buf.writeMap(sliceRepeats, FriendlyByteBuf::writeVarInt, FriendlyByteBuf::writeVarInt);
+        buf.writeCollection(dimensions, FriendlyByteBuf::writeVarInt);
+        buf.writeMap(blocks, (b, symbol) -> b.writeChar(symbol), (b, state) -> b.writeVarInt(Block.getId(state)));
+        buf.writeMap(positions, FriendlyByteBuf::writeBlockPos, (b, state) -> b.writeVarInt(Block.getId(state)));
     }
 
     public static BuildSettings read(FriendlyByteBuf buf) {
-        BuildSettings settings = create();
-        int repeats = buf.readVarInt();
-        for (int i = 0; i < repeats; i++) settings.sliceRepeats.put(buf.readVarInt(), buf.readVarInt());
-        int dimensions = buf.readVarInt();
-        for (int i = 0; i < dimensions; i++) settings.dimensions.add(buf.readVarInt());
-        int blocks = buf.readVarInt();
-        for (int i = 0; i < blocks; i++) {
-            char symbol = buf.readChar();
-            int predicate = buf.readVarInt();
-            Block block = buf.readById(BuiltInRegistries.BLOCK);
-            if (block != null) settings.blocks.put(symbol, new BlockChoice(predicate, block));
-        }
-        return settings;
+        return new BuildSettings(
+                buf.readMap(Int2IntArrayMap::new, FriendlyByteBuf::readVarInt, FriendlyByteBuf::readVarInt),
+                buf.readCollection(IntArrayList::new, FriendlyByteBuf::readVarInt),
+                buf.readMap(Char2ObjectArrayMap::new, FriendlyByteBuf::readChar, b -> Block.stateById(b.readVarInt())),
+                buf.readMap(Object2ObjectOpenHashMap::new, FriendlyByteBuf::readBlockPos,
+                        b -> Block.stateById(b.readVarInt())));
     }
 }

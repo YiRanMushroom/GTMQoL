@@ -1,15 +1,11 @@
 +++
-title = "BuildSettings: slice repeats, expandable bounds, block choices; client-side per multiblock type, sent with each click"
+title = "BuildSettings: layers, sizes, block per char and per position, from the client's preview; sent with each click"
 keys = [ "auto-build", "autobuildpanel.settings", "blockchoice" ]
-updated = "2026-10-19 20:12:37"
-checked = "2026-10-21"
-
-[[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/AutoBuildPanel.java"
-snippet = "private static final Map<ResourceLocation, BuildSettings> SETTINGS = new HashMap<>();"
+updated = "2026-10-27 15:31:30"
+checked = "2026-10-27"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/BuildSettings.java"
-snippet = "public record BuildSettings(Int2IntMap sliceRepeats, IntList dimensions, Char2ObjectMap<BlockChoice> blocks) {"
+snippet = "public record BuildSettings(Int2IntMap sliceRepeats, IntList dimensions, Char2ObjectMap<BlockState> blocks,"
 +++
-Kept in memory only, per multiblock type. On 1.20.1 blocks are written with writeId/readById(BuiltInRegistries.BLOCK); an unknown block id is dropped on read.
+Made from the client's MultiblockSchemaInfo (autobuild.panel), kept in memory only. Block states go by Block.getId, as in GTCEu's terminal packet. The planner checks every choice against the pattern (autobuild.planner).
