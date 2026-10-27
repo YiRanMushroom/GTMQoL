@@ -3,20 +3,23 @@ package com.yiran.minecraft.gtmqol.common.part;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.TagPrefixEntry;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 
+import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.bus.api.IEventBus;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 
@@ -47,14 +50,16 @@ public final class LegacyPartRecipes {
 
     private LegacyPartRecipes() {}
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         ROD = mold("rod", "Rod");
         LONG_ROD = mold("long_rod", "Long Rod");
         BOLT = mold("bolt", "Bolt");
         GEAR = mold("gear", "Gear");
         SMALL_GEAR = mold("small_gear", "Small Gear");
         ROTOR = mold("rotor", "Rotor");
-        rotor.materialAmount(M * 4);
+        // tag prefixes are registered after mods are constructed
+        // Untested: now set on PostMaterialEvent (deferred materials); a rotor's material info should show 4 units
+        modBus.addListener(PostMaterialEvent.class, event -> rotor.value().materialAmount(M * 4));
     }
 
     private static ItemEntry<Item> mold(String shape, String name) {
@@ -64,7 +69,7 @@ public final class LegacyPartRecipes {
                 .model((ctx, prov) -> prov.generated(ctx, GTCEu.id("item/" + id)))
                 // built on register: materials don't exist yet while mods are constructed
                 .onRegister(item -> GTItems.<Item>materialInfo(
-                        new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, M * 4))).accept(item))
+                        () -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, M * 4))).accept(item))
                 .register();
     }
 
@@ -176,11 +181,11 @@ public final class LegacyPartRecipes {
         }
     }
 
-    private static void extrude(RecipeOutput provider, Material material, String name, TagPrefix input, int count,
+    private static void extrude(RecipeOutput provider, Material material, String name, TagPrefixEntry input, int count,
                                 ItemEntry<Item> mold, ItemStack output, int duration, long eut) {
         if (output.isEmpty()) return;
         EXTRUDER_RECIPES.recipeBuilder(GTMQoL.id("extrude_" + material.getName() + "_" + name))
-                .inputItems(input, material, count)
+                .inputItems(input.value(), material, count)
                 .notConsumable(mold)
                 .outputItems(output)
                 .duration(duration)
@@ -191,8 +196,8 @@ public final class LegacyPartRecipes {
     /** Magnetic materials come out as what they macerate into, as in GTCEu. */
     private static Material unmagnetized(Material material) {
         if (!material.hasFlag(IS_MAGNETIC) || !material.hasProperty(PropertyKey.INGOT)) return material;
-        Material into = material.getProperty(PropertyKey.INGOT).getMacerateInto();
-        return into == null ? material : into;
+        Holder<Material> into = material.getProperty(PropertyKey.INGOT).getMacerateInto();
+        return into == null ? material : into.value();
     }
 
     private static long voltageMultiplier(Material material) {

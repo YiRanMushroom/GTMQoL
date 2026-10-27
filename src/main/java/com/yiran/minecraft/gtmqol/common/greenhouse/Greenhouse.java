@@ -79,6 +79,7 @@ public final class Greenhouse {
 
     private Greenhouse() {}
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static void init() {
         var registrate = GTMQoLAddon.registrate();
         RECIPE_TYPE = registrate.recipeType("greenhouse", GTRecipeTypes.ELECTRIC)

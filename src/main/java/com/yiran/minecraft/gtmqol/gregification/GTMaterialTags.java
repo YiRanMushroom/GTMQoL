@@ -50,7 +50,7 @@ public final class GTMaterialTags {
         ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP.keySet().forEach(entry -> {
             if (entry.material() == null) return;
             entry.tagPrefix().getItemTags(entry.material()).forEach(tag -> materialTags.add(tag.location()));
-            if (entry.tagPrefix() == TagPrefix.wireGtSingle) {
+            if (entry.tagPrefix() == TagPrefix.wireGtSingle.value()) {
                 materialTags.add(WireTags.tag(entry.material().getName()));
             }
         });

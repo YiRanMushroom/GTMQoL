@@ -27,7 +27,7 @@ public final class WireTags {
 
     public static void addTo(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
         ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP.forEach((entry, items) -> {
-            if (entry.tagPrefix() != TagPrefix.wireGtSingle || entry.material() == null || items.isEmpty()) return;
+            if (entry.tagPrefix() != TagPrefix.wireGtSingle.value() || entry.material() == null || items.isEmpty()) return;
             var entries = items.stream().map(item -> MixinHelpers.makeItemEntry(item.get())).toList();
             String name = entry.material().getName();
             tagMap.computeIfAbsent(tag(name), path -> new ArrayList<>()).addAll(entries);

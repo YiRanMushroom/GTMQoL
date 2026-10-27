@@ -41,8 +41,8 @@ import java.util.Set;
  * same ones the terminal and the shift-click preview use).
  * <p>
  * Abilities (hatches, buses, mufflers, ...) are never placed: a position that also takes a normal block gets that
- * block, a position that only takes abilities is left empty. "Ability" is decided by the predicate's type name, which
- * is what {@code Predicates.abilities}/{@code ability} produce. That is a heuristic, but this is only the default.
+ * block, a position that only takes abilities is left empty. An ability is a predicate whose candidates are all
+ * machine blocks.
  * <p>
  * A block choice from the settings becomes GTCEu's block preference for its predicate, and the other non-ability
  * predicates of the same char get counts of 0. If one of those had a minimum count, the structure will not form; that

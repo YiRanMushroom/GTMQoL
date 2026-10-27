@@ -1,12 +1,12 @@
 +++
 title = "Legacy part recipes: rod/bolt/gear/small gear/rotor (+ long rod) extruder molds that GTCEu v8 removed"
 keys = [ "materialamount", "recipes.uselegacypartrecipes", "uselegacypartrecipes" ]
-updated = "2026-10-19 20:08:35"
-checked = "2026-10-21"
+updated = "2026-10-27 15:11:07"
+checked = "2026-10-27"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/part/LegacyPartRecipes.java"
-snippet = "rotor.materialAmount(M * 4);"
+snippet = "rotor.value().materialAmount(M * 4)"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/part/LegacyPartRecipes.java"

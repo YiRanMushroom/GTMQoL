@@ -76,7 +76,7 @@ public final class GTMQoL {
         AutoBuilder.init();
         if (config.circuits.universalCircuits) UniversalCircuits.init();
         if (config.circuits.controlCircuits) ControlCircuits.init();
-        if (config.recipes.useLegacyPartRecipes) LegacyPartRecipes.init();
+        if (config.recipes.useLegacyPartRecipes) LegacyPartRecipes.init(modBus);
         if (config.circuits.mekanismCircuitTags) CircuitTags.init();
         MaterialAliasTags.init();
         PotionContainers.init(modBus);

@@ -6,11 +6,11 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
@@ -297,7 +297,7 @@ public final class AEProcessing {
         }));
 
         // extraProcessor: 4 more processors besides the 4 logic processors, null for none
-        record Part(String id, Item aePart, Item extraProcessor, MachineDefinition output, Material plateMaterial) {
+        record Part(String id, Item aePart, Item extraProcessor, MachineDefinition output, MaterialRegistryEntry plateMaterial) {
         }
         for (Part p : List.of(
                 new Part("me_input_bus", AEParts.EXPORT_BUS.asItem(), null, GTAEMachines.ITEM_IMPORT_BUS_ME.get(),

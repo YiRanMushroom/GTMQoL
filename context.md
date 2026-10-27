@@ -33,6 +33,8 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 
 ## To do
 
+- Untested changes to remind the user of (in-game checks): `status.untested`, each item linked to its `Untested:`
+  comment in the code.
 - Auto-build: substructures, then block choices for expandable patterns (`autobuild.*`).
 - Stack-like: external chemical hatches.
 
@@ -41,5 +43,8 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 - Two stocking parts of one multiblock can't stock the same key (gtceu's rule, extended to ours by `StockingParts`).
   The user dislikes it but has no better idea: both would see the full network amount and the recipe check would
   count it twice.
+- GTCEu 1.20 now auto-builds from the terminal (#5337, build 325: on servers, block choice per pattern char, layer
+  count; 1.21 port pending upstream). It overlaps our auto-build button: keep ours, or drop it once upstream's covers
+  both branches?
 - GTCEu now makes the ME buses/hatches, stocking parts, pattern buffer and proxy in the assembler (#5518/#5519); our
   `AEProcessing` ME assembler recipes for the same parts are a second path. Keep or drop?

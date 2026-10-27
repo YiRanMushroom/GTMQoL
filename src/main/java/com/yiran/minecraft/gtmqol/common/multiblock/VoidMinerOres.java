@@ -106,9 +106,9 @@ public final class VoidMinerOres {
      * dimension's default block (from its noise settings), or deepslate if there is none.
      */
     private static TagPrefix orePrefix(MinecraftServer server, ResourceKey<Level> dimension) {
-        if (dimension == Level.OVERWORLD) return oreDeepslate;
-        if (dimension == Level.NETHER) return oreNetherrack;
-        if (dimension == Level.END) return oreEndstone;
+        if (dimension == Level.OVERWORLD) return oreDeepslate.value();
+        if (dimension == Level.NETHER) return oreNetherrack.value();
+        if (dimension == Level.END) return oreEndstone.value();
         ServerLevel level = server.getLevel(dimension);
         if (level != null && level.getChunkSource().getGenerator() instanceof NoiseBasedChunkGenerator noise) {
             Block stone = noise.generatorSettings().value().defaultBlock().getBlock();
@@ -116,6 +116,6 @@ public final class VoidMinerOres {
                 if (entry.getValue().stoneType().get().is(stone)) return entry.getKey();
             }
         }
-        return oreDeepslate;
+        return oreDeepslate.value();
     }
 }
