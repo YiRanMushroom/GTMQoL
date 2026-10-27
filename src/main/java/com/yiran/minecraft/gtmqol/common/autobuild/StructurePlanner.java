@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.common.autobuild;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
@@ -19,6 +20,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMaps;
+import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -27,7 +31,6 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -35,18 +38,19 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Turns a controller's default structure into the list of blocks to place, with GTCEu's own structure helpers (the
  * same ones the terminal and the shift-click preview use).
  * <p>
  * Abilities (hatches, buses, mufflers, ...) are never placed: a position that also takes a normal block gets that
- * block, a position that only takes abilities is left empty. "Ability" is decided by the predicate's type name, which
- * is what {@code Predicates.abilities}/{@code ability} produce. That is a heuristic, but this is only the default.
+ * block, a position that only takes abilities is left empty. An ability is a predicate whose candidates are all
+ * machine blocks.
  * <p>
- * A block choice from the settings becomes GTCEu's block preference for its predicate, and the other non-ability
- * predicates of the same char get counts of 0. If one of those had a minimum count, the structure will not form; that
- * is the player's choice.
+ * A block choice from the settings becomes GTCEu's block preference for its char, and the char's other non-ability
+ * predicates are dropped. If one of those had a minimum count, the structure will not form; that is the player's
+ * choice.
  */
 public final class StructurePlanner {
 
@@ -68,12 +72,13 @@ public final class StructurePlanner {
         Direction up = controller.getUpwardsFacing();
         boolean flipped = controller.isFlipped();
 
-        // node -> its root (the char's or position's predicate); MultiPredicate has no parent link on 1.20.1
-        Map<MultiPredicate, MultiPredicate> roots = new IdentityHashMap<>();
-        AbilityFilter abilities = new AbilityFilter(roots);
-        AbstractStructureHelper helper = createHelper(pattern, settings, roots, abilities, front, up, flipped);
+        MultiblockSchemaInfo info = new MultiblockSchemaInfo(controller.getDefinition());
+        // the predicates' minimum counts, not the preview's
+        info.setIgnorePreviewCount(true);
+        Set<Block> abilityBlocks = Collections.newSetFromMap(new IdentityHashMap<>());
+        AbstractStructureHelper helper = createHelper(pattern, settings, info, abilityBlocks);
         Map<BlockPos, BlockInfo> structure = new HashMap<>();
-        helper.populate(structure, pattern, null, front, up, flipped);
+        helper.populate(info, structure, pattern, null, front, up, flipped);
 
         BlockPos controllerLocal = findController(controller, helper, pattern, structure, front, up, flipped);
         BlockPos origin = controller.getBlockPos().subtract(controllerLocal);
@@ -81,7 +86,7 @@ public final class StructurePlanner {
         for (var entry : structure.entrySet()) {
             BlockState state = entry.getValue().getBlockState();
             if (state.isAir() || entry.getKey().equals(controllerLocal)) continue;
-            if (abilities.isAbilityBlock(state.getBlock())) continue;
+            if (abilityBlocks.contains(state.getBlock())) continue;
             entries.add(new Entry(origin.offset(entry.getKey()), state));
         }
         BlockPos center = controller.getBlockPos();
@@ -94,11 +99,9 @@ public final class StructurePlanner {
     }
 
     private static AbstractStructureHelper createHelper(IBlockPattern pattern, BuildSettings settings,
-                                                        Map<MultiPredicate, MultiPredicate> roots,
-                                                        AbilityFilter abilities,
-                                                        Direction front, Direction up, boolean flipped) {
-        // Both helpers are made for subclassing (protected constructors, overridable min/max counts). Ability counts
-        // go through the overrides because an expandable pattern only hands out its predicates while populating.
+                                                        MultiblockSchemaInfo info, Set<Block> abilityBlocks) {
+        // Both helpers are made for subclassing (protected constructors) and take each char's predicate from
+        // getPredicatesFromPattern, so they get filtered copies there.
         if (pattern instanceof BlockPattern blockPattern) {
             PatternSlice[] slices = blockPattern.getSlices();
             Int2IntMap repeats = new Int2IntArrayMap();
@@ -107,27 +110,15 @@ public final class StructurePlanner {
                 int max = Math.max(min, slices[i].getMaxRepeats());
                 repeats.put(i, Mth.clamp(settings.sliceRepeats().getOrDefault(i, min), min, max));
             }
-            addRoots(roots, blockPattern.getPredicates().values());
-            // root -> the chosen predicate; the root's other non-ability predicates get no blocks
-            Map<MultiPredicate, BasePredicate> chosen = new IdentityHashMap<>();
-            BlockPatternHelper helper = new BlockPatternHelper(repeats) {
+            Char2ObjectMap<MultiPredicate> predicates = filter(blockPattern.getPredicates(),
+                    applyChoices(blockPattern, settings, info), abilityBlocks);
+            return new BlockPatternHelper(repeats) {
 
                 @Override
-                protected int getMinCount(MultiPredicate predicate, BasePredicate basePredicate) {
-                    return abilities.suppress(predicate, basePredicate) ||
-                            excluded(chosen, roots, predicate, basePredicate) ?
-                            0 : super.getMinCount(predicate, basePredicate);
-                }
-
-                @Override
-                protected int getMaxCount(MultiPredicate predicate, BasePredicate basePredicate) {
-                    return abilities.suppress(predicate, basePredicate) ||
-                            excluded(chosen, roots, predicate, basePredicate) ?
-                            0 : super.getMaxCount(predicate, basePredicate);
+                protected Char2ObjectMap<MultiPredicate> getPredicatesFromPattern(IBlockPattern pattern) {
+                    return predicates;
                 }
             };
-            applyChoices(blockPattern, settings, helper, chosen);
-            return helper;
         }
         if (pattern instanceof ExpandablePattern expandable) {
             List<IntIntPair> bounds = expandable.getBoundsConstraints() == null ? List.of() :
@@ -139,77 +130,79 @@ public final class StructurePlanner {
                 int wanted = useSettings ? settings.dimensions().getInt(i) : minMax.leftInt();
                 dimensions.add(Mth.clamp(wanted, minMax.leftInt(), Math.max(minMax.leftInt(), minMax.rightInt())));
             }
-            // The roots only come out of the pattern's provider per position, so lay it out once with GTCEu's
-            // defaults and ask for the predicate at every position.
-            AbstractStructureHelper plain = AbstractStructureHelper.expandable(dimensions);
-            Map<BlockPos, BlockInfo> layout = new HashMap<>();
-            plain.populate(layout, pattern, null, front, up, flipped);
-            Set<MultiPredicate> found = Collections.newSetFromMap(new IdentityHashMap<>());
-            for (BlockPos pos : layout.keySet()) found.add(plain.getPredicateFromPos(pattern, pos, front, up, flipped));
-            addRoots(roots, found);
+            Char2ObjectMap<MultiPredicate> predicates = filter(expandable.getSymbolMap(), Char2ObjectMaps.emptyMap(),
+                    abilityBlocks);
             return new ExpandablePatternHelper(dimensions) {
 
                 @Override
-                protected int getMinCount(MultiPredicate predicate, BasePredicate basePredicate) {
-                    return abilities.suppress(predicate, basePredicate) ? 0 :
-                            super.getMinCount(predicate, basePredicate);
-                }
-
-                @Override
-                protected int getMaxCount(MultiPredicate predicate, BasePredicate basePredicate) {
-                    return abilities.suppress(predicate, basePredicate) ? 0 :
-                            super.getMaxCount(predicate, basePredicate);
+                protected Char2ObjectMap<MultiPredicate> getPredicatesFromPattern(IBlockPattern pattern) {
+                    return predicates;
                 }
             };
         }
         throw new IllegalStateException("unsupported pattern type " + pattern.getClass().getSimpleName());
     }
 
-    /** Choices that are not offered by {@link BuildOptions} (stale client, other pattern) are ignored. */
-    private static void applyChoices(BlockPattern pattern, BuildSettings settings, AbstractStructureHelper helper,
-                                     Map<MultiPredicate, BasePredicate> chosen) {
-        if (settings.blocks().isEmpty()) return;
+    /**
+     * The chosen predicate per char, also set as GTCEu's block preference. Choices that are not offered by
+     * {@link BuildOptions} (stale client, other pattern) are ignored.
+     */
+    private static Char2ObjectMap<BasePredicate> applyChoices(BlockPattern pattern, BuildSettings settings,
+                                                              MultiblockSchemaInfo info) {
+        Char2ObjectMap<BasePredicate> chosen = new Char2ObjectOpenHashMap<>();
+        if (settings.blocks().isEmpty()) return chosen;
         BuildOptions options = BuildOptions.of(pattern);
         for (var entry : settings.blocks().char2ObjectEntrySet()) {
             BuildOptions.ChoicePoint point = options.choice(entry.getCharKey());
             BuildOptions.Option option = point == null ? null : point.find(entry.getValue());
             if (option == null) continue;
-            MultiPredicate node = findNode(point.root(), option.predicate());
-            if (node == null) continue;
-            chosen.put(point.root(), option.predicate());
-            // GTCEu looks preferences up by the node it is walking, which is the one holding the predicate
-            helper.getBlockPreferences().put(node, option.predicate(), option.info());
+            chosen.put(entry.getCharKey(), option.predicate());
+            info.getBlockPreferences().put(entry.getCharKey(), option.info());
         }
+        return chosen;
     }
 
-    private static boolean excluded(Map<MultiPredicate, BasePredicate> chosen,
-                                    Map<MultiPredicate, MultiPredicate> roots, MultiPredicate predicate,
-                                    BasePredicate basePredicate) {
-        if (chosen.isEmpty()) return false;
-        BasePredicate choice = chosen.get(roots.getOrDefault(predicate, predicate));
-        return choice != null && choice != basePredicate && !BuildOptions.isAbility(basePredicate);
+    /**
+     * Per char, drops the ability predicates and, with a block chosen, the other non-ability predicates. A char that
+     * only takes abilities keeps them, so GTCEu can still fill it (it fails otherwise); what it puts there is dropped
+     * afterwards by block, collected into {@code abilityBlocks}.
+     */
+    // Untested: filtering for GTCEu #5337; auto-build a fixed and an expandable multiblock, and a block choice
+    private static Char2ObjectMap<MultiPredicate> filter(Char2ObjectMap<MultiPredicate> predicates,
+                                                         Char2ObjectMap<BasePredicate> chosen,
+                                                         Set<Block> abilityBlocks) {
+        Char2ObjectMap<MultiPredicate> filtered = new Char2ObjectOpenHashMap<>(predicates.size());
+        for (var entry : predicates.char2ObjectEntrySet()) {
+            MultiPredicate root = entry.getValue();
+            boolean abilityOnly = true;
+            for (BasePredicate predicate : root.expand()) {
+                if (!BuildOptions.isAbility(predicate)) {
+                    abilityOnly = false;
+                    continue;
+                }
+                for (BlockInfo candidate : predicate.getCandidates()) {
+                    abilityBlocks.add(candidate.getBlockState().getBlock());
+                }
+            }
+            BasePredicate choice = chosen.get(entry.getCharKey());
+            MultiPredicate kept = abilityOnly ? null :
+                    keep(root, p -> !BuildOptions.isAbility(p) && (choice == null || p == choice));
+            filtered.put(entry.getCharKey(), kept == null ? root : kept);
+        }
+        return filtered;
     }
 
-    private static @Nullable MultiPredicate findNode(MultiPredicate node, BasePredicate predicate) {
-        for (BasePredicate p : node.predicates()) {
-            if (p == predicate) return node;
-        }
+    /** The node with only the predicates {@code keep} accepts, or null if none are left. */
+    private static @Nullable MultiPredicate keep(MultiPredicate node, Predicate<BasePredicate> keep) {
+        List<BasePredicate> predicates = node.predicates().stream().filter(keep).toList();
+        List<MultiPredicate> children = new ArrayList<>();
         for (MultiPredicate child : node.children()) {
-            MultiPredicate found = findNode(child, predicate);
-            if (found != null) return found;
+            MultiPredicate kept = keep(child, keep);
+            if (kept != null) children.add(kept);
         }
-        return null;
-    }
-
-    private static void addRoots(Map<MultiPredicate, MultiPredicate> roots, Collection<MultiPredicate> found) {
-        for (MultiPredicate root : found) addSubtree(roots, root, root);
-    }
-
-    private static void addSubtree(Map<MultiPredicate, MultiPredicate> roots, MultiPredicate node,
-                                   MultiPredicate root) {
-        // a node shared by two roots keeps the first one
-        if (roots.putIfAbsent(node, root) != null) return;
-        for (MultiPredicate child : node.children()) addSubtree(roots, child, root);
+        if (predicates.isEmpty() && children.isEmpty()) return null;
+        // keeps the node's counts, controller and air flags
+        return node.withContents(children, predicates);
     }
 
     private static BlockPos findController(MultiblockControllerMachine controller, AbstractStructureHelper helper,
@@ -226,36 +219,5 @@ public final class StructurePlanner {
             if (helper.getPredicateFromPos(pattern, pos, front, up, flipped).isController()) return pos;
         }
         throw new IllegalStateException("controller not found in the structure");
-    }
-
-    /**
-     * Sets ability counts to 0 unless the whole predicate is abilities. Such positions keep their counts so GTCEu can
-     * still fill them (it throws otherwise); what it puts there is dropped afterwards by block.
-     */
-    private static final class AbilityFilter {
-
-        private final Map<MultiPredicate, MultiPredicate> roots;
-        private final Map<MultiPredicate, Boolean> abilityOnly = new IdentityHashMap<>();
-        private final Set<BasePredicate> seen = Collections.newSetFromMap(new IdentityHashMap<>());
-        private final Set<Block> abilityBlocks = Collections.newSetFromMap(new IdentityHashMap<>());
-
-        AbilityFilter(Map<MultiPredicate, MultiPredicate> roots) {
-            this.roots = roots;
-        }
-
-        boolean suppress(MultiPredicate predicate, BasePredicate basePredicate) {
-            if (!BuildOptions.isAbility(basePredicate)) return false;
-            if (seen.add(basePredicate)) {
-                for (BlockInfo candidate : basePredicate.getCandidates()) {
-                    abilityBlocks.add(candidate.getBlockState().getBlock());
-                }
-            }
-            return !abilityOnly.computeIfAbsent(roots.getOrDefault(predicate, predicate),
-                    r -> r.expand().stream().allMatch(BuildOptions::isAbility));
-        }
-
-        boolean isAbilityBlock(Block block) {
-            return abilityBlocks.contains(block);
-        }
     }
 }

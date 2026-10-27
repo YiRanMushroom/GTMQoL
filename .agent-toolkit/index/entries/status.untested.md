@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-10-21 08:41:09"
+updated = "2026-10-27 15:15:58"
 checked = "2026-10-21"
 
 [[items]]
@@ -52,5 +52,17 @@ name = "jade-this0"
 value = "Loom needed nameSyntheticMembers = true or Jade's StringRenderOutputMixin failed (@Shadow this$0 in Font$StringRenderOutput); MDG/parchment has no such switch: check Jade loads."
 path = "build.gradle"
 snippet = "// Untested: Jade loads (Loom needed nameSyntheticMembers for its this$0 @Shadow; MDG has no such switch)"
+
+[[items]]
+name = "autobuild-abilities"
+value = "Abilities now recognized by machine block, not predicate name (GTCEu #5337 renamed them): auto-build leaves hatch/bus/muffler spots empty and places casings elsewhere."
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/BuildOptions.java"
+snippet = "// Untested: abilities by machine block"
+
+[[items]]
+name = "autobuild-5337"
+value = "Planner reworked for GTCEu #5337 (predicate filtering instead of count overrides): auto-build a fixed and an expandable multiblock, and one with a block choice (autobuild.planner)."
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/StructurePlanner.java"
+snippet = "// Untested: filtering for GTCEu #5337"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

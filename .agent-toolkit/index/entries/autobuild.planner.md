@@ -1,12 +1,8 @@
 +++
 title = "StructurePlanner: default structure to block list via GTCEu structure helpers, abilities never placed"
-keys = [ "ability", "abilityfilter", "addroots", "auto-build", "blockpatternhelper", "default_structure", "expandablepatternhelper", "getmincount", "roots" ]
-updated = "2026-10-19 20:12:37"
-checked = "2026-10-21"
-
-[[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/BuildOptions.java"
-snippet = "static boolean isAbility(BasePredicate predicate) {"
+keys = [ "ability", "auto-build", "blockpatternhelper", "default_structure", "expandablepatternhelper", "getpredicatesfrompattern", "metamachineblock", "multiblockschemainfo" ]
+updated = "2026-10-27 15:16:02"
+checked = "2026-10-27"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/StructurePlanner.java"
@@ -14,6 +10,10 @@ snippet = "public static List<Entry> plan(MultiblockControllerMachine controller
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/StructurePlanner.java"
-snippet = "// The roots only come out of the pattern's provider per position, so lay it out once with GTCEu's"
+snippet = "private static Char2ObjectMap<MultiPredicate> filter(Char2ObjectMap<MultiPredicate> predicates,"
+
+[[links]]
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/BuildOptions.java"
+snippet = "static boolean isAbility(BasePredicate predicate) {"
 +++
-Ability detection by predicate type name (Ability/TieredAbility) is a heuristic. Only DEFAULT_STRUCTURE, no substructures. The roots map (node -> char's predicate) exists because MultiPredicate has no parent link. 1.20.1-specific: roots are filled inside createHelper; for expandable patterns (no symbol map) by laying the pattern out once with GTCEu's defaults and asking getPredicateFromPos at every position. Block choices: autobuild.options.
+Ability = predicate whose candidates are all machine blocks (hatches, buses, mufflers, machines(...); the controller too, its position is skipped). Only DEFAULT_STRUCTURE. GTCEu #5337 (build 325) removed the helpers' min/max count overrides, so each char's predicate is filtered before GTCEu lays it out (getPredicatesFromPattern override, MultiPredicate.withContents): abilities dropped unless the char only takes abilities. 1.21 still uses the old count overrides. Block choices: autobuild.options.

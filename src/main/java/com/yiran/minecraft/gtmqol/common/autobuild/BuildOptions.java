@@ -1,5 +1,6 @@
 package com.yiran.minecraft.gtmqol.common.autobuild;
 
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
@@ -110,9 +111,14 @@ public record BuildOptions(List<Slice> slices, List<IntIntPair> bounds, List<Cho
         return result;
     }
 
-    /** By type name, which is what {@code Predicates.abilities}/{@code ability} produce. */
+    /**
+     * Hatches, buses and other parts: every candidate is a machine block. The controller counts too, but its position
+     * is never placed anyway.
+     */
+    // Untested: abilities by machine block; auto-build leaves hatch/bus/muffler spots empty, casings elsewhere
     static boolean isAbility(BasePredicate predicate) {
-        String type = predicate.getTypeName();
-        return "Ability".equals(type) || "TieredAbility".equals(type);
+        List<BlockInfo> candidates = predicate.getCandidates();
+        return !candidates.isEmpty() &&
+                candidates.stream().allMatch(c -> c.getBlockState().getBlock() instanceof MetaMachineBlock);
     }
 }
