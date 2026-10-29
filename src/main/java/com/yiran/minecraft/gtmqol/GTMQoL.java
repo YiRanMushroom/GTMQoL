@@ -44,6 +44,7 @@ import com.yiran.minecraft.gtmqol.common.stacklike.mekanism.ChemicalStackLike;
 import com.yiran.minecraft.gtmqol.common.steam.AdvancedSteamMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessCovers;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessNetworks;
+import com.yiran.minecraft.gtmqol.common.wireless.channel.ChannelMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
@@ -200,6 +201,8 @@ public final class GTMQoL {
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
         if (config.wireless.steam) WirelessSteamMachines.init();
         if (config.wireless.energy) WirelessEnergyMachines.init();
+        if (config.wireless.computation) ChannelMachines.initComputation();
+        if (config.wireless.opticalData) ChannelMachines.initOptical();
         if (GTCEu.Mods.isAE2Loaded()) {
             // Before any machine exists: the universal parts attach one handler per bridge when constructed.
             if (ModList.get().isLoaded("mekanism") && ModList.get().isLoaded("appmek")) {

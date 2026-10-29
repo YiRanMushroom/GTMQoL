@@ -1,8 +1,8 @@
 +++
 title = "1.20.1 vs 1.21.1 branch: code differences to keep in mind when cherry-picking"
 keys = [ "forge", "neoforge", "port" ]
-updated = "2026-10-27 15:31:40"
-checked = "2026-10-27"
+updated = "2026-10-29 07:34:16"
+checked = "2026-10-29"
 +++
 Two long-lived branches: `1.20` (this one, Forge 47 / MC 1.20.1, worktree `GTMQoL-1.20.1`) and `1.21` (NeoForge 21.1, the default branch). Synced by cherry-picking; 1.21.1 was branched after `87a49de` (GTNL steam machines). Most commits exist on both with different hashes (e.g. 1.20.1 `e882d08` = 1.21.1 `146115b`). Build: both use ModDevGradle now (1.20.1 `legacyForge` since `3b63374`, still with `mod*` configurations, mixin configs declared in build.gradle `mixin { config ... }`; 1.21.1 lists them in neoforge.mods.toml). Build details: build.environment, build.dependencies.
 
@@ -17,6 +17,7 @@ Data / APIs
 - GTCEu ingredients: 1.20.1 GTCEu's own `SizedIngredient` / `FluidIngredient` / `IntProviderFluidIngredient`; 1.21.1 NeoForge's sized ingredients.
 - Tags: 1.20.1 `forge:` (CircuitTags `forge:circuits/<tier>`, `forge:alloys/advanced`), 1.21.1 `c:`.
 - FE input: 1.20.1 `FEInputProvider` attaches `ForgeCapabilities.ENERGY` via `AttachCapabilitiesEvent<BlockEntity>`; 1.21.1 uses `RegisterCapabilitiesEvent`.
+- Network/save APIs: no StreamCodec / RegistryFriendlyByteBuf, so synced records have static write/read(FriendlyByteBuf) (PendingOutputTrait.Stored, ChannelInfo) and GenericListSyncHandler.Builder<T> takes one type parameter; SavedData is computeIfAbsent(load, new, name) with save(CompoundTag) / load(CompoundTag); DataResult.getOrThrow(false, error -> {}); no Component.withColor (withStyle(s -> s.withColor(rgb))).
 - Events: Forge 47 `TickEvent.ServerTickEvent` with `phase == END` (AutoBuilder, WirelessNetworks), `ServerStoppedEvent`, `ForgeEventFactory.onBlockPlace`.
 - Auto-build: 1.20.1 is on GTCEu #5337 (filtered predicates in `StructurePlanner`, GTCEu's preview as the settings window, no `BuildOptions`); 1.21.1 still has count overrides, the slider window and `BuildOptions` until upstream ports #5337.
 - Mixin configs: `compatibilityLevel` JAVA_17, `mixinextras.minVersion` 0.5.5 (MixinExtras is jarJar'd by us; 1.21.1 uses NeoForge's 0.5.3). pack_format 15. mods.toml (not neoforge.mods.toml).

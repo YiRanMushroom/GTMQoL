@@ -1,7 +1,8 @@
 +++
 title = "Source layout: package tree of com.yiran.minecraft.gtmqol (1.20.1) and where resources live"
 keys = [ "packages", "src/generated/resources", "where is" ]
-updated = "2026-10-21 08:00:17"
+updated = "2026-10-29 07:34:16"
+checked = "2026-10-29"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol"
@@ -46,7 +47,7 @@ common/
   steam/             advanced steam multis, steam parallel hatch
   test/              IntegrationTests
   ui/                PopupWidgets (shared popup look, counter rows)
-  wireless/          networks, binding, covers; steam/ and energy/ per resource
+  wireless/          networks, binding, covers; steam/ and energy/ per resource; channel/ (computation/, optical/)
 config/              GTMQoLConfig (toma), EarlyConfig (gtmqol-early.properties)
 core/                mixin plugins (GTMQoL, RecipeDB, AE2, EAP)
   mixins/            feature mixins; ae2/ eap/ mekanism/ recipedb/ gtceufix/ (upstream bug workarounds)

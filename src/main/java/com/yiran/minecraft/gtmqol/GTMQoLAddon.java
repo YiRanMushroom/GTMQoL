@@ -131,6 +131,8 @@ public final class GTMQoLAddon implements IGTAddon {
         ProbableDevices.addRecipes(provider);
         if (config.wireless.energy) WirelessRecipes.addEnergyRecipes(provider);
         if (config.wireless.steam) WirelessRecipes.addSteamRecipes(provider);
+        if (config.wireless.computation) WirelessRecipes.addComputationRecipes(provider);
+        if (config.wireless.opticalData) WirelessRecipes.addOpticalRecipes(provider);
         ModularMachines.addRecipes(provider);
         Gregification.addRecipes(provider);
         GTMQoLMultiblocks.addRecipes(provider);
