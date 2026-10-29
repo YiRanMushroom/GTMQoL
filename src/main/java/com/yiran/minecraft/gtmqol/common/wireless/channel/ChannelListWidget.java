@@ -134,7 +134,11 @@ public class ChannelListWidget extends Widget<ChannelListWidget> implements Inte
             onEdit.accept(channel);
         } else if (channel.id() != boundId.getAsInt()) {
             onBind.accept(channel);
+        } else {
+            return Result.SUCCESS;
         }
+        // the rows act as buttons
+        Interactable.playButtonClickSound();
         return Result.SUCCESS;
     }
 

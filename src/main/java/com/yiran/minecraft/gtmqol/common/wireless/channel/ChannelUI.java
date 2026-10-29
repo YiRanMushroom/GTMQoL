@@ -31,6 +31,7 @@ import brachy.modularui.widgets.textfield.TextFieldWidget;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.popup;
 
@@ -83,6 +84,10 @@ public final class ChannelUI {
     public static Flow create(PanelSyncManager syncManager, ChannelBindingTrait binding, Player player) {
         boolean client = player.level().isClientSide();
         String[] feedback = { "" };
+        // form actions: the error of the last one (empty when it worked), and a count of those that worked,
+        // which tells the client to close the form
+        String[] formError = { "" };
+        int[] formDone = { 0 };
 
         var currentName = new StringSyncValue(() -> {
             Channel channel = binding.getChannel();
@@ -97,6 +102,8 @@ public final class ChannelUI {
             return channel == null ? NOT_BOUND_KEY : channel.isActive() ? ACTIVE_KEY : INACTIVE_KEY;
         });
         var feedbackValue = new StringSyncValue(() -> feedback[0]);
+        var formErrorValue = new StringSyncValue(() -> formError[0]);
+        var formDoneValue = new IntSyncValue(() -> formDone[0]);
         var channels = new GenericListSyncHandler.Builder<RegistryFriendlyByteBuf, ChannelInfo>()
                 .getter(() -> client ? List.of() : ChannelSavedData.get().visible(player, binding.kind).stream()
                         .map(channel -> ChannelInfo.of(channel, player)).toList())
@@ -108,6 +115,8 @@ public final class ChannelUI {
         syncManager.syncValue("channel_status", status);
         syncManager.syncValue("channel_feedback", feedbackValue);
         syncManager.syncValue("channel_list", channels);
+        syncManager.syncValue("channel_form_error", formErrorValue);
+        syncManager.syncValue("channel_form_done", formDoneValue);
 
         syncManager.registerSyncedAction("channel_bind", false, true,
                 buf -> feedback[0] = orElse(binding.bind(player, buf.readVarInt()), BOUND_KEY));
@@ -115,24 +124,37 @@ public final class ChannelUI {
             binding.unbind();
             feedback[0] = UNBOUND_KEY;
         });
+        // a form action's error stays in the form; when it works the form closes and the list says so
+        Consumer<FormResult> formAction = result -> {
+            formError[0] = result.error == null ? "" : result.error;
+            if (result.error == null) {
+                formDone[0]++;
+                feedback[0] = result.success;
+            }
+        };
         syncManager.registerSyncedAction("channel_create", false, true, buf -> {
             Form form = Form.read(buf);
-            feedback[0] = orElse(ChannelSavedData.get().create(player, binding.kind, form.name, form.color,
-                    form.access), CREATED_KEY);
+            formAction.accept(new FormResult(ChannelSavedData.get().create(player, binding.kind, form.name,
+                    form.color, form.access), CREATED_KEY));
         });
         syncManager.registerSyncedAction("channel_edit", false, true, buf -> {
             int id = buf.readVarInt();
             Form form = Form.read(buf);
-            feedback[0] = orElse(ChannelSavedData.get().edit(player, id, form.name, form.color, form.access),
-                    SAVED_KEY);
+            formAction.accept(new FormResult(ChannelSavedData.get().edit(player, id, form.name, form.color,
+                    form.access), SAVED_KEY));
         });
-        syncManager.registerSyncedAction("channel_delete", false, true,
-                buf -> feedback[0] = orElse(ChannelSavedData.get().delete(player, buf.readVarInt()), DELETED_KEY));
+        syncManager.registerSyncedAction("channel_delete", false, true, buf -> formAction.accept(
+                new FormResult(ChannelSavedData.get().delete(player, buf.readVarInt()), DELETED_KEY)));
 
         // the form's fields live on the client until sent
         var formState = new FormState();
         IPanelHandler form = syncManager.syncedPanel("channel_form", false,
-                (manager, handler) -> formPanel(syncManager, handler, formState, feedbackValue));
+                (manager, handler) -> formPanel(syncManager, formState, formErrorValue));
+        formDoneValue.setChangeListener(() -> {
+            if (!formState.waiting) return;
+            formState.waiting = false;
+            if (form.isPanelOpen()) form.closePanel();
+        });
         IPanelHandler list = syncManager.syncedPanel("channel_list_panel", false,
                 (manager, handler) -> listPanel(syncManager, binding, channels, formState, form, feedbackValue));
 
@@ -212,8 +234,9 @@ public final class ChannelUI {
                         .child(feedbackLine(feedback, LIST_WIDTH)));
     }
 
-    private static ModularPanel<?> formPanel(PanelSyncManager syncManager, IPanelHandler self, FormState state,
-                                             StringSyncValue feedback) {
+    /** Closes itself once the server reports the action worked (the {@code channel_form_done} listener). */
+    private static ModularPanel<?> formPanel(PanelSyncManager syncManager, FormState state,
+                                             StringSyncValue error) {
         Flow colors = Flow.row().coverChildren().childPadding(3);
         for (int color : COLORS) {
             colors.child(new ButtonWidget<>()
@@ -240,6 +263,8 @@ public final class ChannelUI {
                                 .child(new TextFieldWidget()
                                         .size(110, 14)
                                         .setMaxLength(Channel.MAX_NAME_LENGTH)
+                                        // else the name only reaches the value on unfocus, after Save sent it
+                                        .autoUpdateOnChange(true)
                                         .value(state.name)))
                         .child(colors)
                         .child(new ButtonWidget<>()
@@ -252,10 +277,13 @@ public final class ChannelUI {
                         .child(Flow.row()
                                 .coverChildren()
                                 .childPadding(6)
+                                // Delete is hidden while creating; Save then stays centered
+                                .collapseDisabledChildren()
                                 .child(new ButtonWidget<>()
                                         .size(60, 16)
                                         .overlay(Text.lang(SAVE_KEY))
                                         .onMousePressed((context, button) -> {
+                                            state.waiting = true;
                                             if (state.editing == 0) {
                                                 syncManager.callSyncedAction("channel_create", state::write);
                                             } else {
@@ -265,7 +293,6 @@ public final class ChannelUI {
                                                     state.write(buf);
                                                 });
                                             }
-                                            self.closePanel();
                                             return true;
                                         }))
                                 .child(new ButtonWidget<>()
@@ -275,13 +302,20 @@ public final class ChannelUI {
                                         .tooltip(new RichTooltip().addLine(Component.translatable(DELETE_TOOLTIP_KEY)))
                                         .onMousePressed((context, button) -> {
                                             if (!MouseData.create(button).shift()) return false;
+                                            state.waiting = true;
                                             int id = state.editing;
                                             syncManager.callSyncedAction("channel_delete", buf -> buf.writeVarInt(id));
-                                            self.closePanel();
                                             return true;
                                         })))
-                        .child(feedbackLine(feedback, 156)));
+                        // only the answer to this form's own action
+                        .child(new TextWidget<>(Text.dynamic(() -> !state.waiting || error.getValue().isEmpty() ?
+                                Component.empty() :
+                                Component.translatable(error.getValue()).withStyle(ChatFormatting.RED)))
+                                .maxWidth(156)));
     }
+
+    /** A form action's outcome on the server: {@code error} a lang key, or null with {@code success} to report. */
+    private record FormResult(@Nullable String error, String success) {}
 
     /** What the form sends; read on the server. */
     private record Form(String name, int color, ChannelAccess access) {
@@ -292,16 +326,21 @@ public final class ChannelUI {
         }
     }
 
-    /** The form's fields on the client. {@code editing} is the channel id being edited, 0 when creating. */
+    /**
+     * The form's fields on the client. {@code editing} is the channel id being edited, 0 when creating;
+     * {@code waiting}: an action was sent and its answer hasn't closed the form.
+     */
     private static final class FormState {
 
         final StringValue name = new StringValue("");
         final IntValue color = new IntValue(COLORS[0]);
         ChannelAccess access = ChannelAccess.PRIVATE;
         int editing;
+        boolean waiting;
 
         void create() {
             editing = 0;
+            waiting = false;
             name.setStringValue("");
             color.setIntValue(COLORS[0]);
             access = ChannelAccess.PRIVATE;
@@ -309,6 +348,7 @@ public final class ChannelUI {
 
         void edit(ChannelInfo channel) {
             editing = channel.id();
+            waiting = false;
             name.setStringValue(channel.name());
             color.setIntValue(channel.color());
             access = channel.access();
