@@ -35,7 +35,6 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 
 - Untested changes to remind the user of (in-game checks): `status.untested`, each item linked to its `Untested:`
   comment in the code.
-- Wireless channels (`wireless.channels`, 1.21 only so far): port to 1.20 once the user has tried them in game.
 - Auto-build: substructures (`autobuild.*`). 1.21: once upstream ports GTCEu #5337, switch the settings window to
   GTCEu's multiblock preview and the planner to filtered predicates, as on 1.20 (`build.branch-differences`).
 - Stack-like: external chemical hatches.
