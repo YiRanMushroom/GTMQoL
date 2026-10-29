@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-19T20:54:52.9925277	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.21.1	2026-10-28T22:02:02.0288279	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider, Tags (materials), Tags (tag_prefixes)]
 09fb3a7710cbbd11f92fc4af1cdf02c52d2d0796 assets/gtmqol/blockstates/crystal_growth_chamber.json
 e61d13dc7f445fd39b88c0d72baabebd58c467a5 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
 f9870cf6218e8d4c6a301978cf03cd4e3221859d assets/gtmqol/blockstates/electric_implosion_compressor.json
