@@ -3,9 +3,11 @@ package com.yiran.minecraft.gtmqol.data.recipe;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
+import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessCovers;
+import com.yiran.minecraft.gtmqol.common.wireless.channel.ChannelMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
 
@@ -121,6 +123,51 @@ public final class WirelessRecipes {
                 .inputItems(WirelessCovers.STEAM_INPUT_ITEM)
                 .outputItems(WirelessSteamMachines.STEAM_MONITOR)
                 .duration(400)
+                .save(provider);
+    }
+
+    /** gtceu's computation hatches + circuit 5 give the wireless ones; the network switch gives the router. */
+    public static void addComputationRecipes(RecipeOutput provider) {
+        var assembler = MagicalAssembler.RECIPE_TYPE;
+
+        assembler.recipeBuilder(GTMQoL.id("wireless_computation_transmitter_hatch"))
+                .inputItems(GTResearchMachines.COMPUTATION_HATCH_TRANSMITTER)
+                .circuitMeta(5)
+                .outputItems(ChannelMachines.COMPUTATION_TRANSMITTER)
+                .duration(200)
+                .save(provider);
+
+        assembler.recipeBuilder(GTMQoL.id("wireless_computation_receiver_hatch"))
+                .inputItems(GTResearchMachines.COMPUTATION_HATCH_RECEIVER)
+                .circuitMeta(5)
+                .outputItems(ChannelMachines.COMPUTATION_RECEIVER)
+                .duration(200)
+                .save(provider);
+
+        assembler.recipeBuilder(GTMQoL.id("wireless_computation_router"))
+                .inputItems(GTResearchMachines.NETWORK_SWITCH)
+                .circuitMeta(5)
+                .outputItems(ChannelMachines.COMPUTATION_ROUTER)
+                .duration(400)
+                .save(provider);
+    }
+
+    /** gtceu's optical data hatches + circuit 5 give the wireless ones. */
+    public static void addOpticalRecipes(RecipeOutput provider) {
+        var assembler = MagicalAssembler.RECIPE_TYPE;
+
+        assembler.recipeBuilder(GTMQoL.id("wireless_data_transmitter_hatch"))
+                .inputItems(GTResearchMachines.DATA_HATCH_TRANSMITTER)
+                .circuitMeta(5)
+                .outputItems(ChannelMachines.DATA_TRANSMITTER)
+                .duration(200)
+                .save(provider);
+
+        assembler.recipeBuilder(GTMQoL.id("wireless_data_receiver_hatch"))
+                .inputItems(GTResearchMachines.DATA_HATCH_RECEIVER)
+                .circuitMeta(5)
+                .outputItems(ChannelMachines.DATA_RECEIVER)
+                .duration(200)
                 .save(provider);
     }
 }

@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-28T22:02:02.0288279	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider, Tags (materials), Tags (tag_prefixes)]
+// 1.21.1	2026-10-29T00:12:21.4751146	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider, Tags (materials), Tags (tag_prefixes)]
 09fb3a7710cbbd11f92fc4af1cdf02c52d2d0796 assets/gtmqol/blockstates/crystal_growth_chamber.json
 e61d13dc7f445fd39b88c0d72baabebd58c467a5 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
 f9870cf6218e8d4c6a301978cf03cd4e3221859d assets/gtmqol/blockstates/electric_implosion_compressor.json
@@ -157,6 +157,11 @@ b743867aded2ada543beb142be1ec8ae65da6f63 assets/gtmqol/blockstates/uxv_wireless_
 dfedf03abc814dc86d0f3a57811b5c19b576f1ae assets/gtmqol/blockstates/uxv_wireless_energy_input_hatch.json
 06ef0fc0a793c999d9e696757d90f9360aa36671 assets/gtmqol/blockstates/uxv_wireless_energy_output_hatch.json
 cd1660b9869457d2b5cfff3527d483d277579cab assets/gtmqol/blockstates/void_miner.json
+fca9f6640c82b773ab0ec33cb201a09f92a3cfc6 assets/gtmqol/blockstates/wireless_computation_receiver_hatch.json
+1c7f9ed07be265182d3e81551efa9628180b5bef assets/gtmqol/blockstates/wireless_computation_router.json
+5235966ed5a85db70cab4a63300f188fc33301fc assets/gtmqol/blockstates/wireless_computation_transmitter_hatch.json
+68457e639152f8f1be825a2c2c1eb8b8a7da8a9b assets/gtmqol/blockstates/wireless_data_receiver_hatch.json
+64318a133de865153081b64cadde07140fdca81e assets/gtmqol/blockstates/wireless_data_transmitter_hatch.json
 fc528f1d4de00e4a342ed0a06eef6d7118f1e01f assets/gtmqol/blockstates/wireless_energy_monitor.json
 aca98a7ff66b618550bdf4c3a5b261136fbad1fd assets/gtmqol/blockstates/wireless_steam_accessor.json
 2e82ada2357009506766303d34385202c9872a49 assets/gtmqol/blockstates/wireless_steam_input_hatch.json
@@ -169,8 +174,8 @@ e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circui
 674a583f2b29eee523d730ad4211c0134c9f8134 assets/gtmqol/blockstates/zpm_wireless_energy_accessor.json
 1136e3739fdb3b339bc80d9bedcd1bde88a780e9 assets/gtmqol/blockstates/zpm_wireless_energy_input_hatch.json
 a77ec21bfd8e4ba2dd87ea6bde687970c4039a69 assets/gtmqol/blockstates/zpm_wireless_energy_output_hatch.json
-7ee10fb6e2dba756a50e0dabab93db08595f38d9 assets/gtmqol/lang/en_ud.json
-26075639d73b634543e052ada1e27880afc6deb2 assets/gtmqol/lang/en_us.json
+15983522c26755d31f17990f684f68fb9e2bbcfb assets/gtmqol/lang/en_ud.json
+aaec6ea106a6ea0847ae69c2b2559f8cb505da38 assets/gtmqol/lang/en_us.json
 4164843cf5260a41ff807a6f71a0269d98fdc69f assets/gtmqol/models/block/machine/crystal_growth_chamber.json
 68508e04e98fb37278a58e6e9440ba6f5cf3d12a assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
 741b8a3b73652f73a2e11b5943bc7ddeb426f178 assets/gtmqol/models/block/machine/electric_implosion_compressor.json
@@ -329,6 +334,11 @@ eeb265bc7c20d435fcce59a1d6785231aa78c164 assets/gtmqol/models/block/machine/uxv_
 762646d8ed986873d4758af886821a81cfa8b4ad assets/gtmqol/models/block/machine/uxv_wireless_energy_input_hatch.json
 e3a3f812ca2687d871f30bcc3e9071e30b8139ee assets/gtmqol/models/block/machine/uxv_wireless_energy_output_hatch.json
 31bb84a44b90f411a9ec38573f164f7e17eff479 assets/gtmqol/models/block/machine/void_miner.json
+78a3ae61d6a70962de48808234e2e4cab0d77620 assets/gtmqol/models/block/machine/wireless_computation_receiver_hatch.json
+28b80ebb31e913ee78158eb23753f191cfc0ab44 assets/gtmqol/models/block/machine/wireless_computation_router.json
+9147b280332f45c5e7a11b72c1f541b69bf99b0d assets/gtmqol/models/block/machine/wireless_computation_transmitter_hatch.json
+0b5f6707cd4599ddb9367a27bf91e0ab4f06908a assets/gtmqol/models/block/machine/wireless_data_receiver_hatch.json
+40a81cb9fe4594a627a1f6ab6dbdf0bb983e8998 assets/gtmqol/models/block/machine/wireless_data_transmitter_hatch.json
 42e582bf31595d4a5341c372adc7c1a244d12f31 assets/gtmqol/models/block/machine/wireless_energy_monitor.json
 2d8b6f2bfa6d15a2aac4ea4762e74f6d5d7f0d80 assets/gtmqol/models/block/machine/wireless_steam_accessor.json
 857e1037edaa304e097ad02596b456730e30cb14 assets/gtmqol/models/block/machine/wireless_steam_input_hatch.json
@@ -557,6 +567,11 @@ c938c6e3a81587eea68db0384ed4fd623544952e assets/gtmqol/models/item/uxv_wireless_
 1d0c3672c1210ce6ffe200751b43fad9e8eebd56 assets/gtmqol/models/item/uxv_wireless_energy_output_hatch.json
 f9cf145e57f047f3969a2e41ebe118f8f9b7d6b8 assets/gtmqol/models/item/very_simple_control_circuit.json
 341fad2e8e98bd5acfeb8486e39981574ba948d4 assets/gtmqol/models/item/void_miner.json
+8909acfc0893a13b1dd45b0073665490eb7492f6 assets/gtmqol/models/item/wireless_computation_receiver_hatch.json
+774b3d484646de34ae6ec20429be90bd386110cb assets/gtmqol/models/item/wireless_computation_router.json
+ea671359f3ea36f9940da52d5b026ad1e01b7070 assets/gtmqol/models/item/wireless_computation_transmitter_hatch.json
+bd82396dd1e35053d81c5302bd9655fbf570fe6e assets/gtmqol/models/item/wireless_data_receiver_hatch.json
+76fb3b06588aedfef501172bfc74d8efb6ced867 assets/gtmqol/models/item/wireless_data_transmitter_hatch.json
 136e064c13e0b3fda4ec9e499b0a07b725e7a856 assets/gtmqol/models/item/wireless_energy_monitor.json
 b4cdcc16dc19259982b49c597744d496d7bd45ed assets/gtmqol/models/item/wireless_steam_accessor.json
 8b2048a623bd1ca289a42dd7a63a3dc9fbf920a4 assets/gtmqol/models/item/wireless_steam_input_cover.json

@@ -162,6 +162,16 @@ public final class GTMQoLConfig {
         @Configurable.Comment({ "Wireless steam hatches, covers, accessor and monitor", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean steam = true;
+
+        @Configurable
+        @Configurable.Comment({ "Wireless computation hatches and router over computation channels", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean computation = true;
+
+        @Configurable
+        @Configurable.Comment({ "Wireless optical data hatches over optical data channels", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean opticalData = true;
     }
 
     @Configurable
