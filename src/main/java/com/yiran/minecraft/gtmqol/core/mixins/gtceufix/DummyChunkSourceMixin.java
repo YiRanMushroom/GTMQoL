@@ -14,6 +14,11 @@ import org.spongepowered.asm.mixin.Mixin;
  * {@code Long2ObjectOpenHashMap}. Two threads adding chunks at once broke the map while it grew and crashed the game
  * ("Batching chunks", {@code ArrayIndexOutOfBoundsException} in {@code computeIfAbsent}). Lock the map's users on
  * the chunk source. Remove once ModularUI fixes it.
+ * <p>
+ * Unlike 1.21.1's, the 1.20.1 ModularUI (builds 23 to 25) has no {@code clear()}, so only {@code getChunk} is locked
+ * here (a wrapper for the missing method fails to apply and stops the game at startup).
+ * Untested: the client starts without a mixin error for DummyChunkSourceMixin, and opening a multiblock preview
+ * (terminal or EMI multiblock page) still renders.
  */
 @Mixin(DummyChunkSource.class)
 public class DummyChunkSourceMixin {
@@ -23,13 +28,6 @@ public class DummyChunkSourceMixin {
                                             Operation<ChunkAccess> original) {
         synchronized (this) {
             return original.call(chunkX, chunkZ, requiredStatus, load);
-        }
-    }
-
-    @WrapMethod(method = "clear", remap = false)
-    private boolean gtmqol$lockClear(Operation<Boolean> original) {
-        synchronized (this) {
-            return original.call();
         }
     }
 }

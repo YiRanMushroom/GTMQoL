@@ -23,7 +23,7 @@ computers, so paths differ (`C:\Users\yiran.wang\IdeaProjects\` or `E:\code\Mine
 ## Known bugs, not fixed
 
 - Client resource reload breaks GTCEu bronze/steel themed UIs (seen on 1.21.1; this branch's ModularUI
-  `3.3.1-20261013` has the same `ThemeManager` code, so most likely here too). Details and the possible fix are in
+  `3.3.1-20261026` has the same `ThemeManager` code as `-20261013`, so most likely here too). Details and the possible fix are in
   1.21.1's `context.md` (ModularUI `3.3.1-20261022` not checked).
 - Proxy pattern buffers don't get the pattern output marks (as on 1.21.1).
 - Upstream: steam (BRONZE theme) panel title and GT logo squeezed, GTCEu's own steam machines too.

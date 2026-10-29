@@ -26,8 +26,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = SimpleSteamMachine.class, remap = false)
 public class SimpleSteamMachineMixin {
 
-    // Both constructors call super(...), not this(...), so this runs once per machine.
-    @Inject(method = "<init>*", at = @At("RETURN"))
+    // Only the full constructor: since GTCEu build 327 the (info, isHighPressure) one delegates to it via this(...),
+    // so "<init>*" would attach everything twice.
+    // Untested: a steam single block (e.g. steam macerator) shows one ghost circuit slot and the extra fluid tanks,
+    // and keeps the circuit setting and tank contents after a world reload.
+    @Inject(method = "<init>(Lcom/gregtechceu/gtceu/api/blockentity/BlockEntityCreationInfo;" +
+            "Lcom/gregtechceu/gtceu/api/machine/trait/recipe/RecipeLogic;ZII)V",
+            at = @At("RETURN"),
+            require = 1)
     private void gtmqol$attachTraits(CallbackInfo ci) {
         SimpleSteamMachine machine = (SimpleSteamMachine) (Object) this;
         GTMQoLConfig.SteamTweaks tweaks = GTMQoLConfig.get().steamTweaks;

@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-10-27 15:31:37"
+updated = "2026-10-29 05:08:00"
 checked = "2026-10-27"
 
 [[items]]
@@ -70,5 +70,23 @@ name = "autobuild-preview"
 value = "Auto-build settings are now GTCEu's multiblock preview (autobuild.panel): opens inside the machine UI, turned like the controller; layers, sizes, block per char and per clicked position are used by the build; Reset clears them. The old preview was buggy, see if #5337 fixed it."
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/AutoBuildPanel.java"
 snippet = "// Untested: GTCEu's preview inside our machine UI panel"
+
+[[items]]
+name = "steam-ctor-327"
+value = "GTCEu 327: SimpleSteamMachineMixin injects only the full constructor; a steam single block shows one ghost circuit slot and the extra tanks, both kept after reload"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/SimpleSteamMachineMixin.java"
+snippet = "// Untested: a steam single block (e.g. steam macerator) shows one ghost circuit slot and the extra fluid tanks,"
+
+[[items]]
+name = "mui-25"
+value = "ModularUI build 25 (with GTCEu 327): no NoSuchMethodError from brachy.modularui; fluid slots update while a tank fills"
+path = "gradle.properties"
+snippet = "# Untested: build 25 (only FluidSlotSyncHandler changed"
+
+[[items]]
+name = "dummy-chunk-clear"
+value = "DummyChunkSourceMixin without the clear() wrapper (1.20.1 MUI has none): client starts without its mixin error, multiblock preview renders"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/DummyChunkSourceMixin.java"
+snippet = " * Untested: the client starts without a mixin error for DummyChunkSourceMixin"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).
