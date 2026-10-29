@@ -20,7 +20,8 @@ public class GTMQoLMixinPlugin extends GTMQoLMixinConfigPlugin {
     private static final Set<String> OVERCLOCKING_MIXINS = Set.of(
             PACKAGE + "OverclockingLogicMixin",
             PACKAGE + "GTRecipeViewerWidgetMixin",
-            PACKAGE + "GTRecipeModifiersMixin");
+            PACKAGE + "GTRecipeModifiersMixin",
+            PACKAGE + "ResearchOverclockMixin");
 
     @Override
     public void onLoad(String mixinPackage) {

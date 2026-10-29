@@ -32,6 +32,7 @@
     "PredicatesProbableDeviceMixin",
     "RecipeManagerHandlerMixin",
     "RecipeRemovalMixin",
+    "ResearchOverclockMixin",
     "SimpleSteamMachineMixin",
     "SteamItemBusPartMachineMixin",
     "WorkableElectricMultiblockMachineMixin",
