@@ -12,6 +12,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -42,6 +43,23 @@ public final class ChannelComputation {
 
         private Node(int channel) {
             this.channel = channel;
+        }
+
+        // gtceu's no-seen defaults start with this already seen, which the checks below would refuse: the
+        // receiver's handleRecipeInner draws its CWU through requestCWUt(int, boolean)
+        @Override
+        public int requestCWUt(int cwut, boolean simulate) {
+            return requestCWUt(cwut, simulate, new ArrayList<>());
+        }
+
+        @Override
+        public int getMaxCWUt() {
+            return getMaxCWUt(new ArrayList<>());
+        }
+
+        @Override
+        public boolean canBridge() {
+            return canBridge(new ArrayList<>());
         }
 
         private boolean flows() {

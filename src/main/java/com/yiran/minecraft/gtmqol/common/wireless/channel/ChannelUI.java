@@ -243,7 +243,8 @@ public final class ChannelUI {
                     .size(12)
                     .background(new Rectangle().color(0xFF000000 | color))
                     .overlay(new DynamicDrawable(() -> state.color.getIntValue() == color ?
-                            new Rectangle().color(0x80000000).cornerRadius(1) : IDrawable.EMPTY).asIcon().size(6))
+                            // no cornerRadius: MUI 1.21 drawRoundedRect misses the pose on the bottom left corner
+                            new Rectangle().color(0x80000000) : IDrawable.EMPTY).asIcon().size(6))
                     .onMousePressed((context, button) -> {
                         state.color.setIntValue(color);
                         return true;
