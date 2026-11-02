@@ -1,8 +1,8 @@
 +++
 title = "UI design (user's preferences): polished not minimal, centered, no row caps, drop features whose UI is clumsy"
 keys = [ "centered", "layout", "list", "scroll", "ui" ]
-updated = "2026-10-29 07:21:35"
-checked = "2026-10-29"
+updated = "2026-11-02 05:28:44"
+checked = "2026-11-02"
 +++
 The user wants UIs designed properly, not just functional (said on the channel UI, 2026-10-29):
 - Center content and rows of buttons; put related actions together in one row (e.g. New and Unbind under the channel list).
@@ -14,4 +14,5 @@ ModularUI traps (each broke the channel form once):
 - TextFieldWidget writes its value only on unfocus: a button that reads the field needs .autoUpdateOnChange(true), else it sends the old text.
 - A form that asks the server closes only when the server reports success (a synced counter with a changeListener, as ChannelUI does); on failure it stays open and shows the error in the form.
 - A row with a hidden (setEnabledIf) button needs .collapseDisabledChildren(), else the hidden one keeps its space and the rest is off center.
+- Rectangle.cornerRadius on 1.21: MUI's GuiDraw.drawRoundedRect adds the bottom-left corner's vertices without the pose, so a line runs from the screen's top left to the shape. Use plain rectangles (1.20's MUI has the pose).
 Popups: rules.ui-popups.
