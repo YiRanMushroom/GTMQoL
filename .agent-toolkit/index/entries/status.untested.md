@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-10-29 07:33:57"
+updated = "2026-11-02 16:58:34"
 checked = "2026-10-27"
 
 [[items]]
@@ -100,5 +100,11 @@ name = "wireless-channels"
 value = "Wireless channels (wireless.channels): channel list (any length, scrolls), create/edit/delete, private/team/public; HPCA -> research station over a channel; 2nd receiver refused without router, allowed with; data bank -> assembly line; bindings survive reload."
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/channel/ChannelMachines.java"
 snippet = "// Untested: channel UI (list, create/edit/delete, private/team/public); an HPCA's wireless"
+
+[[items]]
+name = "coil-oc"
+value = "Coil OC as equivalent OC (oc.overhaul): an EBF with inputs for fewer than 8 parallels still goes to 1 tick, using more energy."
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/OverclockingLogicMixin.java"
+snippet = "// Untested: an EBF whose inputs allow fewer than 8 parallels still reaches 1 tick (energy use rises accordingly)"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

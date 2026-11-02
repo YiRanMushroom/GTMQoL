@@ -104,39 +104,15 @@ public interface OverclockingLogicMixin {
 
     /**
      * @author Yiran
-     * @reason Every heating coil OC is 4x EU/t for 8x speed
+     * @reason Every heating coil OC is 4x EU/t for 8x speed, as equivalent OC: the last one may be partial (a
+     *         5 tick recipe goes to 1 tick at 5^(2/3) x EU/t), and at 1 tick any whole number of parallels counts.
+     *         A whole-OC loop stopped as soon as 8x the parallels didn't fit the inputs, leaving recipes at
+     *         2-7 ticks with most of the energy unused.
      */
+    // Untested: an EBF whose inputs allow fewer than 8 parallels still reaches 1 tick (energy use rises accordingly)
     @Overwrite
     static OverclockingLogic.OCResult heatingCoilOC(OverclockingLogic.OCParams params, long maxVoltage,
                                                     int recipeTemp, int machineTemp) {
-        double duration = params.duration();
-        double eut = params.eut();
-        int ocAmount = params.ocAmount();
-        int maxParallels = params.maxParallels();
-
-        double parallel = 1;
-        boolean shouldParallel = false;
-        int ocLevel = 0;
-        double durationMultiplier = 1;
-
-        while (ocAmount-- > 0) {
-            double potentialEUt = eut * 4.0;
-            if (potentialEUt > maxVoltage) break;
-
-            if (shouldParallel || duration * 0.125 < 1) {
-                double potentialParallel = parallel * 8.0;
-                if (potentialParallel > maxParallels) break;
-                parallel = potentialParallel;
-                shouldParallel = true;
-            } else {
-                duration *= 0.125;
-                durationMultiplier *= 0.125;
-            }
-
-            eut = potentialEUt;
-            ocLevel++;
-        }
-
-        return new OverclockingLogic.OCResult(Math.pow(4.0, ocLevel), durationMultiplier, ocLevel, (int) parallel);
+        return OverclockingLogic.subTickParallelOC(params, maxVoltage, 0.125, 4.0);
     }
 }
