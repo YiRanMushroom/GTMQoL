@@ -354,6 +354,16 @@ public final class GTMQoLConfig {
                 "e.g. \"skyblockbuilder:skyblock=minecraft:overworld\" for a skyblock world that is not the overworld",
                 "Default: none" })
         public String[] dimensionMapping = new String[0];
+
+        @Configurable
+        @Configurable.Comment({ "Most operations per cycle (different ores per cycle)", "Default: 64" })
+        @Configurable.Range(min = 1, max = 256)
+        public int maxOperations = 64;
+
+        @Configurable
+        @Configurable.Comment({ "Most stacks per ore and operation", "Default: 4096" })
+        @Configurable.Range(min = 1, max = 65536)
+        public int maxMultiplier = 4096;
     }
 
     @Configurable

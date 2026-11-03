@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.common.multiblock.VoidMinerOres.OreChance;
+import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.common.wireless.NetworkId;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessBindingTrait;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergySavedData;
@@ -51,8 +52,17 @@ public class VoidMinerMachine extends CyclicMultiblockMachine implements IDataSt
 
     public static final long EU_PER_STACK = 1_000_000;
     public static final int CYCLE_TICKS = 15 * 20;
-    public static final int MAX_OPERATIONS = 16;
-    public static final int MAX_MULTIPLIER = 16;
+
+    // Untested: the settings popup goes up to the config limits (64 / 4096 by default); Ctrl doubles/halves
+    /** Config voidMiner.maxOperations; the server's value is what counts. */
+    public static int maxOperations() {
+        return GTMQoLConfig.get().voidMiner.maxOperations;
+    }
+
+    /** Config voidMiner.maxMultiplier. */
+    public static int maxMultiplier() {
+        return GTMQoLConfig.get().voidMiner.maxMultiplier;
+    }
 
     public static final String KEY = "gtmqol.void_miner.";
 
@@ -155,12 +165,12 @@ public class VoidMinerMachine extends CyclicMultiblockMachine implements IDataSt
     }
 
     private void setOperations(int operations) {
-        this.operations = Math.clamp(operations, 1, MAX_OPERATIONS);
+        this.operations = Math.clamp(operations, 1, maxOperations());
         markAsChanged();
     }
 
     private void setMultiplier(int multiplier) {
-        this.multiplier = Math.clamp(multiplier, 1, MAX_MULTIPLIER);
+        this.multiplier = Math.clamp(multiplier, 1, maxMultiplier());
         markAsChanged();
     }
 
@@ -204,7 +214,7 @@ public class VoidMinerMachine extends CyclicMultiblockMachine implements IDataSt
                                     preview.togglePanel();
                                     return true;
                                 }))
-                        .child(storedButton(syncManager, MAX_OPERATIONS))
+                        .child(storedButton(syncManager, maxOperations()))
                         .child(new ButtonWidget<>()
                                 .size(44, 18)
                                 .overlay(Text.lang(KEY + "config"))
@@ -244,7 +254,7 @@ public class VoidMinerMachine extends CyclicMultiblockMachine implements IDataSt
                         .padding(6)
                         .childPadding(4)
                         .child(Text.lang(KEY + "config.title").asWidget())
-                        .child(counterRow(operations, MAX_OPERATIONS, 4, KEY + "config.operations"))
-                        .child(counterRow(multiplier, MAX_MULTIPLIER, 4, KEY + "config.multiplier")));
+                        .child(counterRow(operations, maxOperations(), 8, KEY + "config.operations"))
+                        .child(counterRow(multiplier, maxMultiplier(), 64, KEY + "config.multiplier")));
     }
 }

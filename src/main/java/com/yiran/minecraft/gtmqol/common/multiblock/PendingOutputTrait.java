@@ -76,6 +76,7 @@ public class PendingOutputTrait extends MachineTrait {
      *
      * @return whether everything was output
      */
+    // Untested: a treasure fishing pond with thousands of pending unstackables on an ME output bus no longer lags
     public boolean output() {
         if (items.isEmpty()) return true;
         List<NotifiableItemStackHandler> handlers = getMachine()
@@ -85,17 +86,15 @@ public class PendingOutputTrait extends MachineTrait {
         for (int i = items.size() - 1; i >= 0; i--) {
             ItemStack item = items.get(i);
             long left = counts.get(i);
-            int maxStack = item.getMaxStackSize();
             for (NotifiableItemStackHandler handler : handlers) {
+                // The whole rest per slot: a bus slot takes what fits (slot limit, stack size) and returns the
+                // rest, an ME output bus takes all of it. Stack-size pieces made thousands of unstackables (treasure)
+                // thousands of inserts, each an AE key and a change notification on ME buses.
                 for (int slot = 0; slot < handler.getSlots() && left > 0; slot++) {
-                    while (left > 0) {
-                        int amount = (int) Math.min(left, maxStack);
-                        int inserted = amount - handler.insertItemInternal(slot, item.copyWithCount(amount), false)
-                                .getCount();
-                        left -= inserted;
-                        if (inserted < amount) break;
-                    }
+                    int amount = (int) Math.min(left, Integer.MAX_VALUE);
+                    left -= amount - handler.insertItemInternal(slot, item.copyWithCount(amount), false).getCount();
                 }
+                if (left <= 0) break;
             }
             if (left > 0) {
                 counts.set(i, left);

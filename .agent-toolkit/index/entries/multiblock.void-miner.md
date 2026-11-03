@@ -1,8 +1,8 @@
 +++
-title = "Void Miner: wireless-EU-paid ore generation, 1-16 operations x 1-16 stacks per 15 s cycle, no energy hatch"
+title = "Void Miner: wireless-EU-paid ores, operations x stacks per 15 s cycle (config limits 64/4096), no energy hatch"
 keys = [ "eu_per_stack", "multiplier", "void miner", "wirelessbindingtrait" ]
-updated = "2026-10-19 20:08:34"
-checked = "2026-10-21"
+updated = "2026-11-03 03:35:13"
+checked = "2026-11-03"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/VoidMinerMachine.java"

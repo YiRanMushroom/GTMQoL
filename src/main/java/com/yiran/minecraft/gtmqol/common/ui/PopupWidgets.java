@@ -24,7 +24,7 @@ public final class PopupWidgets {
                 .closeOnOutOfBoundsClick(true);
     }
 
-    /** {@code [-] label [+]}; Shift steps by {@code shiftStep}. */
+    /** {@code [-] label [+]}; Shift steps by {@code shiftStep}, Ctrl doubles or halves. */
     public static Flow counterRow(IntSyncValue value, int max, int shiftStep, String langKey) {
         return Flow.row()
                 .height(18)
@@ -41,8 +41,16 @@ public final class PopupWidgets {
                 .size(18)
                 .overlay(Text.str(up ? "+" : "-"))
                 .onMousePressed((context, button) -> {
-                    int step = MouseData.create(button).shift() ? shiftStep : 1;
-                    int next = Math.clamp(value.getIntValue() + (up ? step : -step), 1, max);
+                    MouseData mouse = MouseData.create(button);
+                    int current = value.getIntValue();
+                    int next;
+                    if (mouse.ctrl()) {
+                        next = up ? current * 2 : current / 2;
+                    } else {
+                        int step = mouse.shift() ? shiftStep : 1;
+                        next = current + (up ? step : -step);
+                    }
+                    next = Math.clamp(next, 1, max);
                     value.setIntValue(next, true, true);
                     return true;
                 });
