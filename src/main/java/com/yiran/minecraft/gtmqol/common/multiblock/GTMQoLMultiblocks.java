@@ -271,7 +271,7 @@ public final class GTMQoLMultiblocks {
         lang.addRawLang(key + "tooltip.1",
                 "Paid from the bound wireless EU network: 1,000,000 EU per stack, all up front. Cycles take 15 s.");
         lang.addRawLang(key + "tooltip.2",
-                "Each of 1-16 operations mines one ore, 1-16 stacks of it. Stopping finishes the current cycle.");
+                "Each operation mines one ore, several stacks of it (limits in the config). Stopping finishes the current cycle.");
         addCyclicMachineLang(key, "Mining: %s / %s s", "Output full: %s ores left");
         lang.addRawLang(key + "status.no_network", "No wireless network bound");
         lang.addRawLang(key + "status.not_enough_eu", "Not enough EU in the network");
@@ -281,7 +281,7 @@ public final class GTMQoLMultiblocks {
         lang.addRawLang(key + "config", "Settings");
         lang.addRawLang(key + "preview.title", "Ore chances");
         lang.addRawLang(key + "preview.empty", "No ore veins in this dimension");
-        lang.addRawLang(key + "config.title", "Settings (Shift: ±4)");
+        lang.addRawLang(key + "config.title", "Settings (Shift: ±8 / ±64, Ctrl: ×2 / ÷2)");
         lang.addRawLang(key + "config.operations", "Operations: %s");
         lang.addRawLang(key + "config.multiplier", "Stacks per ore: %s");
     }
@@ -340,7 +340,7 @@ public final class GTMQoLMultiblocks {
         lang.addRawLang(key + "config", "Settings");
         lang.addRawLang(key + "treasure.on", "Treasure mode: on (4× EU)");
         lang.addRawLang(key + "treasure.off", "Treasure mode: off");
-        lang.addRawLang(key + "config.title", "Settings (Shift: ±8)");
+        lang.addRawLang(key + "config.title", "Settings (Shift: ±8, Ctrl: ×2 / ÷2)");
         lang.addRawLang(key + "config.rolls", "Rolls per cycle: %s");
     }
 

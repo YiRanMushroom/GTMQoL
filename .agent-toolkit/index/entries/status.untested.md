@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-02 16:58:34"
+updated = "2026-11-03 03:35:26"
 checked = "2026-10-27"
 
 [[items]]
@@ -106,5 +106,17 @@ name = "coil-oc"
 value = "Coil OC as equivalent OC (oc.overhaul): an EBF with inputs for fewer than 8 parallels still goes to 1 tick, using more energy."
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/OverclockingLogicMixin.java"
 snippet = "// Untested: an EBF whose inputs allow fewer than 8 parallels still reaches 1 tick (energy use rises accordingly)"
+
+[[items]]
+name = "pending-output-bulk"
+value = "Fishing pond treasure (multiblock.pending-output): thousands of pending unstackables on an ME output bus no longer lag."
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/PendingOutputTrait.java"
+snippet = "// Untested: a treasure fishing pond with thousands of pending unstackables on an ME output bus no longer lags"
+
+[[items]]
+name = "void-miner-limits"
+value = "Void miner (multiblock.void-miner): settings go up to the config limits (64/4096), Ctrl doubles/halves."
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/VoidMinerMachine.java"
+snippet = "// Untested: the settings popup goes up to the config limits (64 / 4096 by default); Ctrl doubles/halves"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).
