@@ -1,0 +1,11 @@
++++
+title = "Per-side machine overlays: a DynamicRender baking quads each rebuild, like gtceu's auto output overlays"
+keys = [ "dynamicrender", "overlay", "pitfall", "rerenderonchanged", "statefacebakery" ]
+updated = "2026-11-06 18:49:31"
+checked = "2026-11-06"
+
+[[links]]
+path = "src/main/java/com/yiran/minecraft/gtmqol/client/EnergyCubeSidesRender.java"
+snippet = "static BakedQuad quad(Direction side"
++++
+Machines render in the cutout layer; items pass other render types, so only placed machines may filter on it. Overlays stack by box size here, there is no face layer as on 1.21. The field the sides depend on needs @RerenderOnChanged. The client has no AE2 grid: sync what it needs (the cell's connected sides).
