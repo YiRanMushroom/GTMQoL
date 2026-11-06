@@ -38,6 +38,8 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 - Auto-build: substructures (`autobuild.*`). 1.21: once upstream ports GTCEu #5337, switch the settings window to
   GTCEu's multiblock preview and the planner to filtered predicates, as on 1.20 (`build.branch-differences`).
 - Stack-like: external chemical hatches.
+- Pattern crafter (`crafter.pattern`): the large multiblock with the AE mode (`crafter.ae-mode`), to discuss with the
+  user first.
 
 ## Open questions for the user
 

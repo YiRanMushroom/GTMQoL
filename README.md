@@ -84,6 +84,12 @@ generators use their own overclock.
 - **Greenhouse** (single block, every tier) and **Industrial Greenhouse** (IV multiblock, 16× outputs, parallel
   hatches): grow crops and trees from a seed or sapling and water. Mystical Agriculture crops are supported,
   and other mods' saplings and crops are picked up by name.
+- **Pattern Crafter** (single block, every tier): runs crafting table, stonecutter and smithing table recipes.
+  Right-click a **Blank Crafting Pattern** to encode a recipe from a grid of ghost items (dragged from EMI/JEI or
+  filled with their transfer button), then put it in the machine with the materials. In crafting recipes, tools are
+  neither consumed nor worn and count at any durability; each pattern can take buckets from the machine's tanks as
+  fluid and accept whatever the recipe accepts (tags). AE2 crafting, stonecutting and smithing patterns work in it
+  too. The pattern textures follow Applied Energistics 2's style.
 
 - **Industrial Large Chemical Reactor**: large chemical reactor recipes 64× faster, with parallel hatches,
   perfect sub-tick overclocking and batch mode.

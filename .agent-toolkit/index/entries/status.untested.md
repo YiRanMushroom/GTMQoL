@@ -2,8 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-03 03:35:26"
-checked = "2026-10-29"
+updated = "2026-11-06 07:03:12"
 
 [[items]]
 name = "rotor-amount"
@@ -58,5 +57,11 @@ name = "void-miner-limits"
 value = "Void miner (multiblock.void-miner): settings go up to the config limits (64/4096), Ctrl doubles/halves."
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/VoidMinerMachine.java"
 snippet = "// Untested: the settings popup goes up to the config limits (64 / 4096 by default); Ctrl doubles/halves"
+
+[[items]]
+name = "pattern-crafter"
+value = "JEI's fill button in the encoding window; the rest was checked in game with EMI on 1.21"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/PatternCrafter.java"
+snippet = "// Untested: JEI's fill button puts crafting"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

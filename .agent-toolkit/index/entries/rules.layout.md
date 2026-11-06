@@ -1,8 +1,7 @@
 +++
 title = "Source layout: packages and what lives where (1.21.1)"
 keys = [ "source tree" ]
-updated = "2026-10-29 07:35:16"
-checked = "2026-10-29"
+updated = "2026-11-06 05:15:17"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol"
@@ -10,7 +9,7 @@ dir = [ "GTMQoL.java", "GTMQoLAddon.java", "api/", "client/", "common/", "config
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common"
-dir = [ "assembler/", "autobuild/", "blockprovider/", "circuit/", "crystal/", "fe/", "ghost/", "greenhouse/", "implosion/", "modifier/", "modular/", "multiblock/", "overclock/", "part/", "potion/", "probable/", "recipedb/", "singleblock/", "stacklike/", "steam/", "test/", "ui/", "wireless/" ]
+dir = [ "assembler/", "autobuild/", "blockprovider/", "circuit/", "crafter/", "crystal/", "fe/", "ghost/", "greenhouse/", "implosion/", "modifier/", "modular/", "multiblock/", "overclock/", "part/", "potion/", "probable/", "recipedb/", "singleblock/", "stacklike/", "steam/", "test/", "ui/", "wireless/" ]
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core"
@@ -32,7 +31,7 @@ src/main/java/com/yiran/minecraft/gtmqol/
 - api/generation/: runtime (dynamic) resource generation, opt-in per machine
 - client/: client-only init and renders (DTFR ring, fishing pond water, Create casing parts)
 - config/: GTMQoLConfig (toma, runtime), EarlyConfig (properties, mixin time)
-- common/: assembler (MagicalAssembler + UI), autobuild, blockprovider (block capability), circuit (UniversalCircuits, ControlCircuits), crystal, fe (FEInputProvider), ghost, greenhouse, implosion, modifier (AbsoluteParallel), modular, multiblock (SAF, DTFR, cyclic: void miner, fishing pond), overclock, part (LegacyPartRecipes), potion (PotionContainers), probable (probable devices), recipedb (non-mixin side of grouped search), singleblock (SingleblockFeature, ComposableTieredMachine, BatchModeTrait), stacklike (+ mekanism/ chemicals), steam, test (IntegrationTests), ui (PopupWidgets), wireless (steam/, energy/; channel/ with computation/ and optical/: wireless.channels)
+- common/: assembler (MagicalAssembler + UI), autobuild, blockprovider (block capability), crafter (pattern crafter, crafting pattern item), circuit (UniversalCircuits, ControlCircuits), crystal, fe (FEInputProvider), ghost, greenhouse, implosion, modifier (AbsoluteParallel), modular, multiblock (SAF, DTFR, cyclic: void miner, fishing pond), overclock, part (LegacyPartRecipes), potion (PotionContainers), probable (probable devices), recipedb (non-mixin side of grouped search), singleblock (SingleblockFeature, ComposableTieredMachine, BatchModeTrait), stacklike (+ mekanism/ chemicals), steam, test (IntegrationTests), ui (PopupWidgets), wireless (steam/, energy/; channel/ with computation/ and optical/: wireless.channels)
 - gregification/: Gregification, ForeignMachineType, GregifiedRecipeType, modifiers, MarkCoveredRecipes; mi/, mekanism/, productivebees/, create/, client/
 - data/: recipe/ (MiscRecipes, EarlyGameRecipes, WirelessRecipes), tag/ (CircuitTags, MaterialAliasTags, WireTags)
 - core/: mixin config plugins (GTMQoL, RecipeDB, EAP, AE2, JeiRecipeSlotFix); mixins/ with gtceufix/, recipedb/, eap/, ae2/

@@ -26,6 +26,7 @@ import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.common.fe.FEInputProvider;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.test.IntegrationTests;
+import com.yiran.minecraft.gtmqol.common.crafter.PatternCrafter;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
@@ -119,6 +120,7 @@ public final class GTMQoL {
         if (config.machines.electricImplosionCompressor) ElectricImplosion.init(modBus);
         if (config.machines.crystalGrowthChamber) CrystalGrowth.init();
         if (config.machines.greenhouse) Greenhouse.init();
+        if (config.machines.patternCrafter) PatternCrafter.init();
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
         if (config.wireless.steam) WirelessSteamMachines.init();
         if (config.wireless.energy) WirelessEnergyMachines.init();
