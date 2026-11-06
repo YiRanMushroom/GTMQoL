@@ -2,7 +2,7 @@
 title = "Pattern crafter: electric crafting table recipes from a self-made crafting pattern, AE2-style encoding, no AE2 needed"
 kind = "design"
 keys = [ "crafter", "crafting pattern", "fluid substitution", "icustomrecipelogic", "not consumed", "pattern encoding" ]
-updated = "2026-11-06 05:45:42"
+updated = "2026-11-06 07:47:27"
 checked = "2026-11-06"
 
 [[links]]
@@ -18,6 +18,10 @@ path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/PatternCrafterLo
 snippet = "enum PatternCrafterLogic implements GTRecipeType.ICustomRecipeLogic {"
 
 [[links]]
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/PatternWear.java"
+snippet = "public final class PatternWear extends MachineTrait"
+
+[[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/CraftingPatternBehavior.java"
 snippet = "final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {"
 
@@ -25,4 +29,4 @@ snippet = "final class CraftingPatternBehavior implements IItemUIHolder, IAddInf
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/PatternCrafterEmi.java"
 snippet = "public final class PatternCrafterEmi implements EmiPlugin"
 +++
-Blank and encoded items, encoded in their own window (crafting, stonecutting, smithing); ICrafterPattern is what the logic needs, AE2 patterns adapt to it. Crafting slot use comes from recipe remainders: itself back = not consumed, empty bucket back with fluids on = fluid, else consumed; exact at any durability, substitutes = the recipe's ingredient, special recipes exact. Stonecutting and smithing are exact. The logic picks the runnable pattern (searchRecipe tests only its first return).
+Blank and encoded items, encoded in their own window; ICrafterPattern is what the logic needs, AE2 patterns adapt to it. One craft is simulated at encoding and kept on the item (slot uses, outputs), so static remainders cost nothing later. Same item back with other data = CHANGED: PatternWear simulates every parallel on the real item at run start, LIMIT cuts the run down after OC. Exact (data too) or substitutes (the recipe's ingredient). Encode option: duplicated inputs kept.

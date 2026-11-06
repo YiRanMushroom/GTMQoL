@@ -92,6 +92,9 @@ public final class GTMQoL {
         BlockProviderRecipeCapability.init();
         GhostIngredients.init();
         ProbableDevices.init();
+        // here, not in the Jade plugin: that class needs Jade, the lang datagen doesn't
+        GTMQoLAddon.registrate().addRawLang("config.jade.plugin_gtmqol.stack_like_recipe_output",
+                "Recipe Output (Chemicals)");
         if (ModList.get().isLoaded("mekanism")) ChemicalStackLike.init();
         // before our own listeners, so ModularMachines sees the gregified recipe types
         LoadingTags.init();

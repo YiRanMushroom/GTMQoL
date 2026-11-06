@@ -18,8 +18,11 @@ import java.util.List;
  */
 public interface ICrafterPattern {
 
-    /** @param consumed false: needed, but stays in the machine */
-    record ItemInput(Ingredient ingredient, int count, boolean consumed) {}
+    /**
+     * @param consumed false: needed, but stays in the machine
+     * @param changes  stays in the machine but changes with every craft, see {@link #afterCraft}
+     */
+    record ItemInput(Ingredient ingredient, int count, boolean consumed, boolean changes) {}
 
     List<ItemInput> itemInputs();
 
@@ -27,6 +30,9 @@ public interface ICrafterPattern {
 
     /** The crafted item first, then what the recipe gives back. */
     List<ItemStack> outputs();
+
+    /** What the input at this index of {@link #itemInputs} turns into after one craft, for those that change. */
+    ItemStack afterCraft(int input, ItemStack item);
 
     /** The pattern on this item, or null when it holds none that can run. */
     static @Nullable ICrafterPattern decode(ItemStack stack, Level level) {

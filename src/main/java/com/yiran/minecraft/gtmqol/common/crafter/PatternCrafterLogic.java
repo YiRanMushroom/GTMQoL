@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
@@ -55,6 +56,9 @@ enum PatternCrafterLogic implements GTRecipeType.ICustomRecipeLogic {
         }
         for (FluidStack fluid : pattern.fluidInputs()) builder.inputFluids(fluid);
         for (ItemStack item : pattern.outputs()) builder.outputItems(item);
+        if (pattern.itemInputs().stream().anyMatch(ICrafterPattern.ItemInput::changes)) {
+            builder.addData(PatternWear.PATTERN_KEY, stack.copyWithCount(1).save(new CompoundTag()));
+        }
         return builder.EUt(PatternCrafter.EU_PER_TICK).duration(PatternCrafter.DURATION).buildRawRecipe();
     }
 }
