@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:block/block",
+  "dynamic_renders": [
+    {
+      "type": "gtmqol:energy_cell_sides"
+    }
+  ],
+  "loader": "gtceu:machine",
+  "machine": "gtmqol:wireless_energy_cell",
+  "variants": {
+    "": {
+      "model": "gtmqol:block/wireless_energy_cell"
+    }
+  }
+}

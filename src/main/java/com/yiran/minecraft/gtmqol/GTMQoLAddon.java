@@ -18,6 +18,7 @@ import com.yiran.minecraft.gtmqol.common.probable.ProbableDevices;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
+import com.yiran.minecraft.gtmqol.integration.ae2.WirelessEnergyCellMachine;
 import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
@@ -130,6 +131,7 @@ public final class GTMQoLAddon implements IGTAddon {
         GhostIngredients.addRecipes(provider);
         ProbableDevices.addRecipes(provider);
         if (config.wireless.energy) WirelessRecipes.addEnergyRecipes(provider);
+        if (config.wireless.energy && config.wireless.fe) WirelessRecipes.addFERecipes(provider);
         if (config.wireless.steam) WirelessRecipes.addSteamRecipes(provider);
         if (config.wireless.computation) WirelessRecipes.addComputationRecipes(provider);
         if (config.wireless.opticalData) WirelessRecipes.addOpticalRecipes(provider);
@@ -148,6 +150,7 @@ public final class GTMQoLAddon implements IGTAddon {
         if (config.machines.patternCrafter) PatternCrafter.addRecipes(provider);
         if (GTCEu.Mods.isAE2Loaded()) {
             if (config.ae2.overclockedPatternBuffer) AE2Machines.addRecipes(provider);
+            if (config.wireless.energy && config.wireless.fe) WirelessEnergyCellMachine.addRecipes(provider);
             if (config.ae2.processing) AEProcessing.addRecipes(provider);
             if (config.ae2.dualHatches) AEDualParts.addRecipes(provider, config.ae2.processing);
             if (EarlyConfig.AE2_STICKY_CARD) StickyCardItem.addRecipes(provider, config.ae2.processing);

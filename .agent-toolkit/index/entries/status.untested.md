@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-06 07:47:29"
+updated = "2026-11-06 18:36:17"
 
 [[items]]
 name = "rotor-amount"
@@ -63,5 +63,17 @@ name = "pattern-crafter"
 value = "JEI's fill button; exact and substitutes; tool wear per parallel, runs cut to what the tool has left; the duplicates button; 9 pattern slots, product and return slots"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/PatternCrafter.java"
 snippet = "// Untested: JEI's fill button puts crafting"
+
+[[items]]
+name = "wireless-fe"
+value = "Energy cube side squares, overlays and FE in/out, wireless energy cell on an ME network (several cells count once, overlay gone on connected sides), new recipes"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/energy/WirelessFEMachines.java"
+snippet = "// Untested: the cube's side squares and overlays"
+
+[[items]]
+name = "bloom-rebuild"
+value = "No more Not building! or sortQuads crashes; glowing blocks still glow and stop when broken"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/BloomSafeModeMixin.java"
+snippet = "// Untested: no more \"Not building!\""
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

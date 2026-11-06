@@ -106,7 +106,7 @@ public final class PatternCrafter {
         MagicalAssembler.RECIPE_TYPE.recipeBuilder(GTMQoL.id("blank_crafting_pattern"))
                 .inputItems(Items.PAPER, 2)
                 .inputItems(CustomTags.LV_CIRCUITS)
-                .circuitMeta(5)
+                .circuitMeta(1)
                 .outputItems(BLANK_PATTERN.asStack(4))
                 .EUt(EU_PER_TICK).duration(DURATION)
                 .save(provider);

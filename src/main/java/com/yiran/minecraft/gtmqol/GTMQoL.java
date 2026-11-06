@@ -8,6 +8,7 @@ import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
+import com.yiran.minecraft.gtmqol.integration.ae2.WirelessEnergyCellMachine;
 import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
 import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AppMekChemicalBridge;
 import com.yiran.minecraft.gtmqol.integration.productivebees.LegacyCapabilityAliases;
@@ -39,6 +40,7 @@ import com.yiran.minecraft.gtmqol.common.wireless.WirelessCovers;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessNetworks;
 import com.yiran.minecraft.gtmqol.common.wireless.channel.ChannelMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
+import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessFEMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
 import com.yiran.minecraft.gtmqol.gregification.GTMaterialTags;
 import com.yiran.minecraft.gtmqol.gregification.LoadingTags;
@@ -127,6 +129,7 @@ public final class GTMQoL {
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
         if (config.wireless.steam) WirelessSteamMachines.init();
         if (config.wireless.energy) WirelessEnergyMachines.init();
+        if (config.wireless.energy && config.wireless.fe) WirelessFEMachines.init();
         if (config.wireless.computation) ChannelMachines.initComputation();
         if (config.wireless.opticalData) ChannelMachines.initOptical();
         if (GTCEu.Mods.isAE2Loaded()) {
@@ -135,6 +138,7 @@ public final class GTMQoL {
                 AEStackLikeBridges.register(AppMekChemicalBridge.INSTANCE);
             }
             if (config.ae2.overclockedPatternBuffer) AE2Machines.init();
+            if (config.wireless.energy && config.wireless.fe) WirelessEnergyCellMachine.init();
             if (config.ae2.processing) {
                 AEProcessing.initItems();
                 AEProcessing.initRecipeTypes();

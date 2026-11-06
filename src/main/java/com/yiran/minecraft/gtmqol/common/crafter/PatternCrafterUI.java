@@ -31,10 +31,16 @@ final class PatternCrafterUI {
     private static final String[] GRID = { "sss", "sss", "sss" };
     private static final String[] PATTERN_ROW = { "sssssssss" };
     private static final int FIRST_PATTERN_SLOT = CraftingPattern.SLOTS;
+    /**
+     * All slots of the machine: shift-click moves to other groups only, storage before the player's, so with a group
+     * for the outputs what they hold would go to the inputs instead of the inventory.
+     */
+    private static final String SLOT_GROUP = "pattern_crafter";
 
     /** GT's panel with the patterns under its recipe area, without its logo, which would sit on the last output. */
     static final PanelFactory PANEL = (data, syncManager, settings, machine) -> {
         var crafter = (SimpleTieredMachine) machine;
+        syncManager.registerSlotGroup(new SlotGroup(SLOT_GROUP, CraftingPattern.SIZE).setAllowSorting(false));
         return MachineUIPanelBuilder.panelBuilder(machine)
                 .drawGTLogo(false)
                 .mainContents(parent -> {
@@ -54,12 +60,11 @@ final class PatternCrafterUI {
 
     private static SlotGroupWidget patternRow(MetaMachine machine) {
         var itemHandler = ItemRecipeCapability.CAP.getCapabilityHandlers(machine, IO.IN).get(0);
-        var slotGroup = new SlotGroup("patterns", PATTERN_ROW[0].length());
         return SlotGroupWidget.builder()
                 .matrix(PATTERN_ROW)
                 .key('s', i -> new ItemSlot()
                         .slot(new ModularSlot(itemHandler.storage, FIRST_PATTERN_SLOT + i)
-                                .slotGroup(slotGroup)
+                                .slotGroup(SLOT_GROUP)
                                 .filter(PatternCrafter::isPattern))
                         .backgroundOverlay(GTGuiTextures.PATTERN_OVERLAY))
                 .build()
@@ -76,19 +81,18 @@ final class PatternCrafterUI {
 
     private static final MachineCapabilityLayoutBuilder MACHINE_ITEM = (machine, layout, widget, io) -> {
         var itemHandler = ItemRecipeCapability.CAP.getCapabilityHandlers(machine, io).get(0);
-        var slotGroup = new SlotGroup(ItemRecipeCapability.CAP.id + "_" + io.name(), CraftingPattern.SIZE);
         if (io != IO.IN) {
             widget.outputColumn.child(Flow.row().coverChildren()
                     .childPadding(4)
                     .child(new ItemSlot()
                             .slot(new ModularSlot(itemHandler.storage, 0)
-                                    .slotGroup(slotGroup)
+                                    .slotGroup(SLOT_GROUP)
                                     .accessibility(false, true)))
                     .child(SlotGroupWidget.builder()
                             .matrix(GRID)
                             .key('s', i -> new ItemSlot()
                                     .slot(new ModularSlot(itemHandler.storage, i + 1)
-                                            .slotGroup(slotGroup)
+                                            .slotGroup(SLOT_GROUP)
                                             .accessibility(false, true)))
                             .build()
                             .coverChildren(18, 18)));
@@ -102,7 +106,7 @@ final class PatternCrafterUI {
                         .matrix(GRID)
                         .key('s', i -> new ItemSlot()
                                 .slot(new ModularSlot(itemHandler.storage, i)
-                                        .slotGroup(slotGroup)
+                                        .slotGroup(SLOT_GROUP)
                                         .filter(stack -> !PatternCrafter.isPattern(stack))))
                         .build()
                         .coverChildren(18, 18))

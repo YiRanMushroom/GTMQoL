@@ -30,8 +30,6 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
   (`ae2.pattern-output-marks`, `PatternBufferIngredients`).
 - Upstream: on steam (BRONZE theme) panels the title and GT logo are pushed right and squeezed, GTCEu's own steam
   machines too.
-- Upstream: bloom safe mode can crash with `Not building!` when two rebuilds of a section overlap; the user chose not
-  to fix it (`gtceufix.bloom-safe-mode-race`).
 
 ## To do
 
@@ -40,6 +38,7 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 - Auto-build: substructures (`autobuild.*`). 1.21: once upstream ports GTCEu #5337, switch the settings window to
   GTCEu's multiblock preview and the planner to filtered predicates, as on 1.20 (`build.branch-differences`).
 - Stack-like: external chemical hatches.
+- FE input and output hatches (`wireless.fe`): no multiblock uses their abilities yet, the user has later machines in mind.
 - Pattern crafter (`crafter.pattern`): the large multiblock with the AE mode (`crafter.ae-mode`), to discuss with the
   user first.
 

@@ -164,6 +164,12 @@ public final class GTMQoLConfig {
         public boolean energy = true;
 
         @Configurable
+        @Configurable.Comment({ "FE from the wireless energy network: FE input and output hatches, energy cube and,",
+                "with AE2, the wireless energy cell. Needs energy", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean fe = true;
+
+        @Configurable
         @Configurable.Comment({ "Wireless steam hatches, covers, accessor and monitor", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean steam = true;
