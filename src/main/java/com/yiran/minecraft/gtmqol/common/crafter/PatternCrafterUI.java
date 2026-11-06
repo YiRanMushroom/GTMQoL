@@ -3,6 +3,7 @@ package com.yiran.minecraft.gtmqol.common.crafter;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
@@ -20,25 +21,50 @@ import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
 
 /**
- * Pattern crafter layout: a slot for the pattern, the materials in a 3 x 3 grid like a crafting table's, 3 x 3 tanks,
- * and GT's default 3 x 3 outputs. Pipes fill any slot, the machine finds its pattern wherever it is; the filters are for
- * the player.
+ * Pattern crafter layout: the materials in a 3 x 3 grid like a crafting table's, 3 x 3 tanks, a slot for the crafted
+ * item and 3 x 3 for what recipes give back, which also gets filled first come, first served. Below them a row of 9
+ * patterns as in a pattern provider, right over the columns of the player's inventory. Pipes fill any slot, the machine
+ * finds its patterns wherever they are; the filters are for the player.
  */
 final class PatternCrafterUI {
 
     private static final String[] GRID = { "sss", "sss", "sss" };
-    private static final int PATTERN_SLOT = CraftingPattern.SLOTS;
+    private static final String[] PATTERN_ROW = { "sssssssss" };
+    private static final int FIRST_PATTERN_SLOT = CraftingPattern.SLOTS;
 
-    /** GT's panel without its logo, which would sit on the last output: this layout fills the panel's width. */
+    /** GT's panel with the patterns under its recipe area, without its logo, which would sit on the last output. */
     static final PanelFactory PANEL = (data, syncManager, settings, machine) -> {
         var crafter = (SimpleTieredMachine) machine;
         return MachineUIPanelBuilder.panelBuilder(machine)
                 .drawGTLogo(false)
-                .mainContents(parent -> parent.child(new GTRecipeTypeMachineWidget(crafter.getRecipeType(),
-                        syncManager, machine, crafter.getRecipeLogic()::getProgressPercent)))
+                .mainContents(parent -> {
+                    var recipeArea = new GTRecipeTypeMachineWidget(crafter.getRecipeType(), syncManager, machine,
+                            crafter.getRecipeLogic()::getProgressPercent);
+                    // it centers itself in the panel, and a Flow leaves out children with a position
+                    recipeArea.resizer().resetPosition();
+                    parent.child(Flow.col().coverChildren()
+                            .center()
+                            .childPadding(2)
+                            .child(recipeArea)
+                            .child(patternRow(machine)));
+                })
                 .build(syncManager, settings)
                 .excludeAreaInRecipeViewer();
     };
+
+    private static SlotGroupWidget patternRow(MetaMachine machine) {
+        var itemHandler = ItemRecipeCapability.CAP.getCapabilityHandlers(machine, IO.IN).get(0);
+        var slotGroup = new SlotGroup("patterns", PATTERN_ROW[0].length());
+        return SlotGroupWidget.builder()
+                .matrix(PATTERN_ROW)
+                .key('s', i -> new ItemSlot()
+                        .slot(new ModularSlot(itemHandler.storage, FIRST_PATTERN_SLOT + i)
+                                .slotGroup(slotGroup)
+                                .filter(PatternCrafter::isPattern))
+                        .backgroundOverlay(GTGuiTextures.PATTERN_OVERLAY))
+                .build()
+                .coverChildren(18, 18);
+    }
 
     private PatternCrafterUI() {}
 
@@ -49,21 +75,29 @@ final class PatternCrafterUI {
     }
 
     private static final MachineCapabilityLayoutBuilder MACHINE_ITEM = (machine, layout, widget, io) -> {
+        var itemHandler = ItemRecipeCapability.CAP.getCapabilityHandlers(machine, io).get(0);
+        var slotGroup = new SlotGroup(ItemRecipeCapability.CAP.id + "_" + io.name(), CraftingPattern.SIZE);
         if (io != IO.IN) {
-            MachineCapabilityLayoutBuilder.ITEM.createCapabilityUILayout(machine, layout, widget, io);
+            widget.outputColumn.child(Flow.row().coverChildren()
+                    .childPadding(4)
+                    .child(new ItemSlot()
+                            .slot(new ModularSlot(itemHandler.storage, 0)
+                                    .slotGroup(slotGroup)
+                                    .accessibility(false, true)))
+                    .child(SlotGroupWidget.builder()
+                            .matrix(GRID)
+                            .key('s', i -> new ItemSlot()
+                                    .slot(new ModularSlot(itemHandler.storage, i + 1)
+                                            .slotGroup(slotGroup)
+                                            .accessibility(false, true)))
+                            .build()
+                            .coverChildren(18, 18)));
             return;
         }
-        var itemHandler = ItemRecipeCapability.CAP.getCapabilityHandlers(machine, io).get(0);
         var fluidTank = FluidRecipeCapability.CAP.getCapabilityHandlers(machine, io).get(0);
-        var slotGroup = new SlotGroup(ItemRecipeCapability.CAP.id + "_" + io.name(), CraftingPattern.SIZE);
 
         widget.inputColumn.child(Flow.row().coverChildren()
                 .childPadding(4)
-                .child(new ItemSlot()
-                        .slot(new ModularSlot(itemHandler.storage, PATTERN_SLOT)
-                                .slotGroup(slotGroup)
-                                .filter(PatternCrafter::isPattern))
-                        .backgroundOverlay(GTGuiTextures.PATTERN_OVERLAY))
                 .child(SlotGroupWidget.builder()
                         .matrix(GRID)
                         .key('s', i -> new ItemSlot()

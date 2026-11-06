@@ -35,7 +35,7 @@ enum PatternCrafterLogic implements GTRecipeType.ICustomRecipeLogic {
                     if (!(content instanceof ItemStack stack) || !PatternCrafter.isPattern(stack)) continue;
                     ICrafterPattern pattern = ICrafterPattern.decode(stack, level);
                     if (pattern == null) continue;
-                    GTRecipe recipe = recipe(stack, pattern);
+                    GTRecipe recipe = recipe(stack, pattern, level);
                     if (RecipeHelper.matchRecipe(holder, recipe).isSuccess()) return recipe;
                 }
             }
@@ -43,7 +43,7 @@ enum PatternCrafterLogic implements GTRecipeType.ICustomRecipeLogic {
         return null;
     }
 
-    private static GTRecipe recipe(ItemStack stack, ICrafterPattern pattern) {
+    private static GTRecipe recipe(ItemStack stack, ICrafterPattern pattern, Level level) {
         var builder = PatternCrafter.RECIPE_TYPE
                 .recipeBuilder(GTMQoL.id(Integer.toHexString(ItemStack.hashItemAndComponents(stack))))
                 .notConsumable(stack.copyWithCount(1));
@@ -53,6 +53,9 @@ enum PatternCrafterLogic implements GTRecipeType.ICustomRecipeLogic {
         }
         for (FluidStack fluid : pattern.fluidInputs()) builder.inputFluids(fluid);
         for (ItemStack item : pattern.outputs()) builder.outputItems(item);
+        if (pattern.itemInputs().stream().anyMatch(ICrafterPattern.ItemInput::changes)) {
+            builder.addData(PatternWear.PATTERN_KEY, stack.copyWithCount(1).save(level.registryAccess()));
+        }
         return builder.EUt(PatternCrafter.EU_PER_TICK).duration(PatternCrafter.DURATION).build();
     }
 }

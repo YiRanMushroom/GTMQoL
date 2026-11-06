@@ -69,12 +69,15 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
     private static final String FLUIDS_OFF_KEY = PREFIX + "fluids.off";
     private static final String SUBSTITUTES_ON_KEY = PREFIX + "substitutes.on";
     private static final String SUBSTITUTES_OFF_KEY = PREFIX + "substitutes.off";
+    private static final String DUPLICATES_ON_KEY = PREFIX + "duplicates.on";
+    private static final String DUPLICATES_OFF_KEY = PREFIX + "duplicates.off";
     private static final String MODE_KEY = PREFIX + "mode.";
     private static final String NEXT_RESULT_KEY = PREFIX + "next_result";
     private static final String EMPTY_KEY = PREFIX + "status.empty";
     private static final String NO_RECIPE_KEY = PREFIX + "status.no_recipe";
     private static final String KEPT_LEGEND_KEY = PREFIX + "status.kept";
     private static final String FLUID_LEGEND_KEY = PREFIX + "status.fluid";
+    private static final String CHANGED_LEGEND_KEY = PREFIX + "status.changed";
     private static final String BLANK_KEY = PREFIX + "tooltip.blank";
     private static final String BROKEN_KEY = PREFIX + "tooltip.broken";
     private static final String CRAFTS_KEY = PREFIX + "tooltip.crafts";
@@ -82,11 +85,13 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
     private static final String USES_KEY = PREFIX + "tooltip.uses";
     private static final String KEEPS_KEY = PREFIX + "tooltip.keeps";
     private static final String USES_FLUID_KEY = PREFIX + "tooltip.uses_fluid";
+    private static final String WEARS_KEY = PREFIX + "tooltip.wears";
     private static final String SUBSTITUTES_KEY = PREFIX + "tooltip.substitutes";
 
     // no cornerRadius: MUI 1.21 drawRoundedRect misses the pose on the bottom left corner
     private static final IDrawable KEPT_TINT = new Rectangle().color(0x6040C040);
     private static final IDrawable FLUID_TINT = new Rectangle().color(0x604080F0);
+    private static final IDrawable CHANGED_TINT = new Rectangle().color(0x60E0C040);
 
     private static final int WIDTH = 176;
     private static final int HEIGHT = 196;
@@ -134,12 +139,14 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
         int[] choice = { 0 };
         boolean[] fluids = { true };
         boolean[] substitutes = { false };
+        boolean[] duplicates = { false };
         CraftingPattern current = CraftingPattern.read(data.getUsedItemStack(), level.registryAccess());
         if (current != null) {
             mode[0] = current.mode();
             choice[0] = CraftingPattern.choice(current.recipeId(), current.inputs(), level);
             fluids[0] = current.fluids();
             substitutes[0] = current.substitutes();
+            duplicates[0] = current.duplicates();
             for (int slot = 0; slot < CraftingPattern.SLOTS; slot++) {
                 grid.setStackInSlot(slot, current.inputs().get(slot).copy());
             }
@@ -149,7 +156,7 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
         for (int slot = 0; slot < CraftingPattern.SLOTS; slot++) {
             slots[slot] = new PhantomItemSlotSyncHandler(new ModularSlot(grid, slot).accessibility(true, false));
         }
-        var preview = new Preview(grid, mode, choice, fluids, level);
+        var preview = new Preview(grid, mode, choice, fluids, duplicates, level);
         var modeValue = new EnumSyncValue<>(CraftingPattern.Mode.class, () -> mode[0], value -> {
             mode[0] = value;
             choice[0] = 0;
@@ -161,10 +168,11 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
         syncManager.syncValue("choice", choiceValue);
         var fluidsValue = new BooleanSyncValue(() -> fluids[0], value -> fluids[0] = value).allowC2S();
         var substitutesValue = new BooleanSyncValue(() -> substitutes[0], value -> substitutes[0] = value).allowC2S();
+        var duplicatesValue = new BooleanSyncValue(() -> duplicates[0], value -> duplicates[0] = value).allowC2S();
 
         syncManager.registerSyncedAction("encode", false, true, buf -> {
             CraftingPattern pattern = CraftingPattern.encode(mode[0], items(grid), choice[0], fluids[0],
-                    substitutes[0], level);
+                    substitutes[0], duplicates[0], level);
             if (pattern == null) return;
             ItemStack held = data.getUsedItemStack();
             if (held.is(PatternCrafter.PATTERN.get())) {
@@ -270,7 +278,9 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
                                                 .tooltipAutoUpdate(true)
                                                 .tooltipBuilder(tooltip -> tooltip.addLine(Text.lang(
                                                         fluidsValue.getBoolValue() ? FLUIDS_ON_KEY :
-                                                                FLUIDS_OFF_KEY))))
+                                                                FLUIDS_OFF_KEY)))))
+                                .child(Flow.col()
+                                        .coverChildren()
                                         .child(new ToggleButton()
                                                 .size(18)
                                                 .setEnabledIf(button -> mode[0] == CraftingPattern.Mode.CRAFTING)
@@ -279,7 +289,17 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
                                                 .tooltipAutoUpdate(true)
                                                 .tooltipBuilder(tooltip -> tooltip.addLine(Text.lang(
                                                         substitutesValue.getBoolValue() ? SUBSTITUTES_ON_KEY :
-                                                                SUBSTITUTES_OFF_KEY))))))
+                                                                SUBSTITUTES_OFF_KEY))))
+                                        .child(new ToggleButton()
+                                                .size(18)
+                                                .setEnabledIf(button -> mode[0] == CraftingPattern.Mode.CRAFTING)
+                                                .value(duplicatesValue)
+                                                .overlay(new ItemDrawable(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE)
+                                                        .asIcon().size(16))
+                                                .tooltipAutoUpdate(true)
+                                                .tooltipBuilder(tooltip -> tooltip.addLine(Text.lang(
+                                                        duplicatesValue.getBoolValue() ? DUPLICATES_ON_KEY :
+                                                                DUPLICATES_OFF_KEY))))))
                         .child(Flow.row()
                                 .coverChildren()
                                 .childPadding(6)
@@ -312,6 +332,7 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
         return switch (use) {
             case KEPT -> KEPT_TINT;
             case FLUID -> FLUID_TINT;
+            case CHANGED -> CHANGED_TINT;
             default -> IDrawable.EMPTY;
         };
     }
@@ -323,35 +344,40 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
         private final CraftingPattern.Mode[] mode;
         private final int[] choice;
         private final boolean[] fluids;
+        private final boolean[] duplicates;
         private final Level level;
         private @Nullable List<ItemStack> seenGrid;
         private CraftingPattern.@Nullable Mode seenMode;
         private int seenChoice;
         private boolean seenFluids;
+        private boolean seenDuplicates;
         private CraftingPattern.@Nullable Plan plan;
         private int choices;
 
         Preview(CustomItemStackHandler grid, CraftingPattern.Mode[] mode, int[] choice, boolean[] fluids,
-                Level level) {
+                boolean[] duplicates, Level level) {
             this.grid = grid;
             this.mode = mode;
             this.choice = choice;
             this.fluids = fluids;
+            this.duplicates = duplicates;
             this.level = level;
         }
 
         CraftingPattern.@Nullable Plan plan() {
             List<ItemStack> items = items(grid);
             if (seenGrid == null || seenMode != mode[0] || seenChoice != choice[0] || seenFluids != fluids[0] ||
-                    !same(items, seenGrid)) {
+                    seenDuplicates != duplicates[0] || !same(items, seenGrid)) {
                 seenGrid = items.stream().map(ItemStack::copy).toList();
                 seenMode = mode[0];
                 seenChoice = choice[0];
                 seenFluids = fluids[0];
+                seenDuplicates = duplicates[0];
                 choices = mode[0] == CraftingPattern.Mode.STONECUTTING ?
                         CraftingPattern.stonecutting(items, level).size() : 0;
                 // what each slot does doesn't depend on substitutes
-                CraftingPattern pattern = CraftingPattern.encode(mode[0], items, choice[0], fluids[0], false, level);
+                CraftingPattern pattern = CraftingPattern.encode(mode[0], items, choice[0], fluids[0], false,
+                        duplicates[0], level);
                 plan = pattern == null ? null : pattern.plan(level);
             }
             return plan;
@@ -390,11 +416,15 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
                         .withStyle(ChatFormatting.DARK_GRAY);
             }
             MutableComponent legend = Component.empty();
-            if (!current.kept().isEmpty()) {
-                legend.append(Component.translatable(KEPT_LEGEND_KEY).withStyle(ChatFormatting.DARK_GREEN));
+            boolean kept = current.uses().contains(CraftingPattern.SlotUse.KEPT);
+            boolean changed = current.uses().contains(CraftingPattern.SlotUse.CHANGED);
+            if (kept) legend.append(Component.translatable(KEPT_LEGEND_KEY).withStyle(ChatFormatting.DARK_GREEN));
+            if (changed) {
+                if (kept) legend.append(Component.literal("  "));
+                legend.append(Component.translatable(CHANGED_LEGEND_KEY).withStyle(ChatFormatting.GOLD));
             }
             if (!current.fluids().isEmpty()) {
-                if (!current.kept().isEmpty()) legend.append(Component.literal("  "));
+                if (kept || changed) legend.append(Component.literal("  "));
                 legend.append(Component.translatable(FLUID_LEGEND_KEY).withStyle(ChatFormatting.BLUE));
             }
             return legend;
@@ -425,7 +455,8 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
             tooltip.add(Component.translatable(USES_KEY, input.item().getCount(), input.item().getHoverName()));
         }
         for (var kept : plan.kept()) {
-            tooltip.add(Component.translatable(KEEPS_KEY, kept.item().getHoverName()));
+            boolean wears = kept.use() == CraftingPattern.SlotUse.CHANGED;
+            tooltip.add(Component.translatable(wears ? WEARS_KEY : KEEPS_KEY, kept.item().getHoverName()));
         }
         for (FluidStack fluid : plan.fluids()) {
             tooltip.add(Component.translatable(USES_FLUID_KEY, fluid.getAmount(), fluid.getHoverName()));
@@ -440,8 +471,10 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
         addLang(CLEAR_TOOLTIP_KEY, "Empties the grid; an encoded pattern goes back to blank");
         addLang(FLUIDS_ON_KEY, "Buckets are taken as fluid from the tanks");
         addLang(FLUIDS_OFF_KEY, "Buckets are taken as items");
-        addLang(SUBSTITUTES_ON_KEY, "Accepts anything the recipe accepts");
-        addLang(SUBSTITUTES_OFF_KEY, "Accepts only these items, at any durability");
+        addLang(SUBSTITUTES_ON_KEY, "Accepts anything the recipe accepts, at any durability");
+        addLang(SUBSTITUTES_OFF_KEY, "Accepts only these exact items, durability included");
+        addLang(DUPLICATES_ON_KEY, "An item the recipe makes more of is kept, and only what it adds comes out");
+        addLang(DUPLICATES_OFF_KEY, "Recipes that make more of an input use it up as usual");
         addLang(MODE_KEY + "crafting", "Crafting table recipe");
         addLang(MODE_KEY + "stonecutting", "Stonecutter recipe");
         addLang(MODE_KEY + "smithing", "Smithing table recipe: template, item, material");
@@ -450,6 +483,7 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
         addLang(NO_RECIPE_KEY, "No recipe matches");
         addLang(KEPT_LEGEND_KEY, "Green: not consumed");
         addLang(FLUID_LEGEND_KEY, "Blue: fluid");
+        addLang(CHANGED_LEGEND_KEY, "Yellow: wears out");
         addLang(BLANK_KEY, "Right click to encode a recipe");
         addLang(BROKEN_KEY, "Its recipe no longer exists");
         addLang(CRAFTS_KEY, "Crafts %sx %s");
@@ -457,6 +491,7 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
         addLang(USES_KEY, "Uses %sx %s");
         addLang(KEEPS_KEY, "Needs %s, not consumed");
         addLang(USES_FLUID_KEY, "Uses %s mB of %s");
+        addLang(WEARS_KEY, "Needs %s, which wears out");
         addLang(SUBSTITUTES_KEY, "Accepts substitutes");
     }
 

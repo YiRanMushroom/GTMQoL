@@ -30,6 +30,8 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
   (`ae2.pattern-output-marks`, `PatternBufferIngredients`).
 - Upstream: on steam (BRONZE theme) panels the title and GT logo are pushed right and squeezed, GTCEu's own steam
   machines too.
+- Upstream: bloom safe mode can crash with `Not building!` when two rebuilds of a section overlap; the user chose not
+  to fix it (`gtceufix.bloom-safe-mode-race`).
 
 ## To do
 

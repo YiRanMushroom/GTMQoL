@@ -8,6 +8,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
@@ -26,10 +27,11 @@ import java.util.Objects;
  * An AE2 pattern in the pattern crafter: what a molecular assembler can make (crafting, stonecutting, smithing).
  * Processing patterns can't: their outputs are whatever the player wrote, no recipe backs them.
  * <p>
- * Fluids are as AE2's own fluid substitution decided. An item that comes back as itself stays in the machine at any
- * durability, as with our own patterns; other items count exactly, or as the pattern's substitutes.
+ * Fluids are as AE2's own fluid substitution decided. An item that comes back as the same item stays in the machine
+ * and changes as the recipe says, as with our own patterns; items count exactly, or as the pattern's substitutes.
  */
-public record AECrafterPattern(List<ItemInput> itemInputs, List<FluidStack> fluidInputs, List<ItemStack> outputs)
+public record AECrafterPattern(List<ItemInput> itemInputs, List<FluidStack> fluidInputs, List<ItemStack> outputs,
+                               List<IPatternDetails.IInput> sources)
         implements ICrafterPattern {
 
     public static boolean isPattern(ItemStack stack) {
@@ -42,6 +44,7 @@ public record AECrafterPattern(List<ItemInput> itemInputs, List<FluidStack> flui
             return null;
         }
         List<ItemInput> items = new ArrayList<>();
+        List<IPatternDetails.IInput> sources = new ArrayList<>();
         List<FluidStack> fluids = new ArrayList<>();
         List<ItemStack> outputs = new ArrayList<>();
         for (GenericStack output : pattern.getOutputs()) {
@@ -54,24 +57,30 @@ public record AECrafterPattern(List<ItemInput> itemInputs, List<FluidStack> flui
                 fluids.add(fluid.toStack(amount));
             } else if (possible[0].what() instanceof AEItemKey item) {
                 var remainder = input.getRemainingKey(item) instanceof AEItemKey key ? key : null;
+                sources.add(input);
                 if (remainder != null && remainder.getItem() == item.getItem()) {
-                    items.add(new ItemInput(ingredient(possible, true), 1, false));
+                    items.add(new ItemInput(ingredient(possible), 1, false, !remainder.equals(item)));
                 } else {
-                    items.add(new ItemInput(ingredient(possible, false), amount, true));
+                    items.add(new ItemInput(ingredient(possible), amount, true, false));
                     if (remainder != null) outputs.add(remainder.toStack((int) input.getMultiplier()));
                 }
             }
         }
-        return new AECrafterPattern(items, fluids, outputs);
+        return new AECrafterPattern(items, fluids, outputs, sources);
     }
 
-    private static Ingredient ingredient(GenericStack[] possible, boolean anyDurability) {
+    @Override
+    public ItemStack afterCraft(int input, ItemStack item) {
+        return sources.get(input).getRemainingKey(AEItemKey.of(item)) instanceof AEItemKey key ? key.toStack() :
+                ItemStack.EMPTY;
+    }
+
+    private static Ingredient ingredient(GenericStack[] possible) {
         List<ItemStack> items = Arrays.stream(possible)
                 .map(stack -> stack.what() instanceof AEItemKey item ? item.toStack() : null)
                 .filter(Objects::nonNull)
                 .toList();
-        // Ingredient.of ignores components, which is what any durability means
-        if (items.size() == 1 && !anyDurability) return RecipeHelper.makeItemIngredient(items.get(0));
+        if (items.size() == 1) return RecipeHelper.makeItemIngredient(items.get(0));
         return Ingredient.of(items.stream());
     }
 }

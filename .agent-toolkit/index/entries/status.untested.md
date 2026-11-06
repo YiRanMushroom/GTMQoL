@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-06 07:03:12"
+updated = "2026-11-06 07:47:29"
 
 [[items]]
 name = "rotor-amount"
@@ -60,7 +60,7 @@ snippet = "// Untested: the settings popup goes up to the config limits (64 / 40
 
 [[items]]
 name = "pattern-crafter"
-value = "JEI's fill button in the encoding window; the rest was checked in game with EMI on 1.21"
+value = "JEI's fill button; exact and substitutes; tool wear per parallel, runs cut to what the tool has left; the duplicates button; 9 pattern slots, product and return slots"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/PatternCrafter.java"
 snippet = "// Untested: JEI's fill button puts crafting"
 +++

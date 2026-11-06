@@ -1,5 +1,6 @@
 package com.yiran.minecraft.gtmqol.common.crafter;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -8,6 +9,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import brachy.modularui.integration.recipeviewer.handlers.RecipeTransferError;
 import brachy.modularui.integration.recipeviewer.handlers.RecipeTransferHandler;
+import brachy.modularui.theme.ThemeAPI;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -20,7 +22,9 @@ final class CraftingPatternScreen extends GTGuiScreen implements RecipeTransferH
     private final CraftingPatternBehavior.EncodingPanel panel;
 
     CraftingPatternScreen(CraftingPatternBehavior.EncodingPanel panel) {
-        super(panel);
+        // the theme machines use: ModularUI's theme reload leaves gtceu:standard, the default here, without the
+        // backgrounds of slots and buttons that are off
+        super(GTCEu.MOD_ID, panel, ThemeAPI.DEFAULT_ID);
         this.panel = panel;
     }
 
