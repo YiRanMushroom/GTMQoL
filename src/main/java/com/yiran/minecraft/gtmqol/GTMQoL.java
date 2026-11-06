@@ -30,6 +30,7 @@ import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.common.fe.FEInputProvider;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.test.IntegrationTests;
+import com.yiran.minecraft.gtmqol.common.crafter.PatternCrafter;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
@@ -168,6 +169,7 @@ public final class GTMQoL {
         if (GTMQoLConfig.get().machines.electricImplosionCompressor) ElectricImplosion.initRecipeType();
         if (GTMQoLConfig.get().machines.crystalGrowthChamber) CrystalGrowth.initRecipeType();
         if (GTMQoLConfig.get().machines.greenhouse) Greenhouse.initRecipeType();
+        if (GTMQoLConfig.get().machines.patternCrafter) PatternCrafter.initRecipeType();
         if (GTCEu.Mods.isAE2Loaded() && GTMQoLConfig.get().ae2.processing) {
             AEProcessing.initRecipeTypes();
         }
@@ -181,6 +183,8 @@ public final class GTMQoL {
         GTMQoLConfig config = GTMQoLConfig.get();
         if (config.wireless.energy) WirelessCovers.initEnergy();
         if (config.wireless.steam) WirelessCovers.initSteam();
+        // here, not in the constructor: GTItems.attach loads GTItems, which needs the materials
+        if (config.machines.patternCrafter) PatternCrafter.initItems();
     }
 
     /**
@@ -198,6 +202,7 @@ public final class GTMQoL {
         if (config.machines.electricImplosionCompressor) ElectricImplosion.initMachine();
         if (config.machines.crystalGrowthChamber) CrystalGrowth.initMachine();
         if (config.machines.greenhouse) Greenhouse.initMachines();
+        if (config.machines.patternCrafter) PatternCrafter.initMachines();
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
         if (config.wireless.steam) WirelessSteamMachines.init();
         if (config.wireless.energy) WirelessEnergyMachines.init();

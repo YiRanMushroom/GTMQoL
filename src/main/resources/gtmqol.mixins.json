@@ -26,6 +26,8 @@
     "MixinHelpersMixin",
     "OverclockingLogicMixin",
     "PotionBrewingContainerMixesAccessor",
+    "SmithingTransformRecipeAccessor",
+    "SmithingTrimRecipeAccessor",
     "PotionFluidNameMixin",
     "PotionItemFluidHandlerMixin",
     "PredicatesProbableDeviceMixin",

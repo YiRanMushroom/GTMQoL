@@ -1,8 +1,8 @@
 +++
 title = "Source layout: package tree of com.yiran.minecraft.gtmqol (1.20.1) and where resources live"
 keys = [ "packages", "src/generated/resources", "where is" ]
-updated = "2026-10-29 07:34:16"
-checked = "2026-10-29"
+updated = "2026-11-06 07:15:09"
+checked = "2026-11-06"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol"
@@ -10,7 +10,7 @@ dir = [ "GTMQoL.java", "GTMQoLAddon.java", "api/", "client/", "common/", "config
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common"
-dir = [ "assembler/", "autobuild/", "blockprovider/", "circuit/", "crystal/", "fe/", "ghost/", "greenhouse/", "implosion/", "modifier/", "modular/", "multiblock/", "overclock/", "part/", "potion/", "probable/", "recipedb/", "singleblock/", "stacklike/", "steam/", "test/", "ui/", "wireless/" ]
+dir = [ "assembler/", "autobuild/", "blockprovider/", "circuit/", "crafter/", "crystal/", "fe/", "ghost/", "greenhouse/", "implosion/", "modifier/", "modular/", "multiblock/", "overclock/", "part/", "potion/", "probable/", "recipedb/", "singleblock/", "stacklike/", "steam/", "test/", "ui/", "wireless/" ]
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core"
@@ -36,6 +36,7 @@ common/
   autobuild/         survival auto-build button
   blockprovider/     gtmqol:block recipe capability
   circuit/           UniversalCircuits, ControlCircuits
+  crafter/           pattern crafter, crafting pattern items
   crystal/ greenhouse/ implosion/   single-feature multiblocks
   fe/                FEInputProvider (FE into every EU input)
   ghost/             ghost ingredient capability, hatch, marks

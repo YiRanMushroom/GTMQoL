@@ -80,6 +80,11 @@ public final class GTMQoLConfig {
         public boolean greenhouse = true;
 
         @Configurable
+        @Configurable.Comment({ "Pattern Crafter (runs crafting table recipes from crafting patterns)", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean patternCrafter = true;
+
+        @Configurable
         @Configurable.Comment({ "Electric Implosion Compressor (every implosion recipe that uses TNT, without the TNT)",
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)

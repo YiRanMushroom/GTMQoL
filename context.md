@@ -19,6 +19,8 @@ computers, so paths differ (`C:\Users\yiran.wang\IdeaProjects\` or `E:\code\Mine
 
 - Untested changes to remind the user of (first client run, in-game checks): `status.untested`, each item linked to
   its `Untested:` comment in the code.
+- Pattern crafter (`crafter.pattern`): the large multiblock with the AE mode (`crafter.ae-mode`), to discuss with the
+  user first.
 
 ## Known bugs, not fixed
 
