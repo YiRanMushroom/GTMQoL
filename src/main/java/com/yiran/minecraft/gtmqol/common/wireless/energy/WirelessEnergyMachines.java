@@ -36,7 +36,7 @@ public final class WirelessEnergyMachines {
             "gtmqol.wireless.tooltip.energy_accessor.any_voltage";
     private static final String MONITOR_TOOLTIP_KEY = "gtmqol.wireless.tooltip.energy_monitor";
 
-    private static final ResourceLocation WIRELESS_OVERLAY = GTMQoL.id("block/overlay/machine/overlay_wireless");
+    public static final ResourceLocation WIRELESS_OVERLAY = GTMQoL.id("block/overlay/machine/overlay_wireless");
 
     public static MachineDefinition[] ENERGY_INPUT_HATCH = new MachineDefinition[TIER_COUNT];
     public static MachineDefinition[] ENERGY_OUTPUT_HATCH = new MachineDefinition[TIER_COUNT];

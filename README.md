@@ -25,6 +25,10 @@ Both branches have the same features, except the few marked 1.21.1 only. Release
   - Amperage can be set per machine, from 1 to 2^24.
   - `/gtmqol default_amperage [amperage]` sets the default for machines you place.
   - Input hatches have an overclock toggle: one tier higher voltage, at 4× the energy cost.
+- FE, from the EU in the network, with no rate limit and no storage of their own:
+  - An energy cube: each side is set to input, output or off, like Mekanism's.
+  - FE input and output hatches, for multiblocks that use or make FE.
+  - With AE2, a wireless energy cell that powers an ME network from the wireless network, and puts spare power back.
 - Wireless covers (steam and EU, input and output) connect any machine to the network.
 - Recipes are in the magical assembler.
 
@@ -212,7 +216,7 @@ the config file itself.
 | `machines` | one per multiblock above, `probableDevices`, the advanced steam machines and `easySAFRecipe` |
 | `modularMachines` | `enabled` |
 | `gregification` | `modernIndustrialization` (1.21.1), `mekanism`, `productiveBees`, `create` |
-| `wireless` | `energy`, `steam` |
+| `wireless` | `energy`, `fe`, `steam` |
 | `circuits` | `universalCircuits`, `controlCircuits`, `mekanismCircuitTags` |
 | `recipes` | `miscRecipes`, `earlyGame`, `keepManualCompression`, `keepVanillaTNT`, `netherStarDust`, `useLegacyPartRecipes` |
 | `steamTweaks` | `circuitSlots`, `fluidTanks`, `noOutputLimits`, `optionalLargeBoilerParts` |
@@ -263,3 +267,4 @@ Copyright (C) 2026 Yiran. Licensed under the GNU Lesser General Public License v
   addon. The control circuit textures are taken from GTNL and are licensed under LGPL-3.0.
 - The animated rainbow overlay on the wireless hatches (`overlay_wireless.png`) is taken from GTMThings'
   `overlay_energy_on_wireless`, which originally comes from GregTech: New Horizons.
+- The wireless energy cell texture is AE2's dense energy cell with its colors cycling.

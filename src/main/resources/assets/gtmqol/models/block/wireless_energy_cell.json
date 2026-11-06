@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "gtmqol:block/wireless_energy_cell"
+  }
+}

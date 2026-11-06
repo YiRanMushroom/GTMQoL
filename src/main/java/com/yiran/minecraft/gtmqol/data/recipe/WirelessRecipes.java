@@ -8,6 +8,7 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.common.wireless.channel.ChannelMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
+import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessFEMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessCovers;
 
@@ -77,6 +78,33 @@ public final class WirelessRecipes {
                 .inputItems(GTItems.COVER_SCREEN)
                 .inputItems(WirelessCovers.ENERGY_INPUT_ITEM[LV])
                 .outputItems(WirelessEnergyMachines.ENERGY_MONITOR)
+                .duration(400)
+                .save(provider);
+    }
+
+    /** From the LV wireless parts; circuit 6 because circuit 5 on a wireless hatch gives covers. */
+    public static void addFERecipes(Consumer<FinishedRecipe> provider) {
+        var assembler = MagicalAssembler.RECIPE_TYPE;
+
+        assembler.recipeBuilder(GTMQoL.id("wireless_fe_input_hatch"))
+                .inputItems(WirelessEnergyMachines.ENERGY_INPUT_HATCH[LV])
+                .circuitMeta(6)
+                .outputItems(WirelessFEMachines.FE_INPUT_HATCH)
+                .duration(200)
+                .save(provider);
+
+        assembler.recipeBuilder(GTMQoL.id("wireless_fe_output_hatch"))
+                .inputItems(WirelessEnergyMachines.ENERGY_OUTPUT_HATCH[LV])
+                .circuitMeta(6)
+                .outputItems(WirelessFEMachines.FE_OUTPUT_HATCH)
+                .duration(200)
+                .save(provider);
+
+        assembler.recipeBuilder(GTMQoL.id("wireless_energy_cube"))
+                .inputItems(WirelessEnergyMachines.ENERGY_ACCESSOR[LV])
+                .inputItems(WirelessEnergyMachines.ENERGY_INPUT_HATCH[LV])
+                .inputItems(WirelessEnergyMachines.ENERGY_OUTPUT_HATCH[LV])
+                .outputItems(WirelessFEMachines.ENERGY_CUBE)
                 .duration(400)
                 .save(provider);
     }

@@ -2,8 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-06 07:15:03"
-checked = "2026-10-27"
+updated = "2026-11-06 18:36:17"
 
 [[items]]
 name = "legacy-parts-no-unification"
@@ -124,5 +123,11 @@ name = "pattern-crafter"
 value = "Everything of the pattern crafter on 1.20 (only compiled and loaded in data generation): encoding window, EMI/JEI fill, crafting, AE2 patterns"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/PatternCrafter.java"
 snippet = "// Untested: everything on 1.20: encoding window"
+
+[[items]]
+name = "wireless-fe"
+value = "Energy cube side squares, overlays and FE in/out, wireless energy cell on an ME network (several cells count once, overlay gone on connected sides), new recipes"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/energy/WirelessFEMachines.java"
+snippet = "// Untested: the cube's side squares and overlays"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).
