@@ -1,8 +1,38 @@
 +++
 title = "How to add a gregification type or a source for a new mod, and where to look in upstream sources"
 keys = [ "gregification core" ]
-updated = "2026-10-19 20:08:34"
-checked = "2026-10-21"
+updated = "2026-11-07 09:53:14"
+checked = "2026-11-07"
+
+[[items]]
+name = "add-source"
+value = "Gregification.addSource: a source registers its types() supplier"
+path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/Gregification.java"
+snippet = "public static void addSource(Supplier<List<ForeignMachineType>> source) {"
+
+[[items]]
+name = "machine-type"
+value = "ForeignMachineType: one gregified machine type (slots, proxies, shape...)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/ForeignMachineType.java"
+snippet = "public record ForeignMachineType(String name, String englishName, Supplier<List<RecipeType<?>>> proxies,"
+
+[[items]]
+name = "converter-single"
+value = "ForeignRecipeConverter.single wraps a Single converter"
+path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/ForeignRecipeConverter.java"
+snippet = "static ForeignRecipeConverter single(Single converter) {"
+
+[[items]]
+name = "mi-tables"
+value = "MI's per-type tables (SINGLE_BLOCKS, MULTIBLOCKS follows)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/mi/MIGregification.java"
+snippet = "private static final Map<String, SingleBlock> SINGLE_BLOCKS = Map.ofEntries("
+
+[[items]]
+name = "constructor-hook"
+value = "example of the config + ModList check that adds a source in the GTMQoL constructor"
+path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoL.java"
+snippet = "Gregification.addSource(MIGregification::types);"
 +++
 ## A type for an existing source
 Add an entry to its table (MI `SINGLE_BLOCKS`/`MULTIBLOCKS`) or `types()` list (Mek, Create, PB): slot counts, sound/UI, counterpart and shape, plus a converter if the recipe class differs.

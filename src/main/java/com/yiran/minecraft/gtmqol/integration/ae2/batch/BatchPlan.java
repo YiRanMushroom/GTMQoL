@@ -22,9 +22,6 @@ import java.util.Set;
  * which is what saves its co-processors the work. Crafts go as one when they have all they need from the start and there
  * is power for them, else in {@linkplain BatchPieces#split pieces} that leave with what has arrived.
  */
-// Untested: an order from stock goes out as one, a next step in pieces 1, 2, 4 and the rest, and the plan shows the
-// right totals; too little AE power means pieces; a job survives a restart; the x2 switch and limit work; A -> B -> C keeps moving as batches finish; a
-// pattern also on a pattern provider stays out of batches; a CPU pushes a pattern's batches for one operation
 public final class BatchPlan {
 
     private BatchPlan() {}

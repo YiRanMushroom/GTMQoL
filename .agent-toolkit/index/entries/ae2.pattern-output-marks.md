@@ -2,7 +2,7 @@
 title = "Mark pattern outputs: each pattern buffer slot is a ghost ingredient mark for its pattern's primary output"
 keys = [ "handlersfor", "markspatternoutputs", "recipe lookup" ]
 updated = "2026-10-19 20:08:33"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/PatternOutputMarks.java"

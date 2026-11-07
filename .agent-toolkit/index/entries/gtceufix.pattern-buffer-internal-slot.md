@@ -2,7 +2,7 @@
 title = "MEPatternBufferInternalSlotMixin: pattern buffer fluid keys never merged (FluidStack without equals)"
 keys = [ "fluidinventory", "fluidstack equals" ]
 updated = "2026-10-27 15:11:02"
-checked = "2026-10-27"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/MEPatternBufferInternalSlotMixin.java"

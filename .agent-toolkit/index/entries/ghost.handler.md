@@ -2,7 +2,7 @@
 title = "GhostIngredientHandler + GhostIngredientList: the marks, satisfying ghost inputs without consuming; list UI"
 keys = [ "buildlist", "dropped on load", "notifiablerecipehandlertrait" ]
 updated = "2026-10-19 20:08:34"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/GhostIngredientHandler.java"

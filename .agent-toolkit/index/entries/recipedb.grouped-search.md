@@ -1,8 +1,32 @@
 +++
 title = "RecipeDB grouped search: why GTCEu's recipe lookup explodes with many distinct buses, and the pruning idea"
 keys = [ "combinatorial", "fromholder", "lag", "pattern buffer", "performance", "recipeiterator" ]
-updated = "2026-10-21 08:06:22"
-checked = "2026-10-21"
+updated = "2026-11-07 09:54:01"
+checked = "2026-11-07"
+
+[[items]]
+name = "push-filter"
+value = "the step-3 frame push filtered by canFollow (RecipeIterator's ifRight lambda)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/recipedb/RecipeIteratorMixin.java"
+snippet = "private boolean gtmqol$pushRelated(Deque<Object> deque, Object frame) {"
+
+[[items]]
+name = "relation"
+value = "canFollow: the neighbour relation between entries of a path"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/recipedb/GroupedIngredientList.java"
+snippet = "public boolean canFollow(int from, int to) {"
+
+[[items]]
+name = "grouped-list"
+value = "replacement for RecipeDB.fromHolder that records each entry's group"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/recipedb/GroupedIngredientList.java"
+snippet = "public static GroupedIngredientList fromHolder(IRecipeCapabilityHolder holder) {"
+
+[[items]]
+name = "buffer-workers"
+value = "every pattern buffer worker added as its own slot"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/recipedb/PatternBufferIngredients.java"
+snippet = "for (var worker : buffer.workers) {"
 +++
 ## Problem
 GTCEu's `RecipeDB` is a tree (one ingredient per level, leaves = recipes). `RecipeDB.RecipeIterator` does a DFS:

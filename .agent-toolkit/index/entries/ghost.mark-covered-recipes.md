@@ -2,7 +2,7 @@
 title = "MarkCoveredRecipes: gregification wrapper adding a ghost mark only to recipes another recipe's inputs would also run"
 keys = [ "assembler", "create saw", "foreignrecipeconverter", "mi assembler", "saw" ]
 updated = "2026-10-19 20:08:34"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/MarkCoveredRecipes.java"

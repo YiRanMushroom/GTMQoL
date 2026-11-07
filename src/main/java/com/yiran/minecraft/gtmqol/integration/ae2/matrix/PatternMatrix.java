@@ -70,11 +70,6 @@ import static com.gregtechceu.gtceu.api.multiblock.Predicates.*;
  * are quartz glass; pattern and processing cores fill the inside. Sized like a cleanroom, the controller in the middle
  * of the front's bottom edge. Only touch this class when AE2 is loaded.
  */
-// Untested: all of it in game: forming from 3 x 3 x 4 to 15 x 15 x 15, off center by one, mixed casings refused, the
-// controller and parts showing the frame's tier, crafts per tick, FE, catalysts and our patterns, a template pattern
-// through a catalyst bus, the patterns window (search, take out, put in), the pattern access terminal; encoding in a
-// terminal uploads a pattern, with and without ExtendedAE Plus, and a second copy comes back blank; the four recipes;
-// auto-build offers the casings and places the pattern core
 public final class PatternMatrix {
 
     /** The ME network side of the matrix; exactly one. */

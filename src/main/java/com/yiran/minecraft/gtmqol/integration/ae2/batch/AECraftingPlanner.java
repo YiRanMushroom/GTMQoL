@@ -21,9 +21,6 @@ import java.util.Map;
  * Puts {@link CraftingSolver} on a crafting calculation: AE2's patterns and simulated network as its recipes and stock,
  * its result back into AE2's simulation, which then builds the plan as if its own walk had been through.
  */
-// Untested: plans in game match the preview and what gets crafted, missing items are listed, huge orders with several
-// patterns are quick, ingots <-> blocks patterns, buckets and other things that come back still go AE2's way, a craft
-// through ae2.fastCraftingPlans off is AE2's
 public final class AECraftingPlanner implements CraftingSolver.Source<AEKey, IPatternDetails> {
 
     /** What a CPU sets aside per entry of a crafting tree, in bytes. AE2 counts tree nodes, here it is one per pattern. */

@@ -1,8 +1,44 @@
 +++
 title = "1.21.1 vs 1.20.1 branch: code differences to keep in mind when cherry-picking"
 keys = [ "forge", "neoforge", "port" ]
-updated = "2026-11-06 18:49:21"
-checked = "2026-11-06"
+updated = "2026-11-07 09:52:57"
+checked = "2026-11-07"
+
+[[items]]
+name = "constructor"
+value = "1.21: all content declared in the GTMQoL constructor, recipe types before their machines"
+path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoL.java"
+snippet = "public GTMQoL(IEventBus modBus, ModContainer container) {"
+
+[[items]]
+name = "modular-queue"
+value = "1.21 MachineBuilderMixin only queues modular machine entries"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/MachineBuilderMixin.java"
+snippet = "public abstract class MachineBuilderMixin implements IDynamicGenerationHandler {"
+
+[[items]]
+name = "modular-register"
+value = "1.21 modular multiblocks declared in the gtceu:machine RegisterEvent at NORMAL priority"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/modular/ModularMachines.java"
+snippet = "if (event.getRegistryKey().equals(GTRegistries.Keys.MACHINE)) {"
+
+[[items]]
+name = "creative-tab"
+value = "1.21 null default creative tab"
+path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoLAddon.java"
+snippet = "REGISTRATE.defaultCreativeTab((ResourceKey<CreativeModeTab>) null);"
+
+[[items]]
+name = "autobuild-roots"
+value = "1.21 auto-build predicate roots from children()"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/StructurePlanner.java"
+snippet = "private static Map<MultiPredicate, MultiPredicate> roots(IBlockPattern pattern) {"
+
+[[items]]
+name = "mixinextras"
+value = "1.21 mixinextras minVersion 0.5.3 (same in every gtmqol.*.mixins.json)"
+path = "src/main/resources/gtmqol.mixins.json"
+snippet = "\"minVersion\": \"0.5.3\""
 +++
 Two long-lived branches: `1.21` (NeoForge 21.1, the default branch) and `1.20` (Forge 1.20.1, worktree `GTMQoL-1.20.1` next to the 1.21 one). Kept in sync by cherry-picking; 1.21 was branched from `87a49de` (GTNL steam machines). A multi-version tool (Stonecutter) is only an idea, not agreed. Build setup differences: build.environment, build.dependencies.
 

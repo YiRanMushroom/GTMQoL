@@ -1,8 +1,32 @@
 +++
 title = "How the 7.x (pre-v8) RecipeDB grouped search worked and what was not ported"
 keys = [ "catalyst handler", "expanded pattern buffer", "gtmutils", "islothint", "recipedbstatic", "targetlookup" ]
-updated = "2026-10-21 08:06:22"
-checked = "2026-10-21"
+updated = "2026-11-07 10:19:05"
+checked = "2026-11-07"
+
+[[items]]
+name = "v8-kinds"
+value = "v8 replacement of 7.x matching groups/catalysts: entry kinds UNIVERSAL / DISTINCT / POOLED and slot CATALYST."
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/recipedb/GroupedIngredientList.java"
+snippet = "static final int UNIVERSAL = 0;"
+
+[[items]]
+name = "v8-mapping"
+value = "Kind per handler list; non-plain RHL subclasses (other mods' buffers) become UNIVERSAL."
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/recipedb/GroupedIngredientList.java"
+snippet = "list.addHandlerList(handlerList, isPlain(handlerList) ? DISTINCT : UNIVERSAL, owner);"
+
+[[items]]
+name = "split-buffers"
+value = "Only gtceu's MEPatternBufferPartMachine and our AbstractMEPatternBufferPartMachine are split per slot."
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/recipedb/PatternBufferIngredients.java"
+snippet = "return buffer != null && (buffer.getClass() == MEPatternBufferPartMachine.class ||"
+
+[[items]]
+name = "fromholder-hook"
+value = "Successor of 7.x's @Overwrite fromHolder."
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/recipedb/RecipeDBMixin.java"
+snippet = "GroupedIngredientList list = GroupedIngredientList.fromHolder(holder);"
 +++
 7.x code is in git history (the `reference/` archive, removed in commit 0f6b123). 7.x had no handler groups, so the mod added its own:
 - `api/ISlotHint`: each handler got a *matching group* (default itself) and a *catalyst* flag (`NotifiableRecipeHandlerTraitMixin` @Unique field; `InternalSlotRecipeHandlerMixin` made a buffer slot's item+fluid handlers return their `InternalSlot` as group; `DualHatchPartMachineMixin` put a dual hatch's inventory and tank in one group).

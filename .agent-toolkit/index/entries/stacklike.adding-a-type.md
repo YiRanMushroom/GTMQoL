@@ -1,8 +1,44 @@
 +++
 title = "How to add a new stack-like type (capability, handler, AE bridge, EMI converter, recipe types)"
 keys = [ "external hatches", "stack-like core" ]
-updated = "2026-10-21 08:05:56"
-checked = "2026-10-21"
+updated = "2026-11-07 09:54:27"
+checked = "2026-11-07"
+
+[[items]]
+name = "type"
+value = "step 1: the type interface to implement"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/GenericStackLikeType.java"
+snippet = "public interface GenericStackLikeType<S, I> {"
+
+[[items]]
+name = "cap-register"
+value = "step 2: registers the recipe capability (color, sort index, name)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/GenericStackLikeRecipeCapability.java"
+snippet = "public static <S, I> GenericStackLikeRecipeCapability<S, I> register(GenericStackLikeType<S, I> type,"
+
+[[items]]
+name = "chemical-init"
+value = "the reference init() (sort index 4)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/mekanism/ChemicalStackLike.java"
+snippet = "CAP = GenericStackLikeRecipeCapability.register(TYPE, 0xFF9C5ED6, 4, \"Chemical\");"
+
+[[items]]
+name = "handler"
+value = "step 3: base class for parts/machines holding the type"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/GenericStackLikeNotifiableHandler.java"
+snippet = "public abstract class GenericStackLikeNotifiableHandler<S, I> extends NotifiableRecipeHandlerTrait<I> {"
+
+[[items]]
+name = "ae-bridge"
+value = "step 4: AE bridge registration"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/stacklike/AEStackLikeBridges.java"
+snippet = "public static void register(AEStackLikeBridge<?, ?> bridge) {"
+
+[[items]]
+name = "emi-converter"
+value = "step 5: the EMI converter registered in GTMQoLClient.init"
+path = "src/main/java/com/yiran/minecraft/gtmqol/client/GTMQoLClient.java"
+snippet = "ChemicalEmiConverter.register();"
 +++
 1. Implement `GenericStackLikeType<S, I>` (see `ChemicalStackLike`, stacklike.chemical). Keep it in a class touched only when the mod is loaded.
 2. Give that class a static `init()` doing `CAP = GenericStackLikeRecipeCapability.register(TYPE, color, sortIndex, name)` (stacklike.recipe-capability), called from the `GTMQoL` constructor behind `ModList.get().isLoaded(...)` (like `ChemicalStackLike.init()`). Pick a sort index between gtceu's (chemicals took 4, between cwu 3 and block_state 5).

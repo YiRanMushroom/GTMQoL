@@ -1,8 +1,44 @@
 +++
 title = "How to bump the pinned GTCEu v8 snapshot (and ModularUI with it), and what to recheck"
 keys = [ "1.20.1", "gtceu_version", "mixin targets", "modularui_version", "mui", "require", "sources jar", "version pin" ]
-updated = "2026-10-29 05:10:21"
-checked = "2026-10-29"
+updated = "2026-11-07 10:18:47"
+checked = "2026-11-07"
+
+[[items]]
+name = "pinned-versions"
+value = "gtceu_version / modularui_version pinned snapshots (step 1-2); MUI must match the build GTCEu was compiled against."
+path = "gradle.properties"
+snippet = "# Must match the mui version gtceu was built against"
+
+[[items]]
+name = "min-version"
+value = "gtceu_min_version is the mods.toml lower bound, separate from the pinned coordinate."
+path = "src/main/resources/META-INF/neoforge.mods.toml"
+snippet = "versionRange = \"[${gtceu_min_version},)\""
+
+[[items]]
+name = "require-count"
+value = "Step 3 example: GTMachinesMixin's require count on the addOutputLimit wrap (2 -> 1 after upstream #5528)."
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/GTMachinesMixin.java"
+snippet = "private static MachineBuilder gtmqol$noOutputLimit(MachineBuilder builder, RecipeCapability<?> cap, int limit,"
+
+[[items]]
+name = "steam-init"
+value = "Step 3: <init>* injection runs once only while both SimpleSteamMachine constructors call super(...)."
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/SimpleSteamMachineMixin.java"
+snippet = "// Both constructors call super(...), not this(...), so this runs once per machine."
+
+[[items]]
+name = "recipedb-hooks"
+value = "Step 7: RecipeDB.fromHolder replaced by GroupedIngredientList (recipedb.v8-handler-groups)."
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/recipedb/RecipeDBMixin.java"
+snippet = "GroupedIngredientList list = GroupedIngredientList.fromHolder(holder);"
+
+[[items]]
+name = "buffer-at"
+value = "Step 7: AT on the pattern buffer's workers / Worker.slot."
+path = "src/main/resources/META-INF/accesstransformer.cfg"
+snippet = "public com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine$Worker slot"
 +++
 Both branches pin GTCEu to a timestamped snapshot (`gtceu_version` in gradle.properties) and bump it by hand.
 

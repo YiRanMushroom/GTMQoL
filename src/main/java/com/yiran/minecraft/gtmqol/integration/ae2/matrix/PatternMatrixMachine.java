@@ -101,6 +101,18 @@ public class PatternMatrixMachine extends MultiblockControllerMachine implements
                 ByteBufCodecs.VAR_INT, PatternEntry::slot,
                 ItemStack.STREAM_CODEC, PatternEntry::stack,
                 PatternEntry::new);
+
+        /** By content: ItemStack has no equals of its own, and the UI resends the list whenever an entry differs. */
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof PatternEntry entry && entry.core == core && entry.slot == slot &&
+                    ItemStack.matches(entry.stack, stack);
+        }
+
+        @Override
+        public int hashCode() {
+            return (31 * core + slot) * 31 + stack.getItem().hashCode();
+        }
     }
 
     @SaveField
@@ -496,14 +508,15 @@ public class PatternMatrixMachine extends MultiblockControllerMachine implements
                         .coverChildren()
                         .childPadding(2)
                         .child(new ButtonWidget<>()
-                                .size(64, 18)
-                                .overlay(Text.lang(KEY + "patterns"))
+                                .size(18)
+                                .overlay(new ItemDrawable(PatternCrafter.PATTERN.get()).asIcon().size(16))
+                                .tooltipBuilder(tooltip -> tooltip.addLine(Text.lang(KEY + "patterns")))
                                 .onMousePressed((context, button) -> {
                                     patterns.togglePanel();
                                     return true;
                                 }))
                         .child(GTMuiWidgets.createToggleButton(this::isAutoUpload, this::setAutoUpload,
-                                GTGuiTextures.BUTTON_BATCH[0], GTGuiTextures.BUTTON_BATCH[1], KEY + "auto_upload"))
+                                IO.OUT.uiTexture, KEY + "auto_upload"))
                         .child(new ButtonWidget<>()
                                 .size(18)
                                 .overlay(new DynamicDrawable(() -> canCancel.getBoolValue() ?

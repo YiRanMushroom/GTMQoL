@@ -29,6 +29,17 @@ public class PendingOutputTrait extends MachineTrait {
                 ItemStack.STREAM_CODEC, Stored::item,
                 ByteBufCodecs.VAR_LONG, Stored::count,
                 Stored::new);
+
+        /** By content: ItemStack has no equals of its own, and the UI resends the list whenever an entry differs. */
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof Stored stored && stored.count == count && ItemStack.matches(stored.item, item);
+        }
+
+        @Override
+        public int hashCode() {
+            return Long.hashCode(count) * 31 + item.getItem().hashCode();
+        }
     }
 
     /** One of each item (count 1); {@link #counts} holds the amounts at the same index. */

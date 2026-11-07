@@ -2,7 +2,7 @@
 title = "Research recipes under overclocking: each OC halves the total CWU (gtceu: -2.5%), EU/t still 4x"
 keys = [ "cwu", "duration_is_total_cwu", "hpca", "research station" ]
 updated = "2026-10-29 06:18:54"
-checked = "2026-10-29"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ResearchOverclockMixin.java"

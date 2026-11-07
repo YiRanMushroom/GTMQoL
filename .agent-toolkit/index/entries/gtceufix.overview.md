@@ -1,8 +1,26 @@
 +++
 title = "Upstream bug workarounds in core/mixins/gtceufix: rules, which exist on which branch, recheck after bumps"
 keys = [ "1.20.1", "both branches", "modularui bug", "remove once fixed" ]
-updated = "2026-11-07 07:18:24"
+updated = "2026-11-07 09:53:09"
 checked = "2026-11-07"
+
+[[items]]
+name = "folder"
+value = "the gtceufix mixins folder (the 1.21 list above); stale when a fix is added or removed"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix"
+dir = [ "AABBHighlightColorMixin.java", "AABBHighlightSeeThroughMixin.java", "AEConfigSyncHandlerMixin.java", "AbstractWidgetMenuMixin.java", "BaseSchemaRendererMixin.java", "BloomSafeModeMixin.java", "DummyChunkSourceMixin.java", "EmiCallWrapperMixin.java", "EnergyContainerListMixin.java", "FluidRecipeCapabilityMixin.java", "GTEmiRecipeMixin.java", "GTRecipeBuilderMixin.java", "GTRecipeCategoryMixin.java", "GameDataMixin.java", "ItemDataComponentMapIngredientMixin.java", "MEPatternBufferInternalSlotMixin.java", "MachineModelVariantOrderMixin.java", "PotionFluidTypeMixin.java", "RecipeLogicMixin.java", "RecipeRunnerMixin.java", "jei/" ]
+
+[[items]]
+name = "jei-config"
+value = "own mixin config for jei/JeiRecipeSlotMixin"
+path = "src/main/resources/gtmqol.jeifix.mixins.json"
+snippet = "\"package\": \"com.yiran.minecraft.gtmqol.core.mixins.gtceufix.jei\","
+
+[[items]]
+name = "canner"
+value = "canner potion representative recipes: a feature, outside gtceufix"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/CannerLogicMixin.java"
+snippet = "public class CannerLogicMixin {"
 +++
 Mixins in `core/mixins/gtceufix/` work around bugs in GTCEu, ModularUI, JEI or NeoForge interplay. Each class javadoc says what it fixes and ends with "Remove once ... fixes it": delete it when upstream does (check on every GTCEu / MUI bump, see build.gtceu-upgrade).
 

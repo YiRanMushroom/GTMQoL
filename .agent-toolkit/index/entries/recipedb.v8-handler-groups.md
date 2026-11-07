@@ -1,8 +1,26 @@
 +++
 title = "GTCEu v8 RecipeHandlerList groups and how RecipeRunner combines them (the rules grouped search mirrors)"
 keys = [ "bufferrecipehandlerlist", "bus_distinct", "bypass_distinct", "distinct", "dyed", "mepatternbufferpartmachine", "proxyrhl", "recipehandlergroup", "recipehandlergroupcolor", "rhl", "undyed", "worker" ]
-updated = "2026-10-19 20:08:35"
-checked = "2026-10-21"
+updated = "2026-11-07 09:54:04"
+checked = "2026-11-07"
+
+[[items]]
+name = "mirror"
+value = "our mirror of RecipeRunner's grouping rules (distinct / colors / undyed / shared hatches)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/recipedb/GroupedIngredientList.java"
+snippet = "public boolean canFollow(int from, int to) {"
+
+[[items]]
+name = "buffer-split"
+value = "relies on the v8 buffer layout: circuit, shared inventory/tank, workers"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/recipedb/PatternBufferIngredients.java"
+snippet = "for (var worker : buffer.workers) {"
+
+[[items]]
+name = "iterator"
+value = "relies on RecipeIterator's private getNext/SearchFrame layout"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/recipedb/RecipeIteratorMixin.java"
+snippet = "public class RecipeIteratorMixin {"
 +++
 Upstream GTCEu v8 behaviour (verify after GTCEu bumps; sources in `.gtceu-src-1.21`).
 
