@@ -167,6 +167,16 @@ repositories {
     }
 }
 
+// Plain JUnit, no game: only classes without game classes can be tested here (integration/ae2/batch).
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'failed'
+        exceptionFormat 'full'
+        showStandardStreams = true
+    }
+}
+
 dependencies {
     // Same setup as gtceu's 1.21.1 addon template: gtceu without its pom dependencies, and the libraries it
     // jar-in-jars declared by hand (Registrate and ModularUI are also in gtceu's public API). NeoForge runs
@@ -178,6 +188,8 @@ dependencies {
     runtimeOnly("com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtceu_version}") {
         transitive = false
     }
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation "com.tterrag.registrate:Registrate:${project.registrate_version}"
     // Also our own config library (see GTMQoLConfig).
     implementation("dev.toma.configuration:configuration-${project.minecraft_version}:${project.configuration_version}") {
@@ -200,12 +212,8 @@ dependencies {
     // only used when AE2 is loaded, still not a runtime dependency of ours.
     accessCompileOnly "org.appliedenergistics:appliedenergistics2:${project.ae2_version}"
     localRuntime "org.appliedenergistics:appliedenergistics2:${project.ae2_version}"
-    // Optional: ExtendedAE Plus smart doubling on gtceu's pattern buffer. Compile against its API, never
-    // require it. It requires ExtendedAE, which in turn requires GuideMe and Glodium; all from Modrinth,
-    // listed by hand.
-    compileOnly("maven.modrinth:extendedae-plus:${project.eap_version}") {
-        transitive = false
-    }
+    // ExtendedAE Plus in dev, to see that we work beside it. No code of ours uses it. It requires ExtendedAE,
+    // which in turn requires GuideMe and Glodium; all from Modrinth, listed by hand.
     localRuntime("maven.modrinth:extendedae-plus:${project.eap_version}") {
         transitive = false
     }

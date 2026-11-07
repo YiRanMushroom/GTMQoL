@@ -35,7 +35,8 @@ import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*;
  */
 // Untested: JEI's fill button puts crafting, stonecutting and smithing recipes in the encoding window (dev runs EMI);
 // exact matches durability, substitutes accept any; a tool wears by one craft per parallel, a run stops at what it has
-// left, then the next tool takes over; the duplicates button keeps a smithing template and makes one; 9 patterns
+// left, then the next tool takes over; the duplicates button keeps a smithing template and makes one; 9 patterns; a
+// recipe changed under the same id or removed: the pattern's tooltip goes red and the machine skips it
 public final class PatternCrafter {
 
     private static final String KEY = "gtmqol.machine.pattern_crafter.";

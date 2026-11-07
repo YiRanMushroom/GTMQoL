@@ -485,7 +485,7 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
         addLang(FLUID_LEGEND_KEY, "Blue: fluid");
         addLang(CHANGED_LEGEND_KEY, "Yellow: wears out");
         addLang(BLANK_KEY, "Right click to encode a recipe");
-        addLang(BROKEN_KEY, "Its recipe no longer exists");
+        addLang(BROKEN_KEY, "Its recipe changed or no longer exists");
         addLang(CRAFTS_KEY, "Crafts %sx %s");
         addLang(GIVES_BACK_KEY, "Gives back %sx %s");
         addLang(USES_KEY, "Uses %sx %s");

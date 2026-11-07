@@ -13,6 +13,8 @@ public class AE2MixinPlugin extends GTMQoLMixinConfigPlugin {
     private static final String EXTENDEDAE_MIXIN = "com.yiran.minecraft.gtmqol.core.mixins.ae2.PartSpecialStorageBusMixin";
     private static final String STOCKING_MIXIN_PREFIX = "com.yiran.minecraft.gtmqol.core.mixins.ae2.MEStocking";
     private static final String PATTERN_BUFFER_MIXIN_PREFIX = "com.yiran.minecraft.gtmqol.core.mixins.ae2.MEPatternBuffer";
+    private static final String CRAFTING_MIXIN_PREFIX = "com.yiran.minecraft.gtmqol.core.mixins.ae2.Crafting";
+    private static final String UPLOAD_MIXIN = "com.yiran.minecraft.gtmqol.core.mixins.ae2.PatternEncodingTermMenuUploadMixin";
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
@@ -24,6 +26,10 @@ public class AE2MixinPlugin extends GTMQoLMixinConfigPlugin {
         if (mixinClassName.startsWith(STOCKING_MIXIN_PREFIX)) return true;
         // bridged capabilities (e.g. chemicals) in the pattern buffer; no effect without a bridge
         if (mixinClassName.startsWith(PATTERN_BUFFER_MIXIN_PREFIX)) return true;
+        // smart doubling and crafting plans
+        if (mixinClassName.startsWith(CRAFTING_MIXIN_PREFIX)) return true;
+        // uploads to the pattern matrix
+        if (mixinClassName.equals(UPLOAD_MIXIN)) return true;
         // shared hatches (toggled per buffer in its UI); not all of them target the pattern buffer
         if (mixinClassName.endsWith("SharedHatchesMixin")) return true;
         // everything else is the sticky card

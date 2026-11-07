@@ -5,7 +5,14 @@
   "plugin": "com.yiran.minecraft.gtmqol.core.AE2MixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "CraftingCalculationAccessor",
+    "CraftingCalculationPlannerMixin",
+    "CraftingCpuLogicBatchMixin",
+    "CraftingServiceBatchMixin",
+    "CraftingSimulationStateBatchMixin",
+    "CraftingTaskProgressAccessor",
     "MEPatternBufferOutputMarksMixin",
+    "MEPatternBufferSmartDoublingMixin",
     "MEPatternBufferWorkerPatternAccessor",
     "FluidRecipeCapabilitySharedHatchesMixin",
     "ItemRecipeCapabilitySharedHatchesMixin",
@@ -22,6 +29,7 @@
     "MEStockingBusPartMachineMixin",
     "MEStockingHatchPartMachineMixin",
     "NetworkStorageMixin",
+    "PatternEncodingTermMenuUploadMixin",
     "PartSpecialStorageBusMixin",
     "StorageBusPartMixin"
   ],

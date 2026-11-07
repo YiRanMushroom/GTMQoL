@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.crafting.pattern.AEProcessingPattern;
+import appeng.api.stacks.GenericStack;
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.screen.RichTooltip;
@@ -14,21 +14,18 @@ import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
-import com.extendedae_plus.api.crafting.ScaledProcessingPattern;
-import com.extendedae_plus.api.smartDoubling.ISmartDoublingAwarePattern;
-import com.extendedae_plus.api.smartDoubling.ISmartDoublingHolder;
-import com.extendedae_plus.util.smartDoubling.PatternScaler;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.IntConsumer;
+import java.util.function.IntSupplier;
 
 import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.popup;
 
 /**
- * ExtendedAE Plus smart doubling on GTCEu's pattern buffer, used by {@code mixin.eap.MEPatternBufferSmartDoublingMixin}.
- * Only loaded when ExtendedAE Plus is installed. Lang keys are registered in {@link AE2Machines}.
+ * Smart doubling on GTCEu's pattern buffer, used by {@code MEPatternBufferSmartDoublingMixin}. The work is in
+ * {@link com.yiran.minecraft.gtmqol.integration.ae2.batch.BatchPlan}. Lang keys are registered in {@link AE2Machines}.
  */
 public final class SmartDoubling {
 
@@ -38,29 +35,26 @@ public final class SmartDoubling {
 
     private SmartDoubling() {}
 
-    /** Smart doubling settings live on each pattern, EAP reads them when it plans a craft. */
-    public static void apply(@Nullable IPatternDetails[] patterns, boolean enabled, int limit) {
-        for (IPatternDetails pattern : patterns) {
-            if (pattern instanceof AEProcessingPattern processing &&
-                    (Object) processing instanceof ISmartDoublingAwarePattern aware) {
-                aware.eap$setAllowScaling(enabled);
-                aware.eap$setMultiplierLimit(PatternScaler.getComputedMul(processing, limit));
-            }
-        }
-    }
-
-    /** AE2 pushes the scaled wrapper; the buffer only knows the patterns in its slots. */
-    public static IPatternDetails unwrap(IPatternDetails pattern) {
-        return pattern instanceof ScaledProcessingPattern scaled ? scaled.getOriginal() : pattern;
-    }
-
     /**
-     * Adds a button to the left configurators that opens the smart doubling settings. The on/off switch is
-     * ours: the NeoForge build of EAP has no toggle in {@link ISmartDoublingHolder}, only the limit.
+     * The crafts of a pattern in one batch.
+     *
+     * @param limit the most of any input in a batch, in items or buckets; 0 = no limit
      */
+    public static long limit(IPatternDetails pattern, int limit) {
+        if (limit <= 0) return Long.MAX_VALUE;
+        long crafts = Long.MAX_VALUE;
+        for (var input : pattern.getInputs()) {
+            GenericStack first = input.getPossibleInputs()[0];
+            long perCraft = first.amount() * input.getMultiplier();
+            crafts = Math.min(crafts, Math.max(1, limit * (long) first.what().getAmountPerUnit() / perCraft));
+        }
+        return crafts;
+    }
+
+    /** Adds a button to the left configurators that opens the smart doubling settings. */
     public static MachineUIPanelBuilder addConfigurator(MachineUIPanelBuilder builder, PanelSyncManager syncManager,
-                                                        ISmartDoublingHolder holder, BooleanSupplier enabled,
-                                                        BooleanConsumer setEnabled) {
+                                                        BooleanSupplier enabled, BooleanConsumer setEnabled,
+                                                        IntSupplier limit, IntConsumer setLimit) {
         IPanelHandler panelHandler = syncManager.syncedPanel("gtmqol_smart_doubling", true,
                 (syncManager1, handler) -> popup("gtmqol_smart_doubling_panel", 140, 70)
                         .child(Flow.col()
@@ -74,8 +68,7 @@ public final class SmartDoubling {
                                 .child(new TextFieldWidget()
                                         .size(90, 14)
                                         .setNumbers(0, Integer.MAX_VALUE)
-                                        .value(SyncHandlers.intNumber(holder::eap$getProviderSmartDoublingLimit,
-                                                holder::eap$setProviderSmartDoublingLimit).allowC2S()))
+                                        .value(SyncHandlers.intNumber(limit, setLimit).allowC2S()))
                                 .margin(5)));
 
         var left = builder.leftConfigurators();

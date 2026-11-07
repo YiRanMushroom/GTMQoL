@@ -2,7 +2,8 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-06 18:36:17"
+updated = "2026-11-07 09:29:01"
+checked = "2026-11-07"
 
 [[items]]
 name = "rotor-amount"
@@ -75,5 +76,47 @@ name = "bloom-rebuild"
 value = "No more Not building! or sortQuads crashes; glowing blocks still glow and stop when broken"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/BloomSafeModeMixin.java"
 snippet = "// Untested: no more \"Not building!\""
+
+[[items]]
+name = "smart-doubling-batches"
+value = "Whole batches from stock, pieces for what waits or lacks power, restart, x2 settings, chains"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/batch/BatchPlan.java"
+snippet = "// Untested: an order from stock goes out as one"
+
+[[items]]
+name = "crafting-planner"
+value = "Plans in game against the preview, missing lists, huge orders, loops, container items"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/batch/AECraftingPlanner.java"
+snippet = "// Untested: plans in game match the preview"
+
+[[items]]
+name = "pattern-matrix"
+value = "The whole machine in game"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/PatternMatrix.java"
+snippet = "// Untested: all of it in game"
+
+[[items]]
+name = "matrix-interface-ui"
+value = "Matrix ME Interface window: rename, auto upload shared with the controller"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/MatrixInterfaceMachine.java"
+snippet = "// Untested: renaming shows in the pattern access terminal"
+
+[[items]]
+name = "matrix-cancel"
+value = "Pattern matrix cancel button gives back the inputs of crafts not done"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/PatternMatrixWork.java"
+snippet = "// Untested: Shift-click on the controller's cancel button"
+
+[[items]]
+name = "partial-push"
+value = "AE2's CPU pushes part of a batch: a chain's next step starts as the step before delivers; a batch needing more power than the network stores goes in parts; the rest shows in the CPU list and survives a restart"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/CraftingCpuLogicBatchMixin.java"
+snippet = "// Untested: a chain's next step starts with part of a batch as the step before delivers"
+
+[[items]]
+name = "matrix-controller-broken"
+value = "Break the matrix controller mid-job: undone crafts' inputs and finished items go to the network, what it can't take is gone"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/PatternMatrixWork.java"
+snippet = "// Untested: breaking the controller mid-job sends undone crafts' inputs and finished items to the network"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

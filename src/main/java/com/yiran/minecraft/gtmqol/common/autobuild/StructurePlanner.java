@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternHelper;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -26,6 +27,7 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,6 +50,8 @@ import java.util.Set;
  * predicates of the same char get counts of 0. If one of those had a minimum count, the structure will not form; that
  * is the player's choice.
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public final class StructurePlanner {
 
     /** One block to place, in world coordinates. */
@@ -136,26 +140,31 @@ public final class StructurePlanner {
                 int wanted = useSettings ? settings.dimensions().getInt(i) : minMax.leftInt();
                 dimensions.add(Mth.clamp(wanted, minMax.leftInt(), Math.max(minMax.leftInt(), minMax.rightInt())));
             }
-            return new ExpandablePatternHelper(dimensions) {
+            Map<MultiPredicate, BasePredicate> chosen = new IdentityHashMap<>();
+            ExpandablePatternHelper helper = new ExpandablePatternHelper(dimensions) {
 
                 @Override
                 protected int getMinCount(MultiPredicate predicate, BasePredicate basePredicate) {
-                    return abilities.suppress(predicate, basePredicate) ? 0 :
-                            super.getMinCount(predicate, basePredicate);
+                    return abilities.suppress(predicate, basePredicate) ||
+                            excluded(chosen, roots, predicate, basePredicate) ?
+                            0 : super.getMinCount(predicate, basePredicate);
                 }
 
                 @Override
                 protected int getMaxCount(MultiPredicate predicate, BasePredicate basePredicate) {
-                    return abilities.suppress(predicate, basePredicate) ? 0 :
-                            super.getMaxCount(predicate, basePredicate);
+                    return abilities.suppress(predicate, basePredicate) ||
+                            excluded(chosen, roots, predicate, basePredicate) ?
+                            0 : super.getMaxCount(predicate, basePredicate);
                 }
             };
+            applyChoices(expandable, settings, helper, chosen);
+            return helper;
         }
         throw new IllegalStateException("unsupported pattern type " + pattern.getClass().getSimpleName());
     }
 
     /** Choices that are not offered by {@link BuildOptions} (stale client, other pattern) are ignored. */
-    private static void applyChoices(BlockPattern pattern, BuildSettings settings, AbstractStructureHelper helper,
+    private static void applyChoices(IBlockPattern pattern, BuildSettings settings, AbstractStructureHelper helper,
                                      Map<MultiPredicate, BasePredicate> chosen) {
         if (settings.blocks().isEmpty()) return;
         BuildOptions options = BuildOptions.of(pattern);

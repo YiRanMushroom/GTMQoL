@@ -334,6 +334,28 @@ public final class GTMQoLConfig {
         @Configurable.Comment({ "Encoding a processing pattern from the recipe viewer leaves out inputs the recipe",
                 "doesn't consume (molds, lenses, ...)", "Default: true" })
         public boolean skipNotConsumedInputs = true;
+
+        @Configurable
+        @Configurable.Comment({ "Pattern Matrix: crafts AE2 patterns and crafting patterns in bulk. Also needs",
+                "machines.patternCrafter, wireless.energy and wireless.fe", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean patternMatrix = true;
+
+        @Configurable
+        @Configurable.Comment({ "FE a craft in the Pattern Matrix costs", "Default: 64" })
+        @Configurable.Range(min = 0)
+        public int patternMatrixFEPerCraft = 64;
+
+        @Configurable
+        @Configurable.Comment({ "Smart doubling: the crafts of a pattern go out in batches of 1, 2, 4 and so on. Above 1,",
+                "the largest batch is about this fraction of them, so the next step of a chain starts sooner", "Default: 1" })
+        @Configurable.Range(min = 1, max = 4096)
+        public int batchParts = 1;
+
+        @Configurable
+        @Configurable.Comment({ "Work out crafting plans by adding up what each item needs instead of walking AE2's",
+                "tree, so that the amount doesn't matter. Requests it can't judge still go AE2's way", "Default: true" })
+        public boolean fastCraftingPlans = true;
     }
 
     @Configurable

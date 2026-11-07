@@ -50,7 +50,6 @@ public final class AE2Machines {
                         Component.translatable("gtceu.part_sharing.enabled"))
                 .register();
 
-        // SmartDoubling's keys are compile-time constants, so this doesn't load it (or ExtendedAE Plus).
         addLang(SmartDoubling.TITLE_KEY, "Smart Doubling");
         addLang(SmartDoubling.TOGGLE_KEY + ".enabled", "Smart doubling: on");
         addLang(SmartDoubling.TOGGLE_KEY + ".disabled", "Smart doubling: off");

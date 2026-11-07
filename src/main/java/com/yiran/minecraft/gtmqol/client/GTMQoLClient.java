@@ -20,6 +20,7 @@ public final class GTMQoLClient {
         DynamicRenderManager.register(GTMQoL.id("energy_cube_sides"), EnergyCubeSidesRender.TYPE);
         if (GTCEu.Mods.isAE2Loaded()) {
             DynamicRenderManager.register(GTMQoL.id("energy_cell_sides"), EnergyCellSidesRender.TYPE);
+            DynamicRenderManager.register(GTMQoL.id("matrix_part"), MatrixPartRender.TYPE);
         }
         if (ModList.get().isLoaded("emi") && ModList.get().isLoaded("mekanism")) ChemicalEmiConverter.register();
     }

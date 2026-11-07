@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "gtmqol:block/machine/matrix_pattern_core"
+    }
+  }
+}

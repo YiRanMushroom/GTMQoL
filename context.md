@@ -28,6 +28,9 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
   a `gtceufix/` client mixin passing `builder.getJson().deepCopy()`.
 - Proxy pattern buffers don't get the pattern output marks, neither in the recipe lookup nor in grouped search
   (`ae2.pattern-output-marks`, `PatternBufferIngredients`).
+- Client crash in GTCEu's multiblock preview menu button (`AbstractMenuButton.checkClose`, ContextMenuButton), seen
+  once (`run/crash-reports/crash-2026-11-07_00.46.34-client.txt`); cause unconfirmed, a gtceufix guard was proposed
+  and not yet approved by the user.
 - Upstream: on steam (BRONZE theme) panels the title and GT logo are pushed right and squeezed, GTCEu's own steam
   machines too.
 
@@ -38,9 +41,7 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 - Auto-build: substructures (`autobuild.*`). 1.21: once upstream ports GTCEu #5337, switch the settings window to
   GTCEu's multiblock preview and the planner to filtered predicates, as on 1.20 (`build.branch-differences`).
 - Stack-like: external chemical hatches.
-- FE input and output hatches (`wireless.fe`): no multiblock uses their abilities yet, the user has later machines in mind.
-- Pattern crafter (`crafter.pattern`): the large multiblock with the AE mode (`crafter.ae-mode`), to discuss with the
-  user first.
+- FE output hatch (`wireless.fe`): no multiblock uses its ability yet, the user has later machines in mind.
 
 ## Open questions for the user
 

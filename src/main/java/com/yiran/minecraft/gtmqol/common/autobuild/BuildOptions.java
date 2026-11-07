@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.common.autobuild;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
@@ -12,6 +13,7 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,10 +56,11 @@ public record BuildOptions(List<Slice> slices, List<IntIntPair> bounds, List<Cho
 
     public static BuildOptions of(IBlockPattern pattern) {
         if (pattern instanceof BlockPattern blockPattern) {
-            return new BuildOptions(slices(blockPattern), List.of(), choices(blockPattern));
+            return new BuildOptions(slices(blockPattern), List.of(), choices(blockPattern.getPredicates()));
         }
         if (pattern instanceof ExpandablePattern expandable && expandable.getBoundsConstraints() != null) {
-            return new BuildOptions(List.of(), expandable.getBoundsConstraints().apply(), List.of());
+            return new BuildOptions(List.of(), expandable.getBoundsConstraints().apply(),
+                    choices(expandable.getSymbolMap()));
         }
         return new BuildOptions(List.of(), List.of(), List.of());
     }
@@ -84,15 +87,15 @@ public record BuildOptions(List<Slice> slices, List<IntIntPair> bounds, List<Cho
         return result;
     }
 
-    private static List<ChoicePoint> choices(BlockPattern pattern) {
+    private static List<ChoicePoint> choices(Char2ObjectMap<MultiPredicate> predicates) {
         // sorted so the window does not depend on the map's iteration order
-        char[] symbols = pattern.getPredicates().keySet().toCharArray();
+        char[] symbols = predicates.keySet().toCharArray();
         Arrays.sort(symbols);
         // a predicate object shared by two chars is one choice, listed under the first char
         Set<MultiPredicate> seen = Collections.newSetFromMap(new IdentityHashMap<>());
         List<ChoicePoint> result = new ArrayList<>();
         for (char symbol : symbols) {
-            MultiPredicate root = pattern.getPredicates().get(symbol);
+            MultiPredicate root = predicates.get(symbol);
             if (root.isAir() || root.isAny() || root.isController() || !seen.add(root)) continue;
             List<BasePredicate> expanded = root.expand();
             List<Option> options = new ArrayList<>();
@@ -112,13 +115,17 @@ public record BuildOptions(List<Slice> slices, List<IntIntPair> bounds, List<Cho
     }
 
     /**
-     * Hatches, buses and other parts: every candidate is a machine block. The controller counts too, but its position
-     * is never placed anyway.
+     * Hatches, buses and other parts: every candidate is a machine that fits an ability. Machines that are simply part
+     * of a structure, like the pattern matrix's pattern cores, get placed.
      */
     // Untested: abilities by machine block; auto-build leaves hatch/bus/muffler spots empty, casings elsewhere
     static boolean isAbility(BasePredicate predicate) {
         List<BlockInfo> candidates = predicate.getCandidates();
-        return !candidates.isEmpty() &&
-                candidates.stream().allMatch(c -> c.getBlockState().getBlock() instanceof MetaMachineBlock);
+        return !candidates.isEmpty() && candidates.stream().allMatch(c -> isPart(c.getBlockState().getBlock()));
+    }
+
+    private static boolean isPart(Block block) {
+        return block instanceof MetaMachineBlock &&
+                PartAbility.VALUES.values().stream().anyMatch(ability -> ability.isApplicable(block));
     }
 }
