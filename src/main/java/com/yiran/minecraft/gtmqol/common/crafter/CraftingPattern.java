@@ -44,7 +44,7 @@ import java.util.Optional;
  * What an encoded pattern holds, like AE2's patterns: a 3 x 3 grid (stonecutting and smithing use part of it) and the
  * recipe it matched. One craft is simulated when encoding and its result kept on the item ({@code uses}, {@code
  * outputs}), so a bottle becoming an empty bottle costs nothing afterwards. Only inputs that change with every craft,
- * like tools, are simulated while running ({@link PatternWear}).
+ * like tools, are simulated while running ({@link PatternWear}). A pattern whose recipe changed doesn't run, as in AE2.
  *
  * @param fluids      crafting only: take buckets as their fluid, as AE2's fluid substitution
  * @param substitutes crafting only: accept whatever the recipe accepts in a slot, at any data, as AE2's substitution;
@@ -201,9 +201,14 @@ public record CraftingPattern(Mode mode, List<ItemStack> inputs, ResourceLocatio
             }
             case SMITHING -> recipes.getRecipeFor(RecipeType.SMITHING, smithingInput(inputs), level);
         };
-        if (found.isEmpty()) return null;
-        Recipe<?> recipe = found.get();
+        return found.isEmpty() ? null :
+                simulate(mode, inputs, found.get(), fluids, substitutes, duplicates, level);
+    }
 
+    /** One craft of this recipe on this grid; null when it doesn't match. */
+    private static @Nullable CraftingPattern simulate(Mode mode, List<ItemStack> inputs, Recipe<?> recipe,
+                                                      boolean fluids, boolean substitutes, boolean duplicates,
+                                                      Level level) {
         boolean crafting = mode == Mode.CRAFTING;
         List<SlotUse> uses = new ArrayList<>();
         List<ItemStack> outputs = new ArrayList<>();
@@ -232,7 +237,7 @@ public record CraftingPattern(Mode mode, List<ItemStack> inputs, ResourceLocatio
     }
 
     private static <C extends Container> ItemStack assemble(Recipe<C> recipe, C input, Level level) {
-        return recipe.assemble(input, level.registryAccess());
+        return recipe.matches(input, level) ? recipe.assemble(input, level.registryAccess()) : ItemStack.EMPTY;
     }
 
     /** The inputs a recipe makes more of stay in the machine, the output is only what it adds. */
@@ -319,10 +324,10 @@ public record CraftingPattern(Mode mode, List<ItemStack> inputs, ResourceLocatio
                 recipe.getIngredients().stream().anyMatch(ingredient -> ingredient.getItems().length > 1);
     }
 
-    /** One craft of this pattern, or null when its recipe is gone. */
+    /** One craft of this pattern, or null when its recipe is gone or no longer does what was encoded. */
     public @Nullable Plan plan(Level level) {
         Recipe<?> recipe = level.getRecipeManager().byKey(recipeId).orElse(null);
-        if (recipe == null || Mode.of(recipe) != mode) return null;
+        if (recipe == null || Mode.of(recipe) != mode || !stillMakes(recipe, level)) return null;
         List<Input> consumed = new ArrayList<>();
         List<Input> kept = new ArrayList<>();
         List<FluidStack> fluidInputs = new ArrayList<>();
@@ -341,6 +346,19 @@ public record CraftingPattern(Mode mode, List<ItemStack> inputs, ResourceLocatio
             }
         }
         return new Plan(uses, consumed, kept, fluidInputs, outputs, inputs, recipe);
+    }
+
+    /**
+     * Whether the recipe still makes what is on the item: it can change and keep its id. Only the outputs are compared,
+     * as what happens to a tool can come down to chance.
+     */
+    private boolean stillMakes(Recipe<?> recipe, Level level) {
+        CraftingPattern now = simulate(mode, inputs, recipe, fluids, substitutes, duplicates, level);
+        if (now == null || now.outputs.size() != outputs.size()) return false;
+        for (int i = 0; i < outputs.size(); i++) {
+            if (!ItemStack.matches(now.outputs.get(i), outputs.get(i))) return false;
+        }
+        return true;
     }
 
     /** Only this item with this NBT. */

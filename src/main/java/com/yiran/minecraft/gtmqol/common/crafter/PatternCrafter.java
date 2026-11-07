@@ -41,7 +41,8 @@ import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*;
 // smithing template and makes one; 9 patterns; tools wearing by one craft per parallel, runs cut to what a tool has
 // left, the next tool taking over; buckets as fluid or item; AE2
 // crafting, stonecutting and smithing patterns run, processing patterns don't; taking the pattern out stops the
-// machine; a reload while crafting; an encoded pattern crafted alone gives a blank one
+// machine; a reload while crafting; an encoded pattern crafted alone gives a blank one; a recipe changed under the
+// same id or removed: the pattern's tooltip goes red and the machine skips it
 public final class PatternCrafter {
 
     private static final String KEY = "gtmqol.machine.pattern_crafter.";

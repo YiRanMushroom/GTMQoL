@@ -12,6 +12,8 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.common.probable.ProbableDevices;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.integration.ae2.WirelessEnergyCellMachine;
+import com.yiran.minecraft.gtmqol.integration.ae2.batch.ScaledPattern;
+import com.yiran.minecraft.gtmqol.integration.ae2.matrix.PatternMatrix;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
@@ -190,6 +192,14 @@ public final class GTMQoL {
         if (config.wireless.steam) WirelessCovers.initSteam();
         // here, not in the constructor: GTItems.attach loads GTItems, which needs the materials
         if (config.machines.patternCrafter) PatternCrafter.initItems();
+        if (GTCEu.Mods.isAE2Loaded()) {
+            ScaledPattern.init();
+            if (hasPatternMatrix(config)) PatternMatrix.initBlocks();
+        }
+    }
+
+    private static boolean hasPatternMatrix(GTMQoLConfig config) {
+        return config.ae2.patternMatrix && config.machines.patternCrafter && config.wireless.energy && config.wireless.fe;
     }
 
     /**
@@ -221,6 +231,7 @@ public final class GTMQoL {
             }
             if (config.ae2.overclockedPatternBuffer) AE2Machines.init();
             if (config.wireless.energy && config.wireless.fe) WirelessEnergyCellMachine.init();
+            if (hasPatternMatrix(config)) PatternMatrix.initMachines();
             if (config.ae2.processing) AEProcessing.initMachines();
             if (config.ae2.dualHatches) AEDualParts.init();
             if (config.ae2.patternBufferReturn) AEDualParts.initLang();

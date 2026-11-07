@@ -145,7 +145,14 @@ from the same log. It is never used up.
 - **Sticky card**: a storage bus upgrade. Items that match its partition only go into that storage bus.
   ExtendedAE's storage buses work too.
 - Pattern encoding prefers universal circuits and skips inputs that a recipe doesn't consume.
-- **Smart doubling** on pattern buffers when ExtendedAE Plus is installed, with an on/off switch and a limit.
+- **Smart doubling** on pattern buffers, with an on/off switch and a limit: a big order reaches the buffer in batches
+  instead of one craft at a time, on any crafting CPU.
+- **Faster crafting plans**: a request is worked out in one go whatever its size, and several patterns for an item
+  share out the materials. Switch: `ae2.fastCraftingPlans`.
+- **Pattern Matrix** (multiblock, 3 to 15 blocks each way): crafts AE2's crafting, stonecutting and smithing patterns
+  and our crafting patterns in bulk. Machine casings as the frame, whose tier sets the speed, quartz glass as the
+  faces, processing and pattern cores inside. Runs on FE; input buses on the frame hold catalysts for our patterns.
+  Patterns encoded in a terminal on its network come to it by themselves (switch on the controller).
 - **Shared hatches** (toggle per pattern buffer): a pattern can use circuits, molds and ghost marks from the
   machine's other, undyed buses and hatches.
 - **Mark pattern outputs** (toggle on the overclocked pattern buffer): each pattern counts as a ghost mark for its
@@ -242,7 +249,6 @@ None are required.
 - FTB Teams: shares wireless networks per team.
 - AE2: the AE2 features above, and pattern buffers split by pattern in the grouped recipe search.
 - ExtendedAE: the sticky card works on its storage buses.
-- ExtendedAE Plus: smart doubling on pattern buffers.
 - Mekanism: chemicals as a recipe capability, Mekanism gregification, merged circuit tags.
 - Applied Mekanistics: chemicals in ME parts and pattern buffers.
 - Modern Industrialization (1.21.1): MI gregification.
@@ -268,3 +274,5 @@ Copyright (C) 2026 Yiran. Licensed under the GNU Lesser General Public License v
 - The animated rainbow overlay on the wireless hatches (`overlay_wireless.png`) is taken from GTMThings'
   `overlay_energy_on_wireless`, which originally comes from GregTech: New Horizons.
 - The wireless energy cell texture is AE2's dense energy cell with its colors cycling.
+- Smart doubling and the Pattern Matrix follow the ideas of
+  [ExtendedAE Plus](https://github.com/GaLicn/ExtendedAE_Plus), and its Super Assembler Matrix.

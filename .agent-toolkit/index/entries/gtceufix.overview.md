@@ -1,13 +1,13 @@
 +++
 title = "Upstream bug workarounds in core/mixins/gtceufix: rules, which exist on 1.20.1 vs 1.21.1, recheck after bumps"
 keys = [ "both branches", "modularui bug", "remove once fixed" ]
-updated = "2026-10-29 05:09:00"
-checked = "2026-10-29"
+updated = "2026-11-07 07:20:07"
+checked = "2026-11-07"
 +++
 Mixins in `core/mixins/gtceufix/` work around bugs in GTCEu or ModularUI. Each class javadoc says what it fixes and ends with "Remove once ... fixes it": delete it when upstream does (check on every GTCEu / MUI bump, see build.gtceu-upgrade). All of them are listed in `gtmqol.mixins.json` (no separate config on 1.20.1).
 
 On 1.20.1 (checked 2026-10-29 against GTCEu 327 / MUI 25: none of their targets changed upstream), all also on 1.21.1:
-- common: `AbstractWidgetMenuMixin`, `EnergyContainerListMixin`, `FluidRecipeCapabilityMixin`, `RecipeLogicMixin`, `RecipeRunnerMixin`
+- common: `AbstractWidgetMenuMixin`, `EnergyContainerListMixin`, `FluidRecipeCapabilityMixin`, `RecipeLogicMixin`, `RecipeRunnerMixin`, `MachineModelVariantOrderMixin` (only matters in data generation)
 - client: `GTEmiRecipeMixin`, `BaseSchemaRendererMixin`, `DummyChunkSourceMixin`
 AbstractWidgetMenu, BaseSchemaRenderer, EnergyContainerList and RecipeLogic are byte-identical to 1.21.1 apart from imports; DummyChunkSource lacks 1.21.1's clear() wrapper (1.20.1's MUI has no clear); FluidRecipeCapability, GTEmiRecipe and RecipeRunner use NBT / GTCEu 1.20 ingredients where 1.21.1 uses data components / NeoForge sized ingredients.
 

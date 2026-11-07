@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.common.autobuild;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
@@ -15,6 +16,7 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternHelper;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -32,6 +34,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -54,6 +57,8 @@ import java.util.function.Predicate;
  * dropped. If one of those had a minimum count, the structure will not form; that is the player's choice. Block
  * choices for single positions go to GTCEu as they are, once checked against what the position takes.
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public final class StructurePlanner {
 
     /** One block to place, in world coordinates. */
@@ -245,8 +250,13 @@ public final class StructurePlanner {
     // Untested: abilities by machine block; auto-build leaves hatch/bus/muffler spots empty, casings elsewhere
     private static boolean isAbility(BasePredicate predicate) {
         List<BlockInfo> candidates = predicate.getCandidates();
-        return !candidates.isEmpty() &&
-                candidates.stream().allMatch(c -> c.getBlockState().getBlock() instanceof MetaMachineBlock);
+        return !candidates.isEmpty() && candidates.stream().allMatch(c -> isPart(c.getBlockState().getBlock()));
+    }
+
+    /** Machines that are simply part of a structure, like the pattern matrix's pattern cores, get placed. */
+    private static boolean isPart(Block block) {
+        return block instanceof MetaMachineBlock &&
+                PartAbility.VALUES.values().stream().anyMatch(ability -> ability.isApplicable(block));
     }
 
     private static BlockPos findController(MultiblockControllerMachine controller, AbstractStructureHelper helper,

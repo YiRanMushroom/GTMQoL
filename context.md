@@ -19,9 +19,7 @@ computers, so paths differ (`C:\Users\yiran.wang\IdeaProjects\` or `E:\code\Mine
 
 - Untested changes to remind the user of (first client run, in-game checks): `status.untested`, each item linked to
   its `Untested:` comment in the code.
-- FE input and output hatches (`wireless.fe`): no multiblock uses their abilities yet, the user has later machines in mind.
-- Pattern crafter (`crafter.pattern`): the large multiblock with the AE mode (`crafter.ae-mode`), to discuss with the
-  user first.
+- FE output hatch (`wireless.fe`): no multiblock uses its ability yet, the user has later machines in mind.
 
 ## Known bugs, not fixed
 

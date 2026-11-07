@@ -1,8 +1,8 @@
 +++
 title = "Source layout: package tree of com.yiran.minecraft.gtmqol (1.20.1) and where resources live"
 keys = [ "packages", "src/generated/resources", "where is" ]
-updated = "2026-11-06 07:15:09"
-checked = "2026-11-06"
+updated = "2026-11-07 08:03:20"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol"
@@ -14,7 +14,7 @@ dir = [ "assembler/", "autobuild/", "blockprovider/", "circuit/", "crafter/", "c
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core"
-dir = [ "AE2MixinPlugin.java", "EAPMixinPlugin.java", "GTMQoLMixinConfigPlugin.java", "GTMQoLMixinPlugin.java", "RecipeDBMixinPlugin.java", "mixins/" ]
+dir = [ "AE2MixinPlugin.java", "GTMQoLMixinConfigPlugin.java", "GTMQoLMixinPlugin.java", "RecipeDBMixinPlugin.java", "mixins/" ]
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/data"
@@ -50,11 +50,11 @@ common/
   ui/                PopupWidgets (shared popup look, counter rows)
   wireless/          networks, binding, covers; steam/ and energy/ per resource; channel/ (computation/, optical/)
 config/              GTMQoLConfig (toma), EarlyConfig (gtmqol-early.properties)
-core/                mixin plugins (GTMQoL, RecipeDB, AE2, EAP)
-  mixins/            feature mixins; ae2/ eap/ mekanism/ recipedb/ gtceufix/ (upstream bug workarounds)
+core/                mixin plugins (GTMQoL, RecipeDB, AE2)
+  mixins/            feature mixins; ae2/ mekanism/ recipedb/ gtceufix/ (upstream bug workarounds)
 data/recipe/ data/tag/   MiscRecipes, EarlyGameRecipes, WirelessRecipes; CircuitTags, MaterialAliasTags, WireTags
 gregification/       foreign recipe types as GT machines; create/ mekanism/ productivebees/ client/
-integration/         KubeJSDataGenFix; ae2/ (+stacklike/), jade/, kubejs/, mysticalagriculture/, productivebees/
+integration/         KubeJSDataGenFix; ae2/ (+stacklike/, batch/ smart doubling and crafting plans, matrix/ pattern matrix), jade/, kubejs/, mysticalagriculture/, productivebees/
 ```
 
 Datagen output is committed in `src/generated/resources` (on the main resources source set); static textures in `src/main/resources/assets/gtmqol/`.

@@ -38,6 +38,7 @@
     "SteamItemBusPartMachineMixin",
     "WorkableElectricMultiblockMachineMixin",
     "WorkableMultiblockMachineMixin",
+    "gtceufix.MachineModelVariantOrderMixin",
     "gtceufix.AbstractWidgetMenuMixin",
     "gtceufix.EnergyContainerListMixin",
     "gtceufix.FluidRecipeCapabilityMixin",

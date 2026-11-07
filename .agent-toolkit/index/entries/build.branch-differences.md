@@ -1,8 +1,8 @@
 +++
 title = "1.20.1 vs 1.21.1 branch: code differences to keep in mind when cherry-picking"
 keys = [ "forge", "neoforge", "port" ]
-updated = "2026-11-06 18:49:34"
-checked = "2026-11-06"
+updated = "2026-11-07 08:04:38"
+checked = "2026-11-07"
 +++
 Two long-lived branches: `1.20` (this one, Forge 47 / MC 1.20.1, worktree `GTMQoL-1.20.1`) and `1.21` (NeoForge 21.1, the default branch). Synced by cherry-picking; 1.21.1 was branched after `87a49de` (GTNL steam machines). Most commits exist on both with different hashes (e.g. 1.20.1 `e882d08` = 1.21.1 `146115b`). Build: both use ModDevGradle now (1.20.1 `legacyForge` since `3b63374`, still with `mod*` configurations, mixin configs declared in build.gradle `mixin { config ... }`; 1.21.1 lists them in neoforge.mods.toml). Build details: build.environment, build.dependencies.
 
@@ -19,8 +19,9 @@ Data / APIs
 - FE input: 1.20.1 `FEInputProvider` attaches `ForgeCapabilities.ENERGY` via `AttachCapabilitiesEvent<BlockEntity>`; 1.21.1 uses `RegisterCapabilitiesEvent`.
 - Network/save APIs: no StreamCodec / RegistryFriendlyByteBuf, so synced records have static write/read(FriendlyByteBuf) (PendingOutputTrait.Stored, ChannelInfo) and GenericListSyncHandler.Builder<T> takes one type parameter; SavedData is computeIfAbsent(load, new, name) with save(CompoundTag) / load(CompoundTag); DataResult.getOrThrow(false, error -> {}); no Component.withColor (withStyle(s -> s.withColor(rgb))).
 - AE2 power units: 1.20.1 `PowerUnits`, 1.21.1 `PowerUnit`. `DynamicRenderType` takes a `Codec` on 1.20.1, a `MapCodec` on 1.21.1. Level.invalidateCapabilities is 1.21.1 only. FaceLayer is 1.21.1 only: 1.20.1 overlays stack by box size (OUTPUT_OVERLAY, AUTO_OUTPUT_OVERLAY).
+- Batching and pattern matrix (ae2.fast-crafting): AE2 15's getOutputs is an array, its decoder takes a tryRecovery overload, AEItemKey has no is(Item); ScaledPattern keeps its data in NBT and isn't hidden from recipe viewers by a tag (no such forge tag). PatternMatrix registers in two steps (initBlocks in the covers listener, initMachines). MEStorageMenu.getNetworkNode is getGridNode on 1.21.1.
 - Events: Forge 47 `TickEvent.ServerTickEvent` with `phase == END` (AutoBuilder, WirelessNetworks), `ServerStoppedEvent`, `ForgeEventFactory.onBlockPlace`.
-- Auto-build: 1.20.1 is on GTCEu #5337 (filtered predicates in `StructurePlanner`, GTCEu's preview as the settings window, no `BuildOptions`); 1.21.1 still has count overrides, the slider window and `BuildOptions` until upstream ports #5337.
+- Auto-build: 1.20.1 is on GTCEu #5337 (filtered predicates in `StructurePlanner`, GTCEu's preview as the settings window, no `BuildOptions`, so its casing choices come from there); 1.21.1 still has count overrides, the slider window and `BuildOptions` until upstream ports #5337.
 - Mixin configs: `compatibilityLevel` JAVA_17, `mixinextras.minVersion` 0.5.5 (MixinExtras is jarJar'd by us; 1.21.1 uses NeoForge's 0.5.3). pack_format 15. mods.toml (not neoforge.mods.toml).
 - Mixins only on 1.20.1: JEI category mixins (`GTRecipeJEICategory*`), `EncodePatternTransferHandlerMixin` (JEI encoding), recipedb accessors for pattern buffers, `mekanism.TaggedChemicalStackIngredientAccessor`. Only on 1.21.1: the 1.21-only gtceufix mixins (see gtceufix.overview, incl. `PotionFluidTypeMixin`), `MachineBuilderAccessor`. The potion mixins (`BreweryLogicMixin`, `GTRecipeViewerWidgetPotionMixin`, `PotionItemFluidHandlerMixin`, `BottleItemFluidHandlerMixin`, `PotionFluidNameMixin`) are on both.
 - `KubeJSDataGenFix` only on 1.20.1 (Forge 47 never sets the datagen flag KubeJS checks), see config.datagen-1.20.1.

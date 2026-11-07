@@ -1,4 +1,4 @@
-// 1.20.1	2026-11-06T11:37:20.6849155	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.20.1	2026-11-07T02:03:25.9187387	Registrate Provider for gtmqol [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
 09fb3a7710cbbd11f92fc4af1cdf02c52d2d0796 assets/gtmqol/blockstates/crystal_growth_chamber.json
 e61d13dc7f445fd39b88c0d72baabebd58c467a5 assets/gtmqol/blockstates/dimensionally_transcendent_fusion_reactor.json
 f9870cf6218e8d4c6a301978cf03cd4e3221859d assets/gtmqol/blockstates/electric_implosion_compressor.json
@@ -97,6 +97,9 @@ f6d38e575c87861d2d539682ddf4d0d8ea3fb388 assets/gtmqol/blockstates/lv_pattern_cr
 081ad215f8a74b2fdc0020c5f5a0460f297a2073 assets/gtmqol/blockstates/lv_wireless_energy_accessor.json
 b07f799005d72f9746a3dd60b536188a2a59b75e assets/gtmqol/blockstates/lv_wireless_energy_input_hatch.json
 609bc2adeea4827fa74f7a16dda015d4c619716a assets/gtmqol/blockstates/lv_wireless_energy_output_hatch.json
+3c84ff79ccb1e8435ef89b777b17f02e3bd3b80c assets/gtmqol/blockstates/matrix_me_interface.json
+15b3e88de155f813253ce762cefc9c306d93284f assets/gtmqol/blockstates/matrix_pattern_core.json
+8465912598647c62f17c9a5e021bd9d63a93c54e assets/gtmqol/blockstates/matrix_processing_core.json
 7739a082f17a4374b68ba899d879e2dd18950354 assets/gtmqol/blockstates/max_wireless_energy_accessor.json
 d5d03f3ce7426a1db231f9e01cb78c5b208f467d assets/gtmqol/blockstates/max_wireless_energy_input_hatch.json
 3f179675238afd15f4eebc4100d3d4700357189f assets/gtmqol/blockstates/max_wireless_energy_output_hatch.json
@@ -121,6 +124,7 @@ f7a1937958776f74fdb3bb77b76b4292c6dc1aad assets/gtmqol/blockstates/opv_wireless_
 d9e41ac8ef105ccfe0bac044751ad24b634019ae assets/gtmqol/blockstates/opv_wireless_energy_input_hatch.json
 852be0a4e6e6e866652516be9eed2a87df37726e assets/gtmqol/blockstates/opv_wireless_energy_output_hatch.json
 d351c014ac58e6e5f6e1a92abf49362da99f7cc1 assets/gtmqol/blockstates/overclocked_me_pattern_buffer.json
+7505e6828667e8c3a7f21da2ee472d276b46401b assets/gtmqol/blockstates/pattern_matrix.json
 9cd11cb5520986889f8f0bc8ab93540c5b2bca85 assets/gtmqol/blockstates/probable_certainty_device.json
 9a987703a291a5fcb0521bc49afbada22fb5b0e9 assets/gtmqol/blockstates/probable_improbability_device.json
 d373912ea4b0c644aeda035524124f5d4afa696d assets/gtmqol/blockstates/smart_assembly_factory.json
@@ -191,8 +195,8 @@ e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circui
 674a583f2b29eee523d730ad4211c0134c9f8134 assets/gtmqol/blockstates/zpm_wireless_energy_accessor.json
 1136e3739fdb3b339bc80d9bedcd1bde88a780e9 assets/gtmqol/blockstates/zpm_wireless_energy_input_hatch.json
 a77ec21bfd8e4ba2dd87ea6bde687970c4039a69 assets/gtmqol/blockstates/zpm_wireless_energy_output_hatch.json
-398d1c1acc84caa60f215adfa58c6e332bc4bda5 assets/gtmqol/lang/en_ud.json
-f4fbd7953099aa9fbb9dd7b56cfef1afc9a2af2c assets/gtmqol/lang/en_us.json
+5af6cda8f1b5f47e6033c15fe1dd4a63be9775fa assets/gtmqol/lang/en_ud.json
+0b2098b8e9a160ad9a0cfc13eb68ef2edb7f9a92 assets/gtmqol/lang/en_us.json
 4164843cf5260a41ff807a6f71a0269d98fdc69f assets/gtmqol/models/block/machine/crystal_growth_chamber.json
 68508e04e98fb37278a58e6e9440ba6f5cf3d12a assets/gtmqol/models/block/machine/dimensionally_transcendent_fusion_reactor.json
 741b8a3b73652f73a2e11b5943bc7ddeb426f178 assets/gtmqol/models/block/machine/electric_implosion_compressor.json
@@ -291,6 +295,8 @@ f35bd8aa6a590ab624cfa0b3541ec0ef2d16b13b assets/gtmqol/models/block/machine/lv_p
 023b43a36e5251bbbce912b5a058816266cba081 assets/gtmqol/models/block/machine/lv_wireless_energy_accessor.json
 2833b5cbfd03a406efa391a35458f2b9dab67a2e assets/gtmqol/models/block/machine/lv_wireless_energy_input_hatch.json
 9854ce7993315bdd0614f7282b7c2478545e5efc assets/gtmqol/models/block/machine/lv_wireless_energy_output_hatch.json
+8aac33a3dc614fde7cd06cea0557cc3ac5f88be1 assets/gtmqol/models/block/machine/matrix_me_interface.json
+e6a1937b452bc0d2a79ed77ced5cd1eb597f950c assets/gtmqol/models/block/machine/matrix_pattern_core.json
 73b298a27670d0ec5eb93f4a87f804b4de2175df assets/gtmqol/models/block/machine/max_wireless_energy_accessor.json
 9b7752d7c6a92bb5e27e0ca647b7e7bc4307d584 assets/gtmqol/models/block/machine/max_wireless_energy_input_hatch.json
 3582247601700e1ddcc7b32bf437a9cb95779391 assets/gtmqol/models/block/machine/max_wireless_energy_output_hatch.json
@@ -315,6 +321,7 @@ d4a4c8fefd7b62c5439feb83557b3092320175ee assets/gtmqol/models/block/machine/opv_
 5c82ab05fe93c32703f538d40d3c0b56b5e54fdc assets/gtmqol/models/block/machine/opv_wireless_energy_input_hatch.json
 7a3c13b6b3e0e317cb3bc1bca44b63e9b2c3836d assets/gtmqol/models/block/machine/opv_wireless_energy_output_hatch.json
 2258779ffd6eeca4e3cb66ed5a931c0d41467949 assets/gtmqol/models/block/machine/overclocked_me_pattern_buffer.json
+3da42f987a697b7fcd9e992e7d0798a9b6486643 assets/gtmqol/models/block/machine/pattern_matrix.json
 53ca901a8c3c3afee12099f18537cfd8aedcb686 assets/gtmqol/models/block/machine/probable_certainty_device.json
 b0a732ce105fe6ca7f4cab80c45eed44f3bd3e3c assets/gtmqol/models/block/machine/probable_improbability_device.json
 747c23d3ccd800eb610554071ea5ad956614e186 assets/gtmqol/models/block/machine/smart_assembly_factory.json
@@ -506,6 +513,9 @@ f4d08bce5d554304edd1b2d0b9878542898083c0 assets/gtmqol/models/item/lv_wireless_e
 5582e4cba8b6a4365d4b2ba73801d9650c4f47e4 assets/gtmqol/models/item/lv_wireless_energy_input_hatch.json
 8b2048a623bd1ca289a42dd7a63a3dc9fbf920a4 assets/gtmqol/models/item/lv_wireless_energy_output_cover.json
 52e64e84787c8e3aad605a52a86555aeb87aba5f assets/gtmqol/models/item/lv_wireless_energy_output_hatch.json
+dd197ce55bc246fd9171ed8d9e4fc0b9b62abffe assets/gtmqol/models/item/matrix_me_interface.json
+38b7ceb0bef5e5da03c2ea0d1df02349d0877ff6 assets/gtmqol/models/item/matrix_pattern_core.json
+0de06ee896d9789576cf0540bfbd1c57c783be95 assets/gtmqol/models/item/matrix_processing_core.json
 a4b7b6f335e9bf4b27f51d20d6df1b6ec07e384d assets/gtmqol/models/item/max_universal_circuit.json
 802c98357fd39cc1ab9076e541624d0835004433 assets/gtmqol/models/item/max_wireless_energy_accessor.json
 8b2048a623bd1ca289a42dd7a63a3dc9fbf920a4 assets/gtmqol/models/item/max_wireless_energy_input_cover.json
@@ -541,11 +551,13 @@ e195e27deb7bd2ab743a9c6782d370dc2dc9855a assets/gtmqol/models/item/opv_pattern_c
 8b2048a623bd1ca289a42dd7a63a3dc9fbf920a4 assets/gtmqol/models/item/opv_wireless_energy_output_cover.json
 4272f81e6c015488e7ae7a4d1fa3f9aced8663d1 assets/gtmqol/models/item/opv_wireless_energy_output_hatch.json
 c76e334a08ac58c9fe19a1a3a6375101a7814cb3 assets/gtmqol/models/item/overclocked_me_pattern_buffer.json
+c8995cf6c55136a8af89fd6ed7c4c077da6f0f8d assets/gtmqol/models/item/pattern_matrix.json
 693085c624963581fa683792437aa07bd9279089 assets/gtmqol/models/item/phosphorus_doped_silicon_chip.json
 f23200d07c7c48edf6468ecd434fece8d80c04f0 assets/gtmqol/models/item/probable_certainty_device.json
 284ab1edba9eb91788bef15e53c13ecf0fc3c012 assets/gtmqol/models/item/probable_improbability_device.json
 9f9c497982ea88ccbaac1f191fd5dce02f56d180 assets/gtmqol/models/item/rod_extruder_mold.json
 29201f82fdda111d54fda492e70bfde72c44248f assets/gtmqol/models/item/rotor_extruder_mold.json
+37914af58c895c455db33c2e648ceeee20bd10b3 assets/gtmqol/models/item/scaled_crafting_pattern.json
 4d621027260803f2e4ebf7bf5388a58f16303c4b assets/gtmqol/models/item/silicon_chip.json
 4b2d6544c00ca8fce442dd61087f493d1d9abc87 assets/gtmqol/models/item/simple_control_circuit.json
 1efccb743e4636dbe5a6ad9d4ef10d4997775a98 assets/gtmqol/models/item/small_gear_extruder_mold.json
@@ -683,6 +695,7 @@ ff914d22e69f017aaa2ee61d3380f327a63ac090 data/forge/tags/items/rings/aluminum.js
 caeb88cf9cda4d4d6e1fdb467a7b9f24fd1d515b data/forge/tags/items/storage_blocks/raw_aluminum.json
 b75249dbe57c07f6ed14485e17027238cb93ba91 data/forge/tags/items/surface_rocks/aluminum.json
 42834b20c9225b34253870d6051eaa1e8325c018 data/forge/tags/items/tiny_dusts/aluminum.json
+0642fe4b23037d6b686b471b7ded64b50f9713be data/gtceu/tags/blocks/mineable/pickaxe_or_wrench.json
 61c9292d1d6f8e981adde37b477669d96e4fc758 data/gtceu/tags/items/circuits/ev.json
 6657d8b0a06bf28350c619be94f381e4cb41991f data/gtceu/tags/items/circuits/hv.json
 01fc6897e8b7a7725c09c9e24ae10443083347ed data/gtceu/tags/items/circuits/iv.json
@@ -698,3 +711,4 @@ eee5d2f23627b2b3121f141f8fa92af6a4324f19 data/gtceu/tags/items/circuits/uiv.json
 6ce8bc7c6fbbdf27d06908efc66ea34538c555d3 data/gtceu/tags/items/circuits/uv.json
 b874caab72deecbf421cbaf9b570e95a55bc8c1d data/gtceu/tags/items/circuits/uxv.json
 4b9d90c135fd5bfcd8041739b98c7c3990172313 data/gtceu/tags/items/circuits/zpm.json
+d8f13fe5102643e361654b0f98c19e1042d29232 data/gtmqol/loot_tables/blocks/matrix_processing_core.json

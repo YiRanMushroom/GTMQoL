@@ -2,8 +2,8 @@
 title = "Pattern crafter: electric crafting table recipes from a self-made crafting pattern, AE2-style encoding, no AE2 needed"
 kind = "design"
 keys = [ "crafter", "crafting pattern", "fluid substitution", "icustomrecipelogic", "not consumed", "pattern encoding" ]
-updated = "2026-11-06 07:47:27"
-checked = "2026-11-06"
+updated = "2026-11-07 05:05:24"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/ICrafterPattern.java"
@@ -29,4 +29,4 @@ snippet = "final class CraftingPatternBehavior implements IItemUIHolder, IAddInf
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/PatternCrafterEmi.java"
 snippet = "public final class PatternCrafterEmi implements EmiPlugin"
 +++
-Blank and encoded items, encoded in their own window; ICrafterPattern is what the logic needs, AE2 patterns adapt to it. One craft is simulated at encoding and kept on the item (slot uses, outputs), so static remainders cost nothing later. Same item back with other data = CHANGED: PatternWear simulates every parallel on the real item at run start, LIMIT cuts the run down after OC. Exact (data too) or substitutes (the recipe's ingredient). Encode option: duplicated inputs kept.
+Blank and encoded items, encoded in their own window; AE2 patterns adapt to ICrafterPattern. One craft is simulated at encoding and kept on the item (slot uses, outputs); plan() checks it against the recipe, so a changed recipe stops the pattern. Same item back with other data = CHANGED: PatternWear simulates every parallel on the real item at run start, LIMIT cuts the run after OC. Exact (data too) or substitutes (the recipe's ingredient). Encode option: duplicated inputs kept.

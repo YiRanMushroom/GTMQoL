@@ -43,7 +43,7 @@ public final class PatternWear extends MachineTrait implements IRecipeLogicModif
         ICrafterPattern pattern = pattern(recipe, machine.getLevel());
         if (pattern == null) return ModifierFunction.IDENTITY;
         int crafts = crafts(recipe);
-        int possible = simulate((IRecipeCapabilityHolder) machine, pattern, crafts).crafts;
+        int possible = simulate(buses((IRecipeCapabilityHolder) machine), pattern, crafts).crafts;
         if (possible >= crafts) return ModifierFunction.IDENTITY;
         if (possible == 0) return ModifierFunction.cancel(Component.translatable(WORN_OUT_KEY));
         // a little over: contents are cut down to whole numbers
@@ -70,30 +70,49 @@ public final class PatternWear extends MachineTrait implements IRecipeLogicModif
         return ICrafterPattern.decode(ItemStack.of(tag), level);
     }
 
+    private static List<NotifiableItemStackHandler> buses(IRecipeCapabilityHolder holder) {
+        List<NotifiableItemStackHandler> buses = new ArrayList<>();
+        for (var handlerList : holder.getCapabilitiesForIO(IO.IN)) {
+            for (var handler : handlerList.getCapability(ItemRecipeCapability.CAP)) {
+                if (handler instanceof NotifiableItemStackHandler items) buses.add(items);
+            }
+        }
+        return buses;
+    }
+
+    /**
+     * Wears the inputs of {@code pattern} that change, found among {@code buses}, by {@code crafts} crafts.
+     *
+     * @return false, leaving them as they are, when they can't do that many
+     */
+    public static boolean wear(List<NotifiableItemStackHandler> buses, ICrafterPattern pattern, int crafts) {
+        Simulation simulation = simulate(buses, pattern, crafts);
+        if (simulation.crafts < crafts) return false;
+        simulation.writes.forEach(Runnable::run);
+        return true;
+    }
+
     /** Up to {@code wanted} crafts on copies; {@code writes} puts the result in the machine. */
-    private static Simulation simulate(IRecipeCapabilityHolder holder, ICrafterPattern pattern, int wanted) {
+    private static Simulation simulate(List<NotifiableItemStackHandler> buses, ICrafterPattern pattern, int wanted) {
         int possible = wanted;
         List<Runnable> writes = new ArrayList<>();
         var inputs = pattern.itemInputs();
         for (int input = 0; input < inputs.size(); input++) {
             if (!inputs.get(input).changes()) continue;
             int done = 0;
-            for (var handlerList : holder.getCapabilitiesForIO(IO.IN)) {
-                for (var handler : handlerList.getCapability(ItemRecipeCapability.CAP)) {
-                    if (!(handler instanceof NotifiableItemStackHandler items)) continue;
-                    for (int slot = 0; slot < items.storage.getSlots() && done < wanted; slot++) {
-                        ItemStack stack = items.storage.getStackInSlot(slot);
-                        if (stack.getCount() != 1 || !inputs.get(input).ingredient().test(stack)) continue;
-                        ItemStack current = stack;
-                        // what changes may stop matching (exact patterns: one craft per tool)
-                        while (done < wanted && !current.isEmpty() && inputs.get(input).ingredient().test(current)) {
-                            current = pattern.afterCraft(input, current.copy());
-                            done++;
-                        }
-                        int written = slot;
-                        ItemStack result = current;
-                        writes.add(() -> items.storage.setStackInSlot(written, result));
+            for (NotifiableItemStackHandler items : buses) {
+                for (int slot = 0; slot < items.storage.getSlots() && done < wanted; slot++) {
+                    ItemStack stack = items.storage.getStackInSlot(slot);
+                    if (stack.getCount() != 1 || !inputs.get(input).ingredient().test(stack)) continue;
+                    ItemStack current = stack;
+                    // what changes may stop matching (exact patterns: one craft per tool)
+                    while (done < wanted && !current.isEmpty() && inputs.get(input).ingredient().test(current)) {
+                        current = pattern.afterCraft(input, current.copy());
+                        done++;
                     }
+                    int written = slot;
+                    ItemStack result = current;
+                    writes.add(() -> items.storage.setStackInSlot(written, result));
                 }
             }
             possible = Math.min(possible, done);
@@ -108,7 +127,7 @@ public final class PatternWear extends MachineTrait implements IRecipeLogicModif
         if (pattern == null) return true;
         var machine = (IRecipeLogicMachine) getMachine();
         int crafts = crafts(recipe);
-        Simulation simulation = simulate(machine, pattern, crafts);
+        Simulation simulation = simulate(buses(machine), pattern, crafts);
         if (simulation.crafts < crafts) {
             // a repeated recipe that no longer fits: look for it again, LIMIT cuts it down
             machine.getRecipeLogic().markLastRecipeDirty();

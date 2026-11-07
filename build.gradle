@@ -71,13 +71,11 @@ legacyForge {
 
 // Adds MixinConfigs to the jar manifest and passes the configs to the dev runs, and wires the refmap.
 // gtmqol.recipedb.mixins.json is gated by RecipeDBMixinPlugin (config/gtmqol-early.properties),
-// gtmqol.eap.mixins.json by EAPMixinPlugin (only with ExtendedAE Plus installed),
 // gtmqol.ae2.mixins.json by AE2MixinPlugin (only with AE2 installed; early config switches per feature).
 mixin {
     add sourceSets.main, 'gtmqol.refmap.json'
     config 'gtmqol.mixins.json'
     config 'gtmqol.recipedb.mixins.json'
-    config 'gtmqol.eap.mixins.json'
     config 'gtmqol.ae2.mixins.json'
 }
 
@@ -199,7 +197,19 @@ repositories {
     }
 }
 
+// Plain JUnit, no game: only classes without game classes can be tested here (integration/ae2/batch).
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'failed'
+        exceptionFormat 'full'
+        showStandardStreams = true
+    }
+}
+
 dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     // :slim is the same jar without the jar-in-jars, as used by GTCEu's official addon templates.
     modImplementation "com.gregtechceu.gtceu:gtceu-${project.minecraft_version}:${project.gtceu_version}:slim"
 
@@ -242,12 +252,8 @@ dependencies {
     // Compile-only for recipedb/PatternBufferIngredients (gtceu's pattern buffer implements AE2 interfaces);
     // only used when AE2 is loaded, still not a runtime dependency of ours.
     accessModCompileOnly "appeng:appliedenergistics2-forge:${project.ae2_version}"
-    // Optional: ExtendedAE Plus smart doubling on gtceu's pattern buffer. Compile against its API, never
-    // require it. Its mods.toml requires ExtendedAE, which in turn requires GuideMe and Glodium; all from
-    // Modrinth, listed by hand.
-    modCompileOnly("maven.modrinth:extendedae-plus:${project.eap_version}") {
-        transitive = false
-    }
+    // ExtendedAE Plus in dev, to see that we work beside it. No code of ours uses it. Its mods.toml requires
+    // ExtendedAE, which in turn requires GuideMe and Glodium; all from Modrinth, listed by hand.
     modLocalRuntime("maven.modrinth:extendedae-plus:${project.eap_version}") {
         transitive = false
     }

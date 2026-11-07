@@ -1,19 +1,15 @@
 +++
-title = "ExtendedAE Plus smart doubling on pattern buffers (ISmartDoublingHolder, ScaledProcessingPattern unwrap)"
-keys = [ "extendedae_plus", "gtmqol.eap.mixins.json", "pushpattern" ]
-updated = "2026-10-21 08:27:56"
-checked = "2026-10-21"
+title = "Smart doubling on pattern buffers: mixin, unwrap and the x2 popup (own logic, no EAP since 2026-11)"
+keys = [ "batch", "pushpattern" ]
+updated = "2026-11-07 07:19:08"
+checked = "2026-11-07"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/core/EAPMixinPlugin.java"
-snippet = "    private static final String EAP_MOD_ID = \"extendedae_plus\";"
-
-[[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/eap/MEPatternBufferSmartDoublingMixin.java"
-snippet = "    @ModifyVariable(method = \"pushPattern\", at = @At(\"HEAD\"), argsOnly = true)\n    private IPatternDetails gtmqol$unwrapScaledPattern(IPatternDetails patternDetails) {"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/MEPatternBufferSmartDoublingMixin.java"
+snippet = "public abstract class MEPatternBufferSmartDoublingMixin"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/SmartDoubling.java"
-snippet = "    public static IPatternDetails unwrap(IPatternDetails pattern) {"
+snippet = "public final class SmartDoubling"
 +++
-The unwrap is required (user decision): slot/worker matching and worker.pattern use the original so refunds match, while @ModifyArg (require = 2) on both InternalSlot.pushPattern calls still pushes the scaled inputs. Settings (toggle default on, limit 0 = none) are copied onto slot patterns at getAvailablePatterns HEAD and in the setters. UI: "×2" left configurator popup. On 1.20.1 (EAP 1.6.1) ISmartDoublingHolder has both the toggle and the limit; 1.21's NeoForge EAP only has the limit.
+Worked out in ae2.fast-crafting; this is the buffer's side. The buffer is a BatchCraftingProvider: processing patterns, limit from the popup (0 = none, else most of any input per batch, in items or buckets). pushPattern unwraps ScaledPattern because slots match by equals (user decision, enlarged buffers too); @ModifyArg (require = 2) on both InternalSlot.pushPattern calls pushes the batch's inputs. Saved fields kept their gtmqol$ names, so settings survived leaving EAP. UI: "×2" popup.
