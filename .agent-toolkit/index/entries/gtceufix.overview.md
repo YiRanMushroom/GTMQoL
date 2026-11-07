@@ -1,8 +1,32 @@
 +++
 title = "Upstream bug workarounds in core/mixins/gtceufix: rules, which exist on 1.20.1 vs 1.21.1, recheck after bumps"
 keys = [ "both branches", "modularui bug", "remove once fixed" ]
-updated = "2026-11-07 07:20:07"
+updated = "2026-11-07 09:54:35"
 checked = "2026-11-07"
+
+[[items]]
+name = "package"
+value = "The gtceufix mixins (directory link: stale when one is added or removed)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix"
+dir = [ "AbstractWidgetMenuMixin.java", "BaseSchemaRendererMixin.java", "DummyChunkSourceMixin.java", "EnergyContainerListMixin.java", "FluidRecipeCapabilityMixin.java", "GTEmiRecipeMixin.java", "MachineModelVariantOrderMixin.java", "RecipeLogicMixin.java", "RecipeRunnerMixin.java" ]
+
+[[items]]
+name = "mixin-config-common"
+value = "Common gtceufix mixins in gtmqol.mixins.json"
+path = "src/main/resources/gtmqol.mixins.json"
+snippet = "\"gtceufix.RecipeRunnerMixin\""
+
+[[items]]
+name = "mixin-config-client"
+value = "Client gtceufix mixins in gtmqol.mixins.json"
+path = "src/main/resources/gtmqol.mixins.json"
+snippet = "\"gtceufix.DummyChunkSourceMixin\""
+
+[[items]]
+name = "canner-feature"
+value = "Feature mixin kept outside gtceufix"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/CannerLogicMixin.java"
+snippet = "public class CannerLogicMixin {"
 +++
 Mixins in `core/mixins/gtceufix/` work around bugs in GTCEu or ModularUI. Each class javadoc says what it fixes and ends with "Remove once ... fixes it": delete it when upstream does (check on every GTCEu / MUI bump, see build.gtceu-upgrade). All of them are listed in `gtmqol.mixins.json` (no separate config on 1.20.1).
 

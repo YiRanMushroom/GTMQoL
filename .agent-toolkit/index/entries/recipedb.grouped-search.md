@@ -1,8 +1,26 @@
 +++
 title = "RecipeDB grouped search: why GTCEu's recipe lookup explodes with many distinct buses, and the pruning idea"
 keys = [ "combinatorial", "fromholder", "lag", "pattern buffer", "performance", "recipeiterator" ]
-updated = "2026-10-19 20:12:37"
-checked = "2026-10-21"
+updated = "2026-11-07 10:00:17"
+checked = "2026-11-07"
+
+[[items]]
+name = "push-filter"
+value = "Filters the frames pushed per matched branch (step 3) with canFollow"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/recipedb/RecipeIteratorMixin.java"
+snippet = "private boolean gtmqol$pushRelated(Deque<Object> deque, Object frame) {"
+
+[[items]]
+name = "remember-from"
+value = "Remembers the entry whose branch is being expanded"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/recipedb/RecipeIteratorMixin.java"
+snippet = "private Either<?, ?> gtmqol$rememberFrom(Either<?, ?> result, Consumer<?> pushBranch,"
+
+[[items]]
+name = "can-follow"
+value = "The same-group relation between neighbouring entries"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/recipedb/GroupedIngredientList.java"
+snippet = "public boolean canFollow(int from, int to) {"
 +++
 ## Problem
 GTCEu's `RecipeDB` is a tree (one ingredient per level, leaves = recipes). `RecipeDB.RecipeIterator` does a DFS:

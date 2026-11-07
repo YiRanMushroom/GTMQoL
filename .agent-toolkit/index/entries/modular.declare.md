@@ -2,7 +2,7 @@
 title = "ModularMachines.register: gtmqol:modular_<name> registered at once, nested in the single block's register()"
 keys = [ "1.21", "datagen", "dummy_recipes", "dynamicallygenerated", "generator", "modularmachines.enabled", "runtime generation" ]
 updated = "2026-10-19 20:12:37"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/modular/ModularMachines.java"

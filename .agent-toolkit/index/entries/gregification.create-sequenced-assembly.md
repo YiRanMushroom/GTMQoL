@@ -2,7 +2,7 @@
 title = "Create sequenced assembly line: flattened steps, 3-16 slice line, minimum length per recipe"
 keys = [ "create gregification", "length_info", "line too short", "slicerepeatable", "step_limit" ]
 updated = "2026-10-19 20:12:37"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/MultiblockShape.java"

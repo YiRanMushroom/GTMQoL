@@ -2,7 +2,7 @@
 title = "RuntimeGeneration: machine models/blockstates/lang published to GTCEu's dynamic resource pack at runtime, no datagen"
 keys = [ "addlanguageentry", "dynamicallygenerated", "gtdynamicresourcepack", "idynamicgenerationhandler", "ongenerate", "registerdynamicresourcesevent", "runtimeblockstateprovider" ]
 updated = "2026-10-19 20:12:37"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoL.java"

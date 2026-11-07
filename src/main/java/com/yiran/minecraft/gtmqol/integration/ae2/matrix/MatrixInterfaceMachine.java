@@ -1,12 +1,12 @@
 package com.yiran.minecraft.gtmqol.integration.ae2.matrix;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
@@ -185,8 +185,6 @@ public class MatrixInterfaceMachine extends MultiblockPartMachine
         if (matrix != null) matrix.setAutoUpload(autoUpload);
     }
 
-    // Untested: renaming shows in the pattern access terminal and survives a restart; auto upload here and on the
-    // controller is one switch; without a formed matrix the switch is hidden and the window says so
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
@@ -232,8 +230,7 @@ public class MatrixInterfaceMachine extends MultiblockPartMachine
                                     return true;
                                 }))
                         .child(GTMuiWidgets.createToggleButton(this::isAutoUpload, this::setAutoUpload,
-                                GTGuiTextures.BUTTON_BATCH[0], GTGuiTextures.BUTTON_BATCH[1],
-                                PatternMatrixMachine.KEY + "auto_upload")
+                                IO.OUT.uiTexture, PatternMatrixMachine.KEY + "auto_upload")
                                 .setEnabledIf(button -> connected.getBoolValue()))));
     }
 

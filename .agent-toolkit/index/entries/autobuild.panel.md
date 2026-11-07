@@ -2,7 +2,7 @@
 title = "AutoBuildPanel: client-only right-click settings, GTCEu's multiblock preview turned like the controller"
 keys = [ "3d preview", "auto-build", "ipanelhandler.simple", "multiblockpreviewwidget", "multiblockschemainfo" ]
 updated = "2026-10-27 15:31:27"
-checked = "2026-10-27"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/AutoBuildPanel.java"

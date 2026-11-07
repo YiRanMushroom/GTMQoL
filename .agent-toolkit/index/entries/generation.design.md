@@ -1,8 +1,38 @@
 +++
 title = "Runtime generation design: registry vs. published JSON, GTCEu dynamic pack lifecycle, unbuilt server-data writer plan"
 keys = [ "collision policy", "gtdynamicdatapack", "gtdynamicresourcepack", "src/generated/resources" ]
-updated = "2026-10-19 20:12:37"
-checked = "2026-10-21"
+updated = "2026-11-07 09:53:07"
+checked = "2026-11-07"
+
+[[items]]
+name = "runtime-generation"
+value = "Queue of machine assets, lang and callbacks, replayed into GTDynamicResourcePack on every reload"
+path = "src/main/java/com/yiran/minecraft/gtmqol/api/generation/RuntimeGeneration.java"
+snippet = "public static void generateAll() {"
+
+[[items]]
+name = "generate-machine"
+value = "Same model dispatch as GTCEu's KJSCallWrapper#generateAssetJsons, item model parent block/machine/<id>, lang"
+path = "src/main/java/com/yiran/minecraft/gtmqol/api/generation/RuntimeGeneration.java"
+snippet = "private static void generateMachine(RuntimeBlockstateProvider provider, MachineBuilder<?, ?, ?> builder,"
+
+[[items]]
+name = "lang-first-wins"
+value = "First value per key wins"
+path = "src/main/java/com/yiran/minecraft/gtmqol/api/generation/RuntimeGeneration.java"
+snippet = "public static void addLanguageEntry(String namespace, String language, String key, String value) {"
+
+[[items]]
+name = "dynamic-resources-listener"
+value = "Our RegisterDynamicResourcesEvent listener"
+path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoL.java"
+snippet = "private void onRegisterDynamicResources(RegisterDynamicResourcesEvent event) {"
+
+[[items]]
+name = "dynamic-tags"
+value = "Tags added at the tail of GTCEu's generateGTDynamicTags"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/MixinHelpersMixin.java"
+snippet = "@Inject(method = \"generateGTDynamicTags\", at = @At(\"TAIL\"))"
 +++
 Goal: machine content without Gradle datagen or committed `src/generated/resources`.
 

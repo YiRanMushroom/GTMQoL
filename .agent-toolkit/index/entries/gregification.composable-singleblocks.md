@@ -1,8 +1,8 @@
 +++
 title = "Composable electric single blocks: ComposableTieredMachine + SingleblockFeature (batch mode, ghost marks)"
 keys = [ "batch_mode", "batchmodetrait", "ghost_marks", "gregification core", "iattachconfiguratorstrait", "workabletiered" ]
-updated = "2026-10-19 20:12:37"
-checked = "2026-10-21"
+updated = "2026-11-07 10:19:03"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoLAddon.java"
@@ -20,4 +20,4 @@ snippet = "public class ComposableTieredMachine extends SimpleTieredMachine {"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/singleblock/SingleblockFeature.java"
 snippet = "public interface SingleblockFeature {"
 +++
-So single blocks with extra features don't each need a machine class (user's request). Features attach persistent traits; an IAttachConfiguratorsTrait brings its own UI buttons, no UI mixin. BATCH_MODE only does something with GregificationModifiers.BATCH among the modifiers. workableTiered takes the GTRecipeType itself here (not a Supplier). Users: gregified single blocks (all ELECTRIC_TIERS, see gregification.flow) and the greenhouse; steam machines not covered.
+So single blocks with extra features don't each need a machine class (user's request). Features attach persistent traits; an IAttachConfiguratorsTrait brings its own UI buttons, no UI mixin. BATCH_MODE only does something with GregificationModifiers.BATCH among the modifiers. workableTiered takes the GTRecipeType itself here (not a Supplier). Users: gregified single blocks (all ELECTRIC_TIERS, see gregification.flow), the greenhouse and the pattern crafter (PatternWear.FEATURE); steam machines not covered.

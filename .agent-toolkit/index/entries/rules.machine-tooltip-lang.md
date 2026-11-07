@@ -2,6 +2,7 @@
 title = "Machine tooltips: gtceu shows <ns>.machine.<id>.tooltip itself; never pass that key to .tooltips(), use .desc there"
 keys = [ "appendhovertext", "duplicate tooltip", "metamachineblock" ]
 updated = "2026-10-21 08:15:00"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AEDualParts.java"

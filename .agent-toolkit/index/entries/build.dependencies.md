@@ -2,7 +2,7 @@
 title = "Dependencies: GTCEu :slim plus its jar-in-jars by hand, optional mods only touched when loaded, sources"
 keys = [ "jarjar" ]
 updated = "2026-10-21 08:41:09"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "build.gradle"

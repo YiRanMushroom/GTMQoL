@@ -2,7 +2,7 @@
 title = "Greenhouse single blocks (all electric tiers) and IV Industrial Greenhouse (16x outputs, dirt in floor)"
 keys = [ "crop", "greenhouse", "industrial_output", "machines.greenhouse", "outputmodifier", "sapling" ]
 updated = "2026-10-19 20:12:37"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/greenhouse/Greenhouse.java"

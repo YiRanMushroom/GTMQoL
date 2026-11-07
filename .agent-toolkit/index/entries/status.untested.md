@@ -2,7 +2,8 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-07 09:29:01"
+updated = "2026-11-07 10:49:23"
+checked = "2026-11-07"
 
 [[items]]
 name = "legacy-parts-no-unification"
@@ -129,30 +130,6 @@ name = "wireless-fe"
 value = "Energy cube side squares, overlays and FE in/out, wireless energy cell on an ME network (several cells count once, overlay gone on connected sides), new recipes"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/energy/WirelessFEMachines.java"
 snippet = "// Untested: the cube's side squares and overlays"
-
-[[items]]
-name = "smart-doubling-batches"
-value = "Whole batches from stock, pieces for what waits or lacks power, restart, x2 settings, chains"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/batch/BatchPlan.java"
-snippet = "// Untested: an order from stock goes out as one"
-
-[[items]]
-name = "crafting-planner"
-value = "Plans in game against the preview, missing lists, huge orders, loops, container items"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/batch/AECraftingPlanner.java"
-snippet = "// Untested: plans in game match the preview"
-
-[[items]]
-name = "pattern-matrix"
-value = "The whole machine in game"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/PatternMatrix.java"
-snippet = "// Untested: all of it in game"
-
-[[items]]
-name = "matrix-interface-ui"
-value = "Matrix ME Interface window: rename, auto upload shared with the controller"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/MatrixInterfaceMachine.java"
-snippet = "// Untested: renaming shows in the pattern access terminal"
 
 [[items]]
 name = "matrix-cancel"

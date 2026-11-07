@@ -2,7 +2,7 @@
 title = "Void Miner: wireless-EU-paid ores, operations x stacks per 15 s cycle (config limits 64/4096), no energy hatch"
 keys = [ "eu_per_stack", "multiplier", "void miner", "wirelessbindingtrait" ]
 updated = "2026-11-03 03:35:13"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/GTMQoLMultiblocks.java"

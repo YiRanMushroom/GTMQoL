@@ -2,7 +2,7 @@
 title = "overclocking.buffFusionReactor: perfect subtick fusion OC on full hatch voltage, substation/laser hatches allowed"
 keys = [ "fusion_oc", "getoverclockvoltage" ]
 updated = "2026-10-19 20:12:37"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/FusionReactorMachineMixin.java"

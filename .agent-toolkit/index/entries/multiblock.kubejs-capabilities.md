@@ -2,7 +2,7 @@
 title = "KubeJS plugin binds the block and ghost capabilities; KJSRecipeKeyEvent gives gtceu's KubeJS 6 schema their components"
 keys = [ "binding", "block capability", "blockproviderrecipecapability", "contentjs", "crystal_growth", "ghostingredientrecipecapability", "kubejs.plugins.txt" ]
 updated = "2026-10-21 08:30:51"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/kubejs/GTMQoLKubeJSPlugin.java"

@@ -2,7 +2,7 @@
 title = "GregificationModifiers: \"FE overclock\" (same energy, full voltage, subtick parallels), batch, coil temperature"
 keys = [ "allgregified", "batch mode", "coil_temperature", "ebf_temp", "gregification core" ]
 updated = "2026-10-21 08:25:36"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/Gregification.java"

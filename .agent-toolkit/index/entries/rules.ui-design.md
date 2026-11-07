@@ -1,8 +1,8 @@
 +++
 title = "UI design (user's preferences): polished not minimal, centered, no row caps, drop features whose UI is clumsy"
 keys = [ "centered", "layout", "list", "scroll", "ui" ]
-updated = "2026-11-06 18:49:21"
-checked = "2026-11-06"
+updated = "2026-11-07 10:11:57"
+checked = "2026-11-07"
 +++
 The user wants UIs designed properly, not just functional (said on the channel UI, 2026-10-29):
 - Center content and rows of buttons; put related actions together in one row (e.g. New and Unbind under the channel list).
@@ -19,4 +19,5 @@ ModularUI traps (each broke a UI once):
 - tooltipDynamic builds once and only again when marked dirty: a tooltip showing live state needs .tooltipAutoUpdate(true), else it keeps its first text.
 - Shift-click tries every other slot group, highest priority first, and storage outranks the player's inventory. So machine outputs go to the inputs when they are separate groups: put all the machine's slots in one registered group (.slotGroup(name), PatternCrafterUI).
 - GTGuiScreen(panel) uses the gtceu:standard theme, which the theme reload leaves without the backgrounds of slots and off buttons (context.md): pass ThemeAPI.DEFAULT_ID, as machine UIs do.
+- A GenericListSyncHandler compares entries with equals and resends the whole list when one differs; MUI writes the packet later on the network thread from a cache the server thread clears and refills, so a resend racing that write crashed the client (NPE in StreamCodec composite, 2026-11-07). Entries holding an ItemStack (no equals of its own) need an equals by content (PatternEntry, Stored), else they resend every tick.
 Popups: rules.ui-popups.

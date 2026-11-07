@@ -2,7 +2,7 @@
 title = "BuildSettings: layers, sizes, block per char and per position, from the client's preview; sent with each click"
 keys = [ "auto-build", "autobuildpanel.settings", "blockchoice" ]
 updated = "2026-10-27 15:31:30"
-checked = "2026-10-27"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/BuildSettings.java"

@@ -2,7 +2,7 @@
 title = "FluidRecipeCapabilityMixin: NBT fluid inputs (potions) listed as one source fluid, so EMI shows no Uncraftable Potion"
 keys = [ "1.21", "brewery", "canner", "fluidstacklist", "mapingredienttoentrylist" ]
 updated = "2026-10-21 08:25:55"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/FluidRecipeCapabilityMixin.java"

@@ -2,8 +2,44 @@
 title = "Wireless channels (Flux Networks style): computation and optical data hatches, router, channel list UI"
 kind = "design"
 keys = [ "channel", "computation", "cwu", "flux networks", "optical data", "password", "router" ]
-updated = "2026-10-29 07:33:45"
-checked = "2026-10-29"
+updated = "2026-11-07 09:56:40"
+checked = "2026-11-07"
+
+[[items]]
+name = "kinds"
+value = "One ChannelKind per kind; routerForMany = one-to-one without a router"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/channel/ChannelKind.java"
+snippet = "public enum ChannelKind {"
+
+[[items]]
+name = "one-to-one-rule"
+value = "Bind refuses a second transmitter/receiver without a router (counts saved, unloaded ends)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/channel/ChannelSavedData.java"
+snippet = "if (channel.kind.routerForMany && role != ChannelRole.ROUTER && channel.count(ChannelRole.ROUTER) == 0) {"
+
+[[items]]
+name = "edit-rights"
+value = "Owner or op edits/deletes"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/channel/ChannelSavedData.java"
+snippet = "return player.getUUID().equals(channel.owner) || player.hasPermissions(2);"
+
+[[items]]
+name = "access"
+value = "Private, team, public"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/channel/ChannelAccess.java"
+snippet = "public enum ChannelAccess {"
+
+[[items]]
+name = "computation"
+value = "Per-channel provider like gtceu's network switch, itself in seen"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/computation/ChannelComputation.java"
+snippet = "public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {"
+
+[[items]]
+name = "recipes"
+value = "Hatch / network switch + circuit 5 in the magical assembler"
+path = "src/main/java/com/yiran/minecraft/gtmqol/data/recipe/WirelessRecipes.java"
+snippet = "assembler.recipeBuilder(GTMQoL.id(\"wireless_computation_router\"))"
 +++
 Code: common/wireless/channel/ (ChannelSavedData, ChannelRegistry, ChannelBindingTrait, ChannelUI with ChannelListWidget, ChannelMachines), common/wireless/computation/, common/wireless/optical/. Ported from 1.21 (2026-10-29); the same code apart from the 1.20.1 API differences (build.branch-differences).
 

@@ -31,6 +31,17 @@ public class PendingOutputTrait extends MachineTrait {
             buf.writeItem(stored.item);
             buf.writeVarLong(stored.count);
         }
+
+        /** By content: ItemStack has no equals of its own, and the UI resends the list whenever an entry differs. */
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof Stored stored && stored.count == count && ItemStack.matches(stored.item, item);
+        }
+
+        @Override
+        public int hashCode() {
+            return Long.hashCode(count) * 31 + item.getItem().hashCode();
+        }
     }
 
     /** One of each item (count 1); {@link #counts} holds the amounts at the same index. */

@@ -2,7 +2,7 @@
 title = "overclocking.overhaul early option: GTMQoLMixinPlugin skips the four OC overhaul mixins by class name"
 keys = [ "gtmqol-early.properties", "mekanism mixins" ]
 updated = "2026-10-29 06:19:28"
-checked = "2026-10-29"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/config/EarlyConfig.java"

@@ -2,7 +2,7 @@
 title = "Universal circuits: one <tier>_universal_circuit per tier, tagged gtceu:circuits/<tier>, made from any circuit"
 keys = [ "ae2 pattern", "circuit conversion", "circuits.universalcircuits" ]
 updated = "2026-10-19 20:12:38"
-checked = "2026-10-21"
+checked = "2026-11-07"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/assembler/MagicalAssembler.java"

@@ -1,8 +1,44 @@
 +++
 title = "How to add a new stack-like type (capability, handler, AE bridge, JEI/EMI, recipe types)"
 keys = [ "external hatches", "stack-like core" ]
-updated = "2026-10-21 01:13:03"
-checked = "2026-10-21"
+updated = "2026-11-07 09:56:13"
+checked = "2026-11-07"
+
+[[items]]
+name = "type-interface"
+value = "Step 1: the type to implement"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/GenericStackLikeType.java"
+snippet = "void writeIngredient(FriendlyByteBuf buf, I ingredient);"
+
+[[items]]
+name = "register-cap"
+value = "Step 2: CAP creation and the model init()"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/mekanism/ChemicalStackLike.java"
+snippet = "CAP = GenericStackLikeRecipeCapability.register(TYPE, 0xFF9C5ED6, 4, \"Chemical\");"
+
+[[items]]
+name = "init-call"
+value = "Step 2: init() behind ModList in the GTMQoL constructor"
+path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoL.java"
+snippet = "if (ModList.get().isLoaded(\"mekanism\")) ChemicalStackLike.init();"
+
+[[items]]
+name = "ae-bridge"
+value = "Step 4: bridge registration in onRegisterMachines"
+path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoL.java"
+snippet = "AEStackLikeBridges.register(AppMekChemicalBridge.INSTANCE);"
+
+[[items]]
+name = "emi-converter"
+value = "Step 5: EMI converter registered from GTMQoLClient.init"
+path = "src/main/java/com/yiran/minecraft/gtmqol/client/GTMQoLClient.java"
+snippet = "ChemicalEmiConverter.register();"
+
+[[items]]
+name = "handler"
+value = "Step 3: base class for parts holding the type"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/GenericStackLikeNotifiableHandler.java"
+snippet = "public abstract class GenericStackLikeNotifiableHandler<S, I> extends NotifiableRecipeHandlerTrait<I> {"
 +++
 1. Implement `GenericStackLikeType<S, I>` (model: `ChemicalStackLike`, stacklike.chemical), incl. codecs and `writeIngredient`/`readIngredient`. Keep it in a class touched only when the mod is loaded.
 2. Give that class a static `init()` doing `CAP = GenericStackLikeRecipeCapability.register(TYPE, color, sortIndex, name)`, called from the `GTMQoL` constructor behind `ModList.get().isLoaded(...)` (like `ChemicalStackLike.init()`). Registration into gtceu's registry is automatic (`registerAll` on the RecipeCapability RegisterEvent, stacklike.recipe-capability). Sort index between gtceu's (chemicals took 4, between cwu 3 and block_state 5).
