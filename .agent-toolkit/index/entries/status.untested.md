@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-08 19:24:36"
+updated = "2026-11-08 20:58:20"
 checked = "2026-11-08"
 
 [[items]]
@@ -184,5 +184,11 @@ name = "matrix-fe-flush"
 value = "Matrix speed/FE as before; short FE on shared-network hatches slows it instead of unpaid crafts; refused products arrive later"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixWork.java"
 snippet = "    // Untested: crafting speed and FE use as before; with too little FE on hatches sharing one wireless network the"
+
+[[items]]
+name = "energy-cell-output-only"
+value = "Wireless Energy Cell only gives power: an energy acceptor's power on the same ME network fills AE2's energy cells, not the wireless network; the ME network still runs from the wireless network"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/energy/ae2/WirelessEnergyCellMachine.java"
+snippet = "// Untested: an energy acceptor's power on the same ME network goes into AE2's energy cells, not the wireless network"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

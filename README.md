@@ -122,7 +122,8 @@ missing items; switching `ae2.fastCraftingPlans` off brings back AE2's own plann
 - FE, from the EU in the network, with no rate limit and no storage of their own:
   - The **Wireless Energy Cube**: each side is set to input, output or off, like Mekanism's.
   - **Wireless FE Input and Output Hatches**, for multiblocks that use or make FE.
-  - With AE2, the **Wireless Energy Cell** powers an ME network from the wireless network and puts spare power back.
+  - With AE2, the **Wireless Energy Cell** powers an ME network from the wireless network. It only gives power:
+    other power sources on the ME network can't fill the wireless network.
 - Wireless covers (steam and EU, input and output) connect any machine to the network.
 - **Channels** link research machines across any distance and dimension, while both ends are loaded. A channel is
   private, shared with the FTB team, or public, and is created and bound in the machine's window.

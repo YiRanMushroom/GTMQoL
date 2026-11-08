@@ -52,8 +52,9 @@ import java.util.function.Consumer;
 import static com.gregtechceu.gtceu.api.GTValues.LV;
 
 /**
- * Energy cell whose storage is the bound wireless energy network: AE2 sees its EU as power, through FE. Only touch this
- * class when AE2 is loaded ({@code GTCEu.Mods.isAE2Loaded()}).
+ * Energy cell whose storage is the bound wireless energy network: AE2 sees its EU as power, through FE. It only gives
+ * power: with the highest priority it would otherwise take every other power source's surplus into the wireless network,
+ * ahead of AE2's own cells. Only touch this class when AE2 is loaded ({@code GTCEu.Mods.isAE2Loaded()}).
  */
 public class WirelessEnergyCellMachine extends MetaMachine
                                        implements IGridConnectedMachine, IAEPowerStorage, IMuiMachine,
@@ -109,7 +110,7 @@ public class WirelessEnergyCellMachine extends MetaMachine
                 .register();
         GTMQoLAddon.registrate().addRawLang(TOOLTIP_KEY, "Gives its ME network power from a wireless energy network");
         GTMQoLAddon.registrate().addRawLang(NETWORK_TOOLTIP_KEY,
-                "Holds nothing itself: power the ME network doesn't need goes back to the wireless network");
+                "Only gives power: other power sources on the ME network can't fill the wireless energy network");
     }
 
     public static void addRecipes(Consumer<FinishedRecipe> provider) {
@@ -128,7 +129,7 @@ public class WirelessEnergyCellMachine extends MetaMachine
     }
 
     /**
-     * AE2 drops a storage that fell short, until it reports it can work again. A cell does that when its amount
+     * AE2 drops a storage that fell short, until it reports it can give power again. A cell does that when its amount
      * changes; this one's changes without it, whenever the wireless network does.
      */
     private void recheck() {
@@ -136,7 +137,6 @@ public class WirelessEnergyCellMachine extends MetaMachine
         updateConnectedSides();
         getMainNode().ifPresent(grid -> {
             grid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.PROVIDE_POWER));
-            grid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.RECEIVE_POWER));
         });
     }
 
@@ -163,11 +163,11 @@ public class WirelessEnergyCellMachine extends MetaMachine
         return taken >= fe ? amt : multiplier.divide(PowerUnits.FE.convertTo(PowerUnits.AE, taken));
     }
 
+    /** Takes nothing (see the class comment); AE2 doesn't offer it any with {@link #getPowerFlow()} READ. */
+    // Untested: an energy acceptor's power on the same ME network goes into AE2's energy cells, not the wireless network
     @Override
     public double injectAEPower(double amt, Actionable mode) {
-        if (!buffer.canInsert()) return amt;
-        if (mode == Actionable.MODULATE) buffer.insert(PowerUnits.AE.convertTo(PowerUnits.FE, amt));
-        return 0;
+        return amt;
     }
 
     @Override
@@ -202,7 +202,7 @@ public class WirelessEnergyCellMachine extends MetaMachine
 
     @Override
     public AccessRestriction getPowerFlow() {
-        return AccessRestriction.READ_WRITE;
+        return AccessRestriction.READ;
     }
 
     @Override

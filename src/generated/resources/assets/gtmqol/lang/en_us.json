@@ -465,7 +465,7 @@
   "gtmqol.wireless.tooltip.energy_accessor": "Outputs energy from the wireless network on the front; cables on any other side feed it in",
   "gtmqol.wireless.tooltip.energy_accessor.any_voltage": "Input accepts any voltage, up to its amperage per tick",
   "gtmqol.wireless.tooltip.energy_cell": "Gives its ME network power from a wireless energy network",
-  "gtmqol.wireless.tooltip.energy_cell.network": "Holds nothing itself: power the ME network doesn't need goes back to the wireless network",
+  "gtmqol.wireless.tooltip.energy_cell.network": "Only gives power: other power sources on the ME network can't fill the wireless energy network",
   "gtmqol.wireless.tooltip.energy_cover_rate": "Up to %s EU/t per ampere (%s)",
   "gtmqol.wireless.tooltip.energy_cube": "Every side can be set to take FE in or give it out",
   "gtmqol.wireless.tooltip.energy_input_cover": "Charges the machine from the wireless network, at any input voltage",
