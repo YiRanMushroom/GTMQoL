@@ -17,7 +17,7 @@ path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/energy/Wireless
 snippet = "public class WirelessEnergyCubeMachine"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/WirelessEnergyCellMachine.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/energy/ae2/WirelessEnergyCellMachine.java"
 snippet = "private void recheck()"
 +++
 User's design: wireless EU as FE, no storage, no rate. Input hatch gives the controller FE, output hatch takes it (extractFE/insertFE, for later multiblocks; no multiblock uses the abilities yet). Cell: AE2 drops a storage that falls short, so it re-adds itself every second; its max is constant because AE2 sums it when it joins. Cells on one wireless network in a grid: only one reports the stored amount, so AE2 counts it once; the max still adds up. Cube sides: EnergyCubeSidesRender.

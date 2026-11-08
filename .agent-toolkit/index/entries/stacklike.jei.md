@@ -9,8 +9,8 @@ path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/StackLikeJei.j
 snippet = "public static void addIngredients(IRecipeLayoutBuilder builder, GTRecipe recipe) {"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/GTRecipeJEICategoryStackLikeMixin.java"
-snippet = "public class GTRecipeJEICategoryStackLikeMixin {"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/GTRecipeJEICategoryIngredientsMixin.java"
+snippet = "public class GTRecipeJEICategoryIngredientsMixin {"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/EncodePatternTransferHandlerMixin.java"

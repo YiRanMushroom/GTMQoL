@@ -35,9 +35,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.util.inv.CombinedInternalInventory;
@@ -69,8 +70,11 @@ import brachy.modularui.widgets.textfield.TextFieldWidget;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -92,22 +96,26 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
     private static final int VISIBLE_ROWS = 8;
 
     /** A pattern in the patterns window. */
-    public record PatternEntry(int core, int slot, ItemStack stack) {
+    public record PatternEntry(int core, int slot, ItemStack stack, ItemStack icon) {
 
         static PatternEntry read(FriendlyByteBuf buf) {
-            return new PatternEntry(buf.readVarInt(), buf.readVarInt(), buf.readItem());
+            return new PatternEntry(buf.readVarInt(), buf.readVarInt(), buf.readItem(), buf.readItem());
         }
 
         static void write(FriendlyByteBuf buf, PatternEntry entry) {
             buf.writeVarInt(entry.core);
             buf.writeVarInt(entry.slot);
             buf.writeItem(entry.stack);
+            buf.writeItem(entry.icon);
         }
 
-        /** By content: ItemStack has no equals of its own, and the UI resends the list whenever an entry differs. */
+        /**
+         * By content: ItemStack has no equals of its own, and the UI resends the list whenever an entry differs. The icon
+         * follows from the pattern. Unchanged slots keep their entry, so most comparisons end at the first check.
+         */
         @Override
         public boolean equals(Object other) {
-            return other instanceof PatternEntry entry && entry.core == core && entry.slot == slot &&
+            return other == this || other instanceof PatternEntry entry && entry.core == core && entry.slot == slot &&
                     ItemStack.matches(entry.stack, stack);
         }
 
@@ -133,6 +141,7 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
     private String size = "";
     private boolean patternsChanged;
     private @Nullable List<PatternEntry> entries;
+    private List<PatternEntry> lastEntries = List.of();
 
     public AssemblingMatrixMachine(BlockEntityCreationInfo info) {
         super(info);
@@ -225,6 +234,7 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         processingCores = 0;
         capacity = 0;
         entries = null;
+        lastEntries = List.of();
     }
 
     /** The casing of the frame, which is what its parts show. */
@@ -252,7 +262,7 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         work.tick(this);
         RecipeLogic.Status status = !work.isWorking() ? RecipeLogic.Status.IDLE :
                 work.isWaitingForFE() ? RecipeLogic.Status.WAITING : RecipeLogic.Status.WORKING;
-        if (work.isWorking()) markAsChanged();
+        // no markAsChanged(): the work isn't synced to clients, and GTCEu marks the chunk for saving every tick anyway
         var renderState = getRenderState();
         if (renderState.getValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS) != status) {
             setRenderState(renderState.setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, status));
@@ -263,9 +273,7 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         Set<IPatternDetails> patterns = new LinkedHashSet<>();
         for (AssemblingMatrixPatternCoreMachine core : patternCores) {
             for (int slot = 0; slot < AssemblingMatrixPatternCoreMachine.SLOTS; slot++) {
-                ItemStack stack = core.patterns().getStackInSlot(slot);
-                if (stack.isEmpty()) continue;
-                IPatternDetails details = PatternDetailsHelper.decodePattern(stack, getLevel());
+                IPatternDetails details = core.decoded(slot, getLevel());
                 if (details instanceof IMolecularAssemblerSupportedPattern ||
                         details instanceof CraftingPatternDetails) {
                     patterns.add(details);
@@ -283,7 +291,6 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
     boolean push(IPatternDetails pattern, KeyCounter[] inputs, long crafts) {
         if (pattern instanceof CraftingPatternDetails details && !useCatalysts(details.plan(), crafts)) return false;
         work.add(pattern, inputs, crafts);
-        markAsChanged();
         return true;
     }
 
@@ -335,7 +342,11 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         if (perCraft <= 0) return crafts;
         double wanted = perCraft * crafts;
         double available = 0;
+        // hatches bound to one wireless network each see all of its FE: count it once
+        Set<Object> networks = new HashSet<>();
         for (WirelessFEHatchPartMachine hatch : feHatches) {
+            Object network = hatch.binding.getNetworkId();
+            if (!networks.add(network == null ? hatch : network)) continue;
             available += hatch.extractFE(wanted - available, true);
             if (available >= wanted) break;
         }
@@ -355,19 +366,38 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
 
     // ---------- UI ----------
 
+    /** Rebuilt after a change, keeping the entries of slots that still hold the same pattern. */
     private List<PatternEntry> patternEntries() {
         if (entries == null) {
+            Map<Integer, PatternEntry> before = new HashMap<>();
+            for (PatternEntry entry : lastEntries) {
+                before.put(entry.core() * AssemblingMatrixPatternCoreMachine.SLOTS + entry.slot(), entry);
+            }
             List<PatternEntry> list = new ArrayList<>();
             for (int core = 0; core < patternCores.size(); core++) {
                 var patterns = patternCores.get(core).patterns();
                 for (int slot = 0; slot < AssemblingMatrixPatternCoreMachine.SLOTS; slot++) {
                     ItemStack stack = patterns.getStackInSlot(slot);
-                    if (!stack.isEmpty()) list.add(new PatternEntry(core, slot, stack.copy()));
+                    if (stack.isEmpty()) continue;
+                    PatternEntry old = before.get(core * AssemblingMatrixPatternCoreMachine.SLOTS + slot);
+                    list.add(old != null && ItemStack.matches(old.stack(), stack) ? old :
+                            new PatternEntry(core, slot, stack.copy(), icon(patternCores.get(core), slot, stack)));
                 }
             }
             entries = list;
+            lastEntries = list;
         }
         return entries;
+    }
+
+    /** What the pattern makes, as the window shows it: decoded here, so the client never decodes thousands. */
+    private ItemStack icon(AssemblingMatrixPatternCoreMachine core, int slot, ItemStack stack) {
+        IPatternDetails details = core.decoded(slot, getLevel());
+        GenericStack output = details == null ? null : details.getPrimaryOutput();
+        if (output != null && output.what() instanceof AEItemKey item) {
+            return item.toStack((int) Math.min(output.amount(), Integer.MAX_VALUE));
+        }
+        return stack.copy();
     }
 
     private void take(int core, int slot, boolean toInventory, Player player) {
@@ -540,6 +570,8 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
                 .getter(() -> isRemote() ? List.of() : patternEntries())
                 .serializer(PatternEntry::write)
                 .deserializer(PatternEntry::read)
+                // entries are never changed, so the cache can hold them as they are
+                .immutableCopy()
                 .build();
         manager.syncValue("entries", list);
         manager.registerSlotGroup(new SlotGroup(INPUT_SLOT_GROUP, 1).setAllowSorting(false));

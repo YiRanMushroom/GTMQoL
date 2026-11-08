@@ -10,6 +10,6 @@ snippet = "private static final class BuildRequest extends SyncHandler<BuildRequ
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/MachineUIPanelBuilderMixin.java"
-snippet = "AutoBuildButton.attach(controller, cir.getReturnValue(), syncManager);"
+snippet = "MachineFeatures.panelBuilt(machine, cir.getReturnValue(), syncManager);"
 +++
 Same design on 1.21.1. The click is handled on the client and sent C2S (FriendlyByteBuf here) with the client's BuildSettings (autobuild.settings); the server runs AutoBuilder.onPressed. The config check is in the mixin; AutoBuilder.init always runs. Next planned: substructures (block choices for expandable patterns came with GTCEu's preview, autobuild.panel).

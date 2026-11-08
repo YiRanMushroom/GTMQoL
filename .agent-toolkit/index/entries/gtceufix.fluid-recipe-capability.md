@@ -8,4 +8,4 @@ checked = "2026-11-07"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/FluidRecipeCapabilityMixin.java"
 snippet = "private static void gtmqol$keepNbt(FluidIngredient ingredient, CallbackInfoReturnable<FluidEntryList> cir) {"
 +++
-Both branches (1.21.1 checks DataComponentFluidIngredient instead of NBT). Common mixin config. Ranged (IRangedIngredient) inputs are left alone. The returned stack is a copy because getStacks() is cached by the ingredient. Both branches also have GTRecipeViewerWidgetPotionMixin, which adds the "any mod's version works" hint to such input slots.
+Both branches (1.21.1 checks DataComponentFluidIngredient instead of NBT). Common mixin config. Ranged (IRangedIngredient) inputs are left alone. The returned stack is a copy because getStacks() is cached by the ingredient. Both branches also have PotionFluidHint, which adds the "any mod's version works" hint to such input slots.

@@ -4,7 +4,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.util.prioritylist.IPartitionList;
-import com.yiran.minecraft.gtmqol.integration.ae2.ISticky;
+import com.yiran.minecraft.gtmqol.integration.ae2.stickycard.ISticky;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;

@@ -10,7 +10,11 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.yiran.minecraft.gtmqol.common.crafter.PatternCrafter;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.Level;
 
+import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -20,6 +24,9 @@ import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
 
 /** Holds patterns for its assembling matrix, which sees them all together. */
 public class AssemblingMatrixPatternCoreMachine extends MultiblockPartMachine implements IMuiMachine {
@@ -62,6 +69,12 @@ public class AssemblingMatrixPatternCoreMachine extends MultiblockPartMachine im
         }
     };
 
+    // Decoding a pattern can check its recipe, so each slot keeps its pattern while it holds the same stack and the
+    // recipes weren't reloaded (a reload makes a new recipe manager)
+    private final IPatternDetails[] decoded = new IPatternDetails[SLOTS];
+    private final ItemStack[] decodedFrom = new ItemStack[SLOTS];
+    private @Nullable RecipeManager decodedWith;
+
     public AssemblingMatrixPatternCoreMachine(BlockEntityCreationInfo info) {
         super(info);
         patterns.setFilter(PatternCrafter::isPattern);
@@ -72,6 +85,22 @@ public class AssemblingMatrixPatternCoreMachine extends MultiblockPartMachine im
         for (MultiblockControllerMachine controller : getControllers()) {
             if (controller instanceof AssemblingMatrixMachine matrix) matrix.onPatternsChanged();
         }
+    }
+
+    /** The pattern in {@code slot}, or null; decoded again only when the slot or the recipes changed. */
+    @Nullable
+    IPatternDetails decoded(int slot, Level level) {
+        if (decodedWith != level.getRecipeManager()) {
+            Arrays.fill(decodedFrom, null);
+            decodedWith = level.getRecipeManager();
+        }
+        ItemStack stack = patterns.getStackInSlot(slot);
+        ItemStack from = decodedFrom[slot];
+        if (from == null || !ItemStack.isSameItemSameTags(from, stack)) {
+            decodedFrom[slot] = stack.copy();
+            decoded[slot] = stack.isEmpty() ? null : PatternDetailsHelper.decodePattern(stack, level);
+        }
+        return decoded[slot];
     }
 
     public CustomItemStackHandler patterns() {

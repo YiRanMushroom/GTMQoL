@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
-import com.yiran.minecraft.gtmqol.client.EnergyCubeSidesRender;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;

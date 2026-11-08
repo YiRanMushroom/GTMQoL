@@ -13,7 +13,7 @@ Personal, non-serious project, not a production system.
 - GTCEu sources for this branch: this worktree's `.gtceu-src` (1.21's are `.gtceu-src-1.21` in its worktree); if unsure, check which sources jar a directory matches before quoting it.
 - Features are written on 1.21 first and ported here (open items: CLAUDE.md's context.md files).
 - Never rerun-tasks or clean while the user may be in game: the dev client loads from build/classes, so emptying it crashes the running game with NoClassDefFoundError on classes not loaded yet. Plain compileJava only changes what changed.
-- Unit tests: gradlew test, plain JUnit, no game; only classes without game classes (integration/ae2/batch). Fast, so keep adding to them.
+- Unit tests: gradlew test, plain JUnit, no game; only classes without game classes (integration/ae2/crafting). Fast, so keep adding to them.
 - README.md is English only (credits in its Credits section). Author: README/LICENSE "Yiran"; in-game mod_author "Yiran, Frosty" (Frosty is the user's alias).
 - Names, IDs and text players see: skill.naming-and-text (read it whenever naming something). UIs: skill.modular-ui. Mixins: skill.mixins.
 - javac runs with -Xlint:deprecation,removal,unchecked,rawtypes; the only accepted warnings are Forge's BuiltInRegistries deprecation (kept so code matches 1.21).

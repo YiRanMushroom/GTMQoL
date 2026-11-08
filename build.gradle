@@ -197,7 +197,7 @@ repositories {
     }
 }
 
-// Plain JUnit, no game: only classes without game classes can be tested here (integration/ae2/batch).
+// Plain JUnit, no game: only classes without game classes can be tested here (integration/ae2/crafting).
 test {
     useJUnitPlatform()
     testLogging {

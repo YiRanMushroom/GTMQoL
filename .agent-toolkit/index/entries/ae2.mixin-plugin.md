@@ -1,15 +1,11 @@
 +++
 title = "AE2MixinPlugin: which gtmqol.ae2.mixins.json mixins apply (AE2/EMI/JEI/ExtendedAE present, early config switches)"
 keys = [ "ae2.stickycard", "ae2.universalcircuitencoding", "expatternprovider", "gtmqol-early.properties" ]
-updated = "2026-11-07 09:57:30"
-checked = "2026-11-07"
-
-[[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/config/EarlyConfig.java"
-snippet = "    public static final boolean AE2_STICKY_CARD;"
+updated = "2026-11-08 19:34:14"
+checked = "2026-11-08"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/AE2MixinPlugin.java"
-snippet = "    public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {"
+snippet = "public class AE2MixinPlugin extends GTMQoLMixinConfigPlugin {"
 +++
-Matched by name: encoding (early switch), EMI/JEI encoding (only with that viewer), MEStocking*, MEPatternBuffer*, Crafting* (pattern batching and crafting plans, ae2.fast-crafting) and PatternEncodingTermMenuUploadMixin (matrix upload) always, *SharedHatchesMixin (always; shared hatches are toggled per buffer at runtime). Anything else is the sticky card (ae2.stickyCard). ExtendedAE's mod id on 1.20.1 is "expatternprovider" (1.21: "extendedae").
+Only the mixins with a switch or a mod of their own are named (a switch on the simple class name): EncodingHelperMixin (early ae2.universalCircuitEncoding), EmiEncodePatternHandlerMixin / EncodePatternTransferHandlerMixin (only with that viewer), the sticky card's MEInventoryHandler/NetworkStorage/StorageBusPart mixins (early ae2.stickyCard) and PartSpecialStorageBusMixin (also ExtendedAE, whose 1.20.1 mod id is "expatternprovider"; 1.21: "extendedae"). Every other mixin applies: a new one needs no entry unless it has a switch. Until 2026-11-08 unmatched names counted as sticky card.

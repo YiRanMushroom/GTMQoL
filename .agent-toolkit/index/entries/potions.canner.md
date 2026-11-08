@@ -1,15 +1,11 @@
 +++
-title = "CannerLogicMixin: representative canner recipes (bottling/draining every potion) for the recipe viewer"
+title = "PotionCanningLogic: representative canner recipes (bottling/draining every potion) for the recipe viewer"
 keys = [ "buildrepresentativerecipes", "emi", "jei" ]
-updated = "2026-10-19 20:16:06"
-checked = "2026-11-07"
+updated = "2026-11-08 19:27:43"
+checked = "2026-11-08"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/CannerLogicMixin.java"
-snippet = "public class CannerLogicMixin {"
-
-[[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/CannerLogicMixin.java"
-snippet = "GTRecipeTypes.CANNER_RECIPES.addToMainCategory(recipe);"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/potion/PotionCanningLogic.java"
+snippet = "public enum PotionCanningLogic implements GTRecipeType.ICustomRecipeLogic {"
 +++
-A feature mixin (in mixins/, not gtceufix/): gtceu's CannerLogic fills/drains at runtime but shows nothing. Every potion as glass bottle <-> PotionFluidHelper fluid, also as splash/lingering (potions.splash-lingering); no water bottling (glass bottle takes potion fluids only). Ids get a "/" prefix so the viewer treats them as synthetic.
+A recipe logic runner added to the canner type at setup (after gtceu's CannerLogic), only for buildRepresentativeRecipes: gtceu's CannerLogic fills/drains at runtime but shows nothing. Every potion as glass bottle <-> PotionFluidHelper fluid, also as splash/lingering (potions.splash-lingering); no water bottling (glass bottle takes potion fluids only). Ids get a "/" prefix so the viewer treats them as synthetic.

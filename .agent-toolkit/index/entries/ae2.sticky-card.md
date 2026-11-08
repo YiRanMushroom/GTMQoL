@@ -13,7 +13,7 @@ path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/StorageBusPartM
 snippet = "    private StorageBusPart.StorageBusInventory handler;"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/StickyCardItem.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/stickycard/StickyCardItem.java"
 snippet = "    public static void registerUpgrades() {"
 
 [[links]]

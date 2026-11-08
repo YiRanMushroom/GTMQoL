@@ -1,5 +1,6 @@
 package com.yiran.minecraft.gtmqol.common.potion;
 
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.core.mixins.PotionBrewingContainerMixesAccessor;
@@ -11,7 +12,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import java.util.List;
 
@@ -30,8 +33,15 @@ public final class PotionContainers {
 
     private PotionContainers() {}
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         GTMQoLAddon.registrate().addRawLang(ANY_MOD_KEY, "Any mod's version works");
+        modBus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(PotionContainers::addRecipeLogic));
+    }
+
+    /** After gtceu's own logic on each type, so ours is asked only when that finds nothing. */
+    private static void addRecipeLogic() {
+        GTRecipeTypes.BREWING_RECIPES.getCustomRecipeLogicRunners().add(PotionMixBrewingLogic.INSTANCE);
+        GTRecipeTypes.CANNER_RECIPES.getCustomRecipeLogicRunners().add(PotionCanningLogic.INSTANCE);
     }
 
     public static boolean isPotion(FluidStack fluid) {

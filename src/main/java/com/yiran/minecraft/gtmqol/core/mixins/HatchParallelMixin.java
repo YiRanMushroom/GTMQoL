@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
-import com.yiran.minecraft.gtmqol.common.modifier.AbsoluteParallel;
+import com.yiran.minecraft.gtmqol.common.overclock.AbsoluteParallel;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 
 import org.spongepowered.asm.mixin.Mixin;

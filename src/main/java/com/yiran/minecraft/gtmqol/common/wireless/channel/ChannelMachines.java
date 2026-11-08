@@ -6,10 +6,10 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
-import com.yiran.minecraft.gtmqol.common.wireless.computation.ChannelComputation;
-import com.yiran.minecraft.gtmqol.common.wireless.computation.WirelessComputationHatchPartMachine;
-import com.yiran.minecraft.gtmqol.common.wireless.computation.WirelessComputationRouterMachine;
-import com.yiran.minecraft.gtmqol.common.wireless.optical.WirelessDataHatchPartMachine;
+import com.yiran.minecraft.gtmqol.common.wireless.channel.computation.ChannelComputation;
+import com.yiran.minecraft.gtmqol.common.wireless.channel.computation.WirelessComputationHatchPartMachine;
+import com.yiran.minecraft.gtmqol.common.wireless.channel.computation.WirelessComputationRouterMachine;
+import com.yiran.minecraft.gtmqol.common.wireless.channel.optical.WirelessDataHatchPartMachine;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

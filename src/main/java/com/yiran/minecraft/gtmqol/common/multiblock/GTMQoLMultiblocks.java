@@ -23,8 +23,6 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
-import com.yiran.minecraft.gtmqol.client.DTFRRingRender;
-import com.yiran.minecraft.gtmqol.client.IndustrialFishingPondWaterRender;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 
 import net.minecraft.data.recipes.FinishedRecipe;

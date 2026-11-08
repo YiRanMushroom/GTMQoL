@@ -25,8 +25,8 @@ snippet = "\"gtceufix.DummyChunkSourceMixin\""
 [[items]]
 name = "canner-feature"
 value = "Feature mixin kept outside gtceufix"
-path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/CannerLogicMixin.java"
-snippet = "public class CannerLogicMixin {"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/potion/PotionCanningLogic.java"
+snippet = "public enum PotionCanningLogic implements GTRecipeType.ICustomRecipeLogic {"
 +++
 Mixins in `core/mixins/gtceufix/` work around bugs in GTCEu or ModularUI. Each class javadoc says what it fixes and ends with "Remove once ... fixes it": delete it when upstream does (check on every GTCEu / MUI bump, see skill.gtceu-upgrade). All of them are listed in `gtmqol.mixins.json` (no separate config on 1.20.1).
 
@@ -39,6 +39,6 @@ AbstractWidgetMenu, BaseSchemaRenderer, EnergyContainerList and RecipeLogic are 
 
 Deleted after the 2026-10-14 GTCEu bump (fixed upstream, GTCEu #5540 ghost circuit into empty circuit slot, #5541 custom recipe logic copied into the type): GTMuiWidgetsMixin, GTRecipeTypeMixin.
 
-`CannerLogicMixin` (canner potion representative recipes) is a feature, not a fix, and lives outside `gtceufix/`.
+`PotionCanningLogic` (canner potion representative recipes) is a feature, not a fix, and lives outside `gtceufix/`.
 
 Per-fix entries: gtceufix.*.

@@ -29,4 +29,4 @@ gtceu's MetaMachineBlock.appendHoverText shows <ns>.machine.<id>.tooltip by itse
 
 Code:
 - src/main/java/com/yiran/minecraft/gtmqol/RenamedIds.java
-- src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AEDualParts.java
+- src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/parts/AEDualParts.java

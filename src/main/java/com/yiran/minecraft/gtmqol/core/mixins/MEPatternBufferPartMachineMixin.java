@@ -1,7 +1,7 @@
 package com.yiran.minecraft.gtmqol.core.mixins;
 
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
-import com.yiran.minecraft.gtmqol.integration.ae2.AbstractMEPatternBufferPartMachine;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.AbstractMEPatternBufferPartMachine;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;

@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
-import com.yiran.minecraft.gtmqol.integration.ae2.PatternBatching;
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.PatternBatchProvider;
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.PatternBatch;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.PatternBatching;
+import com.yiran.minecraft.gtmqol.integration.ae2.crafting.PatternBatchProvider;
+import com.yiran.minecraft.gtmqol.integration.ae2.crafting.PatternBatch;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.crafting.pattern.AEProcessingPattern;

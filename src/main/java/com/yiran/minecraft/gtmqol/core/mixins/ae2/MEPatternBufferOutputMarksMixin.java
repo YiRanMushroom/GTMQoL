@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredient;
 import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredientRecipeCapability;
-import com.yiran.minecraft.gtmqol.integration.ae2.AbstractMEPatternBufferPartMachine;
-import com.yiran.minecraft.gtmqol.integration.ae2.PatternOutputMarks;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.AbstractMEPatternBufferPartMachine;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.PatternOutputMarks;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,6 +1,5 @@
 package com.yiran.minecraft.gtmqol.integration.ae2.matrix;
 
-import com.yiran.minecraft.gtmqol.common.crafter.ICrafterPattern;
 import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixMachine.PatternEntry;
 
 import net.minecraft.ChatFormatting;
@@ -17,6 +16,7 @@ import brachy.modularui.screen.viewport.ModularGuiContext;
 import brachy.modularui.theme.WidgetThemeEntry;
 import brachy.modularui.widget.AbstractScrollWidget;
 import brachy.modularui.widget.Widget;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,7 @@ import java.util.function.Supplier;
  * an inventory too: a click picks a pattern up, Shift sends it to the player's inventory, and a click with a pattern in
  * hand puts it in. Client side only; clicks go out through the callbacks.
  */
+// Untested: the patterns window opens and updates quickly with thousands of patterns, icons and tooltips as before
 class AssemblingMatrixPatternGridWidget extends Widget<AssemblingMatrixPatternGridWidget> implements Interactable {
 
     static final int COLUMNS = 9;
@@ -46,6 +47,11 @@ class AssemblingMatrixPatternGridWidget extends Widget<AssemblingMatrixPatternGr
     private List<Shown> all = List.of();
     private List<Shown> shown = List.of();
     private int rows = -1;
+    // the hovered pattern's tooltip, built again only when that changes: building it can decode the pattern
+    private @Nullable Shown tooltipFor;
+    private boolean tooltipShift;
+    private boolean tooltipAdvanced;
+    private List<Component> tooltip = List.of();
 
     /** @param onTake the entry, and whether it goes to the inventory instead of the hand */
     AssemblingMatrixPatternGridWidget(Supplier<List<PatternEntry>> entries, Supplier<String> search,
@@ -80,10 +86,9 @@ class AssemblingMatrixPatternGridWidget extends Widget<AssemblingMatrixPatternGr
         if (isValid()) scheduleResize();
     }
 
-    @OnlyIn(Dist.CLIENT)
+    /** The icon comes from the server, which has the pattern decoded already. */
     private static Shown shown(PatternEntry entry) {
-        ICrafterPattern pattern = ICrafterPattern.decode(entry.stack(), Minecraft.getInstance().level);
-        ItemStack icon = pattern == null || pattern.outputs().isEmpty() ? entry.stack() : pattern.outputs().get(0);
+        ItemStack icon = entry.icon();
         return new Shown(entry, icon, icon.getHoverName().getString().toLowerCase(Locale.ROOT));
     }
 
@@ -131,10 +136,19 @@ class AssemblingMatrixPatternGridWidget extends Widget<AssemblingMatrixPatternGr
         int index = indexAt(context.getMouseX(), context.getMouseY());
         if (index < 0) return;
         var minecraft = Minecraft.getInstance();
-        List<Component> lines = new ArrayList<>(Screen.getTooltipFromItem(minecraft, shown.get(index).entry.stack()));
-        lines.add(Component.translatable(AssemblingMatrixMachine.KEY + "patterns.take")
-                .withStyle(ChatFormatting.YELLOW));
-        context.getGraphics().renderComponentTooltip(minecraft.font, lines, context.getAbsMouseX(),
+        Shown hovered = shown.get(index);
+        boolean shift = Screen.hasShiftDown();
+        boolean advanced = minecraft.options.advancedItemTooltips;
+        if (hovered != tooltipFor || shift != tooltipShift || advanced != tooltipAdvanced) {
+            List<Component> lines = new ArrayList<>(Screen.getTooltipFromItem(minecraft, hovered.entry.stack()));
+            lines.add(Component.translatable(AssemblingMatrixMachine.KEY + "patterns.take")
+                    .withStyle(ChatFormatting.YELLOW));
+            tooltip = lines;
+            tooltipFor = hovered;
+            tooltipShift = shift;
+            tooltipAdvanced = advanced;
+        }
+        context.getGraphics().renderComponentTooltip(minecraft.font, tooltip, context.getAbsMouseX(),
                 context.getAbsMouseY());
     }
 

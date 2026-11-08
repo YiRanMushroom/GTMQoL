@@ -13,8 +13,8 @@ path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/mekanism/Chemi
 snippet = "public final class ChemicalEmiConverter implements EmiStackConverter.Converter<ChemicalStack> {"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/GTEmiRecipeStackLikeMixin.java"
-snippet = "public abstract class GTEmiRecipeStackLikeMixin {"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/GTEmiRecipeIngredientsMixin.java"
+snippet = "public abstract class GTEmiRecipeIngredientsMixin {"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/StackLikeEmi.java"

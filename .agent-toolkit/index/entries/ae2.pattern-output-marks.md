@@ -9,11 +9,11 @@ path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/MEPatternBuffer
 snippet = "    @Inject(method = \"handlersFor\", at = @At(\"HEAD\"), cancellable = true)"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AbstractMEPatternBufferPartMachine.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/patternbuffer/AbstractMEPatternBufferPartMachine.java"
 snippet = "        getBufferRecipeHandler().addHandlers(new PatternOutputMarks(this::allOutputMarks));"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/PatternOutputMarks.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/patternbuffer/PatternOutputMarks.java"
 snippet = "public final class PatternOutputMarks implements IRecipeHandler<GhostIngredient<?>> {"
 +++
 Only on our overclocked buffer (ae2.overclocked-pattern-buffer), default off, toggle uses PATTERN_OVERLAY. The aggregate of all slots' marks is only for the recipe lookup; while matching, handlersFor answers with the worker's own pattern mark (via MEPatternBufferWorkerPatternAccessor). Proxies don't get the aggregate, so it doesn't work through them.

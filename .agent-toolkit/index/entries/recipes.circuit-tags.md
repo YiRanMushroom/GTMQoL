@@ -5,7 +5,7 @@ updated = "2026-10-19 20:12:37"
 checked = "2026-11-07"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/data/tag/CircuitTags.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/circuit/CircuitTags.java"
 snippet = "private static final Pair[] PAIRS = {"
 
 [[links]]

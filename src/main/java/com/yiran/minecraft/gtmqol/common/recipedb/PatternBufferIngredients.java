@@ -13,11 +13,11 @@ import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredientRecipeCapability;
 import com.yiran.minecraft.gtmqol.core.mixins.ae2.MEPatternBufferWorkerPatternAccessor;
 import com.yiran.minecraft.gtmqol.core.mixins.recipedb.MEPatternBufferPartMachineAccessor;
 import com.yiran.minecraft.gtmqol.core.mixins.recipedb.MEPatternBufferWorkerAccessor;
-import com.yiran.minecraft.gtmqol.integration.ae2.AbstractMEPatternBufferPartMachine;
-import com.yiran.minecraft.gtmqol.integration.ae2.PatternOutputMarks;
-import com.yiran.minecraft.gtmqol.integration.ae2.SharedHatches;
-import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
-import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.PatternBufferStackLikeSlot;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.AbstractMEPatternBufferPartMachine;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.PatternOutputMarks;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.SharedHatches;
+import com.yiran.minecraft.gtmqol.common.stacklike.ae2.AEStackLikeBridges;
+import com.yiran.minecraft.gtmqol.common.stacklike.ae2.PatternBufferStackLikeSlot;
 
 import org.jetbrains.annotations.Nullable;
 

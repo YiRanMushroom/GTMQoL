@@ -25,7 +25,7 @@ snippet = "contains(GTRecipeTypes.LATHE_RECIPES)"
 [[items]]
 name = "fe-capability"
 value = "Forge capability attach for FE input"
-path = "src/main/java/com/yiran/minecraft/gtmqol/common/fe/FEInputProvider.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/feinput/FEInputProvider.java"
 snippet = "private static void onAttachCapabilities(AttachCapabilitiesEvent<BlockEntity> event) {"
 
 [[items]]
@@ -59,7 +59,7 @@ Data / APIs
 - Events: Forge 47 `TickEvent.ServerTickEvent` with `phase == END` (AutoBuilder, WirelessNetworks), `ServerStoppedEvent`, `ForgeEventFactory.onBlockPlace`.
 - Auto-build: 1.20.1 is on GTCEu #5337 (filtered predicates in `StructurePlanner`, GTCEu's preview as the settings window, no `BuildOptions`, so its casing choices come from there); 1.21.1 still has count overrides, the slider window and `BuildOptions` until upstream ports #5337.
 - Mixin configs: `compatibilityLevel` JAVA_17, `mixinextras.minVersion` 0.5.5 (MixinExtras is jarJar'd by us; 1.21.1 uses NeoForge's 0.5.3). pack_format 15. mods.toml (not neoforge.mods.toml).
-- Mixins only on 1.20.1: JEI category mixins (`GTRecipeJEICategory*`), `EncodePatternTransferHandlerMixin` (JEI encoding), recipedb accessors for pattern buffers, `ae2.MEPatternBufferWorkerSlotAccessor`, `mekanism.TaggedChemicalStackIngredientAccessor`, `SmithingTransformRecipeAccessor` / `SmithingTrimRecipeAccessor` (pattern crafter; 1.21.1 opens those fields in accesstransformer.cfg). Only on 1.21.1: the 1.21-only gtceufix mixins (see gtceufix.overview, incl. `PotionFluidTypeMixin`), `MachineBuilderAccessor`. The potion mixins (`BreweryLogicMixin`, `GTRecipeViewerWidgetPotionMixin`, `PotionItemFluidHandlerMixin`, `BottleItemFluidHandlerMixin`, `PotionFluidNameMixin`) are on both.
+- Mixins only on 1.20.1: JEI category mixins (`GTRecipeJEICategory*`), `EncodePatternTransferHandlerMixin` (JEI encoding), recipedb accessors for pattern buffers, `ae2.MEPatternBufferWorkerSlotAccessor`, `mekanism.TaggedChemicalStackIngredientAccessor`, `SmithingTransformRecipeAccessor` / `SmithingTrimRecipeAccessor` (pattern crafter; 1.21.1 opens those fields in accesstransformer.cfg). Only on 1.21.1: the 1.21-only gtceufix mixins (see gtceufix.overview, incl. `PotionFluidTypeMixin`), `MachineBuilderMixin`. The potion mixins (`PotionMixBrewingLogic`, `PotionFluidHint`, `PotionItemFluidHandlerMixin`, `BottleItemFluidHandlerMixin`, `PotionFluidNameMixin`) are on both.
 - `KubeJSDataGenFix` only on 1.20.1 (Forge 47 never sets the datagen flag KubeJS checks), see config.datagen-1.20.1.
 - Recipe viewer in dev: 1.20.1 has JEI (pinned 15.20.0.115 with GTCEu) and EMI compile-only; 1.21.1 dev must use EMI.
 - Optional mods: Modern Industrialization gregification is 1.21.1 only; Mekanism is 10.4 on 1.20.1.

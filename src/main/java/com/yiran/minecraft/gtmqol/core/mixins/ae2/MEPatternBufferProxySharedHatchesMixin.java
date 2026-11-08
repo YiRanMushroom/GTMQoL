@@ -2,7 +2,7 @@ package com.yiran.minecraft.gtmqol.core.mixins.ae2;
 
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
-import com.yiran.minecraft.gtmqol.integration.ae2.SharedHatches;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.SharedHatches;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;

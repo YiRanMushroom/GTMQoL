@@ -17,7 +17,7 @@ path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AE2Machines.jav
 snippet = "    public static void addRecipes(Consumer<FinishedRecipe> provider) {"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AbstractMEPatternBufferPartMachine.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/patternbuffer/AbstractMEPatternBufferPartMachine.java"
 snippet = "public abstract class AbstractMEPatternBufferPartMachine extends MEPatternBufferPartMachine {"
 
 [[items]]

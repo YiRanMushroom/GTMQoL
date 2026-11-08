@@ -5,19 +5,19 @@ updated = "2026-10-19 20:12:36"
 checked = "2026-11-07"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AEDualParts.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/parts/AEDualParts.java"
 snippet = "public final class AEDualParts {"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/MEDualInputPartMachine.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/parts/MEDualInputPartMachine.java"
 snippet = "public class MEDualInputPartMachine extends MEUniversalInputPartMachine {"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/MEDualOutputPartMachine.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/parts/MEDualOutputPartMachine.java"
 snippet = "public class MEDualOutputPartMachine extends MEOutputBusPartMachine {"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/MEUniversalInputPartMachine.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/parts/MEUniversalInputPartMachine.java"
 snippet = "        void keepSlots(ExportOnlyAEItemSlot[] full) {"
 
 [[items]]

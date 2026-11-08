@@ -9,6 +9,10 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.AbstractMEPatternBufferPartMachine;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.PatternBatching;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.PatternOutputMarks;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.SharedHatches;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.network.chat.Component;

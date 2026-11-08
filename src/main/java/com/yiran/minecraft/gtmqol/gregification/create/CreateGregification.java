@@ -15,7 +15,7 @@ import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredient;
 import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredientRecipeCapability;
 import com.yiran.minecraft.gtmqol.common.ghost.ItemGhostIngredient;
-import com.yiran.minecraft.gtmqol.common.modifier.AbsoluteParallel;
+import com.yiran.minecraft.gtmqol.common.overclock.AbsoluteParallel;
 import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
 import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;

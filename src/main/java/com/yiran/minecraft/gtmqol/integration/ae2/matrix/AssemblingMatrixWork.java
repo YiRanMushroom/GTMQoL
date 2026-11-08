@@ -27,6 +27,7 @@ import java.util.Map;
  */
 final class AssemblingMatrixWork implements INBTSerializable<CompoundTag> {
 
+    private static final int FLUSH_RETRY_TICKS = 20;
     private static final String QUEUE_KEY = "queue";
     private static final String GIVING_BACK_KEY = "givingBack";
     private static final String OUTPUTS_KEY = "outputs";
@@ -153,6 +154,8 @@ final class AssemblingMatrixWork implements INBTSerializable<CompoundTag> {
     private final List<Run> givingBack = new ArrayList<>();
     private final Object2LongLinkedOpenHashMap<AEKey> outputs = new Object2LongLinkedOpenHashMap<>();
     private boolean waitingForFE;
+    private int flushCooldown;
+    private boolean outputsAdded;
 
     /**
      * @param inputs what the CPU took out for all the crafts, for what comes back: each input's
@@ -230,17 +233,19 @@ final class AssemblingMatrixWork implements INBTSerializable<CompoundTag> {
         return stacks.stream().map(stack -> new GenericStack(stack.what(), stack.amount() * multiplier)).toList();
     }
 
+    // Untested: crafting speed and FE use as before; with too little FE on hatches sharing one wireless network the
+    // matrix slows down instead of crafting unpaid; products the network refuses arrive once it has room
     void tick(AssemblingMatrixMachine matrix) {
         flushOutputs(matrix);
-        waitingForFE = false;
-        long budget = matrix.capacity();
+        // FE for the whole tick at once, then handed out in the order below
+        long wanted = Math.min(matrix.capacity(), crafts() - paidAlready());
+        long budget = wanted > 0 ? matrix.pay(wanted) : 0;
+        waitingForFE = budget < wanted;
         for (var iterator = givingBack.iterator(); iterator.hasNext() && budget > 0;) {
             Run run = iterator.next();
-            long wanted = Math.min(run.crafts - run.paid, budget);
-            long paid = matrix.pay(wanted);
+            long paid = Math.min(run.crafts - run.paid, budget);
             run.paid += paid;
             budget -= paid;
-            if (paid < wanted) waitingForFE = true;
             if (run.paid == run.crafts) {
                 addOutputs(run.outputs, 1);
                 iterator.remove();
@@ -250,10 +255,7 @@ final class AssemblingMatrixWork implements INBTSerializable<CompoundTag> {
         for (int turns = queue.size(); turns > 0 && budget > 0; turns--) {
             var first = queue.entrySet().iterator().next();
             Queued next = first.getValue();
-            long wanted = Math.min(next.crafts, budget);
-            long crafts = matrix.pay(wanted);
-            if (crafts < wanted) waitingForFE = true;
-            if (crafts == 0) break;
+            long crafts = Math.min(next.crafts, budget);
             budget -= crafts;
             next.finish(crafts);
             addOutputs(next.outputs, crafts);
@@ -265,19 +267,35 @@ final class AssemblingMatrixWork implements INBTSerializable<CompoundTag> {
 
     private void addOutputs(List<GenericStack> stacks, long crafts) {
         for (GenericStack stack : stacks) outputs.addTo(stack.what(), stack.amount() * crafts);
+        outputsAdded = true;
     }
 
     private void addOutputs(KeyCounter stacks) {
         for (var stack : stacks) outputs.addTo(stack.getKey(), stack.getLongValue());
+        outputsAdded = true;
     }
 
+    /**
+     * When the network took nothing, it is asked again only after {@link #FLUSH_RETRY_TICKS} or as soon as something new
+     * is done: a refused insert goes through all of its storage.
+     */
     private void flushOutputs(AssemblingMatrixMachine matrix) {
+        if (outputs.isEmpty()) return;
+        if (flushCooldown > 0 && !outputsAdded) {
+            flushCooldown--;
+            return;
+        }
+        outputsAdded = false;
+        boolean anyTaken = false;
         for (var iterator = outputs.object2LongEntrySet().fastIterator(); iterator.hasNext();) {
             var entry = iterator.next();
-            long left = entry.getLongValue() - matrix.insert(entry.getKey(), entry.getLongValue());
+            long taken = matrix.insert(entry.getKey(), entry.getLongValue());
+            if (taken > 0) anyTaken = true;
+            long left = entry.getLongValue() - taken;
             if (left > 0) entry.setValue(left);
             else iterator.remove();
         }
+        flushCooldown = anyTaken ? 0 : FLUSH_RETRY_TICKS;
     }
 
     boolean isWorking() {
@@ -286,6 +304,13 @@ final class AssemblingMatrixWork implements INBTSerializable<CompoundTag> {
 
     boolean isWaitingForFE() {
         return waitingForFE;
+    }
+
+    /** Crafts of giving-back runs paid for in earlier ticks. */
+    private long paidAlready() {
+        long paid = 0;
+        for (Run run : givingBack) paid += run.paid;
+        return paid;
     }
 
     /** Crafts not finished yet. */

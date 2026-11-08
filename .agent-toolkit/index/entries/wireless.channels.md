@@ -32,16 +32,16 @@ snippet = "public enum ChannelAccess {"
 [[items]]
 name = "computation"
 value = "Per-channel provider like gtceu's network switch, itself in seen"
-path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/computation/ChannelComputation.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/channel/computation/ChannelComputation.java"
 snippet = "public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {"
 
 [[items]]
 name = "recipes"
 value = "Hatch / network switch + circuit 5 in the magical assembler"
-path = "src/main/java/com/yiran/minecraft/gtmqol/data/recipe/WirelessRecipes.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/WirelessRecipes.java"
 snippet = "assembler.recipeBuilder(GTMQoL.id(\"wireless_computation_router\"))"
 +++
-Code: common/wireless/channel/ (ChannelSavedData, ChannelRegistry, ChannelBindingTrait, ChannelUI with ChannelListWidget, ChannelMachines), common/wireless/computation/, common/wireless/optical/. Ported from 1.21 (2026-10-29); the same code apart from the 1.20.1 API differences (build.branch-differences).
+Code: common/wireless/channel/ (ChannelSavedData, ChannelRegistry, ChannelBindingTrait, ChannelUI with ChannelListWidget, ChannelMachines), common/wireless/channel/computation/, common/wireless/channel/optical/. Ported from 1.21 (2026-10-29); the same code apart from the 1.20.1 API differences (build.branch-differences).
 
 User decisions (2026-10-29):
 - Channels are live links, not pools, so they don't use WirelessPool/NetworkId. One ChannelKind per kind (computation, optical); energy and steam may move to channels later, which is why the channel layer is kind-agnostic.

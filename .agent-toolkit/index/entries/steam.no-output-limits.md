@@ -1,15 +1,11 @@
 +++
 title = "No output limits: steam macerator, steam grinder and steam oven keep all outputs (byproducts)"
 keys = [ "addoutputlimit", "nooutputlimits", "require", "steam tweaks", "steamtweaks.nooutputlimits" ]
-updated = "2026-10-21 08:27:56"
-checked = "2026-11-07"
+updated = "2026-11-08 19:27:14"
+checked = "2026-11-08"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/GTMachinesMixin.java"
-snippet = "private static MachineBuilder gtmqol$noOutputLimit(MachineBuilder builder, RecipeCapability<?> cap, int limit,"
-
-[[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/GTMultiMachinesMixin.java"
-snippet = "private static MachineBuilder gtmqol$noOutputLimit(MultiblockMachineBuilder builder, RecipeCapability<?> cap,"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/steam/SteamTweaks.java"
+snippet = "private static void removeOutputLimits() {"
 +++
-The user wants byproducts everywhere. Generator output limits (in GTMachineUtils) are untouched. require counts (GTMachinesMixin 1, GTMultiMachinesMixin 2) break at load if GTCEu changes its calls: recheck on bumps. The LV-HV macerator limits were removed upstream (#5528), so the steam macerator's is the only addOutputLimit left in GTMachines. GTMultiMachinesMixin also holds the fusion energy hatch change.
+The user wants byproducts everywhere. SteamTweaks.removeOutputLimits drops the item limit from the four definitions at setup: the limit maps stay live and are only read when a machine is built or runs (getOutputSize, IVoidable). Generator output limits (in GTMachineUtils) are untouched. If GTCEu adds a limit to another steam machine, add its definition there. GTMultiMachinesMixin only holds the fusion energy hatch change now.

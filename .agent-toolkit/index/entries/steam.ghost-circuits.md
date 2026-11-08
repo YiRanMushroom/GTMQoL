@@ -9,7 +9,7 @@ path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/GTSingleblockMachin
 snippet = "public class GTSingleblockMachinePanelsMixin {"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/SteamItemBusPartMachineMixin.java"
-snippet = "public class SteamItemBusPartMachineMixin {"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/steam/SteamTweaks.java"
+snippet = "MachineFeatures.onCreated(SteamItemBusPartMachine.class,"
 +++
-The slot itself is attached by SimpleSteamMachineMixin (steam.single-block-io). The bus slot gives steam multis ghost circuits (input bus only).
+The slot itself is attached by SteamTweaks (steam.single-block-io). The bus slot gives steam multis ghost circuits (input bus only).

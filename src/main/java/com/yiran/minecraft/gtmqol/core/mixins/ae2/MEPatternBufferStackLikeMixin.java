@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
-import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
-import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.PatternBufferStackLike;
-import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.PatternBufferStackLikeHolder;
+import com.yiran.minecraft.gtmqol.common.stacklike.ae2.AEStackLikeBridges;
+import com.yiran.minecraft.gtmqol.common.stacklike.ae2.PatternBufferStackLike;
+import com.yiran.minecraft.gtmqol.common.stacklike.ae2.PatternBufferStackLikeHolder;
 
 import appeng.api.stacks.KeyCounter;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
