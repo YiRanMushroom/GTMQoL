@@ -43,9 +43,6 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 - Stack-like: external chemical hatches.
 - Code review of 2026-11-08: done, see `plan.code-review-2026-11` for what is left;
   in-game checks in `status.untested`.
-- 3.2.0 releases (`v3.2.0-1.21`, `v3.2.0-1.20`) are GitHub drafts with the jars: publish
-  (`gh release edit <tag> --draft=false`, 1.21 last so it stays Latest) once the user confirms the 1.21 jar loads
-  (the GTCEu 139 load crash, `modular.declare`).
 - FE output hatch (`wireless.fe`): no multiblock uses its ability yet, the user has later machines in mind.
 
 ## Open questions for the user

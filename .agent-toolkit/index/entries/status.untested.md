@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-08 20:12:26"
+updated = "2026-11-08 20:50:52"
 checked = "2026-11-08"
 
 [[items]]
@@ -139,7 +139,7 @@ snippet = "    // Untested: crafting speed and FE use as before; with too little
 
 [[items]]
 name = "modular-lazy-kind"
-value = "1.21: the game loads with GTCEu build 139 (modular machines no longer resolve recipe types at the machine registry event); modular generators make EU, keep progress while waiting, LCE look when the single block has no front overlay"
+value = "1.21: the game loads with GTCEu build 139 (checked by the user 2026-11-08); still to see: modular generators make EU, keep progress while waiting, LCE look when the single block has no front overlay"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/modular/ModularMachine.java"
 snippet = "// Untested: modular generators (modular steam turbine) make EU and keep their progress while waiting"
 +++
