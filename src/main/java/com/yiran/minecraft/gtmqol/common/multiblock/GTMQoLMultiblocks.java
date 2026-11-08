@@ -25,7 +25,7 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.client.DTFRRingRender;
-import com.yiran.minecraft.gtmqol.client.FishingPondWaterRender;
+import com.yiran.minecraft.gtmqol.client.IndustrialFishingPondWaterRender;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 
 import net.minecraft.data.recipes.RecipeOutput;
@@ -68,7 +68,7 @@ public final class GTMQoLMultiblocks {
         if (config.smartAssemblyFactory) initSmartAssemblyFactory();
         if (config.dimensionallyTranscendentFusionReactor) initDTFR();
         if (config.voidMiner) initVoidMiner();
-        if (config.fishingPond) initFishingPond();
+        if (config.industrialFishingPond) initIndustrialFishingPond();
         if (config.industrialLargeChemicalReactor) initIndustrialLargeChemicalReactor();
     }
 
@@ -77,7 +77,7 @@ public final class GTMQoLMultiblocks {
         if (config.smartAssemblyFactory) addSmartAssemblyFactoryRecipe(provider);
         if (config.dimensionallyTranscendentFusionReactor) addDTFRRecipe(provider);
         if (config.voidMiner) addVoidMinerRecipe(provider);
-        if (config.fishingPond) addFishingPondRecipe(provider);
+        if (config.industrialFishingPond) addIndustrialFishingPondRecipe(provider);
         if (config.industrialLargeChemicalReactor) addIndustrialLargeChemicalReactorRecipe(provider);
     }
 
@@ -285,16 +285,16 @@ public final class GTMQoLMultiblocks {
         lang.addRawLang(key + "config.multiplier", "Stacks per ore: %s");
     }
 
-    private static void initFishingPond() {
+    private static void initIndustrialFishingPond() {
         // GTCEu's Large Chemical Bath, widened: a 5 × 5 × 4 cavity (vanilla's open water check), open on top.
         FISHING_POND = GTMQoLAddon
-                .multiblock("fishing_pond", FishingPondMachine::new)
+                .multiblock("industrial_fishing_pond", IndustrialFishingPondMachine::new)
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-                .tooltips(Component.translatable(FishingPondMachine.KEY + "tooltip.0"),
-                        Component.translatable(FishingPondMachine.KEY + "tooltip.1"),
-                        Component.translatable(FishingPondMachine.KEY + "tooltip.2"),
-                        Component.translatable(FishingPondMachine.KEY + "tooltip.3"))
+                .tooltips(Component.translatable(IndustrialFishingPondMachine.KEY + "tooltip.0"),
+                        Component.translatable(IndustrialFishingPondMachine.KEY + "tooltip.1"),
+                        Component.translatable(IndustrialFishingPondMachine.KEY + "tooltip.2"),
+                        Component.translatable(IndustrialFishingPondMachine.KEY + "tooltip.3"))
                 .appearanceBlock(GCYMBlocks.CASING_WATERTIGHT)
                 // startOffset is the controller -> first block of the first slice: the back wall is 6 slices behind
                 // (1 + 5 repeats), S is in string 1 and char 3. Without it gtceu guesses from the controller's slice
@@ -314,12 +314,12 @@ public final class GTMQoLMultiblocks {
                 .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
                 .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                         GTCEu.id("block/multiblock/gcym/large_chemical_bath"))
-                        .andThen(b -> b.addDynamicRenderer(FishingPondWaterRender::new)))
+                        .andThen(b -> b.addDynamicRenderer(IndustrialFishingPondWaterRender::new)))
                 .langValue("Industrial Fishing Pond")
                 .register();
 
         var lang = GTMQoLAddon.registrate();
-        String key = FishingPondMachine.KEY;
+        String key = IndustrialFishingPondMachine.KEY;
         lang.addRawLang(key + "tooltip.0",
                 "Fishes vanilla fishing loot with the rod in its controller, every 5 s. The rod takes no damage.");
         lang.addRawLang(key + "tooltip.1",
@@ -426,8 +426,8 @@ public final class GTMQoLMultiblocks {
                 .save(provider);
     }
 
-    private static void addFishingPondRecipe(RecipeOutput provider) {
-        MagicalAssembler.RECIPE_TYPE.recipeBuilder(GTMQoL.id("fishing_pond"))
+    private static void addIndustrialFishingPondRecipe(RecipeOutput provider) {
+        MagicalAssembler.RECIPE_TYPE.recipeBuilder(GTMQoL.id("industrial_fishing_pond"))
                 .inputItems(GTMachines.FISHER[EV], 4)
                 .inputItems(CustomTags.EV_CIRCUITS, 8)
                 .inputItems(GTItems.ELECTRIC_PUMP_EV, 8)

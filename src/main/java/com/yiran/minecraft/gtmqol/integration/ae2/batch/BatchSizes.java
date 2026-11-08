@@ -9,9 +9,9 @@ import java.util.TreeMap;
  * which leave with whatever has arrived. A CPU pushes one piece of a size per round, so sizes don't repeat. No game
  * classes here, so tests can run this without the game.
  */
-public final class BatchPieces {
+public final class BatchSizes {
 
-    private BatchPieces() {}
+    private BatchSizes() {}
 
     /**
      * For crafts that have to wait for something.

@@ -37,4 +37,4 @@ src/main/java/com/yiran/minecraft/gtmqol/
 - gregification/: Gregification, ForeignMachineType, GregifiedRecipeType, modifiers, MarkCoveredRecipes; mi/, mekanism/, productivebees/, create/, client/
 - data/: recipe/ (MiscRecipes, EarlyGameRecipes, WirelessRecipes), tag/ (CircuitTags, MaterialAliasTags, WireTags)
 - core/: mixin config plugins (GTMQoL, RecipeDB, AE2, JeiRecipeSlotFix); mixins/ with gtceufix/, recipedb/, ae2/
-- integration/: ae2/ (+ stacklike/ bridges, batch/ smart doubling and crafting plans, matrix/ Assembling Matrix), jade/, kubejs/, mysticalagriculture/, productivebees/
+- integration/: ae2/ (+ stacklike/ bridges, batch/ pattern batching and crafting plans, matrix/ Assembling Matrix), jade/, kubejs/, mysticalagriculture/, productivebees/

@@ -50,14 +50,14 @@ public final class AE2Machines {
                         Component.translatable("gtceu.part_sharing.enabled"))
                 .register();
 
-        addLang(SmartDoubling.TITLE_KEY, "Smart Doubling");
-        addLang(SmartDoubling.TOGGLE_KEY + ".enabled", "Smart Doubling: on. A crafting job sends many crafts of a " +
+        addLang(PatternBatching.TITLE_KEY, "Pattern Batching");
+        addLang(PatternBatching.TOGGLE_KEY + ".enabled", "Pattern Batching: on. A crafting job sends many crafts of a " +
                 "processing pattern to this ME Pattern Buffer as one batch");
-        addLang(SmartDoubling.TOGGLE_KEY + ".disabled", "Smart Doubling: off. A crafting job sends one craft at a time");
-        addLang(SmartDoubling.LIMIT_KEY, "Batch limit (0 = none)");
-        addLang(SmartDoubling.LIMIT_KEY + ".tooltip", "Most items, or buckets of fluid, of any one ingredient in a " +
+        addLang(PatternBatching.TOGGLE_KEY + ".disabled", "Pattern Batching: off. A crafting job sends one craft at a time");
+        addLang(PatternBatching.LIMIT_KEY, "Batch limit (0 = none)");
+        addLang(PatternBatching.LIMIT_KEY + ".tooltip", "Most items, or buckets of fluid, of any one ingredient in a " +
                 "batch");
-        addLang(SmartDoubling.TITLE_KEY + ".tooltip", "Sends many crafts of a processing pattern to this ME " +
+        addLang(PatternBatching.TITLE_KEY + ".tooltip", "Sends many crafts of a processing pattern to this ME " +
                 "Pattern Buffer as one batch");
         addLang(PatternOutputMarks.TOGGLE_KEY + ".enabled", "Mark Pattern Outputs: \u00a7eEnabled");
         addLang(PatternOutputMarks.TOGGLE_KEY + ".disabled", "Mark Pattern Outputs: \u00a7eDisabled");

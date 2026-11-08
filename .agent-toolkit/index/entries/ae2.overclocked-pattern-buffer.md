@@ -20,4 +20,4 @@ snippet = "                .machine(\"overclocked_me_pattern_buffer\", info -> n
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AE2Machines.java"
 snippet = "    public static void addRecipes(RecipeOutput provider) {"
 +++
-require = 5 on the @ModifyConstant: recheck the count of inlined 27s after a GTCEu bump. The shared inventory/tank stay at GTCEu's 9 slots (the old 25-slot catalyst version would need all of getPanelBuilder). Recipe (magical assembler) matches the old v7 QoLMachines.kt. AE2Machines also registers the lang for smart doubling, output marks and shared hatches toggles.
+require = 5 on the @ModifyConstant: recheck the count of inlined 27s after a GTCEu bump. The shared inventory/tank stay at GTCEu's 9 slots (the old 25-slot catalyst version would need all of getPanelBuilder). Recipe (magical assembler) matches the old v7 QoLMachines.kt. AE2Machines also registers the lang for pattern batching, output marks and shared hatches toggles.

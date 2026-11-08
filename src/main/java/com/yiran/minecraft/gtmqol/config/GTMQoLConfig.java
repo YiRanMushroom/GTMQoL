@@ -65,7 +65,7 @@ public final class GTMQoLConfig {
         @Configurable.Comment({ "Industrial Fishing Pond (vanilla fishing loot for EU, with a rod in the controller)",
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
-        public boolean fishingPond = true;
+        public boolean industrialFishingPond = true;
 
         @Configurable
         @Configurable.Comment({ "Crystal Growth Chamber (shards of the budding block in its middle: vanilla, AE2, GeOre)",
@@ -348,10 +348,10 @@ public final class GTMQoLConfig {
         public int assemblingMatrixFEPerCraft = 64;
 
         @Configurable
-        @Configurable.Comment({ "Smart doubling: the crafts of a pattern go out in batches of 1, 2, 4 and so on. Above 1,",
+        @Configurable.Comment({ "Pattern batching: the crafts of a pattern go out in batches of 1, 2, 4 and so on. Above 1,",
                 "the largest batch is about this fraction of them, so the next step of a chain starts sooner", "Default: 1" })
         @Configurable.Range(min = 1, max = 4096)
-        public int batchParts = 1;
+        public int patternBatchParts = 1;
 
         @Configurable
         @Configurable.Comment({ "Work out crafting plans by adding up what each item needs instead of walking AE2's",

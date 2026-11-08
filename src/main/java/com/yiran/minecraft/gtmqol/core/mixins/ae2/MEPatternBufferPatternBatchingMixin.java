@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
-import com.yiran.minecraft.gtmqol.integration.ae2.SmartDoubling;
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.BatchCraftingProvider;
+import com.yiran.minecraft.gtmqol.integration.ae2.PatternBatching;
+import com.yiran.minecraft.gtmqol.integration.ae2.batch.PatternBatchProvider;
 import com.yiran.minecraft.gtmqol.integration.ae2.batch.PatternBatch;
 
 import appeng.api.crafting.IPatternDetails;
@@ -23,53 +23,53 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Smart doubling for GTCEu's pattern buffer (and our larger ones, which extend it), see {@link BatchCraftingProvider}.
+ * Pattern batching for GTCEu's pattern buffer (and our larger ones, which extend it), see {@link PatternBatchProvider}.
  * Pushes of batches are matched against the slot patterns by their original, and bring the batch's inputs.
  */
 @Mixin(value = MEPatternBufferPartMachine.class, remap = false)
-public abstract class MEPatternBufferSmartDoublingMixin implements BatchCraftingProvider {
+public abstract class MEPatternBufferPatternBatchingMixin implements PatternBatchProvider {
 
     @Unique
-    @SaveField
+    @SaveField(nbtKey = "gtmqol$smartDoubling")
     @SyncToClient
-    private boolean gtmqol$smartDoubling = true;
+    private boolean gtmqol$patternBatching = true;
 
     // 0 = no limit
     @Unique
-    @SaveField
+    @SaveField(nbtKey = "gtmqol$smartDoublingLimit")
     @SyncToClient
-    private int gtmqol$smartDoublingLimit = 0;
+    private int gtmqol$patternBatchLimit = 0;
 
     // The pattern AE2 passed to pushPattern, possibly a batch, while the method runs on its original.
     @Unique
     private @Nullable IPatternDetails gtmqol$pushedPattern;
 
     @Unique
-    private boolean gtmqol$getSmartDoubling() {
-        return gtmqol$smartDoubling;
+    private boolean gtmqol$getPatternBatching() {
+        return gtmqol$patternBatching;
     }
 
     @Unique
-    private void gtmqol$setSmartDoubling(boolean enabled) {
-        gtmqol$smartDoubling = enabled;
-        gtmqol$self().getSyncDataHolder().markClientSyncFieldDirty("gtmqol$smartDoubling");
+    private void gtmqol$setPatternBatching(boolean enabled) {
+        gtmqol$patternBatching = enabled;
+        gtmqol$self().getSyncDataHolder().markClientSyncFieldDirty("gtmqol$patternBatching");
     }
 
     @Unique
-    private int gtmqol$getSmartDoublingLimit() {
-        return gtmqol$smartDoublingLimit;
+    private int gtmqol$getPatternBatchLimit() {
+        return gtmqol$patternBatchLimit;
     }
 
     @Unique
-    private void gtmqol$setSmartDoublingLimit(int limit) {
-        gtmqol$smartDoublingLimit = Math.max(0, limit);
-        gtmqol$self().getSyncDataHolder().markClientSyncFieldDirty("gtmqol$smartDoublingLimit");
+    private void gtmqol$setPatternBatchLimit(int limit) {
+        gtmqol$patternBatchLimit = Math.max(0, limit);
+        gtmqol$self().getSyncDataHolder().markClientSyncFieldDirty("gtmqol$patternBatchLimit");
     }
 
     @Override
     public long batchLimit(IPatternDetails pattern) {
-        if (!gtmqol$smartDoubling || !(pattern instanceof AEProcessingPattern)) return 0;
-        return SmartDoubling.limit(pattern, gtmqol$smartDoublingLimit);
+        if (!gtmqol$patternBatching || !(pattern instanceof AEProcessingPattern)) return 0;
+        return PatternBatching.limit(pattern, gtmqol$patternBatchLimit);
     }
 
     @Unique
@@ -99,9 +99,9 @@ public abstract class MEPatternBufferSmartDoublingMixin implements BatchCrafting
     }
 
     @ModifyReturnValue(method = "getPanelBuilder", at = @At("RETURN"))
-    private MachineUIPanelBuilder gtmqol$addSmartDoublingConfigurator(MachineUIPanelBuilder builder,
+    private MachineUIPanelBuilder gtmqol$addPatternBatchingConfigurator(MachineUIPanelBuilder builder,
                                                                       @Local(argsOnly = true) PanelSyncManager syncManager) {
-        return SmartDoubling.addConfigurator(builder, syncManager, this::gtmqol$getSmartDoubling,
-                this::gtmqol$setSmartDoubling, this::gtmqol$getSmartDoublingLimit, this::gtmqol$setSmartDoublingLimit);
+        return PatternBatching.addConfigurator(builder, syncManager, this::gtmqol$getPatternBatching,
+                this::gtmqol$setPatternBatching, this::gtmqol$getPatternBatchLimit, this::gtmqol$setPatternBatchLimit);
     }
 }

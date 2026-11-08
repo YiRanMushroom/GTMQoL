@@ -1,7 +1,7 @@
 +++
 title = "Naming and player text: class, ID, lang, config and item names, tooltips, UI labels; use when naming or writing them"
 keys = [ "id", "lang", "naming", "tooltip", "user-facing text", "wording" ]
-updated = "2026-11-08 04:39:48"
+updated = "2026-11-08 05:09:59"
 checked = "2026-11-08"
 
 [[items]]
@@ -14,7 +14,7 @@ snippet = "private static final String UNIVERSAL_INPUT_TOOLTIP = \"gtmqol.machin
 name = "renamed-ids"
 value = "Old block/item IDs mapped to new ones"
 path = "src/main/java/com/yiran/minecraft/gtmqol/RenamedIds.java"
-snippet = "private static final Map<String, String> RENAMED = Map.of("
+snippet = "private static final Map<String, String> RENAMED = Map.ofEntries("
 +++
 Use whenever you name something (class, field, method, block or item ID, lang key, config key, index entry) or write text players see (block and item names, tooltips, UI labels, chat messages, config comments, README).
 

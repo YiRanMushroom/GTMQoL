@@ -12,6 +12,100 @@ Both branches have the same features, except the few marked 1.21.1 only. Release
 
 ## Features
 
+### Crafting and AE2
+
+#### Pattern Crafter
+
+The **Pattern Crafter** (single block, every tier) runs crafting table, stonecutter and smithing table recipes.
+
+- Right-click a **Blank Crafting Pattern** to encode a recipe from a grid of ghost items (dragged from EMI/JEI or
+  filled with their transfer button). Put the **Crafting Pattern** in the machine with the materials; the machine
+  holds 9 patterns.
+- A Crafting Pattern matches its items exactly, or accepts whatever the recipe accepts. It can take buckets from the
+  machine's tanks as fluid, and can keep an item the recipe duplicates (smithing templates), so one is enough.
+- Tools stay in the machine and wear out by one craft per parallel.
+- AE2 crafting, stonecutting and smithing patterns work in the Pattern Crafter too.
+- A Crafting Pattern whose recipe was changed or removed by a recipe script says so in its tooltip.
+
+#### Assembling Matrix
+
+The **Assembling Matrix** is a multiblock that crafts for its ME network in bulk: AE2 crafting, stonecutting and
+smithing patterns, and Crafting Patterns from the Pattern Crafter. Processing patterns are not crafted here.
+
+- **Structure**: a box of 3 to 15 blocks each way, built like the cleanroom, with the controller in the middle of the
+  front's bottom edge. The edges are Machine Casings, all of one tier; the faces are Quartz Glass; the inside holds
+  **Assembling Matrix Processing Cores**, **Assembling Matrix Pattern Cores** or air. At least one of each core is
+  needed to craft anything, so the smallest working box is 3 × 3 × 4.
+- **Speed**: each Processing Core does 4 crafts per tick, ×4 for each casing tier above ULV. The structure preview
+  shows ULV casings, but any tier works. Every craft costs 64 FE, taken from Wireless FE Input Hatches on the edges.
+- **Patterns**: each Pattern Core holds 72 patterns. The controller's patterns window lists them all, with a search
+  field; patterns are taken out with a click and put in from the cursor or with Shift-click from the inventory.
+- **Parts on the edges**: one **Assembling Matrix ME Interface**, at least one Wireless FE Input Hatch, and Input
+  Buses for catalysts. Catalysts are the tools and smithing templates that a Crafting Pattern keeps instead of using
+  up; they stay in the Input Buses, and tools wear down there.
+- **Auto upload**: crafting, stonecutting and smithing patterns encoded in a Pattern Encoding Terminal on the same
+  ME network move into the Assembling Matrix by themselves. A copy of a pattern the matrix already has comes back as a
+  Blank Pattern. The switch is on the controller and on the ME Interface.
+- **ME Interface**: its name, shown in Pattern Access Terminals, can be changed in its window.
+- **Cancelling**: AE2's cancel stops the crafting job, but crafts already sent to the matrix still finish and their
+  products go to the network. To get the ingredients back instead, cancel the job in the Crafting Status first, then
+  Shift-click the return button on the controller: the ingredients of all crafts not done yet go back to the ME
+  network, exactly as they were sent.
+- **Breaking and rebuilding**: a broken structure keeps its crafts and resumes when formed again. Breaking the
+  controller sends the ingredients of unfinished crafts and the finished products to the ME network; whatever the
+  network can't hold is lost.
+- **Recipes**: the cores and the ME Interface in the ME Assembler (the assembler without `ae2.processing`); the
+  controller is crafted from an IV Pattern Crafter, an IV Machine Hull, 64k Crafting Storage, IV Robot Arms, IV
+  circuits and a Crafting Co-Processing Unit.
+- Needs AE2, and the config switches `machines.patternCrafter`, `wireless.energy` and `wireless.fe` on (all on by
+  default).
+
+#### Pattern Batching
+
+With **Pattern Batching**, a crafting job sends many crafts of a pattern to a machine at once, as one batch, instead
+of one craft at a time. Big orders finish in far fewer steps and need fewer Crafting Co-Processing Units.
+
+- **ME Pattern Buffers** (GTCEu's and the Overclocked ME Pattern Buffer): the ×2 button opens the Pattern Batching
+  settings, an on/off switch (on by default) and a batch limit, the most items or buckets of fluid of any one
+  ingredient in a batch (0 = no limit). Only processing patterns are batched.
+- **Assembling Matrix**: always takes batches, except for Crafting Patterns whose catalyst wears out.
+- **How orders are cut**: a pattern whose ingredients are all in storage goes out as one batch. A pattern whose
+  ingredients are still being crafted goes out in batches of 1, 2, 4 and so on, so the next step of a chain starts as
+  soon as the first items arrive.
+- **AE2's own Crafting CPUs**: the batches of one pattern cost one co-processing operation together. A batch that
+  can't go whole, because some ingredients are still on their way or the ME network lacks power, sends the part that
+  can go now and keeps the rest for later. Other mods' crafting CPUs get the batches too, without these extras.
+- **Not batched**: patterns that give something back (an empty bucket, for example) or make one of their own
+  ingredients, and patterns that a plain Pattern Provider also offers.
+- Running crafting jobs keep their batches over a restart.
+- `ae2.patternBatchParts` (default 1): above 1, the largest batch is about this fraction of the order, so the next
+  step of a chain starts even sooner, at the cost of more steps.
+
+#### Faster crafting plans
+
+A crafting request is worked out in one go, however large the amount, so huge orders no longer stall on
+"Calculating". When an item has several patterns, the plan moves to the next one where the first runs short.
+Requests that need AE2's own rules (patterns that give items back, patterns that loop, substitutes in short supply)
+are still worked out by AE2. In rare cases with several patterns for an item, a request that AE2 could plan shows as
+missing items; switching `ae2.fastCraftingPlans` off brings back AE2's own planning, no restart needed.
+
+#### ME parts and pattern buffers
+
+- **Overclocked ME Pattern Buffer**: 216 patterns instead of 27.
+- **ME processing**: an ME Assembler and an ME Circuit Slicer, with GT-style recipes for AE2 processors and for
+  GTCEu's ME parts.
+- **ME dual input/output parts**: item and fluid stocking in one part, item and fluid output in one part.
+- **Universal ME input/output parts**: any AE key the mod knows, including Mekanism chemicals.
+- **Pattern buffer return**: a multiblock's outputs go straight back into the ME network for waiting crafting jobs.
+  Toggle per buffer.
+- **Shared hatches** (toggle per pattern buffer): a pattern can use circuits, molds and ghost marks from the machine's
+  other, undyed buses and hatches.
+- **Mark pattern outputs** (toggle on the Overclocked ME Pattern Buffer): each pattern counts as a ghost mark for its
+  own output, so the machine picks the recipe the pattern is for.
+- **Sticky card**: a storage bus upgrade. Items that match its partition only go into that storage bus.
+  ExtendedAE's storage buses work too.
+- Pattern encoding prefers universal circuits and skips inputs that a recipe doesn't consume.
+
 ### Wireless networks
 
 - A global steam pool and a global EU pool per network. A network belongs to the player's FTB team, or to
@@ -26,10 +120,16 @@ Both branches have the same features, except the few marked 1.21.1 only. Release
   - `/gtmqol default_amperage [amperage]` sets the default for machines you place.
   - Input hatches have an overclock toggle: one tier higher voltage, at 4× the energy cost.
 - FE, from the EU in the network, with no rate limit and no storage of their own:
-  - An energy cube: each side is set to input, output or off, like Mekanism's.
-  - FE input and output hatches, for multiblocks that use or make FE.
-  - With AE2, a wireless energy cell that powers an ME network from the wireless network, and puts spare power back.
+  - The **Wireless Energy Cube**: each side is set to input, output or off, like Mekanism's.
+  - **Wireless FE Input and Output Hatches**, for multiblocks that use or make FE.
+  - With AE2, the **Wireless Energy Cell** powers an ME network from the wireless network and puts spare power back.
 - Wireless covers (steam and EU, input and output) connect any machine to the network.
+- **Channels** link research machines across any distance and dimension, while both ends are loaded. A channel is
+  private, shared with the FTB team, or public, and is created and bound in the machine's window.
+  - Computation: **Wireless Computation Transmission and Reception Hatches** link one transmitter to one receiver.
+    A **Wireless Computation Network Router** bound to the channel allows any number of each.
+  - Optical data: **Wireless Optical Data Transmission and Reception Hatches**. A reception hatch gives its assembly
+    line the research of every data bank on its channel.
 - Recipes are in the magical assembler.
 
 ### Energy
@@ -88,19 +188,12 @@ generators use their own overclock.
 - **Greenhouse** (single block, every tier) and **Industrial Greenhouse** (IV multiblock, 16× outputs, parallel
   hatches): grow crops and trees from a seed or sapling and water. Mystical Agriculture crops are supported,
   and other mods' saplings and crops are picked up by name.
-- **Pattern Crafter** (single block, every tier): runs crafting table, stonecutter and smithing table recipes.
-  Right-click a **Blank Crafting Pattern** to encode a recipe from a grid of ghost items (dragged from EMI/JEI or
-  filled with their transfer button), then put it in the machine with the materials. The machine holds 9 patterns. A
-  crafting pattern matches its items exactly, or accepts whatever the recipe accepts, can take buckets from the
-  machine's tanks as fluid, and can keep an item the recipe duplicates (smithing templates) so one is enough. Tools
-  stay in the machine and wear out by one craft per parallel. AE2 crafting, stonecutting and smithing patterns work in
-  it too. The pattern textures follow Applied Energistics 2's style.
-
 - **Industrial Large Chemical Reactor**: large chemical reactor recipes 64× faster, with parallel hatches,
   perfect sub-tick overclocking and batch mode.
 - **Probable Certainty Device** (ZPM) and **Probable Improbability Device** (IV): parts that fit most multiblocks
   (wherever their buses and hatches go). Certainty: chanced outputs always come out, and ranged outputs give their
   largest amount. Improbability: chanced inputs are never consumed, and ranged inputs use their smallest amount.
+- The Assembling Matrix is described under Crafting and AE2.
 
 Unlike GTCEu's, the void miner and the fishing pond never void their outputs: they wait until everything fits.
 
@@ -133,37 +226,12 @@ from the same log. It is never used up.
 - Early game: simple bus and hatch recipes from machine casings, sand still smelts into glass, and manual
   compression (3×3 blocks, nuggets) is kept.
 
-### AE2
-
-- **Overclocked ME Pattern Buffer**: 216 patterns instead of 27.
-- **ME processing**: an ME assembler and an ME circuit slicer, with GT-style recipes for AE2 processors and
-  for GTCEu's ME parts.
-- **ME dual input/output parts**: item and fluid stocking in one part, item and fluid output in one part.
-- **Universal ME input/output parts**: any AE key the mod knows, including Mekanism chemicals.
-- **Pattern buffer return**: a multiblock's outputs go straight back into the ME network for waiting crafting
-  jobs. Toggle per buffer.
-- **Sticky card**: a storage bus upgrade. Items that match its partition only go into that storage bus.
-  ExtendedAE's storage buses work too.
-- Pattern encoding prefers universal circuits and skips inputs that a recipe doesn't consume.
-- **Smart doubling** on pattern buffers, with an on/off switch and a limit: a big order reaches the buffer in batches
-  instead of one craft at a time, on any crafting CPU.
-- **Faster crafting plans**: a request is worked out in one go whatever its size, and several patterns for an item
-  share out the materials. Switch: `ae2.fastCraftingPlans`.
-- **Assembling Matrix** (multiblock, 3 to 15 blocks each way): crafts AE2's crafting, stonecutting and smithing patterns
-  and our crafting patterns in bulk. Machine casings as the frame, whose tier sets the speed, quartz glass as the
-  faces, processing and pattern cores inside. Runs on FE; input buses on the frame hold catalysts for our patterns.
-  Patterns encoded in a terminal on its network come to it by themselves (switch on the controller).
-- **Shared hatches** (toggle per pattern buffer): a pattern can use circuits, molds and ghost marks from the
-  machine's other, undyed buses and hatches.
-- **Mark pattern outputs** (toggle on the overclocked pattern buffer): each pattern counts as a ghost mark for its
-  own output, so the machine picks the recipe the pattern is for.
-
 ### Recipe lookup performance
 
 GTCEu's recipe search tries every combination of a machine's inputs. With many distinct buses or pattern
 buffers this gets very slow in the late game. Grouped search only tries combinations that one bus, one
 pattern (plus the buffer's circuit and shared inventory) or the non-distinct pool could supply, which are
-the only ones GTCEu would run anyway. Technical details are in the source, `common/recipedb/`.
+the only ones GTCEu would run anyway.
 
 ### Mekanism chemicals
 
@@ -175,8 +243,8 @@ buffers (with Applied Mekanistics), show up in EMI recipes, and Jade shows them 
 Other mods' machine recipes run on GT machines and multiblocks, with GT overclocking, parallels and batch mode.
 Each machine is crafted from the original mod's machine.
 
-- **Modern Industrialization** (1.21.1): 14 single blocks and 10 multiblocks, including the blast furnace with GT
-  coils.
+- **Modern Industrialization** (1.21.1 only): 14 single blocks and 10 multiblocks, including the blast furnace with
+  GT coils.
 - **Create**: 12 multiblocks of Create casings: millstone, crushing wheels, press, compactor, mixer (heated and
   superheated recipes run at higher tiers), encased fan (every processing kind, also from addons), deployer,
   spout, item drain, saw, mechanical crafter and a sequenced assembly line (3 to 16 slices long).
@@ -191,7 +259,7 @@ Gregified single blocks have batch mode, and ghost marks where their recipes nee
 
 A button on every multiblock controller builds the structure from the player's inventory: a click places up to
 64 blocks, Shift-click keeps building until the structure is done. Right click opens a window for the structure's
-size and block choices (for example the coil type).
+size and block choices (for example the coil type, or the casing tier of an Assembling Matrix).
 
 ### Potions
 
@@ -211,26 +279,38 @@ Workarounds for GTCEu bugs, removed once fixed upstream. Each branch has the one
 pattern buffers failing recipes that need more than one of an item, chanced outputs lost in very large batches,
 machines going idle after repeating a recipe, a costly energy check on high-amperage energy lines, the ME stocking
 bus UI not updating, the multiblock preview drawn in the wrong place in the recipe viewer, raw recipe category
-names, and mod loading crashes with some modpacks.
+names, data generation crashing on machines with many model variants, and mod loading crashes with some modpacks.
+
+## Updating from older versions
+
+- The Pattern Matrix is now the **Assembling Matrix**. Worlds saved before the rename keep their matrices, the
+  patterns in their Pattern Cores and running crafting jobs.
+- Smart Doubling is now **Pattern Batching**; the settings on each ME Pattern Buffer carry over.
+- The fishing pond, the wireless computation hatches and the wireless optical data hatches got new IDs that match
+  their names (**Industrial Fishing Pond**, **Wireless Computation Transmission / Reception Hatch**, **Wireless
+  Optical Data Transmission / Reception Hatch**). Placed blocks, their contents and channel bindings are kept.
+- Renamed config keys start from their defaults: `ae2.patternMatrix` → `ae2.assemblingMatrix`,
+  `ae2.patternMatrixFEPerCraft` → `ae2.assemblingMatrixFEPerCraft`, `ae2.batchParts` → `ae2.patternBatchParts`,
+  `machines.fishingPond` → `machines.industrialFishingPond`.
 
 ## Configuration
 
-`config/gtmqol.yaml`. Every feature has a toggle, on by default; options need a restart. The full list is in
-the config file itself.
+`config/gtmqol.yaml`. Every feature has a toggle, on by default. Toggles need a restart; the options marked "live"
+below apply at once. The full list, with descriptions, is in the config file itself.
 
 | Group | Options |
 |---|---|
-| `machines` | one per multiblock above, `probableDevices`, the advanced steam machines and `easySAFRecipe` |
+| `machines` | one per multiblock above, `greenhouse`, `patternCrafter`, `probableDevices`, `advancedSteamMachines`, `easySAFRecipe` |
 | `modularMachines` | `enabled` |
 | `gregification` | `modernIndustrialization` (1.21.1), `mekanism`, `productiveBees`, `create` |
-| `wireless` | `energy`, `fe`, `steam` |
+| `wireless` | `energy`, `fe`, `steam`, `computation`, `opticalData` |
 | `circuits` | `universalCircuits`, `controlCircuits`, `mekanismCircuitTags` |
 | `recipes` | `miscRecipes`, `earlyGame`, `keepManualCompression`, `keepVanillaTNT`, `netherStarDust`, `useLegacyPartRecipes` |
 | `steamTweaks` | `circuitSlots`, `fluidTanks`, `noOutputLimits`, `optionalLargeBoilerParts` |
 | `overclocking` | `buffFusionReactor`, `enableMultiTierSkipping`, `absoluteParallelHatches` |
-| `ae2` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn`, `skipNotConsumedInputs` |
-| `misc` | `feInput`, `autoBuild` |
-| `voidMiner` | `dimensionMapping`: mine another dimension's veins (`"from=to"`) |
+| `ae2` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn` (live), `skipNotConsumedInputs` (live), `assemblingMatrix`, `assemblingMatrixFEPerCraft` (live, default 64), `patternBatchParts` (live, default 1), `fastCraftingPlans` (live) |
+| `misc` | `feInput`, `autoBuild` (live) |
+| `voidMiner` (live) | `dimensionMapping`: mine another dimension's veins (`"from=to"`); `maxOperations` (default 64), `maxMultiplier` (default 4096): the most ore types and stacks per cycle |
 | `integrationTests` | `enabled` (default off): runtime-generated example machines, for development |
 
 `config/gtmqol-early.properties` holds options that are read before mods load (needs a restart):
@@ -246,9 +326,12 @@ the config file itself.
 
 None are required.
 
-- FTB Teams: shares wireless networks per team.
-- AE2: the AE2 features above, and pattern buffers split by pattern in the grouped recipe search.
+- FTB Teams: shares wireless networks and team channels per team.
+- AE2: the Crafting and AE2 features above, the Wireless Energy Cell, and pattern buffers split by pattern in the
+  grouped recipe search.
 - ExtendedAE: the sticky card works on its storage buses.
+- ExtendedAE Plus: works alongside; patterns encoded for an Assembling Matrix go there before ExtendedAE Plus's own
+  upload.
 - Mekanism: chemicals as a recipe capability, Mekanism gregification, merged circuit tags.
 - Applied Mekanistics: chemicals in ME parts and pattern buffers.
 - Modern Industrialization (1.21.1): MI gregification.
@@ -274,5 +357,6 @@ Copyright (C) 2026 Yiran. Licensed under the GNU Lesser General Public License v
 - The animated rainbow overlay on the wireless hatches (`overlay_wireless.png`) is taken from GTMThings'
   `overlay_energy_on_wireless`, which originally comes from GregTech: New Horizons.
 - The wireless energy cell texture is AE2's dense energy cell with its colors cycling.
-- Smart doubling and the Assembling Matrix follow the ideas of
+- The Crafting Pattern textures follow Applied Energistics 2's style.
+- Pattern Batching and the Assembling Matrix follow the ideas of
   [ExtendedAE Plus](https://github.com/GaLicn/ExtendedAE_Plus), and its Super Assembler Matrix.

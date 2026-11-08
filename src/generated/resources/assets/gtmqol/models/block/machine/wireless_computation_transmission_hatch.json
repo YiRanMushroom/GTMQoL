@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
-  "machine": "gtmqol:wireless_computation_transmitter_hatch",
+  "machine": "gtmqol:wireless_computation_transmission_hatch",
   "replaceable_textures": [
     "bottom",
     "top",
