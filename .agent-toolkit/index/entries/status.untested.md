@@ -2,8 +2,8 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-07 10:49:22"
-checked = "2026-11-07"
+updated = "2026-11-08 04:46:21"
+checked = "2026-11-08"
 
 [[items]]
 name = "rotor-amount"
@@ -79,8 +79,8 @@ snippet = "// Untested: no more \"Not building!\""
 
 [[items]]
 name = "matrix-cancel"
-value = "Pattern matrix cancel button gives back the inputs of crafts not done"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/PatternMatrixWork.java"
+value = "Assembling Matrix cancel button gives back the inputs of crafts not done"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixWork.java"
 snippet = "// Untested: Shift-click on the controller's cancel button"
 
 [[items]]
@@ -91,8 +91,8 @@ snippet = "// Untested: a chain's next step starts with part of a batch as the s
 
 [[items]]
 name = "matrix-controller-broken"
-value = "Break the matrix controller mid-job: undone crafts' inputs and finished items go to the network, what it can't take is gone"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/PatternMatrixWork.java"
+value = "Break the Assembling Matrix controller mid-job: undone crafts' inputs and finished items go to the network, what it can't take is gone"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixWork.java"
 snippet = "// Untested: breaking the controller mid-job sends undone crafts' inputs and finished items to the network"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

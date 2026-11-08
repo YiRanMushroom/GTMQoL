@@ -336,15 +336,16 @@ public final class GTMQoLConfig {
         public boolean skipNotConsumedInputs = true;
 
         @Configurable
-        @Configurable.Comment({ "Pattern Matrix: crafts AE2 patterns and crafting patterns in bulk. Also needs",
-                "machines.patternCrafter, wireless.energy and wireless.fe", "Default: true" })
+        @Configurable.Comment({ "Assembling Matrix: a multiblock that crafts AE2 crafting, stonecutting and smithing",
+                "patterns and GTMQoL Crafting Patterns in bulk for an ME network. Also needs machines.patternCrafter,",
+                "wireless.energy and wireless.fe", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
-        public boolean patternMatrix = true;
+        public boolean assemblingMatrix = true;
 
         @Configurable
-        @Configurable.Comment({ "FE a craft in the Pattern Matrix costs", "Default: 64" })
+        @Configurable.Comment({ "FE each craft in an Assembling Matrix uses", "Default: 64" })
         @Configurable.Range(min = 0)
-        public int patternMatrixFEPerCraft = 64;
+        public int assemblingMatrixFEPerCraft = 64;
 
         @Configurable
         @Configurable.Comment({ "Smart doubling: the crafts of a pattern go out in batches of 1, 2, 4 and so on. Above 1,",

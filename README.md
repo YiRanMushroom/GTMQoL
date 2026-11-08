@@ -149,7 +149,7 @@ from the same log. It is never used up.
   instead of one craft at a time, on any crafting CPU.
 - **Faster crafting plans**: a request is worked out in one go whatever its size, and several patterns for an item
   share out the materials. Switch: `ae2.fastCraftingPlans`.
-- **Pattern Matrix** (multiblock, 3 to 15 blocks each way): crafts AE2's crafting, stonecutting and smithing patterns
+- **Assembling Matrix** (multiblock, 3 to 15 blocks each way): crafts AE2's crafting, stonecutting and smithing patterns
   and our crafting patterns in bulk. Machine casings as the frame, whose tier sets the speed, quartz glass as the
   faces, processing and pattern cores inside. Runs on FE; input buses on the frame hold catalysts for our patterns.
   Patterns encoded in a terminal on its network come to it by themselves (switch on the controller).
@@ -274,5 +274,5 @@ Copyright (C) 2026 Yiran. Licensed under the GNU Lesser General Public License v
 - The animated rainbow overlay on the wireless hatches (`overlay_wireless.png`) is taken from GTMThings'
   `overlay_energy_on_wireless`, which originally comes from GregTech: New Horizons.
 - The wireless energy cell texture is AE2's dense energy cell with its colors cycling.
-- Smart doubling and the Pattern Matrix follow the ideas of
+- Smart doubling and the Assembling Matrix follow the ideas of
   [ExtendedAE Plus](https://github.com/GaLicn/ExtendedAE_Plus), and its Super Assembler Matrix.

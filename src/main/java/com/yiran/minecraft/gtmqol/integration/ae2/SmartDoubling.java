@@ -68,6 +68,8 @@ public final class SmartDoubling {
                                 .child(new TextFieldWidget()
                                         .size(90, 14)
                                         .setNumbers(0, Integer.MAX_VALUE)
+                                        .tooltipBuilder(tooltip -> tooltip.addLine(
+                                                Text.lang(LIMIT_KEY + ".tooltip")))
                                         .value(SyncHandlers.intNumber(limit, setLimit).allowC2S()))
                                 .margin(5)));
 
@@ -82,6 +84,7 @@ public final class SmartDoubling {
                     return false;
                 })
                 .overlay(Text.str("×2").asIcon().size(16))
-                .tooltip(new RichTooltip().addLine(Text.lang(TITLE_KEY))))));
+                .tooltip(new RichTooltip().addLine(Text.lang(TITLE_KEY))
+                        .addLine(Text.lang(TITLE_KEY + ".tooltip"))))));
     }
 }

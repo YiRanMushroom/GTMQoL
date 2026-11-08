@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.common.probable.ProbableDevices;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.ScaledPattern;
-import com.yiran.minecraft.gtmqol.integration.ae2.matrix.PatternMatrix;
+import com.yiran.minecraft.gtmqol.integration.ae2.batch.PatternBatch;
+import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrix;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
@@ -96,6 +96,7 @@ public final class GTMQoL {
         if (ModList.get().isLoaded("mekanism")) ChemicalStackLike.init();
         ModularMachines.init(modBus);
         LoadingTags.init();
+        RenamedIds.init(modBus);
         Gregification.init(modBus);
         if (config.gregification.modernIndustrialization && ModList.get().isLoaded("modern_industrialization")) {
             Gregification.addSource(MIGregification::types);
@@ -135,16 +136,16 @@ public final class GTMQoL {
         if (config.wireless.computation) ChannelMachines.initComputation();
         if (config.wireless.opticalData) ChannelMachines.initOptical();
         if (GTCEu.Mods.isAE2Loaded()) {
-            ScaledPattern.init();
+            PatternBatch.init();
             // Before any machine exists: the universal parts attach one handler per bridge when constructed.
             if (ModList.get().isLoaded("mekanism") && ModList.get().isLoaded("appmek")) {
                 AEStackLikeBridges.register(AppMekChemicalBridge.INSTANCE);
             }
             if (config.ae2.overclockedPatternBuffer) AE2Machines.init();
             if (config.wireless.energy && config.wireless.fe) WirelessEnergyCellMachine.init();
-            if (config.ae2.patternMatrix && config.machines.patternCrafter && config.wireless.energy &&
+            if (config.ae2.assemblingMatrix && config.machines.patternCrafter && config.wireless.energy &&
                     config.wireless.fe) {
-                PatternMatrix.init();
+                AssemblingMatrix.init();
             }
             if (config.ae2.processing) {
                 AEProcessing.initItems();

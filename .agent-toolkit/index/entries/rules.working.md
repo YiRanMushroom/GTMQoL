@@ -1,8 +1,8 @@
 +++
 title = "How to work in GTMQoL: reply in Chinese, run don't guess, Gradle limits, both branches, README, UI text, warnings"
 keys = [ "author" ]
-updated = "2026-11-07 07:21:20"
-checked = "2026-11-07"
+updated = "2026-11-08 04:16:55"
+checked = "2026-11-08"
 +++
 Personal, non-serious project, not a production system.
 
@@ -15,5 +15,5 @@ Personal, non-serious project, not a production system.
 - GTCEu sources for this branch: `.gtceu-src-1.21`, never `.gtceu-src` (an older extraction); if unsure, check which sources jar a directory matches before quoting it.
 - Features go on both branches, 1.21 and 1.20 (worktrees and paths: context.md; code differences: build.branch-differences).
 - README.md is English only (credits in its Credits section). Author: README/LICENSE "Yiran"; in-game mod_author "Yiran, Frosty" (Frosty is the user's alias).
-- UI text: short, plain GT-style tooltips saying what something does, only what affects the player's decision (no tick counts, batch sizes, nothing the structure preview already shows); lang key: rules.machine-tooltip-lang. UI windows centered and roomy, not small side panels.
+- Names, IDs and text players see: skill.naming-and-text (read it whenever naming something). UIs: skill.modular-ui. Mixins: skill.mixins.
 - javac runs with -Xlint:deprecation,removal,unchecked,rawtypes; keep the build warning-free (1.20.1 only has Forge's BuiltInRegistries deprecation, kept so code matches 1.21).

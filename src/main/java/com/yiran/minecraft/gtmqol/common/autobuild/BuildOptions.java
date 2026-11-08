@@ -116,7 +116,7 @@ public record BuildOptions(List<Slice> slices, List<IntIntPair> bounds, List<Cho
 
     /**
      * Hatches, buses and other parts: every candidate is a machine that fits an ability. Machines that are simply part
-     * of a structure, like the pattern matrix's pattern cores, get placed.
+     * of a structure, like the assembling matrix's pattern cores, get placed.
      */
     // Untested: abilities by machine block; auto-build leaves hatch/bus/muffler spots empty, casings elsewhere
     static boolean isAbility(BasePredicate predicate) {

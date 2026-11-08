@@ -1,12 +1,12 @@
 +++
 title = "Source layout: packages and what lives where (1.21.1)"
 keys = [ "source tree" ]
-updated = "2026-11-07 08:02:34"
-checked = "2026-11-07"
+updated = "2026-11-08 04:39:38"
+checked = "2026-11-08"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol"
-dir = [ "GTMQoL.java", "GTMQoLAddon.java", "api/", "client/", "common/", "config/", "core/", "data/", "gregification/", "integration/" ]
+dir = [ "GTMQoL.java", "GTMQoLAddon.java", "RenamedIds.java", "api/", "client/", "common/", "config/", "core/", "data/", "gregification/", "integration/" ]
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common"
@@ -29,6 +29,7 @@ Loosely follows GTCEu Modern (api / common / data / core / integration / client 
 src/main/java/com/yiran/minecraft/gtmqol/
 - GTMQoL.java: entry point, GTMQoL.id(), what gets registered (config gated), init order
 - GTMQoLAddon.java: @GTAddon, owns the GTRegistrate, creative tab, machine()/multiblock() helpers, addRecipes
+- RenamedIds.java: old block/item IDs mapped to their new ones, so saved worlds keep the blocks and their contents
 - api/generation/: runtime (dynamic) resource generation, opt-in per machine
 - client/: client-only init and renders (DTFR ring, fishing pond water, Create casing parts, energy cube and cell sides)
 - config/: GTMQoLConfig (toma, runtime), EarlyConfig (properties, mixin time)
@@ -36,4 +37,4 @@ src/main/java/com/yiran/minecraft/gtmqol/
 - gregification/: Gregification, ForeignMachineType, GregifiedRecipeType, modifiers, MarkCoveredRecipes; mi/, mekanism/, productivebees/, create/, client/
 - data/: recipe/ (MiscRecipes, EarlyGameRecipes, WirelessRecipes), tag/ (CircuitTags, MaterialAliasTags, WireTags)
 - core/: mixin config plugins (GTMQoL, RecipeDB, AE2, JeiRecipeSlotFix); mixins/ with gtceufix/, recipedb/, ae2/
-- integration/: ae2/ (+ stacklike/ bridges, batch/ smart doubling and crafting plans, matrix/ pattern matrix), jade/, kubejs/, mysticalagriculture/, productivebees/
+- integration/: ae2/ (+ stacklike/ bridges, batch/ smart doubling and crafting plans, matrix/ Assembling Matrix), jade/, kubejs/, mysticalagriculture/, productivebees/

@@ -1,8 +1,8 @@
 +++
 title = "StructurePlanner: default structure to block list via GTCEu structure helpers, abilities never placed"
 keys = [ "ability", "auto-build", "blockpatternhelper", "default_structure", "expandablepatternhelper", "getmincount", "getpredicatesfrompattern", "metamachineblock" ]
-updated = "2026-11-07 08:02:31"
-checked = "2026-11-07"
+updated = "2026-11-08 03:56:31"
+checked = "2026-11-08"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/StructurePlanner.java"
@@ -16,4 +16,4 @@ snippet = "private static AbstractStructureHelper createHelper(IBlockPattern pat
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/BuildOptions.java"
 snippet = "static boolean isAbility(BasePredicate predicate) {"
 +++
-Ability = predicate whose candidates are all machines registered to a PartAbility (hatches, buses, mufflers); other machines get placed, like the pattern matrix's pattern core. Only DEFAULT_STRUCTURE. 1.21: ability counts 0 via the helpers' getMinCount/getMaxCount overrides; roots map since predicates lack parents. 1.20: GTCEu #5337 removed those overrides, so each char's predicate is filtered via getPredicatesFromPattern; 1.21 needs that once #5337 is ported. Block choices: autobuild.options.
+Ability = predicate whose candidates are all machines registered to a PartAbility (hatches, buses, mufflers); other machines get placed, like the Assembling Matrix's pattern core. Only DEFAULT_STRUCTURE. 1.21: ability counts 0 via the helpers' getMinCount/getMaxCount overrides; roots map since predicates lack parents. 1.20: GTCEu #5337 removed those overrides, so each char's predicate is filtered via getPredicatesFromPattern; 1.21 needs that once #5337 is ported. Block choices: autobuild.options.

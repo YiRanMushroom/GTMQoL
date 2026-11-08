@@ -22,7 +22,7 @@ value = "canner potion representative recipes: a feature, outside gtceufix"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/CannerLogicMixin.java"
 snippet = "public class CannerLogicMixin {"
 +++
-Mixins in `core/mixins/gtceufix/` work around bugs in GTCEu, ModularUI, JEI or NeoForge interplay. Each class javadoc says what it fixes and ends with "Remove once ... fixes it": delete it when upstream does (check on every GTCEu / MUI bump, see build.gtceu-upgrade).
+Mixins in `core/mixins/gtceufix/` work around bugs in GTCEu, ModularUI, JEI or NeoForge interplay. Each class javadoc says what it fixes and ends with "Remove once ... fixes it": delete it when upstream does (check on every GTCEu / MUI bump, see skill.gtceu-upgrade).
 
 Branch membership (checked 2026-10-20):
 - On **both** branches: `AbstractWidgetMenuMixin`, `BaseSchemaRendererMixin`, `DummyChunkSourceMixin`, `EnergyContainerListMixin`, `FluidRecipeCapabilityMixin`, `GTEmiRecipeMixin` (1.20.1 keeps NBT instead of components), `MachineModelVariantOrderMixin`, `RecipeLogicMixin`, `RecipeRunnerMixin` (the 1.20.1 one merges GTCEu 1.20's `SizedIngredient`/`FluidIngredient`, the 1.21 one NeoForge's sized ingredients).

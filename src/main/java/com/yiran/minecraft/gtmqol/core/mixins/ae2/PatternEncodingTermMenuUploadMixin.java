@@ -1,7 +1,7 @@
 package com.yiran.minecraft.gtmqol.core.mixins.ae2;
 
-import com.yiran.minecraft.gtmqol.integration.ae2.matrix.MatrixUpload;
-import com.yiran.minecraft.gtmqol.integration.ae2.matrix.PatternMatrixMachine;
+import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixUpload;
+import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixMachine;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * A pattern encoded for a pattern matrix goes right to it. Before anything ExtendedAE Plus does on the same method, which
+ * A pattern encoded for a assembling matrix goes right to it. Before anything ExtendedAE Plus does on the same method, which
  * then finds the slot empty: a matrix on the network comes first.
  */
 @Mixin(value = PatternEncodingTermMenu.class, remap = false, priority = 500)
@@ -38,17 +38,17 @@ public abstract class PatternEncodingTermMenuUploadMixin {
         ItemStack pattern = encodedPatternSlot.getItem();
         if (node == null || pattern.isEmpty()) return;
         Player player = menu.getPlayer();
-        switch (MatrixUpload.upload(node.getGrid(), pattern)) {
+        switch (AssemblingMatrixUpload.upload(node.getGrid(), pattern)) {
             case NOT_TAKEN -> {}
             case TAKEN -> {
                 encodedPatternSlot.set(ItemStack.EMPTY);
-                player.displayClientMessage(Component.translatable(PatternMatrixMachine.KEY + "uploaded"), true);
+                player.displayClientMessage(Component.translatable(AssemblingMatrixMachine.KEY + "uploaded"), true);
             }
             case ALREADY_THERE -> {
                 encodedPatternSlot.set(ItemStack.EMPTY);
                 ItemStack blank = blankPatternSlot.safeInsert(AEItems.BLANK_PATTERN.stack());
                 if (!blank.isEmpty()) player.getInventory().placeItemBackInInventory(blank);
-                player.displayClientMessage(Component.translatable(PatternMatrixMachine.KEY + "already_there"), true);
+                player.displayClientMessage(Component.translatable(AssemblingMatrixMachine.KEY + "already_there"), true);
             }
         }
     }

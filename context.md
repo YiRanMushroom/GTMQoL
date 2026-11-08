@@ -17,7 +17,7 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
   before porting.
 - 1.21 only: MI gregification (MI has no Forge 1.20.1 build); KubeJS machines' late regeneration (modular and
   electric implosion copies of KubeJS recipes). Other differences: `build.branch-differences`.
-- GTCEu v8 snapshot, pinned on both (`gradle.properties`, bumps: `build.gtceu-upgrade`). Java only.
+- GTCEu v8 snapshot, pinned on both (`gradle.properties`, bumps: `skill.gtceu-upgrade`). Java only.
 
 ## Known bugs, not fixed
 

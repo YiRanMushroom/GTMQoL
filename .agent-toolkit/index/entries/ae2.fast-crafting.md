@@ -1,9 +1,9 @@
 +++
 title = "Our smart doubling and crafting planner: batches cut from the plan, topological plans, no EAP, unit tested"
 kind = "design"
-keys = [ "ae2", "crafting plan", "pattern matrix", "scaled pattern", "smart doubling", "topological planner" ]
-updated = "2026-11-07 09:08:02"
-checked = "2026-11-07"
+keys = [ "ae2", "assembling matrix", "crafting plan", "pattern batch", "smart doubling", "topological planner" ]
+updated = "2026-11-08 03:56:46"
+checked = "2026-11-08"
 
 [[items]]
 name = "solver"
@@ -20,8 +20,8 @@ snippet = "public final class BatchPlan"
 [[items]]
 name = "scaled-pattern"
 value = "A batch and its hidden item"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/batch/ScaledPattern.java"
-snippet = "public record ScaledPattern"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/batch/PatternBatch.java"
+snippet = "public record PatternBatch"
 
 [[items]]
 name = "calculation"
