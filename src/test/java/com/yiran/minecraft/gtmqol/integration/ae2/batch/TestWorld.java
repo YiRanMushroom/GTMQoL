@@ -127,7 +127,7 @@ final class TestWorld implements CraftingSolver.Source<String, String> {
         List<Piece> pieces = new ArrayList<>();
         plan.crafts().forEach((pattern, count) -> {
             if (inPieces) {
-                BatchPieces.split(count, Long.MAX_VALUE, parts)
+                BatchSizes.split(count, Long.MAX_VALUE, parts)
                         .forEach((size, times) -> {
                             for (long i = 0; i < times; i++) pieces.add(new Piece(pattern, size));
                         });

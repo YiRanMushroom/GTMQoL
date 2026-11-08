@@ -8,7 +8,7 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class BatchPiecesTest {
+class BatchSizesTest {
 
     private static final int PARTS = 16;
 
@@ -22,12 +22,12 @@ class BatchPiecesTest {
 
     @Test
     void oneCraftAtTheDefault() {
-        assertEquals(Map.of(1L, 1L), BatchPieces.split(1, Long.MAX_VALUE, 1));
+        assertEquals(Map.of(1L, 1L), BatchSizes.split(1, Long.MAX_VALUE, 1));
     }
 
     @Test
     void theDefaultIsDoublingAndTheRest() {
-        var pieces = BatchPieces.split(1000, Long.MAX_VALUE, 1);
+        var pieces = BatchSizes.split(1000, Long.MAX_VALUE, 1);
         assertEquals(1000, sum(pieces));
         for (long size = 1; size <= 256; size *= 2) assertEquals(1L, pieces.get(size), "piece of " + size);
         assertEquals(1L, pieces.get(489L));
@@ -42,7 +42,7 @@ class BatchPiecesTest {
     }
 
     private static void assertNoRepeats(long total) {
-        var pieces = BatchPieces.split(total, Long.MAX_VALUE, 1);
+        var pieces = BatchSizes.split(total, Long.MAX_VALUE, 1);
         assertEquals(total, sum(pieces), "total " + total);
         assertTrue(pieces.values().stream().allMatch(times -> times == 1), "repeats in " + total + ": " + pieces);
         assertTrue(pieces.size() <= 64, "too many pieces for " + total);
@@ -50,21 +50,21 @@ class BatchPiecesTest {
 
     @Test
     void wholeIsOnePieceWithoutALimit() {
-        assertEquals(Map.of(1000L, 1L), BatchPieces.whole(1000, Long.MAX_VALUE));
-        assertEquals(Map.of(1L, 1L), BatchPieces.whole(1, Long.MAX_VALUE));
-        assertEquals(Map.of(Long.MAX_VALUE, 1L), BatchPieces.whole(Long.MAX_VALUE, Long.MAX_VALUE));
+        assertEquals(Map.of(1000L, 1L), BatchSizes.whole(1000, Long.MAX_VALUE));
+        assertEquals(Map.of(1L, 1L), BatchSizes.whole(1, Long.MAX_VALUE));
+        assertEquals(Map.of(Long.MAX_VALUE, 1L), BatchSizes.whole(Long.MAX_VALUE, Long.MAX_VALUE));
     }
 
     @Test
     void wholeKeepsToTheLimit() {
-        assertEquals(Map.of(100L, 10L), BatchPieces.whole(1000, 100));
-        assertEquals(Map.of(100L, 10L, 7L, 1L), BatchPieces.whole(1007, 100));
-        assertEquals(Map.of(7L, 1L), BatchPieces.whole(7, 100));
+        assertEquals(Map.of(100L, 10L), BatchSizes.whole(1000, 100));
+        assertEquals(Map.of(100L, 10L, 7L, 1L), BatchSizes.whole(1007, 100));
+        assertEquals(Map.of(7L, 1L), BatchSizes.whole(7, 100));
         Random random = new Random(23);
         for (int i = 0; i < 100000; i++) {
             long total = 1 + (random.nextLong() >>> (1 + random.nextInt(62)));
             long limit = 2 + (random.nextLong() >>> (2 + random.nextInt(61)));
-            var pieces = BatchPieces.whole(total, limit);
+            var pieces = BatchSizes.whole(total, limit);
             assertEquals(total, sum(pieces));
             assertTrue(pieces.keySet().stream().allMatch(size -> size >= 1 && size <= limit));
         }
@@ -72,17 +72,17 @@ class BatchPiecesTest {
 
     @Test
     void oneCraft() {
-        assertEquals(Map.of(1L, 1L), BatchPieces.split(1, Long.MAX_VALUE, PARTS));
+        assertEquals(Map.of(1L, 1L), BatchSizes.split(1, Long.MAX_VALUE, PARTS));
     }
 
     @Test
     void fewCraftsGoOneByOne() {
-        assertEquals(Map.of(1L, 16L), BatchPieces.split(16, Long.MAX_VALUE, PARTS));
+        assertEquals(Map.of(1L, 16L), BatchSizes.split(16, Long.MAX_VALUE, PARTS));
     }
 
     @Test
     void thousandCrafts() {
-        var pieces = BatchPieces.split(1000, Long.MAX_VALUE, PARTS);
+        var pieces = BatchSizes.split(1000, Long.MAX_VALUE, PARTS);
         assertEquals(1000, sum(pieces));
         // small ones first for what arrives early
         for (long size = 1; size < 64; size *= 2) assertTrue(pieces.containsKey(size), "no piece of " + size);
@@ -92,7 +92,7 @@ class BatchPiecesTest {
 
     @Test
     void limitIsTheLargestPiece() {
-        var pieces = BatchPieces.split(1000, 10, PARTS);
+        var pieces = BatchSizes.split(1000, 10, PARTS);
         assertEquals(1000, sum(pieces));
         assertTrue(pieces.keySet().stream().allMatch(size -> size <= 10));
         assertEquals(10L, pieces.keySet().stream().max(Long::compare).orElseThrow());
@@ -100,7 +100,7 @@ class BatchPiecesTest {
 
     @Test
     void limitOfOneIsCraftByCraft() {
-        assertEquals(Map.of(1L, 500L), BatchPieces.split(500, 1, PARTS));
+        assertEquals(Map.of(1L, 500L), BatchSizes.split(500, 1, PARTS));
     }
 
     @Test
@@ -110,7 +110,7 @@ class BatchPiecesTest {
             long total = 1 + (random.nextLong() >>> (1 + random.nextInt(62)));
             long limit = random.nextBoolean() ? Long.MAX_VALUE : 1 + (random.nextLong() >>> (1 + random.nextInt(62)));
             int parts = 1 + random.nextInt(64);
-            var pieces = BatchPieces.split(total, limit, parts);
+            var pieces = BatchSizes.split(total, limit, parts);
             assertEquals(total, sum(pieces), "total " + total + " limit " + limit + " parts " + parts);
             assertTrue(pieces.keySet().stream().allMatch(size -> size >= 1 && size <= limit));
             assertTrue(pieces.values().stream().allMatch(times -> times >= 1));
@@ -120,6 +120,6 @@ class BatchPiecesTest {
 
     @Test
     void largestPossibleTotal() {
-        assertEquals(Long.MAX_VALUE, sum(BatchPieces.split(Long.MAX_VALUE, Long.MAX_VALUE, 1)));
+        assertEquals(Long.MAX_VALUE, sum(BatchSizes.split(Long.MAX_VALUE, Long.MAX_VALUE, 1)));
     }
 }

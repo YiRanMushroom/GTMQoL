@@ -1,7 +1,7 @@
 +++
-title = "Our smart doubling and crafting planner: batches cut from the plan, topological plans, no EAP, unit tested"
+title = "Our pattern batching and crafting planner: batches cut from the plan, topological plans, no EAP, unit tested"
 kind = "design"
-keys = [ "ae2", "assembling matrix", "crafting plan", "pattern batch", "smart doubling", "topological planner" ]
+keys = [ "ae2", "assembling matrix", "crafting plan", "pattern batch", "pattern batching", "topological planner" ]
 updated = "2026-11-08 03:57:57"
 checked = "2026-11-08"
 

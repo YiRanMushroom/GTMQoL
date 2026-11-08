@@ -16,7 +16,7 @@ public final class GTMQoLClient {
     public static void init() {
         // Must be registered before machine models are generated or loaded, they reference the type by id.
         DynamicRenderManager.register(GTMQoL.id("dtfr_ring"), DTFRRingRender.TYPE);
-        DynamicRenderManager.register(GTMQoL.id("fishing_pond_water"), FishingPondWaterRender.TYPE);
+        DynamicRenderManager.register(GTMQoL.id("industrial_fishing_pond_water"), IndustrialFishingPondWaterRender.TYPE);
         DynamicRenderManager.register(GTMQoL.id("casing_part"), CasingPartRender.TYPE);
         DynamicRenderManager.register(GTMQoL.id("energy_cube_sides"), EnergyCubeSidesRender.TYPE);
         if (GTCEu.Mods.isAE2Loaded()) {

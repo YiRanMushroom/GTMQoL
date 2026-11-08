@@ -34,11 +34,11 @@ public final class ChannelMachines {
 
     private static final ResourceLocation WIRELESS_OVERLAY = GTMQoL.id("block/overlay/machine/overlay_wireless");
 
-    public static MachineDefinition COMPUTATION_TRANSMITTER;
-    public static MachineDefinition COMPUTATION_RECEIVER;
+    public static MachineDefinition COMPUTATION_TRANSMISSION_HATCH;
+    public static MachineDefinition COMPUTATION_RECEPTION_HATCH;
     public static MachineDefinition COMPUTATION_ROUTER;
-    public static MachineDefinition DATA_TRANSMITTER;
-    public static MachineDefinition DATA_RECEIVER;
+    public static MachineDefinition OPTICAL_DATA_TRANSMISSION_HATCH;
+    public static MachineDefinition OPTICAL_DATA_RECEPTION_HATCH;
 
     private static boolean commonAdded;
 
@@ -46,14 +46,14 @@ public final class ChannelMachines {
 
     public static void initComputation() {
         common();
-        COMPUTATION_TRANSMITTER = hatch("wireless_computation_transmitter_hatch",
+        COMPUTATION_TRANSMISSION_HATCH = hatch("wireless_computation_transmission_hatch",
                 "Wireless Computation Transmission Hatch", ZPM,
                 info -> new WirelessComputationHatchPartMachine(info, true),
-                PartAbility.COMPUTATION_DATA_TRANSMISSION, "gtmqol.channel.tooltip.computation_transmitter");
-        COMPUTATION_RECEIVER = hatch("wireless_computation_receiver_hatch",
+                PartAbility.COMPUTATION_DATA_TRANSMISSION, "gtmqol.channel.tooltip.computation_transmission");
+        COMPUTATION_RECEPTION_HATCH = hatch("wireless_computation_reception_hatch",
                 "Wireless Computation Reception Hatch", ZPM,
                 info -> new WirelessComputationHatchPartMachine(info, false),
-                PartAbility.COMPUTATION_DATA_RECEPTION, "gtmqol.channel.tooltip.computation_receiver");
+                PartAbility.COMPUTATION_DATA_RECEPTION, "gtmqol.channel.tooltip.computation_reception");
         COMPUTATION_ROUTER = GTMQoLAddon
                 .machine("wireless_computation_router", WirelessComputationRouterMachine::new)
                 .tier(ZPM)
@@ -65,9 +65,9 @@ public final class ChannelMachines {
                 .tooltips(Component.translatable("gtmqol.channel.tooltip.router"),
                         Component.translatable(CHANNEL_TOOLTIP_KEY))
                 .register();
-        addLang("gtmqol.channel.tooltip.computation_transmitter",
+        addLang("gtmqol.channel.tooltip.computation_transmission",
                 "Sends the CWU/t of its HPCA or network switch into its computation channel");
-        addLang("gtmqol.channel.tooltip.computation_receiver",
+        addLang("gtmqol.channel.tooltip.computation_reception",
                 "Gives its research station or network switch the CWU/t of its computation channel");
         addLang("gtmqol.channel.tooltip.router",
                 "Lets its computation channel have any number of transmitters and receivers (one of each without a router). Needs no energy and doesn't need to be loaded");
@@ -75,15 +75,15 @@ public final class ChannelMachines {
 
     public static void initOptical() {
         common();
-        DATA_TRANSMITTER = hatch("wireless_data_transmitter_hatch", "Wireless Optical Data Transmission Hatch", LuV,
+        OPTICAL_DATA_TRANSMISSION_HATCH = hatch("wireless_optical_data_transmission_hatch", "Wireless Optical Data Transmission Hatch", LuV,
                 info -> new WirelessDataHatchPartMachine(info, true),
-                PartAbility.OPTICAL_DATA_TRANSMISSION, "gtmqol.channel.tooltip.data_transmitter");
-        DATA_RECEIVER = hatch("wireless_data_receiver_hatch", "Wireless Optical Data Reception Hatch", LuV,
+                PartAbility.OPTICAL_DATA_TRANSMISSION, "gtmqol.channel.tooltip.optical_data_transmission");
+        OPTICAL_DATA_RECEPTION_HATCH = hatch("wireless_optical_data_reception_hatch", "Wireless Optical Data Reception Hatch", LuV,
                 info -> new WirelessDataHatchPartMachine(info, false),
-                PartAbility.OPTICAL_DATA_RECEPTION, "gtmqol.channel.tooltip.data_receiver");
-        addLang("gtmqol.channel.tooltip.data_transmitter",
+                PartAbility.OPTICAL_DATA_RECEPTION, "gtmqol.channel.tooltip.optical_data_reception");
+        addLang("gtmqol.channel.tooltip.optical_data_transmission",
                 "Shares the research of its data bank with its optical data channel");
-        addLang("gtmqol.channel.tooltip.data_receiver",
+        addLang("gtmqol.channel.tooltip.optical_data_reception",
                 "Gives its assembly line the research of every data bank on its optical data channel");
     }
 

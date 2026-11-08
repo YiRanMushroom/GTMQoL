@@ -55,7 +55,7 @@ core/                mixin plugins (GTMQoL, RecipeDB, AE2)
   mixins/            feature mixins; ae2/ mekanism/ recipedb/ gtceufix/ (upstream bug workarounds)
 data/recipe/ data/tag/   MiscRecipes, EarlyGameRecipes, WirelessRecipes; CircuitTags, MaterialAliasTags, WireTags
 gregification/       foreign recipe types as GT machines; create/ mekanism/ productivebees/ client/
-integration/         KubeJSDataGenFix; ae2/ (+stacklike/, batch/ smart doubling and crafting plans, matrix/ Assembling Matrix), jade/, kubejs/, mysticalagriculture/, productivebees/
+integration/         KubeJSDataGenFix; ae2/ (+stacklike/, batch/ pattern batching and crafting plans, matrix/ Assembling Matrix), jade/, kubejs/, mysticalagriculture/, productivebees/
 ```
 
 Datagen output is committed in `src/generated/resources` (on the main resources source set); static textures in `src/main/resources/assets/gtmqol/`.

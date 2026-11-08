@@ -18,12 +18,17 @@ import java.util.Map;
 public final class RenamedIds {
 
     /** Old path to new path, both in this mod's namespace. */
-    private static final Map<String, String> RENAMED = Map.of(
-            "pattern_matrix", "assembling_matrix",
-            "matrix_me_interface", "assembling_matrix_interface",
-            "matrix_pattern_core", "assembling_matrix_pattern_core",
-            "matrix_processing_core", "assembling_matrix_processing_core",
-            "scaled_crafting_pattern", "pattern_batch");
+    private static final Map<String, String> RENAMED = Map.ofEntries(
+            Map.entry("pattern_matrix", "assembling_matrix"),
+            Map.entry("matrix_me_interface", "assembling_matrix_interface"),
+            Map.entry("matrix_pattern_core", "assembling_matrix_pattern_core"),
+            Map.entry("matrix_processing_core", "assembling_matrix_processing_core"),
+            Map.entry("scaled_crafting_pattern", "pattern_batch"),
+            Map.entry("fishing_pond", "industrial_fishing_pond"),
+            Map.entry("wireless_computation_transmitter_hatch", "wireless_computation_transmission_hatch"),
+            Map.entry("wireless_computation_receiver_hatch", "wireless_computation_reception_hatch"),
+            Map.entry("wireless_data_transmitter_hatch", "wireless_optical_data_transmission_hatch"),
+            Map.entry("wireless_data_receiver_hatch", "wireless_optical_data_reception_hatch"));
 
     private RenamedIds() {}
 

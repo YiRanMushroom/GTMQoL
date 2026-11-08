@@ -30,7 +30,7 @@ public class AE2MixinPlugin extends GTMQoLMixinConfigPlugin {
         if (mixinClassName.startsWith(STOCKING_MIXIN_PREFIX)) return true;
         // bridged capabilities (e.g. chemicals) in the pattern buffer; no effect without a bridge
         if (mixinClassName.startsWith(PATTERN_BUFFER_MIXIN_PREFIX)) return true;
-        // smart doubling and crafting plans
+        // pattern batching and crafting plans
         if (mixinClassName.startsWith(CRAFTING_MIXIN_PREFIX)) return true;
         // uploads to the assembling matrix
         if (mixinClassName.equals(UPLOAD_MIXIN)) return true;

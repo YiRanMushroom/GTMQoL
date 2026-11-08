@@ -28,4 +28,4 @@ value = "Unformed, the pattern terminal shows GTCEu's buffer icon for ours (getT
 name = "known-jvm-crash"
 value = "Seen once, ignored for now: a JVM access violation (C2 JIT, in InventoryChangeTrigger) while picking up a buffer."
 +++
-require = 5 on the @ModifyConstant: recheck the count of inlined 27s after a GTCEu bump. The mixin lives in gtmqol.mixins.json (not the AE2 config). Shared inventory/tank stay at GTCEu's 9 slots. Recipe (magical assembler: 4 pattern buffers, 16 MV circuits, circuit 24) matches the old v7 QoLMachines.kt. AE2Machines.init also registers the lang for smart doubling, output marks and shared hatches toggles. Config ae2.overclockedPatternBuffer.
+require = 5 on the @ModifyConstant: recheck the count of inlined 27s after a GTCEu bump. The mixin lives in gtmqol.mixins.json (not the AE2 config). Shared inventory/tank stay at GTCEu's 9 slots. Recipe (magical assembler: 4 pattern buffers, 16 MV circuits, circuit 24) matches the old v7 QoLMachines.kt. AE2Machines.init also registers the lang for pattern batching, output marks and shared hatches toggles. Config ae2.overclockedPatternBuffer.

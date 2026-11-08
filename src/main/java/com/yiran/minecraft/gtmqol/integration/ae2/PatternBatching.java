@@ -24,16 +24,16 @@ import java.util.function.IntSupplier;
 import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.popup;
 
 /**
- * Smart doubling on GTCEu's pattern buffer, used by {@code MEPatternBufferSmartDoublingMixin}. The work is in
+ * Pattern batching on GTCEu's pattern buffer, used by {@code MEPatternBufferPatternBatchingMixin}. The work is in
  * {@link com.yiran.minecraft.gtmqol.integration.ae2.batch.BatchPlan}. Lang keys are registered in {@link AE2Machines}.
  */
-public final class SmartDoubling {
+public final class PatternBatching {
 
-    public static final String TITLE_KEY = "gtmqol.gui.pattern_buffer.smart_doubling";
-    public static final String TOGGLE_KEY = "gtmqol.gui.pattern_buffer.smart_doubling.toggle";
-    public static final String LIMIT_KEY = "gtmqol.gui.pattern_buffer.smart_doubling.limit";
+    public static final String TITLE_KEY = "gtmqol.gui.pattern_buffer.pattern_batching";
+    public static final String TOGGLE_KEY = "gtmqol.gui.pattern_buffer.pattern_batching.toggle";
+    public static final String LIMIT_KEY = "gtmqol.gui.pattern_buffer.pattern_batching.limit";
 
-    private SmartDoubling() {}
+    private PatternBatching() {}
 
     /**
      * The crafts of a pattern in one batch.
@@ -51,12 +51,12 @@ public final class SmartDoubling {
         return crafts;
     }
 
-    /** Adds a button to the left configurators that opens the smart doubling settings. */
+    /** Adds a button to the left configurators that opens the pattern batching settings. */
     public static MachineUIPanelBuilder addConfigurator(MachineUIPanelBuilder builder, PanelSyncManager syncManager,
                                                         BooleanSupplier enabled, BooleanConsumer setEnabled,
                                                         IntSupplier limit, IntConsumer setLimit) {
-        IPanelHandler panelHandler = syncManager.syncedPanel("gtmqol_smart_doubling", true,
-                (syncManager1, handler) -> popup("gtmqol_smart_doubling_panel", 140, 70)
+        IPanelHandler panelHandler = syncManager.syncedPanel("gtmqol_pattern_batching", true,
+                (syncManager1, handler) -> popup("gtmqol_pattern_batching_panel", 140, 70)
                         .child(Flow.col()
                                 .coverChildren()
                                 .child(Text.lang(TITLE_KEY).asWidget())

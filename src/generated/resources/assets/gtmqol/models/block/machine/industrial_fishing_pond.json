@@ -2,11 +2,11 @@
   "parent": "minecraft:block/block",
   "dynamic_renders": [
     {
-      "type": "gtmqol:fishing_pond_water"
+      "type": "gtmqol:industrial_fishing_pond_water"
     }
   ],
   "loader": "gtceu:machine",
-  "machine": "gtmqol:fishing_pond",
+  "machine": "gtmqol:industrial_fishing_pond",
   "texture_overrides": {
     "all": "gtceu:block/casings/gcym/watertight_casing"
   },

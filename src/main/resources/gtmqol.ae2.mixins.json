@@ -11,7 +11,7 @@
     "CraftingServiceBatchMixin",
     "CraftingSimulationStateBatchMixin",
     "CraftingTaskProgressAccessor",
-    "MEPatternBufferSmartDoublingMixin",
+    "MEPatternBufferPatternBatchingMixin",
     "MEPatternBufferOutputMarksMixin",
     "MEPatternBufferWorkerPatternAccessor",
     "FluidRecipeCapabilitySharedHatchesMixin",

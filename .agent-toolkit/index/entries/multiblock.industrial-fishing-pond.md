@@ -5,15 +5,15 @@ updated = "2026-10-19 20:12:37"
 checked = "2026-11-07"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/FishingPondMachine.java"
-snippet = "public class FishingPondMachine extends CyclicMultiblockMachine {"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/IndustrialFishingPondMachine.java"
+snippet = "public class IndustrialFishingPondMachine extends CyclicMultiblockMachine {"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/FishingPondMachine.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/IndustrialFishingPondMachine.java"
 snippet = "protected void finishCycle() {"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/GTMQoLMultiblocks.java"
-snippet = "private static void initFishingPond() {"
+snippet = "private static void initIndustrialFishingPond() {"
 +++
 Structure: Large Chemical Bath widened, 5x5x4 air cavity matching vanilla's open-water check, open top; 'X' needs >=100 casings, an output bus and an INPUT_ENERGY hatch. Needs startOffset (multiblock.start-offset). Treasure mode passes an unadded FishingHook (openWater defaults true); normal mode omits THIS_ENTITY so the treasure pool fails. 1.20.1: Lure = getFishingSpeedBonus(tool) * 5 s, ToolActions.FISHING_ROD_CAST, getLootData().

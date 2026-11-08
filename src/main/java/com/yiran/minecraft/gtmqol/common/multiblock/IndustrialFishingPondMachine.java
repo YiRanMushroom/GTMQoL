@@ -68,7 +68,7 @@ import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.popup;
  * the average 350 tick wait it cuts). Without treasure mode the hook isn't in open water (fish and junk);
  * treasure mode is open water (fish, junk and treasure) for {@link #TREASURE_COST_MULTIPLIER} times the cost.</p>
  */
-public class FishingPondMachine extends CyclicMultiblockMachine {
+public class IndustrialFishingPondMachine extends CyclicMultiblockMachine {
 
     public static final int CYCLE_TICKS = 5 * 20;
     public static final long EU_PER_FISH = 1000;
@@ -83,7 +83,7 @@ public class FishingPondMachine extends CyclicMultiblockMachine {
      */
     private static final float MAX_LURE_TICKS = 300;
 
-    public static final String KEY = "gtmqol.fishing_pond.";
+    public static final String KEY = "gtmqol.industrial_fishing_pond.";
 
     @SaveField
     public final CustomItemStackHandler rod;
@@ -94,7 +94,7 @@ public class FishingPondMachine extends CyclicMultiblockMachine {
     @SaveField
     private long energyBuffer;
 
-    public FishingPondMachine(BlockEntityCreationInfo info) {
+    public IndustrialFishingPondMachine(BlockEntityCreationInfo info) {
         super(info);
         this.rod = new CustomItemStackHandler(1);
         rod.setFilter(stack -> stack.canPerformAction(ToolActions.FISHING_ROD_CAST));
@@ -237,7 +237,7 @@ public class FishingPondMachine extends CyclicMultiblockMachine {
         syncManager.syncValue("rolls", rollsValue);
         syncManager.syncValue("treasure", treasureValue);
 
-        var config = syncManager.syncedPanel("fishing_pond_config", false,
+        var config = syncManager.syncedPanel("industrial_fishing_pond_config", false,
                 (manager, handler) -> configPanel(rollsValue));
 
         mainWidget.child(Flow.col()
@@ -283,7 +283,7 @@ public class FishingPondMachine extends CyclicMultiblockMachine {
     }
 
     private static ModularPanel<?> configPanel(IntSyncValue rolls) {
-        return popup("fishing_pond_config", 160, 54)
+        return popup("industrial_fishing_pond_config", 160, 54)
                 .child(Flow.column()
                         .padding(6)
                         .childPadding(4)

@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.machine.trait.multiblock.MultiblockFluidRendererTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.yiran.minecraft.gtmqol.common.multiblock.FishingPondMachine;
+import com.yiran.minecraft.gtmqol.common.multiblock.IndustrialFishingPondMachine;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.LightTexture;
@@ -24,10 +24,10 @@ import com.mojang.serialization.Codec;
  * Always-on water surface over the fishing pond's cavity. GTCEu's {@code FluidAreaRender} does the same for the
  * Large Chemical Bath, but needs a recipe-logic machine.
  */
-public class FishingPondWaterRender extends DynamicRender<FishingPondMachine, FishingPondWaterRender> {
+public class IndustrialFishingPondWaterRender extends DynamicRender<IndustrialFishingPondMachine, IndustrialFishingPondWaterRender> {
 
-    public static final Codec<FishingPondWaterRender> CODEC = Codec.unit(FishingPondWaterRender::new);
-    public static final DynamicRenderType<FishingPondMachine, FishingPondWaterRender> TYPE =
+    public static final Codec<IndustrialFishingPondWaterRender> CODEC = Codec.unit(IndustrialFishingPondWaterRender::new);
+    public static final DynamicRenderType<IndustrialFishingPondMachine, IndustrialFishingPondWaterRender> TYPE =
             new DynamicRenderType<>(CODEC);
 
     private final FluidBlockRenderer fluidRenderer = FluidBlockRenderer.Builder.create()
@@ -36,7 +36,7 @@ public class FishingPondWaterRender extends DynamicRender<FishingPondMachine, Fi
             .getRenderer();
 
     @Override
-    public DynamicRenderType<FishingPondMachine, FishingPondWaterRender> getType() {
+    public DynamicRenderType<IndustrialFishingPondMachine, IndustrialFishingPondWaterRender> getType() {
         return TYPE;
     }
 
@@ -46,12 +46,12 @@ public class FishingPondWaterRender extends DynamicRender<FishingPondMachine, Fi
     }
 
     @Override
-    public boolean shouldRender(FishingPondMachine machine, Vec3 cameraPos) {
+    public boolean shouldRender(IndustrialFishingPondMachine machine, Vec3 cameraPos) {
         return machine.isFormed() && super.shouldRender(machine, cameraPos);
     }
 
     @Override
-    public void render(FishingPondMachine machine, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
+    public void render(IndustrialFishingPondMachine machine, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
         if (!ConfigHolder.INSTANCE.client.renderer.renderFluids) return;
         var trait = machine.getTrait(MultiblockFluidRendererTrait.class);
@@ -63,12 +63,12 @@ public class FishingPondWaterRender extends DynamicRender<FishingPondMachine, Fi
     }
 
     @Override
-    public boolean shouldRenderOffScreen(FishingPondMachine machine) {
+    public boolean shouldRenderOffScreen(IndustrialFishingPondMachine machine) {
         return true;
     }
 
     @Override
-    public AABB getRenderBoundingBox(FishingPondMachine machine) {
+    public AABB getRenderBoundingBox(IndustrialFishingPondMachine machine) {
         return new AABB(machine.getBlockPos()).inflate(6);
     }
 }

@@ -17,10 +17,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Smart doubling: makes a crafting plan's crafts of a pattern into batches, when everything that offers the pattern can
+ * Pattern batching: makes a crafting plan's crafts of a pattern into batches, when everything that offers the pattern can
  * take them. Every CPU works from the plan, so all of them do this without knowing about it. A CPU pushes a batch once,
  * which is what saves its co-processors the work. Crafts go as one when they have all they need from the start and there
- * is power for them, else in {@linkplain BatchPieces#split pieces} that leave with what has arrived.
+ * is power for them, else in {@linkplain BatchSizes#split pieces} that leave with what has arrived.
  */
 public final class BatchPlan {
 
@@ -33,7 +33,7 @@ public final class BatchPlan {
      */
     public static void cut(Map<IPatternDetails, Long> crafts, Set<AEKey> emitted, IGridNode node) {
         var service = (CraftingService) node.getGrid().getCraftingService();
-        int parts = GTMQoLConfig.get().ae2.batchParts;
+        int parts = GTMQoLConfig.get().ae2.patternBatchParts;
         IEnergyService energy = node.getGrid().getEnergyService();
         Set<AEKey> arriving = arriving(crafts, emitted);
         Map<IPatternDetails, Long> cut = new HashMap<>();
@@ -46,7 +46,7 @@ public final class BatchPlan {
             }
             long total = entry.getValue();
             boolean whole = !waitsFor(pattern, arriving) && hasPowerFor(pattern, total, energy);
-            (whole ? BatchPieces.whole(total, limit) : BatchPieces.split(total, limit, parts)).forEach((size, times) -> {
+            (whole ? BatchSizes.whole(total, limit) : BatchSizes.split(total, limit, parts)).forEach((size, times) -> {
                 cut.merge(PatternBatch.piece(pattern, size), times, Long::sum);
             });
         }
@@ -87,7 +87,7 @@ public final class BatchPlan {
         long limit = Long.MAX_VALUE;
         boolean any = false;
         for (var provider : service.getProviders(pattern)) {
-            if (!(provider instanceof BatchCraftingProvider batches)) return 0;
+            if (!(provider instanceof PatternBatchProvider batches)) return 0;
             limit = Math.min(limit, batches.batchLimit(pattern));
             any = true;
         }

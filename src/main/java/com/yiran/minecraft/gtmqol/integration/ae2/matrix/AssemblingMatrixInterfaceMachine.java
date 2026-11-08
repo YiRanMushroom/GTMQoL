@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.BatchCraftingProvider;
+import com.yiran.minecraft.gtmqol.integration.ae2.batch.PatternBatchProvider;
 import com.yiran.minecraft.gtmqol.integration.ae2.batch.PatternBatch;
 
 import net.minecraft.ChatFormatting;
@@ -57,7 +57,7 @@ import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.popup;
  * names the matrix in pattern terminals and switches the controller's auto upload.
  */
 public class AssemblingMatrixInterfaceMachine extends MultiblockPartMachine
-                                    implements IGridConnectedMachine, ICraftingProvider, BatchCraftingProvider,
+                                    implements IGridConnectedMachine, ICraftingProvider, PatternBatchProvider,
                                     PatternContainer, IMuiMachine {
 
     private static final String KEY = AssemblingMatrixMachine.KEY + "interface.";

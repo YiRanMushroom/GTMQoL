@@ -159,17 +159,17 @@ public final class WirelessRecipes {
     public static void addComputationRecipes(Consumer<FinishedRecipe> provider) {
         var assembler = MagicalAssembler.RECIPE_TYPE;
 
-        assembler.recipeBuilder(GTMQoL.id("wireless_computation_transmitter_hatch"))
+        assembler.recipeBuilder(GTMQoL.id("wireless_computation_transmission_hatch"))
                 .inputItems(GTResearchMachines.COMPUTATION_HATCH_TRANSMITTER)
                 .circuitMeta(5)
-                .outputItems(ChannelMachines.COMPUTATION_TRANSMITTER)
+                .outputItems(ChannelMachines.COMPUTATION_TRANSMISSION_HATCH)
                 .duration(200)
                 .save(provider);
 
-        assembler.recipeBuilder(GTMQoL.id("wireless_computation_receiver_hatch"))
+        assembler.recipeBuilder(GTMQoL.id("wireless_computation_reception_hatch"))
                 .inputItems(GTResearchMachines.COMPUTATION_HATCH_RECEIVER)
                 .circuitMeta(5)
-                .outputItems(ChannelMachines.COMPUTATION_RECEIVER)
+                .outputItems(ChannelMachines.COMPUTATION_RECEPTION_HATCH)
                 .duration(200)
                 .save(provider);
 
@@ -185,17 +185,17 @@ public final class WirelessRecipes {
     public static void addOpticalRecipes(Consumer<FinishedRecipe> provider) {
         var assembler = MagicalAssembler.RECIPE_TYPE;
 
-        assembler.recipeBuilder(GTMQoL.id("wireless_data_transmitter_hatch"))
+        assembler.recipeBuilder(GTMQoL.id("wireless_optical_data_transmission_hatch"))
                 .inputItems(GTResearchMachines.DATA_HATCH_TRANSMITTER)
                 .circuitMeta(5)
-                .outputItems(ChannelMachines.DATA_TRANSMITTER)
+                .outputItems(ChannelMachines.OPTICAL_DATA_TRANSMISSION_HATCH)
                 .duration(200)
                 .save(provider);
 
-        assembler.recipeBuilder(GTMQoL.id("wireless_data_receiver_hatch"))
+        assembler.recipeBuilder(GTMQoL.id("wireless_optical_data_reception_hatch"))
                 .inputItems(GTResearchMachines.DATA_HATCH_RECEIVER)
                 .circuitMeta(5)
-                .outputItems(ChannelMachines.DATA_RECEIVER)
+                .outputItems(ChannelMachines.OPTICAL_DATA_RECEPTION_HATCH)
                 .duration(200)
                 .save(provider);
     }

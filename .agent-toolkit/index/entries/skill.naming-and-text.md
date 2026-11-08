@@ -1,14 +1,14 @@
 +++
 title = "Naming and player text: class, ID, lang, config and item names, tooltips, UI labels; use when naming or writing them"
 keys = [ "id", "lang", "naming", "tooltip", "user-facing text", "wording" ]
-updated = "2026-11-08 04:40:39"
+updated = "2026-11-08 05:10:00"
 checked = "2026-11-08"
 
 [[items]]
 name = "renamed-ids"
 value = "Old block/item IDs mapped to new ones"
 path = "src/main/java/com/yiran/minecraft/gtmqol/RenamedIds.java"
-snippet = "private static final Map<String, String> RENAMED = Map.of("
+snippet = "private static final Map<String, String> RENAMED = Map.ofEntries("
 
 [[items]]
 name = "tooltip-desc-keys"
