@@ -27,7 +27,6 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
-import com.yiran.minecraft.gtmqol.client.AssemblingMatrixPartRender;
 import com.yiran.minecraft.gtmqol.common.crafter.PatternCrafter;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessFEMachines;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;

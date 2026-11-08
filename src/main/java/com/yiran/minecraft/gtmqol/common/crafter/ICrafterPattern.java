@@ -36,10 +36,12 @@ public interface ICrafterPattern {
 
     /** The pattern on this item, or null when it holds none that can run. */
     static @Nullable ICrafterPattern decode(ItemStack stack, Level level) {
-        if (stack.is(PatternCrafter.PATTERN.get())) {
-            CraftingPattern pattern = CraftingPattern.read(stack, level.registryAccess());
-            return pattern == null ? null : pattern.plan(level);
-        }
-        return GTCEu.Mods.isAE2Loaded() ? AECrafterPattern.decode(stack, level) : null;
+        return DecodedPatterns.get(stack, level, item -> {
+            if (item.is(PatternCrafter.PATTERN.get())) {
+                CraftingPattern pattern = CraftingPattern.read(item, level.registryAccess());
+                return pattern == null ? null : pattern.plan(level);
+            }
+            return GTCEu.Mods.isAE2Loaded() ? AECrafterPattern.decode(item, level) : null;
+        });
     }
 }

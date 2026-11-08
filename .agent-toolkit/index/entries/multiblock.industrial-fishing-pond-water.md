@@ -5,7 +5,7 @@ updated = "2026-10-19 20:08:34"
 checked = "2026-11-07"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/client/IndustrialFishingPondWaterRender.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/IndustrialFishingPondWaterRender.java"
 snippet = "public class IndustrialFishingPondWaterRender extends DynamicRender<IndustrialFishingPondMachine, IndustrialFishingPondWaterRender> {"
 
 [[links]]

@@ -43,8 +43,8 @@ public final class CraftingPatternDetails implements IPatternDetails {
         @Override
         public @Nullable IPatternDetails decodePattern(@Nullable AEItemKey what, Level level) {
             if (what == null || !what.is(PatternCrafter.PATTERN.get())) return null;
-            CraftingPattern pattern = CraftingPattern.read(what.toStack(), level.registryAccess());
-            CraftingPattern.Plan plan = pattern == null ? null : pattern.plan(level);
+            CraftingPattern.Plan plan = ICrafterPattern.decode(what.toStack(), level) instanceof CraftingPattern.Plan found ?
+                    found : null;
             return plan == null ? null : new CraftingPatternDetails(what, plan);
         }
     }
@@ -129,7 +129,12 @@ public final class CraftingPatternDetails implements IPatternDetails {
 
         @Override
         public boolean isValid(AEKey input, Level level) {
-            return input instanceof AEItemKey item && ingredient.test(item.toStack());
+            if (!(input instanceof AEItemKey item)) return false;
+            // AE2 asks for every template on every extraction: most are one of these, no stack to make
+            for (GenericStack choice : possible) {
+                if (choice.what().equals(item)) return true;
+            }
+            return ingredient.test(item.toStack());
         }
 
         @Override

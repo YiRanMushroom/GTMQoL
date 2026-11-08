@@ -133,7 +133,7 @@ public abstract class CyclicMultiblockMachine extends MultiblockControllerMachin
                     setState(State.OUTPUTTING);
                     tryOutput();
                 }
-                markAsChanged();
+                // no markAsChanged(): progress isn't synced to clients, and GTCEu marks the chunk for saving every tick
             }
             case OUTPUTTING -> {
                 if (++progress >= RETRY_TICKS) {

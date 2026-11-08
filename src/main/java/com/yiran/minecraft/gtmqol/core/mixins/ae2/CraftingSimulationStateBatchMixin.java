@@ -1,6 +1,6 @@
 package com.yiran.minecraft.gtmqol.core.mixins.ae2;
 
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.BatchPlan;
+import com.yiran.minecraft.gtmqol.integration.ae2.crafting.BatchPlan;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.KeyCounter;

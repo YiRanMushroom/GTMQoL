@@ -5,11 +5,11 @@ updated = "2026-10-27 15:11:07"
 checked = "2026-11-07"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/common/part/LegacyPartRecipes.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/data/recipe/LegacyPartRecipes.java"
 snippet = "rotor.value().materialAmount(M * 4)"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/common/part/LegacyPartRecipes.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/data/recipe/LegacyPartRecipes.java"
 snippet = "private static void addMoldRecipes(RecipeOutput provider) {"
 
 [[links]]

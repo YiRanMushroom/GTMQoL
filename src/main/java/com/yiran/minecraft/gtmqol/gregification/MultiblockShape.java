@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
 import com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.yiran.minecraft.gtmqol.api.generation.GTMQoLMultiblockBuilder;
-import com.yiran.minecraft.gtmqol.client.CasingPartRender;
 import com.yiran.minecraft.gtmqol.gregification.create.SequencedAssemblyMachine;
 
 import net.minecraft.core.registries.BuiltInRegistries;

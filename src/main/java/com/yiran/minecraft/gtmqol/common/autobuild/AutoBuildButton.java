@@ -3,6 +3,8 @@ package com.yiran.minecraft.gtmqol.common.autobuild;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.yiran.minecraft.gtmqol.api.machine.MachineFeatures;
+import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -22,6 +24,13 @@ import brachy.modularui.widgets.ButtonWidget;
 public final class AutoBuildButton {
 
     private AutoBuildButton() {}
+
+    /** On every multiblock controller's panel, while {@code misc.autoBuild} is on. */
+    public static void init() {
+        MachineFeatures.onPanel(MultiblockControllerMachine.class, (controller, panel, syncManager) -> {
+            if (GTMQoLConfig.get().misc.autoBuild) attach(controller, panel, syncManager);
+        });
+    }
 
     public static void attach(MultiblockControllerMachine controller, MachineUIPanel panel,
                               PanelSyncManager syncManager) {

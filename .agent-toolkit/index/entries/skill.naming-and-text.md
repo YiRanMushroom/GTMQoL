@@ -7,7 +7,7 @@ checked = "2026-11-08"
 [[items]]
 name = "tooltip-desc-keys"
 value = "Example of .desc keys for tooltips passed to .tooltips()"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AEDualParts.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/parts/AEDualParts.java"
 snippet = "private static final String UNIVERSAL_INPUT_TOOLTIP = \"gtmqol.machine.me_universal_input.desc\";"
 
 [[items]]

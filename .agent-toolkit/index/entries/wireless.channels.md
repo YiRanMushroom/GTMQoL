@@ -32,7 +32,7 @@ snippet = "public final class ChannelRegistry {"
 [[items]]
 name = "computation"
 value = "computation flow like gtceu's network switch (seen, saturation)"
-path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/computation/ChannelComputation.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/channel/computation/ChannelComputation.java"
 snippet = "public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {"
 
 [[items]]
@@ -41,7 +41,7 @@ value = "channel list UI, form, New/Unbind"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/channel/ChannelUI.java"
 snippet = "public static final String DELETE_TOOLTIP_KEY = PREFIX + \"form.delete.tooltip\";"
 +++
-Code: common/wireless/channel/ (ChannelSavedData, ChannelRegistry, ChannelBindingTrait, ChannelUI with ChannelListWidget, ChannelMachines), common/wireless/computation/, common/wireless/optical/.
+Code: common/wireless/channel/ (ChannelSavedData, ChannelRegistry, ChannelBindingTrait, ChannelUI with ChannelListWidget, ChannelMachines), common/wireless/channel/computation/, common/wireless/channel/optical/.
 
 User decisions (2026-10-29):
 - Channels are live links, not pools, so they don't use WirelessPool/NetworkId. One ChannelKind per kind (computation, optical); energy and steam may move to channels later, which is why the channel layer is kind-agnostic.

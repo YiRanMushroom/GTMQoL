@@ -9,7 +9,7 @@ path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/MEPatternBuffer
 snippet = "public abstract class MEPatternBufferPatternBatchingMixin"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/PatternBatching.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/patternbuffer/PatternBatching.java"
 snippet = "public final class PatternBatching"
 +++
 Worked out in ae2.fast-crafting; this is the buffer's side. The buffer is a PatternBatchProvider: processing patterns, limit from the popup (0 = none, else most of any input per batch, in items or buckets). pushPattern unwraps PatternBatch because slots match by equals (user decision, enlarged buffers too); @ModifyArg (require = 2) on both InternalSlot.pushPattern calls pushes the batch's inputs. Saved settings keep their old NBT keys (gtmqol$smartDoubling, gtmqol$smartDoublingLimit via SaveField nbtKey), so they survived leaving EAP and the rename from Smart Doubling. UI: "×2" popup.

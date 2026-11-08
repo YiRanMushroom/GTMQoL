@@ -2,11 +2,11 @@
 title = "Survival auto-build button on every multiblock controller (misc.autoBuild): click, shift-click job, right-click settings"
 keys = [ "buildrequest", "synchandler", "terminal button" ]
 updated = "2026-10-27 15:32:00"
-checked = "2026-11-07"
+checked = "2026-11-08"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/MachineUIPanelBuilderMixin.java"
-snippet = "AutoBuildButton.attach(controller, cir.getReturnValue(), syncManager);"
+snippet = "MachineFeatures.panelBuilt(machine, cir.getReturnValue(), syncManager);"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/autobuild/AutoBuildButton.java"

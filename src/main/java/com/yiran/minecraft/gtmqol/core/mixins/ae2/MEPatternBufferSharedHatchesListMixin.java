@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
-import com.yiran.minecraft.gtmqol.integration.ae2.SharedHatches;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.SharedHatches;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;

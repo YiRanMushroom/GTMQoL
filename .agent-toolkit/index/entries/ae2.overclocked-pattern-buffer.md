@@ -5,7 +5,7 @@ updated = "2026-10-19 20:08:33"
 checked = "2026-11-07"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AbstractMEPatternBufferPartMachine.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/patternbuffer/AbstractMEPatternBufferPartMachine.java"
 snippet = "public abstract class AbstractMEPatternBufferPartMachine extends MEPatternBufferPartMachine {"
 
 [[links]]

@@ -10,7 +10,7 @@ Both branches pin GTCEu to a timestamped snapshot (`gtceu_version` in gradle.pro
 Steps:
 1. Pick the newest build from maven.gtceu.com `.../8.0.0-SNAPSHOT/maven-metadata.xml` (1.21 artifact `gtceu-1.21.1`).
 2. Check upstream `gradle/forge.versions.toml` / `libs.versions.toml` (registrate, configuration, AE2, EMI, JEI, NeoForge, `mui`). Even when `mui = 3.3.1-SNAPSHOT` is unchanged, the MUI snapshot itself moves: bump `modularui_version` to the MUI build current when the GTCEu snapshot was published, or MUI API mismatches show up as `NoSuchMethodError` at runtime.
-3. Re-unpack the new GTCEu sources jar (Gradle cache) into `.gtceu-src-1.21` / the 1.20 worktree's `.gtceu-src`, so those folders match the pinned version, diff against the old one, and read every mixin target against the new code: injection points, `require =` counts (e.g. `GTMachinesMixin` went 2 -> 1 when upstream #5528 removed the LV-HV macerator output limits; a wrong count crashes at load), lambda synthetic names (`GTMachinesMixin`, `GTMultiMachinesMixin`, `GTMachineUtilsMixin` use regex selectors), and `<init>*` injections when a constructor starts delegating with `this(...)` (they would run twice: 1.20 build 327 did this to `SimpleSteamMachine`, #5597, so `SimpleSteamMachineMixin` needs the full constructor once 1.21 gets it).
+3. Re-unpack the new GTCEu sources jar (Gradle cache) into `.gtceu-src-1.21` / the 1.20 worktree's `.gtceu-src`, so those folders match the pinned version, diff against the old one, and read every mixin target against the new code: injection points, `require =` counts (grep `require =`, e.g. `GTMachineUtilsMixin` 2, `MEPatternBufferPartMachineMixin` 5; a wrong count crashes at load), lambda synthetic names (`GTMultiMachinesMixin`, `GTMachineUtilsMixin` use regex selectors), and `<init>*` injections when a constructor starts delegating with `this(...)` (they would run twice, as 1.20 build 327 did to `SimpleSteamMachine`, #5597). Features on existing machines go through MachineFeatures (api.machine-features), which runs after the whole constructor and isn't affected.
 4. For `gtceufix/` mixins check whether upstream fixed the bug (delete then, see gtceufix.overview). ModularUI/JEI targets (`AbstractWidgetMenuMixin`, `BaseSchemaRendererMixin`, `jei/JeiRecipeSlotMixin`, `ItemDataComponentMapIngredientMixin`) need a check against the new MUI snapshot too.
 5. `ManualCompressionMixin`: grep GTCEu for `disableManualCompression` and compare the target list (see steam.manual-compression).
 6. Check API changes we rely on (example from 2026-10: `ChemicalHelper.getItem` returns null instead of AIR, `MultiPredicate.getParent` removed by the predicate rework #5342/#5407; 1.21 #5414 made `GTMaterials.X` / `TagPrefix.x` registry entries: add `.value()` where a plain object is needed, and nothing may resolve them during mod construction (`Registry not present for DeferredHolder`, only seen at runData: defer to `PostMaterialEvent` or a supplier); 1.20 #5337 reworked the structure helpers, see autobuild.planner).
@@ -21,15 +21,13 @@ Steps:
 
 - pinned-versions: gtceu_version / modularui_version pinned snapshots (step 1-2); MUI must match the build GTCEu was compiled against.
 - min-version: gtceu_min_version is the mods.toml lower bound, separate from the pinned coordinate.
-- require-count: Step 3 example: GTMachinesMixin's require count on the addOutputLimit wrap (2 -> 1 after upstream #5528).
-- steam-init: Step 3: <init>* injection runs once only while both SimpleSteamMachine constructors call super(...).
+- require-count: Step 3 example: a require count that crashes at load when GTCEu changes its calls (the large boiler's two setExactLimit calls).
 - recipedb-hooks: Step 7: RecipeDB.fromHolder replaced by GroupedIngredientList (recipedb.v8-handler-groups).
 - buffer-at: Step 7: AT on the pattern buffer's workers / Worker.slot.
 
 Code:
 - gradle.properties
-- src/main/java/com/yiran/minecraft/gtmqol/core/mixins/GTMachinesMixin.java
-- src/main/java/com/yiran/minecraft/gtmqol/core/mixins/SimpleSteamMachineMixin.java
+- src/main/java/com/yiran/minecraft/gtmqol/core/mixins/GTMachineUtilsMixin.java
 - src/main/java/com/yiran/minecraft/gtmqol/core/mixins/recipedb/RecipeDBMixin.java
 - src/main/resources/META-INF/accesstransformer.cfg
 - src/main/resources/META-INF/neoforge.mods.toml

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
-import com.yiran.minecraft.gtmqol.integration.ae2.PatternBufferReturn;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.PatternBufferReturn;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.jetbrains.annotations.Nullable;

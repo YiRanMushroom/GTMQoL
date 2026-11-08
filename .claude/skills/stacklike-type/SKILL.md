@@ -26,5 +26,5 @@ Code:
 - src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/GenericStackLikeNotifiableHandler.java
 - src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/GenericStackLikeRecipeCapability.java
 - src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/GenericStackLikeType.java
+- src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/ae2/AEStackLikeBridges.java
 - src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/mekanism/ChemicalStackLike.java
-- src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/stacklike/AEStackLikeBridges.java

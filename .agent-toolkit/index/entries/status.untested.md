@@ -2,13 +2,13 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-08 04:46:21"
+updated = "2026-11-08 19:24:36"
 checked = "2026-11-08"
 
 [[items]]
 name = "rotor-amount"
 value = "GTCEu build 130 (#5414): rotor material amount (M*4) now set on PostMaterialEvent: a rotor's material info should show 4 units (recipes.legacy-parts)."
-path = "src/main/java/com/yiran/minecraft/gtmqol/common/part/LegacyPartRecipes.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/data/recipe/LegacyPartRecipes.java"
 snippet = "// Untested: now set on PostMaterialEvent"
 
 [[items]]
@@ -94,5 +94,47 @@ name = "matrix-controller-broken"
 value = "Break the Assembling Matrix controller mid-job: undone crafts' inputs and finished items go to the network, what it can't take is gone"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixWork.java"
 snippet = "// Untested: breaking the controller mid-job sends undone crafts' inputs and finished items to the network"
+
+[[items]]
+name = "machine-features"
+value = "Steam single blocks keep circuit slot and tanks (also after reload), steam input bus circuit slot, auto-build button on controllers, now through MachineFeatures"
+path = "src/main/java/com/yiran/minecraft/gtmqol/api/machine/MachineFeatures.java"
+snippet = "// Untested: steam single blocks still get the circuit slot and extra tanks and keep them after a reload, the steam"
+
+[[items]]
+name = "potion-logic-runners"
+value = "Brewery still brews splash/lingering potion fluids; EMI shows those and the canner potion recipes"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/potion/PotionMixBrewingLogic.java"
+snippet = "// Untested: the brewery still brews splash and lingering potion fluids, and EMI still shows those recipes and the"
+
+[[items]]
+name = "recipe-type-layouts"
+value = "Recipe viewer still shows chemical, block and ghost item slots and the potion any-mod hint"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/ui/RecipeTypeLayouts.java"
+snippet = "// Untested: recipe viewer pages still show chemical, block and ghost item slots, and potion inputs still flash the"
+
+[[items]]
+name = "decoded-patterns"
+value = "Pattern decode cache: crafters, matrix, tooltips as before; /reload with changed recipe updates patterns"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/DecodedPatterns.java"
+snippet = "// Untested: Pattern Crafters, the Assembling Matrix and pattern tooltips work as before, and after a /reload that"
+
+[[items]]
+name = "shift-drag"
+value = "Shift + drag moves stacks in and out of GTCEu machine UIs; held-stack spreading unchanged"
+path = "src/main/java/com/yiran/minecraft/gtmqol/client/ShiftDragQuickMove.java"
+snippet = "// Untested: Shift + drag over the inventory moves stacks into a GTCEu machine, and over machine slots back out;"
+
+[[items]]
+name = "patterns-window-speed"
+value = "Patterns window fast with thousands of patterns, icons and tooltips unchanged"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixPatternGridWidget.java"
+snippet = "// Untested: the patterns window opens and updates quickly with thousands of patterns, icons and tooltips as before"
+
+[[items]]
+name = "matrix-fe-flush"
+value = "Matrix speed/FE as before; short FE on shared-network hatches slows it instead of unpaid crafts; refused products arrive later"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixWork.java"
+snippet = "    // Untested: crafting speed and FE use as before; with too little FE on hatches sharing one wireless network the"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

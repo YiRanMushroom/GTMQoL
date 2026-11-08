@@ -1,7 +1,7 @@
 package com.yiran.minecraft.gtmqol.core.mixins.ae2;
 
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.PartialPush;
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.PatternBatch;
+import com.yiran.minecraft.gtmqol.integration.ae2.crafting.PartialPush;
+import com.yiran.minecraft.gtmqol.integration.ae2.crafting.PatternBatch;
 
 import net.minecraft.world.level.Level;
 
@@ -40,7 +40,8 @@ import java.util.Set;
  * Batches on AE2's own CPU. The batches of a pattern pushed together cost one of the CPU's operations, not one each: the
  * pieces are one job cut up so that they can leave as soon as their inputs are there. And a batch that can't go whole,
  * for inputs still being made or too little power, pushes what {@link PartialPush} says can go, the rest becoming a
- * piece of its own. Only on AE2's CPU; others push the plan's pieces as they are and spend more operations.
+ * piece of its own. Only on AE2's CPU; others push the plan's pieces as they are and spend more operations. A pattern
+ * that can't get the inputs of a single craft is skipped for the rest of the pass: neither can its bigger pieces.
  */
 // Untested: a chain's next step starts with part of a batch as the step before delivers; a batch needing more power
 // than the network stores still goes, in parts; the rest of a part shows in the CPU's list and survives a restart
@@ -64,8 +65,11 @@ public abstract class CraftingCpuLogicBatchMixin {
                                                        @Local(argsOnly = true) IEnergyService energy,
                                                        @Share("tasks") LocalRef<Map<IPatternDetails, Object>> tasks,
                                                        @Share("part") LocalRef<IPatternDetails> part,
-                                                       @Share("partInputs") LocalRef<KeyCounter[]> partInputs) {
+                                                       @Share("partInputs") LocalRef<KeyCounter[]> partInputs,
+                                                       @Share("short") LocalRef<Set<IPatternDetails>> noCraft) {
+        if (noCraft.get() != null && noCraft.get().contains(PatternBatch.unwrap(details))) return null;
         KeyCounter[] inputs = extract.call(details, inventory, level, outputs, containerItems);
+        if (inputs == null && !(details instanceof PatternBatch)) gtmqol$noCraft(noCraft, details);
         if (!(details instanceof PatternBatch scaled) || !gtmqol$isLastOfItsSize(tasks.get(), scaled)) return inputs;
         long crafts;
         if (inputs != null) {
@@ -76,7 +80,12 @@ public abstract class CraftingCpuLogicBatchMixin {
             if (crafts == 0) return inputs;
             CraftingCpuHelper.reinjectPatternInputs(inventory, inputs);
         } else {
-            crafts = Math.min(scaled.multiplier() - 1, gtmqol$craftsByInputs(scaled, inventory, level));
+            long fit = gtmqol$craftsByInputs(scaled, inventory, level);
+            if (fit == 0) {
+                gtmqol$noCraft(noCraft, scaled.original());
+                return null;
+            }
+            crafts = Math.min(scaled.multiplier() - 1, fit);
         }
         while (crafts > 0) {
             outputs.reset();
@@ -114,16 +123,26 @@ public abstract class CraftingCpuLogicBatchMixin {
     }
 
     @Unique
+    private static void gtmqol$noCraft(LocalRef<Set<IPatternDetails>> noCraft, IPatternDetails pattern) {
+        if (noCraft.get() == null) noCraft.set(new HashSet<>());
+        noCraft.get().add(pattern);
+    }
+
+    /** 0 as soon as one input can't get a single craft, without looking at the others. */
+    @Unique
     private static long gtmqol$craftsByInputs(PatternBatch scaled, ICraftingInventory inventory, Level level) {
         List<PartialPush.Slot<AEKey>> slots = new ArrayList<>();
         Map<AEKey, Long> stock = new HashMap<>();
         for (IPatternDetails.IInput input : scaled.original().getInputs()) {
             List<PartialPush.Template<AEKey>> templates = new ArrayList<>();
+            long uses = 0;
             for (InputTemplate template : CraftingCpuHelper.getValidItemTemplates(inventory, input, level)) {
                 templates.add(new PartialPush.Template<>(template.key(), template.amount()));
-                stock.computeIfAbsent(template.key(),
+                long there = stock.computeIfAbsent(template.key(),
                         key -> inventory.extract(key, Long.MAX_VALUE, Actionable.SIMULATE));
+                uses += Math.min(there / template.amount(), input.getMultiplier());
             }
+            if (uses < input.getMultiplier()) return 0;
             slots.add(new PartialPush.Slot<>(templates, input.getMultiplier()));
         }
         return PartialPush.byInputs(scaled.multiplier(), slots, stock);

@@ -3,10 +3,10 @@ package com.yiran.minecraft.gtmqol.core.mixins.ae2;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
-import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridge;
-import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.AEStackLikeBridges;
-import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.PatternBufferStackLike;
-import com.yiran.minecraft.gtmqol.integration.ae2.stacklike.PatternBufferStackLikeSlot;
+import com.yiran.minecraft.gtmqol.common.stacklike.ae2.AEStackLikeBridge;
+import com.yiran.minecraft.gtmqol.common.stacklike.ae2.AEStackLikeBridges;
+import com.yiran.minecraft.gtmqol.common.stacklike.ae2.PatternBufferStackLike;
+import com.yiran.minecraft.gtmqol.common.stacklike.ae2.PatternBufferStackLikeSlot;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

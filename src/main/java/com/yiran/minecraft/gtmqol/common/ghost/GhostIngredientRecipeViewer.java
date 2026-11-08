@@ -31,9 +31,11 @@ public final class GhostIngredientRecipeViewer {
     private GhostIngredientRecipeViewer() {}
 
     /** Called for every recipe type UI layout; a recipe type's own {@code UI(...)} can still override these. */
-    public static void addDefaults(GTRecipeTypeUILayout.Builder builder) {
-        builder.setRecipeViewerLayoutCapabilityLayoutBuilder(CAP, LAYOUT);
-        builder.setCapabilityContentBuilder(CAP, CONTENT);
+    /** Where the recipe type set nothing of its own for this capability. */
+    public static void addDefaults(GTRecipeTypeUILayout layout) {
+        var info = layout.capabilityInfo(CAP);
+        if (info.recipeViewerLayoutBuilder == null) info.recipeViewerLayoutBuilder = LAYOUT;
+        if (info.capabilityWidgetBuilder == null) info.capabilityWidgetBuilder = CONTENT;
     }
 
     private static final RecipeViewerCapabilityLayoutBuilder LAYOUT = (layout, widget, io) -> {

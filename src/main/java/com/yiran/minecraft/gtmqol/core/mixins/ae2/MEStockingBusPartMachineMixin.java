@@ -2,7 +2,7 @@ package com.yiran.minecraft.gtmqol.core.mixins.ae2;
 
 import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingBusPartMachine;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.yiran.minecraft.gtmqol.integration.ae2.StockingParts;
+import com.yiran.minecraft.gtmqol.integration.ae2.parts.StockingParts;
 
 import appeng.api.stacks.GenericStack;
 import org.jetbrains.annotations.Nullable;

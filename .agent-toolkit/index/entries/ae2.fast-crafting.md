@@ -8,20 +8,20 @@ checked = "2026-11-08"
 [[items]]
 name = "solver"
 value = "Plain Java planner"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/batch/CraftingSolver.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/crafting/CraftingSolver.java"
 snippet = "public final class CraftingSolver"
 
 [[items]]
 name = "batches"
 value = "Cuts a plan's crafts"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/batch/BatchPlan.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/crafting/BatchPlan.java"
 snippet = "public final class BatchPlan"
 
 [[items]]
 name = "scaled-pattern"
 value = "A batch and its hidden item"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/batch/PatternBatch.java"
-snippet = "public record PatternBatch"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/crafting/PatternBatch.java"
+snippet = "public final class PatternBatch implements IPatternDetails {"
 
 [[items]]
 name = "calculation"
@@ -38,7 +38,7 @@ snippet = "public abstract class CraftingCpuLogicBatchMixin"
 [[items]]
 name = "partial-count"
 value = "how many crafts can go now, unit tested"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/batch/PartialPush.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/crafting/PartialPush.java"
 snippet = "public final class PartialPush"
 +++
 User's decisions, 2026-11-06/07. Both act before any CPU sees a plan, so every CPU gets them. Mixins on AE2's flow: plan (buildCraftingPlan), getProviders, the calculation's start, optional CPU budget; none on patterns.

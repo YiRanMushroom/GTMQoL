@@ -10,8 +10,8 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.PatternBatchProvider;
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.PatternBatch;
+import com.yiran.minecraft.gtmqol.integration.ae2.crafting.PatternBatchProvider;
+import com.yiran.minecraft.gtmqol.integration.ae2.crafting.PatternBatch;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -90,6 +90,8 @@ public class AssemblingMatrixInterfaceMachine extends MultiblockPartMachine
     }
 
     void updatePatterns(List<IPatternDetails> patterns) {
+        // AE2 rebuilds its pattern index on every update
+        if (patterns.equals(this.patterns)) return;
         this.patterns = patterns;
         this.offered = new HashSet<>(patterns);
         ICraftingProvider.requestUpdate(getMainNode());

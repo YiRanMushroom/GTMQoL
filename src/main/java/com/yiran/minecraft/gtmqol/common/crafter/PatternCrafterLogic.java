@@ -51,8 +51,9 @@ enum PatternCrafterLogic implements GTRecipeType.ICustomRecipeLogic {
             if (input.consumed()) builder.inputItems(input.ingredient(), input.count());
             else builder.notConsumable(input.ingredient());
         }
-        for (FluidStack fluid : pattern.fluidInputs()) builder.inputFluids(fluid);
-        for (ItemStack item : pattern.outputs()) builder.outputItems(item);
+        // copies: the pattern comes from DecodedPatterns, shared by everyone
+        for (FluidStack fluid : pattern.fluidInputs()) builder.inputFluids(fluid.copy());
+        for (ItemStack item : pattern.outputs()) builder.outputItems(item.copy());
         if (pattern.itemInputs().stream().anyMatch(ICrafterPattern.ItemInput::changes)) {
             builder.addData(PatternWear.PATTERN_KEY, stack.copyWithCount(1).save(level.registryAccess()));
         }

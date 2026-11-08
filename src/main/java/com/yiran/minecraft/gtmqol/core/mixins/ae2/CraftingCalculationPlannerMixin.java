@@ -1,8 +1,8 @@
 package com.yiran.minecraft.gtmqol.core.mixins.ae2;
 
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.AECraftingPlanner;
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.CraftingSolver;
+import com.yiran.minecraft.gtmqol.integration.ae2.crafting.AECraftingPlanner;
+import com.yiran.minecraft.gtmqol.integration.ae2.crafting.CraftingSolver;
 
 import appeng.api.networking.crafting.ICraftingSimulationRequester;
 import appeng.api.stacks.AEKey;

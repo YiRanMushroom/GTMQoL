@@ -31,7 +31,7 @@ snippet = "public abstract class GenericStackLikeNotifiableHandler<S, I> extends
 [[items]]
 name = "ae-bridge"
 value = "step 4: AE bridge registration"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/stacklike/AEStackLikeBridges.java"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/ae2/AEStackLikeBridges.java"
 snippet = "public static void register(AEStackLikeBridge<?, ?> bridge) {"
 
 [[items]]

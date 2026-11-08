@@ -8,6 +8,6 @@ path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/GhostIngredientRec
 snippet = "public final class GhostIngredientRecipeViewer {"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/GTRecipeTypeUILayoutBuilderMixin.java"
-snippet = "GhostIngredientRecipeViewer.addDefaults((GTRecipeTypeUILayout.Builder) (Object) this);"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/ui/RecipeTypeLayouts.java"
+snippet = "public final class RecipeTypeLayouts {"
 +++

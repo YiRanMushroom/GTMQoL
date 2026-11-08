@@ -2,50 +2,50 @@
 title = "Debugging AE crafting, batches and the Assembling Matrix: a job's path, saved state, symptoms; use when a job misbehaves"
 kind = "howto"
 keys = [ "assembling matrix bug", "batch debugging", "crafting job stuck", "lost items", "waitingfor" ]
-updated = "2026-11-08 05:04:08"
+updated = "2026-11-08 19:34:14"
 checked = "2026-11-08"
 
 [[items]]
 name = "plan"
 value = "Step 1: our planner before AE2's tree"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/CraftingCalculationPlannerMixin.java"
-sha256 = "425338a2fc729372afc155d8b7bb2fc8276f6bc1c2e949d0e89c1ab86cf41697"
+sha256 = "dd308c0fad22f1534e3a7693f3078bebb5ac612e1342ab7fddbc1a9f97940d74"
 
 [[items]]
 name = "cut"
 value = "Step 2: batches cut from the plan"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/CraftingSimulationStateBatchMixin.java"
-sha256 = "c3485f30b45b62368cf9b876cf3e8a270623ab67ef9f16353bc5314748ba0938"
+sha256 = "e7bc7f84a6d0eeb1350484a2fd9faab6a79b0b09a67860985d45a6f534f0e7d6"
 
 [[items]]
 name = "providers"
 value = "Step 4: getProviders unwraps batches"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/CraftingServiceBatchMixin.java"
-sha256 = "be481f08623705791fb79700affd3940f9bb3f40a6f1aa43e9c278cd2a6845f1"
+sha256 = "59b50a115936484a733250553a603659d377199b2946e51ef732cc0116f0d213"
 
 [[items]]
 name = "push"
 value = "Step 5: one operation per pattern, partial push"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/CraftingCpuLogicBatchMixin.java"
-sha256 = "c71ef2ab34d4aa565fc226554e06b6d8615b3f0ebea22c1baa5efb344355f8c2"
+sha256 = "b477af8cbe692c2bd4fc67ab2c270c39a50223e2f0f71fd9060b2db07c698f40"
 
 [[items]]
 name = "buffer"
 value = "Step 6: pattern buffer side"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/MEPatternBufferPatternBatchingMixin.java"
-sha256 = "bd2057793549bddbfaeb5422a28ea8b9399425a43a3bb171ff54a5741a0d4a95"
+sha256 = "54c277f8d7508aecf1d337b64943b655c1254e344141154b7db3267f40f67a95"
 
 [[items]]
 name = "interface"
 value = "Step 6: matrix side, pushPattern"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixInterfaceMachine.java"
-sha256 = "d6b351d13c027a8e99620ac2cda52389c227e56c88cbcff3b1c31f8486f2af08"
+sha256 = "d559ee3890fc9810240eb7a029521cd7c1554f0f79bf3fdade02810c69191d64"
 
 [[items]]
 name = "work"
 value = "Step 7 and saved matrix state: tick, cancel, giveBackAll"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixWork.java"
-sha256 = "61b05c8f54001e6527672d2c21591b98297fbbc9223a8a539f83b5f8602d366d"
+sha256 = "ed6cdde03cae5c0f4e5707e4fe6306514fb32d5cb6d11cdc1aff9b1569f8501c"
 
 [[items]]
 name = "upload"
@@ -56,17 +56,17 @@ sha256 = "2c6c6ff679eed25729c328f01b12d8218227a8a06f0fbf82d6bcad5fa2837514"
 [[items]]
 name = "batch"
 value = "Saved batches: hidden Pattern Batch item and decoder"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/batch/PatternBatch.java"
-sha256 = "b93a965e579b7fb562468e7b3c6da7b4de7454e358cd67f7ce108c133716e75b"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/crafting/PatternBatch.java"
+sha256 = "417e9f8905691b3fa0006aaeea9d675b6b26fc6b0e5a6296dbd2ea96a16f9d18"
 +++
-For when something goes wrong in game. Why things are as they are: ae2.fast-crafting (planner, batches, push time), ae2.pattern-matrix, ae2.pattern-batching. Class names below are in integration/ae2/batch, integration/ae2/matrix and core/mixins/ae2.
+For when something goes wrong in game. Why things are as they are: ae2.fast-crafting (planner, batches, push time), ae2.pattern-matrix, ae2.pattern-batching. Class names below are in integration/ae2/crafting, integration/ae2/matrix and core/mixins/ae2.
 
 ## A job's path
 1. **Plan** (CraftingCalculationPlannerMixin, HEAD of runCraftAttempt, config ae2.fastCraftingPlans): CraftingSolver over AECraftingPlanner. PLANNED: AE2's buildCraftingPlan builds the plan from our simulated inventory. MISSING (also after MAX_WALKS = 300 walks): the preview shows what is missing; a real order gets no plan. REFUSED: AE2's own tree runs as if we weren't there (give-backs, loops that matter, substitutes when short).
 2. **Cut** (CraftingSimulationStateBatchMixin, HEAD of buildCraftingPlan -> BatchPlan.cut): a pattern whose providers are all PatternBatchProvider becomes PatternBatch batches: whole when its inputs come from stock and AE power is there, else BatchSizes.split (1, 2, 4.. and the rest; ae2.patternBatchParts). Limit = smallest batchLimit of its providers.
 3. **Submit** (AE2): the CPU takes all stock the plan uses into itself (tryExtractInitialItems); no other job can take it after.
 4. **Providers** (CraftingServiceBatchMixin): getProviders unwraps a PatternBatch, so the original's providers are asked.
-5. **Push** (AE2's CraftingCpuLogic.executeCrafting + CraftingCpuLogicBatchMixin, AE2's CPU only): a pattern's batches in one pass cost one operation; a last piece of its size that can't go whole pushes the part inputs and power allow (PartialPush), the rest goes back as its own task after the loop. AE2 adds the pushed pattern's outputs to waitingFor; for a part they are the part's.
+5. **Push** (AE2's CraftingCpuLogic.executeCrafting + CraftingCpuLogicBatchMixin, AE2's CPU only): a pattern's batches in one pass cost one operation; a last piece of its size that can't go whole pushes the part inputs and power allow (PartialPush), the rest goes back as its own task after the loop. A pattern that can't get one craft's inputs is skipped for the rest of that pass (its bigger pieces can't either). AE2 adds the pushed pattern's outputs to waitingFor; for a part they are the part's.
 6. **Provider side**: pattern buffer (MEPatternBufferPatternBatchingMixin, unwraps, pushes the batch's inputs) or AssemblingMatrixInterfaceMachine.pushPattern (unwraps, AssemblingMatrixMachine.push: catalysts first, then AssemblingMatrixWork.add).
 7. **Matrix work, every tick** (AssemblingMatrixWork.tick): first giving-back runs (all or nothing), then each queued pattern once, up to capacity, paid in FE (assemblingMatrixFEPerCraft); products into `outputs`, flushed to the network through the interface each tick. The CPU takes what it waits for first (AE2 gives a CPU's insert top priority).
 
@@ -93,4 +93,4 @@ For when something goes wrong in game. Why things are as they are: ae2.fast-craf
 - **EAP installed**: its CraftingCpuLogicPatternPowerMixin also hooks executeCrafting (only its own pattern batches).
 
 ## Checking without the game
-Unit tests (gradlew test, integration/ae2/batch): TestWorld plays plans out as a CPU would; PartialPush against trying every count. Mixins: a temporary Class.forName(name, false, loader) in PatternBatch.init, then runData, then remove it.
+Unit tests (gradlew test, integration/ae2/crafting): TestWorld plays plans out as a CPU would; PartialPush against trying every count. Mixins: a temporary Class.forName(name, false, loader) in PatternBatch.init, then runData, then remove it.

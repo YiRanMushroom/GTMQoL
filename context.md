@@ -41,6 +41,8 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 - Auto-build: substructures (`autobuild.*`). 1.21: once upstream ports GTCEu #5337, switch the settings window to
   GTCEu's multiblock preview and the planner to filtered predicates, as on 1.20 (`build.branch-differences`).
 - Stack-like: external chemical hatches.
+- Code review of 2026-11-08: done, see `plan.code-review-2026-11` for what is left;
+  in-game checks in `status.untested`.
 - FE output hatch (`wireless.fe`): no multiblock uses its ability yet, the user has later machines in mind.
 
 ## Open questions for the user

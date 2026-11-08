@@ -441,7 +441,8 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
             return;
         }
         Level level = context.level();
-        var plan = level == null ? null : pattern.plan(level);
+        // drawn every frame while hovered, so from the cache
+        var plan = level != null && ICrafterPattern.decode(stack, level) instanceof CraftingPattern.Plan found ? found : null;
         if (plan == null) {
             tooltip.add(Component.translatable(BROKEN_KEY).withStyle(ChatFormatting.RED));
             return;

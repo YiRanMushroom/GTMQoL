@@ -26,10 +26,12 @@ public final class StackLikeRecipeViewer {
     private StackLikeRecipeViewer() {}
 
     /** Called for every recipe type UI layout; a recipe type's own {@code UI(...)} can still override these. */
-    public static void addDefaults(GTRecipeTypeUILayout.Builder builder) {
+    /** Where the recipe type set nothing of its own for these capabilities. */
+    public static void addDefaults(GTRecipeTypeUILayout layout) {
         for (var cap : GenericStackLikeRecipeCapability.ALL) {
-            builder.setRecipeViewerLayoutCapabilityLayoutBuilder(cap, layout(cap));
-            builder.setCapabilityContentBuilder(cap, content(cap));
+            var info = layout.capabilityInfo(cap);
+            if (info.recipeViewerLayoutBuilder == null) info.recipeViewerLayoutBuilder = layout(cap);
+            if (info.capabilityWidgetBuilder == null) info.capabilityWidgetBuilder = content(cap);
         }
     }
 

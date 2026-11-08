@@ -45,7 +45,7 @@ Two long-lived branches: `1.21` (NeoForge 21.1, the default branch) and `1.20` (
 Registration
 - 1.21: GTCEu registers everything as deferred Registrate entries. Machine/cover/recipe type fields are `MachineEntry` / `Holder<CoverDefinition>` / `GTRecipeTypeEntry`. All content is declared in the `GTMQoL` constructor, each recipe type before the machines using it (the magical assembler's first). `IGTAddon` has no `initializeAddon`. Builders are in `api.registry.registrate.builder`; `register()` returns `MachineEntry`, properties via `properties()`. `RuntimeGeneration` keeps builder and entry.
 - 1.20.1: machines must register in `GTMQoL.onRegisterMachines` (GTCEu's machine `RegisterEvent`); `IGTAddon.initializeAddon()` runs after the registry is frozen.
-- 1.21 modular machines: `MachineBuilderMixin` only queues the entry plus the builder's recipe type suppliers (`MachineBuilderAccessor`); the multiblocks are declared in the `gtceu:machine` `RegisterEvent` at NORMAL priority, before our registrate's LOW listener and after recipe types exist (config is readable then).
+- 1.21 modular machines: `MachineBuilderMixin` only queues the entry plus the builder's recipe type suppliers (`MachineBuilderMixin`); the multiblocks are declared in the `gtceu:machine` `RegisterEvent` at NORMAL priority, before our registrate's LOW listener and after recipe types exist (config is readable then).
 - 1.21 `GTMQoLAddon` calls `defaultCreativeTab((ResourceKey) null)` (see build.creative-tab).
 
 Data / APIs
