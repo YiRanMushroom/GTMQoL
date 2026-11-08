@@ -1,7 +1,7 @@
 +++
 title = "Source layout: package tree of com.yiran.minecraft.gtmqol (1.20.1) and where resources live"
 keys = [ "packages", "src/generated/resources", "where is" ]
-updated = "2026-11-08 19:34:56"
+updated = "2026-11-08 19:54:20"
 checked = "2026-11-08"
 
 [[links]]
@@ -50,7 +50,7 @@ common/
   overclock/ (+ AbsoluteParallel) potion/ recipedb/ (non-mixin side) stacklike/ (mekanism/, ae2/)
   probable/          probable certainty / improbability devices
   steam/             advanced steam multis, steam parallel hatch, SteamTweaks
-  test/              IntegrationTests
+  test/              IntegrationTests; MixinTargetCheck (data runs only)
   ui/                PopupWidgets (shared popup look, counter rows), RecipeTypeLayouts
   wireless/          networks, binding, covers, WirelessRecipes; steam/ and energy/ (+ ae2/ energy cell); channel/ (computation/, optical/)
 config/              GTMQoLConfig (toma), EarlyConfig (gtmqol-early.properties)

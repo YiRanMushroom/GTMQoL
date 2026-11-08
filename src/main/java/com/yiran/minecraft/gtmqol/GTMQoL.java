@@ -34,6 +34,7 @@ import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.common.feinput.FEInputProvider;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.test.IntegrationTests;
+import com.yiran.minecraft.gtmqol.common.test.MixinTargetCheck;
 import com.yiran.minecraft.gtmqol.common.crafter.PatternCrafter;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
@@ -63,6 +64,7 @@ import com.yiran.minecraft.gtmqol.gregification.productivebees.ProductiveBeesGre
 import com.yiran.minecraft.gtmqol.integration.productivebees.LegacyCapabilityAliases;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -138,6 +140,9 @@ public final class GTMQoL {
         modBus.addGenericListener(CoverDefinition.class, this::onRegisterCovers);
         modBus.addGenericListener(MachineDefinition.class, this::onRegisterMachines);
         modBus.addListener(this::onRegisterDynamicResources);
+        if (FMLLoader.getLaunchHandler().isData()) {
+            modBus.addListener((GatherDataEvent event) -> MixinTargetCheck.run());
+        }
 
         if (FMLEnvironment.dist.isClient()) {
             GTMQoLClient.init();

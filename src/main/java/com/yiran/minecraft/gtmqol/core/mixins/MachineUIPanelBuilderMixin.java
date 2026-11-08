@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 
@@ -28,7 +29,7 @@ public class MachineUIPanelBuilderMixin {
     private MetaMachine machine;
 
     @Inject(method = "build", at = @At("RETURN"))
-    private void gtmqol$addPanelFeatures(PanelSyncManager syncManager, UISettings settings,
+    private void gtmqol$addPanelFeatures(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                          CallbackInfoReturnable<MachineUIPanel> cir) {
         MachineFeatures.panelBuilt(machine, cir.getReturnValue(), syncManager);
     }
