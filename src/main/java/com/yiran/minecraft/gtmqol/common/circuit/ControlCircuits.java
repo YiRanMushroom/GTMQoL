@@ -103,6 +103,7 @@ public final class ControlCircuits {
                 .save(provider);
 
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder(GTMQoL.id("elite_control_circuit"))
+                .circuitMeta(14)
                 .inputItems(GTItems.GOOD_CIRCUIT_BOARD)
                 .inputItems(ADVANCED, 2)
                 .inputItems(foil, RedAlloy, 8)

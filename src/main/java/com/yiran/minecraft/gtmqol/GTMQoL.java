@@ -8,6 +8,7 @@ import com.yiran.minecraft.gtmqol.common.probable.ProbableDevices;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.integration.ae2.crafting.PatternBatch;
 import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrix;
+import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixUploadMessage;
 import com.yiran.minecraft.gtmqol.integration.ae2.parts.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.integration.ae2.stickycard.StickyCardItem;
@@ -154,6 +155,7 @@ public final class GTMQoL {
             if (config.ae2.assemblingMatrix && config.machines.patternCrafter && config.wireless.energy &&
                     config.wireless.fe) {
                 AssemblingMatrix.init();
+                AssemblingMatrixUploadMessage.register(modBus);
             }
             if (config.ae2.processing) {
                 AEProcessing.initItems();

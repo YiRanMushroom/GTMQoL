@@ -657,7 +657,7 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         lang.addRawLang(KEY + "cancel.1", "Cancel the crafting job in the Crafting Status first, or the job waits " +
                 "for the products forever");
         lang.addRawLang(KEY + "uploaded", "Pattern moved into an Assembling Matrix");
-        lang.addRawLang(KEY + "already_there", "An Assembling Matrix already has this pattern; the copy became a " +
-                "Blank Pattern");
+        lang.addRawLang(KEY + "already_there", "An Assembling Matrix already has this pattern");
+        lang.addRawLang(KEY + "already_there.copy", "The copy became a Blank Pattern");
     }
 }

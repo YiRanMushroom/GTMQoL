@@ -1,10 +1,9 @@
 package com.yiran.minecraft.gtmqol.core.mixins.ae2;
 
 import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixUpload;
-import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixMachine;
+import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixUploadMessage;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.core.definitions.AEItems;
@@ -18,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * A pattern encoded for a assembling matrix goes right to it. Before anything ExtendedAE Plus does on the same method, which
- * then finds the slot empty: a matrix on the network comes first.
+ * A pattern encoded for an Assembling Matrix goes right to it, and a toast tells the player. Before anything ExtendedAE
+ * Plus does on the same method, which then finds the slot empty: a matrix on the network comes first.
  */
 @Mixin(value = PatternEncodingTermMenu.class, remap = false, priority = 500)
 public abstract class PatternEncodingTermMenuUploadMixin {
@@ -36,19 +35,18 @@ public abstract class PatternEncodingTermMenuUploadMixin {
         var menu = (PatternEncodingTermMenu) (Object) this;
         var node = menu.getGridNode();
         ItemStack pattern = encodedPatternSlot.getItem();
-        if (node == null || pattern.isEmpty()) return;
-        Player player = menu.getPlayer();
+        if (node == null || pattern.isEmpty() || !(menu.getPlayer() instanceof ServerPlayer player)) return;
         switch (AssemblingMatrixUpload.upload(node.getGrid(), pattern)) {
             case NOT_TAKEN -> {}
             case TAKEN -> {
                 encodedPatternSlot.set(ItemStack.EMPTY);
-                player.displayClientMessage(Component.translatable(AssemblingMatrixMachine.KEY + "uploaded"), true);
+                AssemblingMatrixUploadMessage.send(player, pattern, false);
             }
             case ALREADY_THERE -> {
                 encodedPatternSlot.set(ItemStack.EMPTY);
                 ItemStack blank = blankPatternSlot.safeInsert(AEItems.BLANK_PATTERN.stack());
                 if (!blank.isEmpty()) player.getInventory().placeItemBackInInventory(blank);
-                player.displayClientMessage(Component.translatable(AssemblingMatrixMachine.KEY + "already_there"), true);
+                AssemblingMatrixUploadMessage.send(player, pattern, true);
             }
         }
     }

@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-08 20:58:03"
+updated = "2026-11-08 22:04:48"
 checked = "2026-11-08"
 
 [[items]]
@@ -43,9 +43,9 @@ snippet = "// Untested: channel UI (list, create/edit/delete, private/team/publi
 
 [[items]]
 name = "coil-oc"
-value = "Coil OC as equivalent OC (oc.overhaul): an EBF with inputs for fewer than 8 parallels still goes to 1 tick, using more energy."
+value = "Coil OC: coils 900K over the recipe give one 8x OC and the rest 4x (1800K: two), at 4x EU/t each; an EBF with inputs for few parallels still goes to 1 tick"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/OverclockingLogicMixin.java"
-snippet = "// Untested: an EBF whose inputs allow fewer than 8 parallels still reaches 1 tick (energy use rises accordingly)"
+snippet = "// Untested: coils 900K over the recipe give one 8x OC and the rest 4x (1800K: two); still 1 tick with few parallels"
 
 [[items]]
 name = "pending-output-bulk"
@@ -148,5 +148,17 @@ name = "energy-cell-output-only"
 value = "Wireless Energy Cell only gives power: an energy acceptor's power on the same ME network fills AE2's energy cells, not the wireless network; the ME network still runs from the wireless network"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/energy/ae2/WirelessEnergyCellMachine.java"
 snippet = "// Untested: an energy acceptor's power on the same ME network goes into AE2's energy cells, not the wireless network"
+
+[[items]]
+name = "matrix-upload-toast"
+value = "Encoding a pattern for an Assembling Matrix shows a toast over the terminal (product icon and name); a pattern the matrix already has shows the copy text; encoding several in a row updates one toast"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixUploadToast.java"
+snippet = "// Untested: encoding a pattern for an Assembling Matrix shows the toast over the terminal; a copy shows the other text"
+
+[[items]]
+name = "potion-emi-exact"
+value = "EMI: recipes for a splash potion fluid don't list the plain or lingering one's (and the other way round); filling a splash recipe into a Pattern Encoding Terminal takes the splash fluid"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/potion/PotionEmi.java"
+snippet = "// Untested: in EMI, recipes for a splash potion fluid don't list the plain or lingering one's, and filling a splash"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

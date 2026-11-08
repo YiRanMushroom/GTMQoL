@@ -2,7 +2,7 @@
 title = "Debugging AE crafting, batches and the Assembling Matrix: a job's path, saved state, symptoms; use when a job misbehaves"
 kind = "howto"
 keys = [ "assembling matrix bug", "batch debugging", "crafting job stuck", "lost items", "waitingfor" ]
-updated = "2026-11-08 19:34:14"
+updated = "2026-11-08 21:47:12"
 checked = "2026-11-08"
 
 [[items]]
@@ -51,7 +51,7 @@ sha256 = "ed6cdde03cae5c0f4e5707e4fe6306514fb32d5cb6d11cdc1aff9b1569f8501c"
 name = "upload"
 value = "Auto upload from the encoding terminal"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/PatternEncodingTermMenuUploadMixin.java"
-sha256 = "2c6c6ff679eed25729c328f01b12d8218227a8a06f0fbf82d6bcad5fa2837514"
+sha256 = "4274928f9ade51ea1986e7f8963b528ddf2e260ab478474b75b60fa84b1c23f2"
 
 [[items]]
 name = "batch"
