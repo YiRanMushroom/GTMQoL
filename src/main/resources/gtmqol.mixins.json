@@ -43,6 +43,7 @@
     "GTEmiRecipeIngredientsMixin",
     "gtceufix.GTEmiRecipeMixin",
     "GTRecipeJEICategoryIngredientsMixin",
+    "PotionFluidSubtypeInterpreterMixin",
     "gtceufix.BaseSchemaRendererMixin",
     "gtceufix.DummyChunkSourceMixin"
   ],

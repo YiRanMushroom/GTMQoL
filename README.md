@@ -160,7 +160,8 @@ generators use their own overclock.
 - Non-perfect overclocking costs 4× EU/t for 4× speed. Perfect overclocking costs 2× EU/t for 4× speed.
 - Both run sub-tick: once a recipe reaches one tick, further overclocks become parallels.
 - No ULV overclock penalty.
-- Coil multiblocks: every overclock costs 4× EU/t for 8× speed, regardless of coil temperature.
+- Coil multiblocks: every overclock costs 4× EU/t. For each 900 K the coils are above the recipe's temperature, one
+  overclock gives 8× speed instead of 4×; GTCEu's 5% EU/t discount per 900 K stays.
 - Research: every overclock halves the computation (CWU) a research recipe needs.
 - The recipe viewer shows the same numbers.
 - The multi smelter applies overclocking after parallels, so its results stay correct.

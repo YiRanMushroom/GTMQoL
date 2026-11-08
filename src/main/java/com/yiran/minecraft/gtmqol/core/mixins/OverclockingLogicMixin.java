@@ -64,55 +64,20 @@ public interface OverclockingLogicMixin {
     @Overwrite
     static OverclockingLogic.OCResult subTickParallelOC(OverclockingLogic.OCParams params, long maxVoltage,
                                                         double durationFactor, double voltageFactor) {
-        double initialDuration = params.duration();
-        int ocAmount = params.ocAmount();
-        int maxParallels = params.maxParallels();
-
-        if (maxParallels < 0) return new OverclockingLogic.OCResult(1, 1, 0, 1);
-        if (maxParallels == 0) maxParallels = 1;
-
-        double speedGainFactor = 1.0 / durationFactor;
-        double maxSpeedGain = Math.pow(speedGainFactor, ocAmount);
-        double absoluteMaxSpeedGain = initialDuration * maxParallels;
-
-        double speedGain;
-        if (maxSpeedGain >= absoluteMaxSpeedGain) {
-            speedGain = absoluteMaxSpeedGain;
-        } else if (maxSpeedGain >= initialDuration) {
-            // already at 1 tick: only whole parallels count
-            speedGain = Math.floor(maxSpeedGain / initialDuration) * initialDuration;
-        } else {
-            speedGain = maxSpeedGain;
-        }
-
-        double effectiveOCs = Math.log(speedGain) / Math.log(speedGainFactor);
-        double eutMultiplier = Math.pow(voltageFactor, effectiveOCs);
-
-        double durationMultiplier;
-        double parallel;
-        if (speedGain <= initialDuration + 1e-7) {
-            durationMultiplier = 1.0 / speedGain;
-            parallel = 1;
-        } else {
-            durationMultiplier = 1.0 / initialDuration;
-            parallel = speedGain / initialDuration;
-        }
-
-        return new OverclockingLogic.OCResult(eutMultiplier, durationMultiplier,
-                (int) Math.ceil(effectiveOCs - 1e-7), (int) Math.round(parallel));
+        return Overclocking.equivalentOC(params, voltageFactor, 1.0 / durationFactor, 0, 1.0 / durationFactor);
     }
 
     /**
      * @author Yiran
-     * @reason Every heating coil OC is 4x EU/t for 8x speed, as equivalent OC: the last one may be partial (a
-     *         5 tick recipe goes to 1 tick at 5^(2/3) x EU/t), and at 1 tick any whole number of parallels counts.
-     *         A whole-OC loop stopped as soon as 8x the parallels didn't fit the inputs, leaving recipes at
-     *         2-7 ticks with most of the energy unused.
+     * @reason Heating coils as in the 4x/4x overhaul: every OC costs 4x EU/t, and for each 900K the coils are above
+     *         the recipe's temperature one OC gives 8x speed instead of 4x (gtceu: one perfect OC per 900K). Those
+     *         come first. Equivalent OC, so a recipe whose inputs allow few parallels still reaches 1 tick. gtceu's
+     *         EU/t discount of 5% per 900K is applied by the recipe modifier, outside this.
      */
-    // Untested: an EBF whose inputs allow fewer than 8 parallels still reaches 1 tick (energy use rises accordingly)
+    // Untested: coils 900K over the recipe give one 8x OC and the rest 4x (1800K: two); still 1 tick with few parallels
     @Overwrite
     static OverclockingLogic.OCResult heatingCoilOC(OverclockingLogic.OCParams params, long maxVoltage,
                                                     int recipeTemp, int machineTemp) {
-        return OverclockingLogic.subTickParallelOC(params, maxVoltage, 0.125, 4.0);
+        return Overclocking.equivalentOC(params, 4.0, 4.0, (machineTemp - recipeTemp) / 900, 8.0);
     }
 }

@@ -15,6 +15,7 @@ import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.ae2.WirelessEnergyCellMachine;
 import com.yiran.minecraft.gtmqol.integration.ae2.crafting.PatternBatch;
 import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrix;
+import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixUploadMessage;
 import com.yiran.minecraft.gtmqol.integration.ae2.parts.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.integration.ae2.stickycard.StickyCardItem;
@@ -122,6 +123,7 @@ public final class GTMQoL {
             Gregification.addSource(ProductiveBeesGregification::types);
             ProductiveBeesGregification.init(modBus);
         }
+        if (GTCEu.Mods.isAE2Loaded() && hasAssemblingMatrix(config)) AssemblingMatrixUploadMessage.register();
         if (GTCEu.Mods.isAE2Loaded() && config.ae2.processing) {
             AEProcessing.initItems();
         }
