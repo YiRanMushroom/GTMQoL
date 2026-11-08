@@ -160,6 +160,7 @@ generators use their own overclock.
 - Both run sub-tick: once a recipe reaches one tick, further overclocks become parallels.
 - No ULV overclock penalty.
 - Coil multiblocks: every overclock costs 4× EU/t for 8× speed, regardless of coil temperature.
+- Research: every overclock halves the computation (CWU) a research recipe needs.
 - The recipe viewer shows the same numbers.
 - The multi smelter applies overclocking after parallels, so its results stay correct.
 - Optional, on by default:
@@ -261,6 +262,11 @@ A button on every multiblock controller builds the structure from the player's i
 64 blocks, Shift-click keeps building until the structure is done. Right click opens a window for the structure's
 size and block choices (for example the coil type, or the casing tier of an Assembling Matrix).
 
+### Machine windows
+
+Holding Shift and dragging the mouse over slots in a GTCEu machine window moves each stack to the other inventory,
+the same as Shift-clicking each slot.
+
 ### Potions
 
 - GTCEu's brewery and canner work with potions (outputs keep their potion, EMI finds the recipes).
@@ -276,10 +282,10 @@ size and block choices (for example the coil type, or the casing tier of an Asse
 ### GTCEu fixes
 
 Workarounds for GTCEu bugs, removed once fixed upstream. Each branch has the ones its GTCEu needs. For example:
-pattern buffers failing recipes that need more than one of an item, chanced outputs lost in very large batches,
+pattern buffers keeping the same fluid as separate entries, chanced outputs lost in very large batches,
 machines going idle after repeating a recipe, a costly energy check on high-amperage energy lines, the ME stocking
-bus UI not updating, the multiblock preview drawn in the wrong place in the recipe viewer, raw recipe category
-names, data generation crashing on machines with many model variants, and mod loading crashes with some modpacks.
+bus UI not updating, the multiblock preview drawn in the wrong place in the recipe viewer, and data generation
+crashing on machines with many model variants.
 
 ## Updating from older versions
 

@@ -11,6 +11,15 @@ public class ModularMachine extends WorkableElectricMultiblockMachine {
 
     public ModularMachine(BlockEntityCreationInfo info) {
         super(info);
+        // generators keep their progress while they wait, as GTCEu's do
+        getRecipeLogic().setRegressWhenWaiting(!isGenerator());
+    }
+
+    /** From its recipe types: GTCEu registers them after the machine definitions, so the definition can't say. */
+    // Untested: modular generators (modular steam turbine) make EU and keep their progress while waiting
+    @Override
+    public boolean isGenerator() {
+        return ModularMachines.isGenerator(getDefinition());
     }
 
     @Override
