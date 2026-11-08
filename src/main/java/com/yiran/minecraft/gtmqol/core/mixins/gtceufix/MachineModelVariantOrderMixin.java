@@ -15,7 +15,7 @@ import java.util.TreeSet;
 
 /**
  * gtceu bug, only in data generation: the order of a machine model's variants adds up the differences of all properties,
- * which isn't an order, and Java's sort throws on it from about 32 variants with two properties. The pattern matrix's
+ * which isn't an order, and Java's sort throws on it from about 32 variants with two properties. The assembling matrix's
  * controller has a casing per tier and a recipe status. The first property that differs decides here. Remove once gtceu
  * fixes it.
  */

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "gtmqol:block/assembling_matrix_processing_core"
+    }
+  }
+}

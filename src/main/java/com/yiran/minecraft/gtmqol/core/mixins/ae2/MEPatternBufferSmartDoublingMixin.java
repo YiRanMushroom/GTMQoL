@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.yiran.minecraft.gtmqol.integration.ae2.SmartDoubling;
 import com.yiran.minecraft.gtmqol.integration.ae2.batch.BatchCraftingProvider;
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.ScaledPattern;
+import com.yiran.minecraft.gtmqol.integration.ae2.batch.PatternBatch;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.crafting.pattern.AEProcessingPattern;
@@ -78,9 +78,9 @@ public abstract class MEPatternBufferSmartDoublingMixin implements BatchCrafting
     }
 
     @ModifyVariable(method = "pushPattern", at = @At("HEAD"), argsOnly = true)
-    private IPatternDetails gtmqol$unwrapScaledPattern(IPatternDetails patternDetails) {
+    private IPatternDetails gtmqol$unwrapPatternBatch(IPatternDetails patternDetails) {
         gtmqol$pushedPattern = patternDetails;
-        return ScaledPattern.unwrap(patternDetails);
+        return PatternBatch.unwrap(patternDetails);
     }
 
     // Push the batch's inputs, not the original's.
@@ -89,7 +89,7 @@ public abstract class MEPatternBufferSmartDoublingMixin implements BatchCrafting
                         target = "Lcom/gregtechceu/gtceu/integration/ae2/machine/MEPatternBufferPartMachine$InternalSlot;pushPattern(Lappeng/api/crafting/IPatternDetails;[Lappeng/api/stacks/KeyCounter;)V"),
                index = 0,
                require = 2)
-    private IPatternDetails gtmqol$pushScaledPattern(IPatternDetails patternDetails) {
+    private IPatternDetails gtmqol$pushPatternBatch(IPatternDetails patternDetails) {
         return gtmqol$pushedPattern != null ? gtmqol$pushedPattern : patternDetails;
     }
 

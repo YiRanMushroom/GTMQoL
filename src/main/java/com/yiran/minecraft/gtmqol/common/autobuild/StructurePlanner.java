@@ -253,7 +253,7 @@ public final class StructurePlanner {
         return !candidates.isEmpty() && candidates.stream().allMatch(c -> isPart(c.getBlockState().getBlock()));
     }
 
-    /** Machines that are simply part of a structure, like the pattern matrix's pattern cores, get placed. */
+    /** Machines that are simply part of a structure, like the assembling matrix's pattern cores, get placed. */
     private static boolean isPart(Block block) {
         return block instanceof MetaMachineBlock &&
                 PartAbility.VALUES.values().stream().anyMatch(ability -> ability.isApplicable(block));

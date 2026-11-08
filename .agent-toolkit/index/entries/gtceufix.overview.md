@@ -28,7 +28,7 @@ value = "Feature mixin kept outside gtceufix"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/CannerLogicMixin.java"
 snippet = "public class CannerLogicMixin {"
 +++
-Mixins in `core/mixins/gtceufix/` work around bugs in GTCEu or ModularUI. Each class javadoc says what it fixes and ends with "Remove once ... fixes it": delete it when upstream does (check on every GTCEu / MUI bump, see build.gtceu-upgrade). All of them are listed in `gtmqol.mixins.json` (no separate config on 1.20.1).
+Mixins in `core/mixins/gtceufix/` work around bugs in GTCEu or ModularUI. Each class javadoc says what it fixes and ends with "Remove once ... fixes it": delete it when upstream does (check on every GTCEu / MUI bump, see skill.gtceu-upgrade). All of them are listed in `gtmqol.mixins.json` (no separate config on 1.20.1).
 
 On 1.20.1 (checked 2026-10-29 against GTCEu 327 / MUI 25: none of their targets changed upstream), all also on 1.21.1:
 - common: `AbstractWidgetMenuMixin`, `EnergyContainerListMixin`, `FluidRecipeCapabilityMixin`, `RecipeLogicMixin`, `RecipeRunnerMixin`, `MachineModelVariantOrderMixin` (only matters in data generation)

@@ -8,4 +8,4 @@ checked = "2026-11-07"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/GenericStackLikeType.java"
 snippet = "public interface GenericStackLikeType<S, I> {"
 +++
-One generic capability/handler/display path covers every type; a type only describes its stacks. User's rules: whatever enters a recipe has a real RecipeCapability (no cap for AE keys as such, so other mods' hatches can implement it); AE support is opt-in per cap via a bridge (stacklike.ae-bridge). Network IO is writeIngredient/readIngredient on FriendlyByteBuf (1.21 uses a StreamCodec). Only type: Mekanism chemicals (stacklike.chemical). How to add one: stacklike.adding-a-type.
+One generic capability/handler/display path covers every type; a type only describes its stacks. User's rules: whatever enters a recipe has a real RecipeCapability (no cap for AE keys as such, so other mods' hatches can implement it); AE support is opt-in per cap via a bridge (stacklike.ae-bridge). Network IO is writeIngredient/readIngredient on FriendlyByteBuf (1.21 uses a StreamCodec). Only type: Mekanism chemicals (stacklike.chemical). How to add one: skill.stacklike-type.

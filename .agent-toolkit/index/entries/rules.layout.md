@@ -1,12 +1,12 @@
 +++
 title = "Source layout: package tree of com.yiran.minecraft.gtmqol (1.20.1) and where resources live"
 keys = [ "packages", "src/generated/resources", "where is" ]
-updated = "2026-11-07 08:03:20"
-checked = "2026-11-07"
+updated = "2026-11-08 04:40:47"
+checked = "2026-11-08"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol"
-dir = [ "GTMQoL.java", "GTMQoLAddon.java", "api/", "client/", "common/", "config/", "core/", "data/", "gregification/", "integration/" ]
+dir = [ "GTMQoL.java", "GTMQoLAddon.java", "RenamedIds.java", "api/", "client/", "common/", "config/", "core/", "data/", "gregification/", "integration/" ]
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common"
@@ -29,6 +29,7 @@ dir = [ "KubeJSDataGenFix.java", "ae2/", "jade/", "kubejs/", "mysticalagricultur
 ```text
 GTMQoL.java          entry point, GTMQoL.id(), GTCEu RegisterEvent listeners (onRegister*)
 GTMQoLAddon.java     @GTAddon: GTRegistrate, creative tab, machine()/multiblock() helpers, addRecipes
+RenamedIds.java      old block/item IDs mapped to new ones (MissingMappingsEvent), saved worlds keep them
 api/generation/      runtime resource generation (RuntimeGeneration, GTMQoL*Builder, opt-in per machine)
 client/              GTMQoLClient, renders (DTFR ring, fishing pond water, Create casing parts)
 common/
@@ -54,7 +55,7 @@ core/                mixin plugins (GTMQoL, RecipeDB, AE2)
   mixins/            feature mixins; ae2/ mekanism/ recipedb/ gtceufix/ (upstream bug workarounds)
 data/recipe/ data/tag/   MiscRecipes, EarlyGameRecipes, WirelessRecipes; CircuitTags, MaterialAliasTags, WireTags
 gregification/       foreign recipe types as GT machines; create/ mekanism/ productivebees/ client/
-integration/         KubeJSDataGenFix; ae2/ (+stacklike/, batch/ smart doubling and crafting plans, matrix/ pattern matrix), jade/, kubejs/, mysticalagriculture/, productivebees/
+integration/         KubeJSDataGenFix; ae2/ (+stacklike/, batch/ smart doubling and crafting plans, matrix/ Assembling Matrix), jade/, kubejs/, mysticalagriculture/, productivebees/
 ```
 
 Datagen output is committed in `src/generated/resources` (on the main resources source set); static textures in `src/main/resources/assets/gtmqol/`.

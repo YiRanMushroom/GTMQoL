@@ -47,7 +47,7 @@ public final class BatchPlan {
             long total = entry.getValue();
             boolean whole = !waitsFor(pattern, arriving) && hasPowerFor(pattern, total, energy);
             (whole ? BatchPieces.whole(total, limit) : BatchPieces.split(total, limit, parts)).forEach((size, times) -> {
-                cut.merge(ScaledPattern.piece(pattern, size), times, Long::sum);
+                cut.merge(PatternBatch.piece(pattern, size), times, Long::sum);
             });
         }
         crafts.clear();

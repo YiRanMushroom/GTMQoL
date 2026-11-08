@@ -32,7 +32,7 @@ public class AE2MixinPlugin extends GTMQoLMixinConfigPlugin {
         if (mixinClassName.startsWith(PATTERN_BUFFER_MIXIN_PREFIX)) return true;
         // smart doubling and crafting plans
         if (mixinClassName.startsWith(CRAFTING_MIXIN_PREFIX)) return true;
-        // uploads to the pattern matrix
+        // uploads to the assembling matrix
         if (mixinClassName.equals(UPLOAD_MIXIN)) return true;
         // shared hatches (toggled per buffer in its UI); not all of them target the pattern buffer
         if (mixinClassName.endsWith("SharedHatchesMixin")) return true;

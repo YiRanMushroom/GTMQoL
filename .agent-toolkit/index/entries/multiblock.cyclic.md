@@ -12,4 +12,4 @@ snippet = "public abstract class CyclicMultiblockMachine extends MultiblockContr
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/CyclicMultiblockMachine.java"
 snippet = "private void tick() {"
 +++
-An abstraction the user asked for. Own server tick because GTCEu's recipe logic voids overflowing outputs. RECIPE_LOGIC_STATUS is set by hand (WORKING only while working). Common lang keys come from GTMQoLMultiblocks.addCyclicMachineLang. Popups and counter rows: rules.ui-popups. 1.20.1: the stored list syncs through GenericListSyncHandler.Builder<T> with Stored::read/write (FriendlyByteBuf).
+An abstraction the user asked for. Own server tick because GTCEu's recipe logic voids overflowing outputs. RECIPE_LOGIC_STATUS is set by hand (WORKING only while working). Common lang keys come from GTMQoLMultiblocks.addCyclicMachineLang. Popups and counter rows: skill.modular-ui. 1.20.1: the stored list syncs through GenericListSyncHandler.Builder<T> with Stored::read/write (FriendlyByteBuf).

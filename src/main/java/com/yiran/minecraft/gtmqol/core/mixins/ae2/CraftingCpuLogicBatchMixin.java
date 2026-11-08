@@ -1,7 +1,7 @@
 package com.yiran.minecraft.gtmqol.core.mixins.ae2;
 
 import com.yiran.minecraft.gtmqol.integration.ae2.batch.PartialPush;
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.ScaledPattern;
+import com.yiran.minecraft.gtmqol.integration.ae2.batch.PatternBatch;
 
 import net.minecraft.world.level.Level;
 
@@ -66,7 +66,7 @@ public abstract class CraftingCpuLogicBatchMixin {
                                                        @Share("part") LocalRef<IPatternDetails> part,
                                                        @Share("partInputs") LocalRef<KeyCounter[]> partInputs) {
         KeyCounter[] inputs = extract.call(details, inventory, level, outputs, containerItems);
-        if (!(details instanceof ScaledPattern scaled) || !gtmqol$isLastOfItsSize(tasks.get(), scaled)) return inputs;
+        if (!(details instanceof PatternBatch scaled) || !gtmqol$isLastOfItsSize(tasks.get(), scaled)) return inputs;
         long crafts;
         if (inputs != null) {
             double power = CraftingCpuHelper.calculatePatternPower(inputs);
@@ -81,7 +81,7 @@ public abstract class CraftingCpuLogicBatchMixin {
         while (crafts > 0) {
             outputs.reset();
             containerItems.reset();
-            IPatternDetails piece = ScaledPattern.piece(scaled.original(), crafts);
+            IPatternDetails piece = PatternBatch.piece(scaled.original(), crafts);
             KeyCounter[] pieceInputs = extract.call(piece, inventory, level, outputs, containerItems);
             if (pieceInputs == null) {
                 // the count copies AE2's extraction, so this shouldn't happen; smaller is still safe
@@ -108,13 +108,13 @@ public abstract class CraftingCpuLogicBatchMixin {
      * package private.
      */
     @Unique
-    private static boolean gtmqol$isLastOfItsSize(@Nullable Map<IPatternDetails, Object> tasks, ScaledPattern scaled) {
+    private static boolean gtmqol$isLastOfItsSize(@Nullable Map<IPatternDetails, Object> tasks, PatternBatch scaled) {
         return tasks != null && tasks.get(scaled) instanceof CraftingTaskProgressAccessor progress &&
                 progress.gtmqol$getValue() == 1;
     }
 
     @Unique
-    private static long gtmqol$craftsByInputs(ScaledPattern scaled, ICraftingInventory inventory, Level level) {
+    private static long gtmqol$craftsByInputs(PatternBatch scaled, ICraftingInventory inventory, Level level) {
         List<PartialPush.Slot<AEKey>> slots = new ArrayList<>();
         Map<AEKey, Long> stock = new HashMap<>();
         for (IPatternDetails.IInput input : scaled.original().getInputs()) {
@@ -142,16 +142,16 @@ public abstract class CraftingCpuLogicBatchMixin {
         boolean isPart = inputs == partInputs.get();
         IPatternDetails pushed = isPart ? part.get() : details;
         if (!push.call(provider, pushed, inputs)) return false;
-        if (pushed instanceof ScaledPattern scaled) {
+        if (pushed instanceof PatternBatch scaled) {
             if (seen.get() == null) seen.set(new HashSet<>());
             if (!seen.get().add(scaled.original())) free.set(free.get() + 1);
         }
-        if (isPart && details instanceof ScaledPattern whole) {
-            long rest = whole.multiplier() - (pushed instanceof ScaledPattern scaled ? scaled.multiplier() : 1);
+        if (isPart && details instanceof PatternBatch whole) {
+            long rest = whole.multiplier() - (pushed instanceof PatternBatch scaled ? scaled.multiplier() : 1);
             if (rests.get() == null) rests.set(new ArrayList<>());
             // the finished piece's counter, reused for the rest (no mixin classes of our own in here)
             rests.get().add(Map.entry(tasks.get().get(details),
-                    ScaledPattern.piece(whole.original(), rest)));
+                    PatternBatch.piece(whole.original(), rest)));
         }
         return true;
     }

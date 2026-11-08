@@ -12,8 +12,8 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.common.probable.ProbableDevices;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.integration.ae2.WirelessEnergyCellMachine;
-import com.yiran.minecraft.gtmqol.integration.ae2.batch.ScaledPattern;
-import com.yiran.minecraft.gtmqol.integration.ae2.matrix.PatternMatrix;
+import com.yiran.minecraft.gtmqol.integration.ae2.batch.PatternBatch;
+import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrix;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.integration.ae2.StickyCardItem;
@@ -102,6 +102,7 @@ public final class GTMQoL {
         if (ModList.get().isLoaded("mekanism")) ChemicalStackLike.init();
         // before our own listeners, so ModularMachines sees the gregified recipe types
         LoadingTags.init();
+        RenamedIds.init();
         Gregification.init(modBus);
         if (config.gregification.mekanism && ModList.get().isLoaded("mekanism")) {
             Gregification.addSource(MekanismGregification::types);
@@ -193,13 +194,13 @@ public final class GTMQoL {
         // here, not in the constructor: GTItems.attach loads GTItems, which needs the materials
         if (config.machines.patternCrafter) PatternCrafter.initItems();
         if (GTCEu.Mods.isAE2Loaded()) {
-            ScaledPattern.init();
-            if (hasPatternMatrix(config)) PatternMatrix.initBlocks();
+            PatternBatch.init();
+            if (hasAssemblingMatrix(config)) AssemblingMatrix.initBlocks();
         }
     }
 
-    private static boolean hasPatternMatrix(GTMQoLConfig config) {
-        return config.ae2.patternMatrix && config.machines.patternCrafter && config.wireless.energy && config.wireless.fe;
+    private static boolean hasAssemblingMatrix(GTMQoLConfig config) {
+        return config.ae2.assemblingMatrix && config.machines.patternCrafter && config.wireless.energy && config.wireless.fe;
     }
 
     /**
@@ -231,7 +232,7 @@ public final class GTMQoL {
             }
             if (config.ae2.overclockedPatternBuffer) AE2Machines.init();
             if (config.wireless.energy && config.wireless.fe) WirelessEnergyCellMachine.init();
-            if (hasPatternMatrix(config)) PatternMatrix.initMachines();
+            if (hasAssemblingMatrix(config)) AssemblingMatrix.initMachines();
             if (config.ae2.processing) AEProcessing.initMachines();
             if (config.ae2.dualHatches) AEDualParts.init();
             if (config.ae2.patternBufferReturn) AEDualParts.initLang();

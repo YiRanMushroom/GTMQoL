@@ -1,9 +1,9 @@
 +++
 title = "Our smart doubling and crafting planner: batches cut from the plan, topological plans, no EAP, unit tested"
 kind = "design"
-keys = [ "ae2", "crafting plan", "pattern matrix", "scaled pattern", "smart doubling", "topological planner" ]
-updated = "2026-11-07 09:08:07"
-checked = "2026-11-07"
+keys = [ "ae2", "assembling matrix", "crafting plan", "pattern batch", "smart doubling", "topological planner" ]
+updated = "2026-11-08 03:57:57"
+checked = "2026-11-08"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/batch/CraftingSolver.java"
