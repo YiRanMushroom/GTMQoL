@@ -30,6 +30,7 @@ import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 import com.yiran.minecraft.gtmqol.common.feinput.FEInputProvider;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.test.IntegrationTests;
+import com.yiran.minecraft.gtmqol.common.test.MixinTargetCheck;
 import com.yiran.minecraft.gtmqol.common.crafter.PatternCrafter;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
@@ -63,6 +64,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.data.loading.DatagenModLoader;
 
 import org.apache.logging.log4j.LogManager;
@@ -168,6 +170,9 @@ public final class GTMQoL {
         // do not run integration tests in data generation, They are only for testing in a running game.
         if (config.integrationTests.enabled && !DatagenModLoader.isRunningDataGen()) {
             IntegrationTests.registerExampleMachines();
+        }
+        if (DatagenModLoader.isRunningDataGen()) {
+            modBus.addListener(GatherDataEvent.class, event -> MixinTargetCheck.run());
         }
 
         modBus.addListener(this::onRegisterDynamicResources);

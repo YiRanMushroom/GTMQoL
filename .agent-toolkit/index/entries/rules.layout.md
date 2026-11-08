@@ -1,7 +1,7 @@
 +++
 title = "Source layout: packages and what lives where (1.21.1)"
 keys = [ "source tree" ]
-updated = "2026-11-08 19:34:14"
+updated = "2026-11-08 19:54:04"
 checked = "2026-11-08"
 
 [[links]]
@@ -33,7 +33,7 @@ src/main/java/com/yiran/minecraft/gtmqol/
 - api/: shared building blocks: generation/ (runtime resource generation, opt-in per machine), machine/ (MachineFeatures, api.machine-features)
 - client/: client-only setup shared by features (GTMQoLClient, render types, bloom rebuild, Shift-drag); feature renders live in their features
 - config/: GTMQoLConfig (toma, runtime), EarlyConfig (properties, mixin time)
-- common/: assembler (MagicalAssembler + UI), autobuild, blockprovider (block capability), crafter (pattern crafter, crafting pattern item, DecodedPatterns), circuit (UniversalCircuits, ControlCircuits, CircuitTags), crystal, feinput (FE into EU inputs), ghost, greenhouse (+ Mystical Agriculture recipes), implosion, modular, multiblock (SAF, DTFR, cyclic: void miner, fishing pond, their renders), overclock (+ AbsoluteParallel), potion, probable (probable devices), recipedb (non-mixin side of grouped search), singleblock, stacklike (mekanism/, ae2/), steam (SteamTweaks), test (IntegrationTests), ui (PopupWidgets, RecipeTypeLayouts), wireless (WirelessRecipes; steam/, energy/ (+ ae2/ energy cell), channel/ with computation/ and optical/)
+- common/: assembler (MagicalAssembler + UI), autobuild, blockprovider (block capability), crafter (pattern crafter, crafting pattern item, DecodedPatterns), circuit (UniversalCircuits, ControlCircuits, CircuitTags), crystal, feinput (FE into EU inputs), ghost, greenhouse (+ Mystical Agriculture recipes), implosion, modular, multiblock (SAF, DTFR, cyclic: void miner, fishing pond, their renders), overclock (+ AbsoluteParallel), potion, probable (probable devices), recipedb (non-mixin side of grouped search), singleblock, stacklike (mekanism/, ae2/), steam (SteamTweaks), test (IntegrationTests; MixinTargetCheck, data runs only), ui (PopupWidgets, RecipeTypeLayouts), wireless (WirelessRecipes; steam/, energy/ (+ ae2/ energy cell), channel/ with computation/ and optical/)
 - gregification/: Gregification, ForeignMachineType, GregifiedRecipeType, modifiers, MarkCoveredRecipes, CasingPartRender; mi/, mekanism/, productivebees/, create/, client/
 - data/: recipes and tags no feature owns: recipe/ (MiscRecipes, EarlyGameRecipes, LegacyPartRecipes), tag/ (MaterialAliasTags, WireTags)
 - core/: mixin config plugins (GTMQoL, RecipeDB, AE2, JeiRecipeSlotFix); mixins/ with gtceufix/, recipedb/, ae2/

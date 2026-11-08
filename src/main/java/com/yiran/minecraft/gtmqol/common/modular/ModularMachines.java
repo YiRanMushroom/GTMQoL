@@ -25,10 +25,12 @@ import com.yiran.minecraft.gtmqol.gregification.GregificationModifiers;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.data.loading.DatagenModLoader;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import java.nio.file.Files;
@@ -38,7 +40,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.GTValues.LV;
@@ -57,13 +58,13 @@ import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.UP;
  * {@code GTMachineUtils.registerTieredMachines}, KubeJS tiered machines and addons looping their tiers themselves.</p>
  *
  * <p>On 1.21 every machine is a deferred Registrate entry, so they are only queued here in registration order (gtceu's
- * own are queued before our config even exists, and the recipe type suppliers can't be resolved yet). The multiblocks are declared at the start of the machine registry event: recipe types are
+ * own are queued before our config even exists, and their recipe types can't be resolved yet). The multiblocks are declared at the start of the machine registry event: recipe types are
  * registered by then, and our registrate hasn't created its machines yet.</p>
  */
 public final class ModularMachines {
 
     private record Pending(String namespace, String name, MachineEntry<?> simple,
-                           Set<Supplier<GTRecipeType>> recipeTypes) {}
+                           List<DeferredHolder<RecipeType<?>, GTRecipeType>> recipeTypes) {}
 
     private record Entry(MachineEntry<?> simple, MachineEntry<MultiblockMachineDefinition> modular) {}
 
@@ -89,7 +90,7 @@ public final class ModularMachines {
     }
 
     public static void queue(String namespace, String name, int tier, MachineEntry<?> simple,
-                             Set<Supplier<GTRecipeType>> recipeTypes) {
+                             List<DeferredHolder<RecipeType<?>, GTRecipeType>> recipeTypes) {
         if (tier < LV || recipeTypes.isEmpty()) return;
         // Electric machines are named <voltage>_<name>; this also keeps out hp_ steam machines, which are tier 1 (LV).
         String prefix = VN[tier].toLowerCase(Locale.ROOT) + "_";
@@ -114,13 +115,13 @@ public final class ModularMachines {
         pending.forEach(ModularMachines::declare);
     }
 
-    private static Set<GTRecipeType> resolve(Set<Supplier<GTRecipeType>> recipeTypes) {
-        return recipeTypes.stream().map(Supplier::get).collect(Collectors.toUnmodifiableSet());
+    private static Set<GTRecipeType> resolve(List<DeferredHolder<RecipeType<?>, GTRecipeType>> recipeTypes) {
+        return recipeTypes.stream().map(DeferredHolder::get).collect(Collectors.toUnmodifiableSet());
     }
 
     private static void declare(Pending pending) {
         if (!RECIPE_TYPES.add(resolve(pending.recipeTypes()))) return;
-        GTRecipeType[] recipeTypes = pending.recipeTypes().stream().map(Supplier::get).toArray(GTRecipeType[]::new);
+        GTRecipeType[] recipeTypes = pending.recipeTypes().stream().map(DeferredHolder::get).toArray(GTRecipeType[]::new);
         if (Arrays.asList(recipeTypes).contains(GTRecipeTypes.DUMMY_RECIPES.get())) return;
 
         boolean generator = Arrays.stream(recipeTypes).allMatch(type -> "generator".equals(type.group));
@@ -145,11 +146,11 @@ public final class ModularMachines {
         RecipeModifier overclock = generator ? GENERATOR_OVERCLOCK :
                 gregified ? GregificationModifiers.OVERCLOCK : GTRecipeModifiers.OC_PERFECT_SUBTICK;
         @SuppressWarnings("unchecked")
-        Supplier<GTRecipeType>[] typeSuppliers = pending.recipeTypes().toArray(Supplier[]::new);
+        DeferredHolder<RecipeType<?>, GTRecipeType>[] typeHolders = pending.recipeTypes().toArray(DeferredHolder[]::new);
         MachineEntry<MultiblockMachineDefinition> modular = GTMQoLAddon.multiblock(modularName, ModularMachine::new)
                 .dynamicallyGenerated(true)
                 .rotationState(RotationState.ALL)
-                .recipeTypes(typeSuppliers)
+                .recipeTypes(typeHolders)
                 // GT's machine UI only shows the batch button for this exact modifier
                 .recipeModifiers(startModifier, overclock, GTRecipeModifiers.BATCH_MODE)
                 .generator(generator)

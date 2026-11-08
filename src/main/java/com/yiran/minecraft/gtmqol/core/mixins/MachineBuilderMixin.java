@@ -11,6 +11,9 @@ import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.api.machine.MachineFeatures;
 import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
 
+import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,8 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Set;
-import java.util.function.Supplier;
+import java.util.List;
 
 @Mixin(value = MachineBuilder.class, remap = false)
 public abstract class MachineBuilderMixin implements IDynamicGenerationHandler {
@@ -28,7 +30,7 @@ public abstract class MachineBuilderMixin implements IDynamicGenerationHandler {
     /** Recipe types are only resolved when the definition is created, in the machine registry event. */
     @Shadow
     @Final
-    protected Set<Supplier<GTRecipeType>> unresolvedRecipeTypes;
+    protected List<DeferredHolder<RecipeType<?>, GTRecipeType>> unresolvedRecipeTypes;
 
     @Shadow
     protected MachineInstanceFactory<? extends MetaMachine> instanceFactory;

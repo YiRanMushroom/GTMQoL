@@ -9,10 +9,10 @@ import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import com.tterrag.registrate.builders.BuilderCallback;
-
-import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.V;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.defaultTankSizeFunction;
@@ -46,7 +46,7 @@ public class GTMQoLMachineBuilder<D extends MachineDefinition, M extends MetaMac
      * Recipe type, model and tooltips of a GT electric single block of this {@link #tier}: the workable hull model
      * and GT's voltage, energy and tank lines.
      */
-    public GTMQoLMachineBuilder<D, M> workableTiered(Supplier<GTRecipeType> recipeType, ResourceLocation model) {
+    public GTMQoLMachineBuilder<D, M> workableTiered(DeferredHolder<RecipeType<?>, GTRecipeType> recipeType, ResourceLocation model) {
         return recipeType(recipeType)
                 .workableTieredHullModel(model)
                 .tooltips(GTMachineUtils.workableTiered(tier, V[tier], V[tier] * 64, recipeType,

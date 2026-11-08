@@ -1,12 +1,12 @@
 +++
 title = "AdvancedSteamMachines: gtmqol:large_steam_* for 21 recipe types, hatch casing rules, magical assembler recipes"
 keys = [ "autoabilities", "bronze", "hp_steam_magical_assembler", "large steam multis", "lp_steam_magical_assembler", "steam bus", "steam multiblock" ]
-updated = "2026-10-19 20:08:35"
-checked = "2026-11-07"
+updated = "2026-11-08 19:50:50"
+checked = "2026-11-08"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/steam/AdvancedSteamMachines.java"
-snippet = "private static void register(String name, Supplier<GTRecipeType> recipeType, int maxRecipeTier, ResourceLocation overlay,"
+snippet = "private static void register(String name, "
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/steam/AdvancedSteamMachines.java"

@@ -29,8 +29,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import it.unimi.dsi.fastutil.Pair;
 
@@ -178,14 +180,15 @@ public final class AdvancedSteamMachines {
      * materials and tag prefixes are registered after mods are constructed).
      */
     private static Pair<MachineEntry<MachineDefinition>, MachineEntry<MachineDefinition>> steamMachine(
-            String name, Supplier<GTRecipeType> recipeType, Supplier<?> key) {
+            String name, DeferredHolder<RecipeType<?>, GTRecipeType> recipeType, Supplier<?> key) {
         var machine = GTMachineUtils.registerSimpleSteamMachines(GTMQoLAddon.registrate(), name, recipeType);
         STEAM_MACHINES.add(new SteamMachine(machine, key));
         return machine;
     }
 
     /** {@code shape} is one of {@link AdvancedSteamShapes}. */
-    private static void register(String name, Supplier<GTRecipeType> recipeType, int maxRecipeTier, ResourceLocation overlay,
+    private static void register(String name, DeferredHolder<RecipeType<?>, GTRecipeType> recipeType, int maxRecipeTier,
+                                 ResourceLocation overlay,
                                  Supplier<ItemStack> base, String[][] shape) {
         MachineEntry<MultiblockMachineDefinition> machine = GTMQoLAddon
                 .multiblock("large_steam_" + name, info -> new AdvancedSteamMultiMachine(info, maxRecipeTier))
