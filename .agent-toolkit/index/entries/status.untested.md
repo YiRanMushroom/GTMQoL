@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-08 20:50:52"
+updated = "2026-11-08 20:58:03"
 checked = "2026-11-08"
 
 [[items]]
@@ -142,5 +142,11 @@ name = "modular-lazy-kind"
 value = "1.21: the game loads with GTCEu build 139 (checked by the user 2026-11-08); still to see: modular generators make EU, keep progress while waiting, LCE look when the single block has no front overlay"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/modular/ModularMachine.java"
 snippet = "// Untested: modular generators (modular steam turbine) make EU and keep their progress while waiting"
+
+[[items]]
+name = "energy-cell-output-only"
+value = "Wireless Energy Cell only gives power: an energy acceptor's power on the same ME network fills AE2's energy cells, not the wireless network; the ME network still runs from the wireless network"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/energy/ae2/WirelessEnergyCellMachine.java"
+snippet = "// Untested: an energy acceptor's power on the same ME network goes into AE2's energy cells, not the wireless network"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

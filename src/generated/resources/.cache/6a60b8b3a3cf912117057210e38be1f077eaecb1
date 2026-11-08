@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-07T22:10:59.6640191	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider, Tags (materials), Tags (tag_prefixes)]
+// 1.21.1	2026-11-08T13:59:24.6636642	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider, Tags (materials), Tags (tag_prefixes)]
 c1fca4a807586d29d76056d9bc1960b4d43fcace assets/gtmqol/blockstates/assembling_matrix.json
 cc9d61376b9b7d8764bc101571b43764d4e05648 assets/gtmqol/blockstates/assembling_matrix_interface.json
 3c35321894e14d56cd7254c5a3156e01d19f1b81 assets/gtmqol/blockstates/assembling_matrix_pattern_core.json
@@ -195,8 +195,8 @@ e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circui
 674a583f2b29eee523d730ad4211c0134c9f8134 assets/gtmqol/blockstates/zpm_wireless_energy_accessor.json
 1136e3739fdb3b339bc80d9bedcd1bde88a780e9 assets/gtmqol/blockstates/zpm_wireless_energy_input_hatch.json
 a77ec21bfd8e4ba2dd87ea6bde687970c4039a69 assets/gtmqol/blockstates/zpm_wireless_energy_output_hatch.json
-050fa0843eb3cf3c5e48d8a7f8c328d655ee5b2e assets/gtmqol/lang/en_ud.json
-bbb558a0d0c9a4191788430f680991c224d163da assets/gtmqol/lang/en_us.json
+345708c8e0f93cec4b8d0e5916d6354bcf06ae10 assets/gtmqol/lang/en_ud.json
+fb2c5565374a8287b2439383b4aec05cfc0c0523 assets/gtmqol/lang/en_us.json
 163bfdb692c7c93c302b8167a858b879147ce27a assets/gtmqol/models/block/machine/assembling_matrix.json
 4a0967d9f064d68c0e0c1e5145a9a92017afbfcb assets/gtmqol/models/block/machine/assembling_matrix_interface.json
 2553592f34203654fee4bfa6187d11caacef7139 assets/gtmqol/models/block/machine/assembling_matrix_pattern_core.json
