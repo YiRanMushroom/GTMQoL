@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-09 04:13:13"
+updated = "2026-11-09 05:09:13"
 checked = "2026-11-08"
 
 [[items]]
@@ -166,5 +166,23 @@ name = "pattern-shift-icon"
 value = "Holding Shift shows Crafting Patterns as what they craft (inventory, pattern crafter, patterns window); chests keep the pattern look; releasing Shift brings the pattern back"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/CraftingPatternModel.java"
 snippet = "// Untested: holding Shift shows Crafting Patterns as what they craft (inventory, pattern crafter, patterns window)"
+
+[[items]]
+name = "hnn-training"
+value = "HNN simulation chamber (and modular): a run of N parallels adds N data, predictions follow the rising accuracy, circuit 1 trains from Faulty on without a matrix and stops at max tier; EMI recipes show the learning line"
+path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/hostilenetworks/SimulationTraining.java"
+snippet = "// the model and its predictions follow the rising accuracy; circuit 1 trains from Faulty on, without a matrix, and"
+
+[[items]]
+name = "hnn-loot-fabricator"
+value = "HNN loot fabricator: the ghost mark picks the drop, single-drop models need none; EMI shows both machines' recipes; crafting recipes exist"
+path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/hostilenetworks/LootFabricatorLogic.java"
+snippet = "// Untested: a prediction becomes the marked drop (a model with one drop needs no mark), EMI lists every model's drops"
+
+[[items]]
+name = "pattern-wear-modular"
+value = "The modular pattern crafter wears tools like the single block; a run stops at the last usable tool"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/PatternWear.java"
+snippet = "// Untested: the modular pattern crafter wears tools like the single block, and a run stops at the last usable tool"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

@@ -150,6 +150,12 @@ public final class GTMQoLConfig {
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean create = true;
+
+        @Configurable
+        @Configurable.Comment({ "GT machines for Hostile Neural Networks: simulation chamber and loot fabricator",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean hostileNeuralNetworks = true;
     }
 
     @Configurable

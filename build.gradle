@@ -272,6 +272,16 @@ dependencies {
         transitive = false
     }
     compileOnly files("libs/productivelib-${project.productivelib_version}.jar")
+    // Optional: Hostile Neural Networks' simulation chamber and loot fabricator as GT machines
+    // (gregification/hostilenetworks); see hnn_version for why the jar is in libs/.
+    compileOnly files("libs/HostileNeuralNetworks-${project.hnn_version}.jar")
+    localRuntime files("libs/HostileNeuralNetworks-${project.hnn_version}.jar")
+    compileOnly("maven.modrinth:placebo:${project.placebo_version}") {
+        transitive = false
+    }
+    localRuntime("maven.modrinth:placebo:${project.placebo_version}") {
+        transitive = false
+    }
     // Optional: chemicals in AE (pattern buffer, ME parts) go through its MekanismKey.
     compileOnly("maven.modrinth:applied-mekanistics:${project.appmek_version}") {
         transitive = false

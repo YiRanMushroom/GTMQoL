@@ -54,6 +54,7 @@ import com.yiran.minecraft.gtmqol.gregification.LoadingTags;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.client.GregificationClient;
 import com.yiran.minecraft.gtmqol.gregification.create.CreateGregification;
+import com.yiran.minecraft.gtmqol.gregification.hostilenetworks.HostileNetworksGregification;
 import com.yiran.minecraft.gtmqol.gregification.mekanism.MekanismGregification;
 import com.yiran.minecraft.gtmqol.gregification.mi.MIGregification;
 import com.yiran.minecraft.gtmqol.gregification.productivebees.ProductiveBeesGregification;
@@ -116,6 +117,10 @@ public final class GTMQoL {
         }
         if (config.gregification.create && ModList.get().isLoaded("create")) {
             Gregification.addSource(CreateGregification::types);
+        }
+        if (config.gregification.hostileNeuralNetworks && ModList.get().isLoaded("hostilenetworks")) {
+            Gregification.addSource(HostileNetworksGregification::types);
+            HostileNetworksGregification.init();
         }
         if (ModList.get().isLoaded("productivebees")) {
             LegacyCapabilityAliases.init(modBus);

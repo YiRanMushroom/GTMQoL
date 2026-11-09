@@ -255,6 +255,13 @@ Each machine is crafted from the original mod's machine.
   condensentrator and the thermal evaporation plant. They take any input/output parts.
 - **Productive Bees**: comb centrifuge, incubator, gene extractor, beehive (bees in cages, with upgrades and
   flowers) and breeder. The GT canner turns caged bees into spawn eggs and back, keeping their genes.
+- **Hostile Neural Networks**: simulation chamber and loot fabricator, single blocks of every tier, crafted with
+  field generators (simulation chamber) or a sensor and an emitter (loot fabricator).
+  - Simulation chamber: a data model and a prediction matrix give the model's base drop and predictions, and the model
+    learns from every craft, parallels included; each craft's prediction chance follows the model as it learns. With
+    programmed circuit 1 it only trains the model, from any tier (Faulty too), without a prediction matrix and without
+    outputs, at the same energy.
+  - Loot fabricator: a ghost mark of the drop picks what a prediction turns into.
 
 Gregified single blocks have batch mode, and ghost marks where their recipes need them.
 
@@ -310,7 +317,7 @@ below apply at once. The full list, with descriptions, is in the config file its
 |---|---|
 | `machines` | one per multiblock above, `greenhouse`, `patternCrafter`, `probableDevices`, `advancedSteamMachines`, `easySAFRecipe` |
 | `modularMachines` | `enabled` |
-| `gregification` | `modernIndustrialization` (1.21.1), `mekanism`, `productiveBees`, `create` |
+| `gregification` | `modernIndustrialization` (1.21.1), `mekanism`, `productiveBees`, `create`, `hostileNeuralNetworks` |
 | `wireless` | `energy`, `fe`, `steam`, `computation`, `opticalData` |
 | `circuits` | `universalCircuits`, `controlCircuits`, `mekanismCircuitTags` |
 | `recipes` | `miscRecipes`, `earlyGame`, `keepManualCompression`, `keepVanillaTNT`, `netherStarDust`, `useLegacyPartRecipes` |
