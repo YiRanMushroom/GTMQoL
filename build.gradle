@@ -313,6 +313,20 @@ dependencies {
     modLocalRuntime("maven.modrinth:productivebees:${project.productivebees_version}") {
         transitive = false
     }
+    // Optional: Hostile Neural Networks' simulation chamber and loot fabricator as GT machines
+    // (gregification/hostilenetworks). It requires Placebo.
+    modCompileOnly("maven.modrinth:hostile-neural-networks:${project.hnn_version}") {
+        transitive = false
+    }
+    modLocalRuntime("maven.modrinth:hostile-neural-networks:${project.hnn_version}") {
+        transitive = false
+    }
+    modCompileOnly("maven.modrinth:placebo:${project.placebo_version}") {
+        transitive = false
+    }
+    modLocalRuntime("maven.modrinth:placebo:${project.placebo_version}") {
+        transitive = false
+    }
     // Block info overlay; GTCEu has its own Jade plugin (recipe progress, energy). Compiled against for our
     // plugin (integration/jade), which Jade only loads when it is installed.
     modCompileOnly "maven.modrinth:jade:${project.jade_version}"

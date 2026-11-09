@@ -60,6 +60,7 @@ import com.yiran.minecraft.gtmqol.common.wireless.steam.WirelessSteamMachines;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.LoadingTags;
 import com.yiran.minecraft.gtmqol.gregification.create.CreateGregification;
+import com.yiran.minecraft.gtmqol.gregification.hostilenetworks.HostileNetworksGregification;
 import com.yiran.minecraft.gtmqol.gregification.mekanism.MekanismGregification;
 import com.yiran.minecraft.gtmqol.gregification.productivebees.ProductiveBeesGregification;
 import com.yiran.minecraft.gtmqol.integration.productivebees.LegacyCapabilityAliases;
@@ -118,6 +119,10 @@ public final class GTMQoL {
         }
         if (config.gregification.create && ModList.get().isLoaded("create")) {
             Gregification.addSource(CreateGregification::types);
+        }
+        if (config.gregification.hostileNeuralNetworks && ModList.get().isLoaded("hostilenetworks")) {
+            Gregification.addSource(HostileNetworksGregification::types);
+            HostileNetworksGregification.init();
         }
         if (config.gregification.productiveBees && ModList.get().isLoaded("productivebees")) {
             Gregification.addSource(ProductiveBeesGregification::types);

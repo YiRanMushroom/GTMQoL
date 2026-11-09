@@ -7,11 +7,11 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
-import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-import com.yiran.minecraft.gtmqol.common.singleblock.SingleblockFeature;
+import com.yiran.minecraft.gtmqol.api.machine.MachineFeatures;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -25,38 +25,50 @@ import java.util.List;
 
 /**
  * Inputs that change with every craft, like tools: they stay in the machine's inputs and each craft of a run, parallels
- * included, is really simulated on them. {@link #LIMIT} comes after overclocking and cuts a run down to what the
- * inputs still allow; the trait wears them when a run starts, which also covers GT repeating the same recipe. Only
- * patterns with such inputs get here (the recipe holds the pattern), others never simulate.
+ * included, is really simulated on them. After overclocking, a run is cut down to what the inputs still allow; the
+ * trait wears them when a run starts, which also covers GT repeating the same recipe. Only patterns with such inputs
+ * get here (the recipe holds the pattern), others never simulate. Every machine running the pattern crafter's recipe
+ * type gets it, the modular multiblock too.
  * <p>
  * Only single items are worn, a stack of several has nowhere to put the changed one.
  */
 public final class PatternWear extends MachineTrait implements IRecipeLogicModifierTrait {
 
-    public static final SingleblockFeature FEATURE = machine -> machine.attachPersistentTrait("patternWear",
-            new PatternWear());
+    /** The name it is saved under; it saves nothing, but worlds have it in their machines. */
+    private static final String NAME = "patternWear";
 
     static final String PATTERN_KEY = "crafter_pattern";
     static final String WORN_OUT_KEY = "gtmqol.machine.pattern_crafter.worn_out";
 
-    public static final RecipeModifier LIMIT = (machine, recipe) -> {
-        ICrafterPattern pattern = pattern(recipe, machine.getLevel());
-        if (pattern == null) return ModifierFunction.IDENTITY;
+    // Untested: the modular pattern crafter wears tools like the single block, and a run stops at the last usable tool
+    static void init() {
+        MachineFeatures.onRecipeType(() -> PatternCrafter.RECIPE_TYPE,
+                machine -> machine.attachPersistentTrait(NAME, new PatternWear()));
+    }
+
+    /** Cuts a run down to the crafts the inputs still allow. */
+    @Override
+    public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
+        ICrafterPattern pattern = pattern(recipe, getMachine().getLevel());
+        if (pattern == null) return recipe;
         int crafts = crafts(recipe);
-        int possible = simulate(buses((IRecipeCapabilityHolder) machine), pattern, crafts).crafts;
-        if (possible >= crafts) return ModifierFunction.IDENTITY;
-        if (possible == 0) return ModifierFunction.cancel(Component.translatable(WORN_OUT_KEY));
+        int possible = simulate(buses((IRecipeCapabilityHolder) getMachine()), pattern, crafts).crafts;
+        if (possible >= crafts) return recipe;
+        if (possible == 0) {
+            // 1.20.1's trait interface has no failure reason of its own
+            RecipeLogic.putFailureReason(getMachine(), recipe, Component.translatable(WORN_OUT_KEY));
+            return null;
+        }
         // a little over: contents are cut down to whole numbers
         ContentModifier cut = ContentModifier.multiplier((possible + 1e-9) / crafts);
-        ModifierFunction modifier = ModifierFunction.builder().inputModifier(cut).outputModifier(cut).build();
-        return current -> {
-            GTRecipe limited = modifier.apply(current);
-            limited.parallels = 1;
-            limited.batchParallels = 1;
-            limited.subtickParallels = possible;
-            return limited;
-        };
-    };
+        GTRecipe limited = ModifierFunction.builder().inputModifier(cut).outputModifier(cut).build().apply(recipe);
+        if (limited == null) return null;
+        limited.parallels = 1;
+        limited.batchParallels = 1;
+        limited.subtickParallels = possible;
+        return limited;
+    }
+
 
     private record Simulation(int crafts, List<Runnable> writes) {}
 
@@ -129,7 +141,7 @@ public final class PatternWear extends MachineTrait implements IRecipeLogicModif
         int crafts = crafts(recipe);
         Simulation simulation = simulate(buses(machine), pattern, crafts);
         if (simulation.crafts < crafts) {
-            // a repeated recipe that no longer fits: look for it again, LIMIT cuts it down
+            // a repeated recipe that no longer fits: look for it again, modifyRecipe cuts it down
             machine.getRecipeLogic().markLastRecipeDirty();
             return false;
         }

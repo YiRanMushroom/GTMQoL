@@ -89,15 +89,16 @@ public final class PatternCrafter {
     public static void initMachines() {
         MACHINES = new MachineDefinition[TIER_COUNT];
         for (int tier : ELECTRIC_TIERS) {
-            MACHINES[tier] = GTMQoLAddon.tieredMachine("pattern_crafter", tier, PatternWear.FEATURE)
+            MACHINES[tier] = GTMQoLAddon.tieredMachine("pattern_crafter", tier)
                     .ui(PatternCrafterUI.PANEL)
                     .langValue("%s Pattern Crafter %s".formatted(VLVH[tier], VLVT[tier]))
-                    .recipeModifiers(OC_NON_PERFECT, PatternWear.LIMIT)
+                    .recipeModifiers(OC_NON_PERFECT)
                     .tooltips(Component.translatable(KEY + "tooltip"))
                     .workableTiered(RECIPE_TYPE, GTCEu.id("block/machines/assembler"))
                     .tooltips(explosion())
                     .register();
         }
+        PatternWear.init();
         GTMQoLAddon.registrate().addRawLang(KEY + "tooltip", "Crafts the recipe of the crafting pattern among its inputs.");
         GTMQoLAddon.registrate().addRawLang(PatternWear.WORN_OUT_KEY, "No tool left that can do this");
     }

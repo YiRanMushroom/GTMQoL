@@ -3,20 +3,24 @@ package com.yiran.minecraft.gtmqol.api.machine;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
 import brachy.modularui.value.sync.PanelSyncManager;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * What we add to machines we don't own (GTCEu's and other addons'), declared in one place instead of a mixin per
  * machine class. Each feature names the machines it is for and what it does to one, at a stage of the machine's life:
  * <ul>
  * <li>{@link #onCreated}: right after the machine is built, on both sides, before its saved data is read, which is
- * where persistent traits have to be attached;</li>
+ * where persistent traits have to be attached; {@link #onRecipeType} for every machine running a recipe type;</li>
  * <li>{@link #onPanel}: when its UI panel has been built, also for panels that show no trait configurators.</li>
  * </ul>
  * Two mixins call in: {@code MachineBuilderMixin} wraps every machine builder's factory, and
@@ -67,6 +71,20 @@ public final class MachineFeatures {
     /** For every machine of {@code type} (subclasses too) once it is built; registered from a mod constructor. */
     public static <T extends MetaMachine> void onCreated(Class<T> type, Consumer<T> feature) {
         CREATED.add(new Created<>(type, feature));
+    }
+
+    /**
+     * For every machine that runs {@code recipeType}, of whatever kind: the single block made for it, a modular
+     * multiblock, another addon's machine. What a recipe type needs from the machine (an input that changes with every
+     * craft, say) belongs here, so that no machine running the type goes without it.
+     */
+    public static void onRecipeType(Supplier<? extends GTRecipeType> recipeType, Consumer<MetaMachine> feature) {
+        onCreated(MetaMachine.class, machine -> {
+            if (machine instanceof IRecipeLogicMachine &&
+                    Arrays.asList(machine.getDefinition().getRecipeTypes()).contains(recipeType.get())) {
+                feature.accept(machine);
+            }
+        });
     }
 
     /** For the UI panel of every machine of {@code type} (subclasses too) once GTCEu has built it. */
