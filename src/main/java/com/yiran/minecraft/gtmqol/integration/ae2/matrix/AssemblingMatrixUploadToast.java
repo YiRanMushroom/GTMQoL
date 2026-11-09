@@ -1,8 +1,11 @@
 package com.yiran.minecraft.gtmqol.integration.ae2.matrix;
 
+import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixUpload.Outcome;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
@@ -13,12 +16,13 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * The toast for {@link AssemblingMatrixUploadMessage}: the product's icon, what happened, and the product's name (or
- * what became of the copy). Toasts show above any open window. A pattern encoded while the toast shows replaces it, so
+ * that the pattern stays in the terminal). Toasts show above any open window. A pattern encoded while the toast shows replaces it, so
  * encoding many in a row doesn't queue up one toast each.
  */
-// Untested: encoding a pattern for an Assembling Matrix shows the toast over the terminal; a copy shows the other text
+// Untested: Shift-clicking encode uploads and shows the toast over the terminal; a copy or no room says so and the
+// pattern stays in the terminal; a plain click doesn't upload
 @OnlyIn(Dist.CLIENT)
-final class AssemblingMatrixUploadToast implements Toast {
+public final class AssemblingMatrixUploadToast implements Toast {
 
     private static final ResourceLocation BACKGROUND = ResourceLocation.withDefaultNamespace("toast/advancement");
     private static final long DISPLAY_TIME = 5000;
@@ -33,15 +37,25 @@ final class AssemblingMatrixUploadToast implements Toast {
 
     private AssemblingMatrixUploadToast() {}
 
-    static void show(ItemStack icon, boolean alreadyThere) {
+    /** For the encode click: Shift uploads. */
+    public static void requestUpload() {
+        AssemblingMatrixUploadMessage.sendRequest(Screen.hasShiftDown());
+    }
+
+    static void show(ItemStack icon, Outcome outcome) {
+        if (outcome == Outcome.NOT_OURS) return;
         ToastComponent toasts = Minecraft.getInstance().getToasts();
         AssemblingMatrixUploadToast toast = toasts.getToast(AssemblingMatrixUploadToast.class, NO_TOKEN);
         boolean shown = toast != null;
         if (!shown) toast = new AssemblingMatrixUploadToast();
         toast.icon = icon;
-        toast.title = Component.translatable(AssemblingMatrixMachine.KEY + (alreadyThere ? "already_there" : "uploaded"));
-        toast.detail = alreadyThere ? Component.translatable(AssemblingMatrixMachine.KEY + "already_there.copy") :
-                icon.getHoverName();
+        toast.title = Component.translatable(AssemblingMatrixMachine.KEY + switch (outcome) {
+            case TAKEN -> "uploaded";
+            case ALREADY_THERE -> "already_there";
+            default -> "no_room";
+        });
+        toast.detail = outcome == Outcome.TAKEN ? icon.getHoverName() :
+                Component.translatable(AssemblingMatrixMachine.KEY + "stays");
         Font font = Minecraft.getInstance().font;
         toast.width = Math.max(160, TEXT_X + Math.max(font.width(toast.title), font.width(toast.detail)) + 8);
         toast.changed = true;

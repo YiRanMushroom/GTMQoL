@@ -78,6 +78,12 @@ configurations {
     // Mods only in the dev runs, never a dependency of ours (MDG has no modLocalRuntime).
     localRuntime
     runtimeClasspath.extendsFrom localRuntime
+    // Mods only in the game runs (client, server), not in runData: KubeJS would load its scripts there for nothing.
+    gameRuntime
+}
+
+neoForge.runs.matching { it.name != 'data' }.configureEach {
+    additionalRuntimeClasspathConfiguration.extendsFrom configurations.gameRuntime
 }
 
 repositories {
@@ -207,7 +213,7 @@ dependencies {
     localRuntime "dev.emi:emi-neoforge:${project.emi_version}"
     // Compile-only for integration/kubejs (our KubeJS plugin), which KubeJS only loads when it is installed.
     compileOnly "dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}"
-    localRuntime "dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}"
+    gameRuntime "dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}"
     // Compile-only for recipedb/PatternBufferIngredients (gtceu's pattern buffer implements AE2 interfaces);
     // only used when AE2 is loaded, still not a runtime dependency of ours.
     accessCompileOnly "org.appliedenergistics:appliedenergistics2:${project.ae2_version}"

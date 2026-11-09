@@ -2,8 +2,8 @@
 title = "Debugging AE crafting, batches and the Assembling Matrix: a job's path, saved state, symptoms; use when a job misbehaves"
 kind = "howto"
 keys = [ "assembling matrix bug", "batch debugging", "crafting job stuck", "lost items", "waitingfor" ]
-updated = "2026-11-08 21:47:12"
-checked = "2026-11-08"
+updated = "2026-11-09 07:01:11"
+checked = "2026-11-09"
 
 [[items]]
 name = "plan"
@@ -51,7 +51,7 @@ sha256 = "ed6cdde03cae5c0f4e5707e4fe6306514fb32d5cb6d11cdc1aff9b1569f8501c"
 name = "upload"
 value = "Auto upload from the encoding terminal"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/PatternEncodingTermMenuUploadMixin.java"
-sha256 = "4274928f9ade51ea1986e7f8963b528ddf2e260ab478474b75b60fa84b1c23f2"
+sha256 = "dbbcea811a918633c0bd3d05a1b2e86ea554008ad6f97de8f69db278aa3d8cf0"
 
 [[items]]
 name = "batch"
@@ -87,7 +87,7 @@ For when something goes wrong in game. Why things are as they are: ae2.fast-craf
 - **Batch waits forever**: needs more AE power than stored on a CPU that isn't AE2's, or a repeated size (x2 limit, patternBatchParts > 1) that the partial push skips.
 - **Too many CPU operations**: the one-operation rule is only on AE2's CPU.
 - **Pattern in the matrix but not offered**: only AE2 crafting/stonecutting/smithing (IMolecularAssemblerSupportedPattern) and our crafting patterns; equal patterns count once; needs a formed matrix with its interface.
-- **Auto upload doesn't take it**: switched off, no free slot, the same pattern already there (then the copy becomes a blank), processing patterns never; PatternEncodingTermMenuUploadMixin runs before ExtendedAE Plus (priority 500).
+- **Auto upload doesn't take it**: not Shift-clicked (only Shift-click Encode uploads; the client's Request must reach the server before AE2's encode action), switched off, no free slot or the same pattern already there (both leave it in the terminal with a toast), processing patterns never; PatternEncodingTermMenuUploadMixin runs before ExtendedAE Plus (priority 500).
 - **Wrong amounts back on cancel**: per-slot accounting in Queued/Slot; crafts from saves before it give nothing back.
 - **Crash on world load in a decoder**: a null key (GT's buffer decodes empty slots); decoders check for null.
 - **EAP installed**: its CraftingCpuLogicPatternPowerMixin also hooks executeCrafting (only its own pattern batches).
