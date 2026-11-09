@@ -1,8 +1,8 @@
 +++
 title = "How to work in GTMQoL 1.20.1: Chinese replies, run don't guess, Gradle limits, port from 1.21, warnings"
 keys = [ "author" ]
-updated = "2026-11-08 04:16:55"
-checked = "2026-11-08"
+updated = "2026-11-09 04:19:14"
+checked = "2026-11-09"
 +++
 Personal, non-serious project, not a production system.
 
@@ -16,4 +16,5 @@ Personal, non-serious project, not a production system.
 - Unit tests: gradlew test, plain JUnit, no game; only classes without game classes (integration/ae2/crafting). Fast, so keep adding to them.
 - README.md is English only (credits in its Credits section). Author: README/LICENSE "Yiran"; in-game mod_author "Yiran, Frosty" (Frosty is the user's alias).
 - Names, IDs and text players see: skill.naming-and-text (read it whenever naming something). UIs: skill.modular-ui. Mixins: skill.mixins.
+- Case conversion and number formatting take Locale.ROOT (toLowerCase(Locale.ROOT), String.format(Locale.ROOT, ...)): a Turkish system turns I into a dotless i in keys, a German one writes 1,50.
 - javac runs with -Xlint:deprecation,removal,unchecked,rawtypes; the only accepted warnings are Forge's BuiltInRegistries deprecation (kept so code matches 1.21).

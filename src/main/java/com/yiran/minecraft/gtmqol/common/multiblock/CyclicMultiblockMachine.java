@@ -35,6 +35,7 @@ import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.popup;
@@ -200,7 +201,7 @@ public abstract class CyclicMultiblockMachine extends MultiblockControllerMachin
             case OUTPUT_FULL -> Component.translatable(langKey() + "status.output_full",
                     FormattingUtil.formatNumbers(pending.getLongValue()));
             case PROBLEM -> Component.translatable(problem.getStringValue());
-            default -> Component.translatable(langKey() + "status." + status.getValue().name().toLowerCase());
+            default -> Component.translatable(langKey() + "status." + status.getValue().name().toLowerCase(Locale.ROOT));
         }));
     }
 
@@ -276,6 +277,6 @@ public abstract class CyclicMultiblockMachine extends MultiblockControllerMachin
     }
 
     protected static String seconds(int ticks) {
-        return "%.2f".formatted(ticks / 20.0);
+        return String.format(Locale.ROOT, "%.2f", ticks / 20.0);
     }
 }
