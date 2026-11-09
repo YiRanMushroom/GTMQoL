@@ -44,10 +44,10 @@ smithing patterns, and Crafting Patterns from the Pattern Crafter. Processing pa
 - **Parts on the edges**: one **Assembling Matrix ME Interface**, at least one Wireless FE Input Hatch, and Input
   Buses for catalysts. Catalysts are the tools and smithing templates that a Crafting Pattern keeps instead of using
   up; they stay in the Input Buses, and tools wear down there.
-- **Auto upload**: crafting, stonecutting and smithing patterns encoded in a Pattern Encoding Terminal on the same
-  ME network move into the Assembling Matrix by themselves. A copy of a pattern the matrix already has comes back as a
-  Blank Pattern. A notification in the top right corner, visible over the terminal, shows each pattern that moves in.
-  The switch is on the controller and on the ME Interface.
+- **Auto upload**: Shift-clicking Encode in a Pattern Encoding Terminal on the same ME network moves a crafting,
+  stonecutting or smithing pattern right into the Assembling Matrix; a plain click keeps it in the terminal as usual.
+  A notification in the top right corner, visible over the terminal, says what happened: a pattern the matrix already
+  has, or one no matrix has room for, stays in the terminal. The switch is on the controller and on the ME Interface.
 - **ME Interface**: its name, shown in Pattern Access Terminals, can be changed in its window.
 - **Cancelling**: AE2's cancel stops the crafting job, but crafts already sent to the matrix still finish and their
   products go to the network. To get the ingredients back instead, cancel the job in the Crafting Status first, then
@@ -261,9 +261,10 @@ Each machine is crafted from the original mod's machine.
 - **Hostile Neural Networks**: simulation chamber and loot fabricator, single blocks of every tier, crafted with
   field generators (simulation chamber) or a sensor and an emitter (loot fabricator).
   - Simulation chamber: a data model and a prediction matrix give the model's base drop and predictions, and the model
-    learns from every craft, parallels included; each craft's prediction chance follows the model as it learns. With
-    programmed circuit 1 it only trains the model, from any tier (Faulty too), without a prediction matrix and without
-    outputs, at the same energy.
+    learns from every craft, parallels included, when the run ends; each craft's prediction chance follows the model as
+    it learns, so a craft makes on average as many predictions as the model's accuracy. With programmed circuit 1 it
+    only trains the model, from any tier (Faulty too), without a prediction matrix and without outputs, at the same
+    energy.
   - Loot fabricator: a ghost mark of the drop picks what a prediction turns into.
 
 Gregified single blocks have batch mode, and ghost marks where their recipes need them.

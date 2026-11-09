@@ -652,7 +652,8 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         lang.addRawLang(KEY + "patterns.take", "Click: take out. Shift-click: move to your inventory");
         lang.addRawLang(KEY + "patterns.put", "Put patterns here, or Shift-click patterns in your inventory");
         lang.addRawLang(KEY + "auto_upload.enabled", "Auto upload: on. Crafting, stonecutting and smithing patterns " +
-                "encoded in a Pattern Encoding Terminal on the same ME network move into this Assembling Matrix");
+                "encoded with Shift-click in a Pattern Encoding Terminal on the same ME network move into this " +
+                "Assembling Matrix");
         lang.addRawLang(KEY + "auto_upload.disabled", "Auto upload: off. Encoded patterns stay in the Pattern " +
                 "Encoding Terminal");
         lang.addRawLang(KEY + "cancel.0", "Shift-click: cancel all crafts not done yet and return their ingredients " +
@@ -660,7 +661,8 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         lang.addRawLang(KEY + "cancel.1", "Cancel the crafting job in the Crafting Status first, or the job waits " +
                 "for the products forever");
         lang.addRawLang(KEY + "uploaded", "Pattern moved into an Assembling Matrix");
-        lang.addRawLang(KEY + "already_there", "An Assembling Matrix already has this pattern");
-        lang.addRawLang(KEY + "already_there.copy", "The copy became a Blank Pattern");
+        lang.addRawLang(KEY + "already_there", "Not uploaded: an Assembling Matrix already has this pattern");
+        lang.addRawLang(KEY + "no_room", "Not uploaded: no Assembling Matrix with auto upload has room");
+        lang.addRawLang(KEY + "stays", "The pattern stays in the terminal");
     }
 }

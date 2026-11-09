@@ -280,7 +280,8 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
                                         .coverChildren()
                                         .child(new ToggleButton()
                                                 .size(18)
-                                                .setEnabledIf(button -> mode[0] == CraftingPattern.Mode.CRAFTING)
+                                                .setEnabledIf(button -> mode[0] == CraftingPattern.Mode.CRAFTING ||
+                                                        mode[0] == CraftingPattern.Mode.SMITHING)
                                                 .value(substitutesValue)
                                                 .overlay(new ItemDrawable(Items.OAK_PLANKS).asIcon().size(16))
                                                 .tooltipAutoUpdate(true)
@@ -467,7 +468,8 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
         addLang(CLEAR_TOOLTIP_KEY, "Empties the grid; an encoded pattern goes back to blank");
         addLang(FLUIDS_ON_KEY, "Buckets are taken as fluid from the tanks");
         addLang(FLUIDS_OFF_KEY, "Buckets are taken as items");
-        addLang(SUBSTITUTES_ON_KEY, "Accepts anything the recipe accepts, at any durability");
+        addLang(SUBSTITUTES_ON_KEY, "Accepts anything the recipe accepts, at any durability (smithing: the " +
+                "template and the addition)");
         addLang(SUBSTITUTES_OFF_KEY, "Accepts only these exact items, durability included");
         addLang(DUPLICATES_ON_KEY, "An item the recipe makes more of is kept, and only what it adds comes out");
         addLang(DUPLICATES_OFF_KEY, "Recipes that make more of an input use it up as usual");

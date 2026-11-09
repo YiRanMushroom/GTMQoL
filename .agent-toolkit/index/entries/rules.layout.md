@@ -1,8 +1,7 @@
 +++
 title = "Source layout: package tree of com.yiran.minecraft.gtmqol (1.20.1) and where resources live"
 keys = [ "packages", "src/generated/resources", "where is" ]
-updated = "2026-11-08 19:54:20"
-checked = "2026-11-08"
+updated = "2026-11-09 07:14:20"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol"
@@ -22,7 +21,7 @@ dir = [ "recipe/", "tag/" ]
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration"
-dir = [ "KubeJSDataGenFix.java", "ae2/", "jade/", "kubejs/", "productivebees/" ]
+dir = [ "ae2/", "jade/", "kubejs/", "productivebees/" ]
 +++
 Rule (same as 1.21): the top level holds layers; each feature is one package under common/ (or integration/<mod>/ when it can't exist without that mod) and owns all its code, renders, recipes and tags included. Code of a feature that needs an optional mod goes in a <modid>/ subpackage. Mixins stay in core/mixins.
 
@@ -58,7 +57,7 @@ core/                mixin plugins (GTMQoL, RecipeDB, AE2)
   mixins/            feature mixins; ae2/ mekanism/ recipedb/ gtceufix/ (upstream bug workarounds)
 data/recipe/ data/tag/   recipes and tags no feature owns: MiscRecipes, EarlyGameRecipes, LegacyPartRecipes; MaterialAliasTags, WireTags
 gregification/       foreign recipe types as GT machines, CasingPartRender; create/ mekanism/ productivebees/ client/
-integration/         KubeJSDataGenFix; ae2/ (AE2Machines, AEProcessing, AECrafterPattern; patternbuffer/, parts/, stickycard/, crafting/ planner and pattern batching, matrix/ Assembling Matrix), jade/, kubejs/, productivebees/
+integration/         ae2/ (AE2Machines, AEProcessing, AECrafterPattern; patternbuffer/, parts/, stickycard/, crafting/ planner and pattern batching, matrix/ Assembling Matrix), jade/, kubejs/, productivebees/
 ```
 
 Datagen output is committed in `src/generated/resources` (on the main resources source set); static textures in `src/main/resources/assets/gtmqol/`.

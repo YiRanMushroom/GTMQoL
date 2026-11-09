@@ -45,10 +45,13 @@ import java.util.Optional;
  * recipe it matched. One craft is simulated when encoding and its result kept on the item ({@code uses}, {@code
  * outputs}), so a bottle becoming an empty bottle costs nothing afterwards. Only inputs that change with every craft,
  * like tools, are simulated while running ({@link PatternWear}). A pattern whose recipe changed doesn't run, as in AE2.
+ * The recipe is found by its id, or else by the grid: a recipe a script adds without an id can get another one on the
+ * next load.
  *
  * @param fluids      crafting only: take buckets as their fluid, as AE2's fluid substitution
- * @param substitutes crafting only: accept whatever the recipe accepts in a slot, at any data, as AE2's substitution;
- *                    else exactly the encoded items, durability included
+ * @param substitutes crafting and smithing: accept whatever the recipe accepts in a slot, at any data, as AE2's
+ *                    substitution (smithing: the template and the addition, the base stays exact); else exactly the
+ *                    encoded items, durability included
  * @param duplicates  crafting only: a recipe making more of an input than it uses (smithing templates) keeps that input
  *                    and makes only what it adds
  * @param uses        per grid slot
@@ -233,7 +236,7 @@ public record CraftingPattern(Mode mode, List<ItemStack> inputs, ResourceLocatio
             for (ItemStack input : inputs) uses.add(input.isEmpty() ? SlotUse.EMPTY : SlotUse.CONSUMED);
         }
         return new CraftingPattern(mode, inputs, recipe.getId(), crafting && fluids,
-                crafting && substitutes, crafting && duplicates, uses, outputs);
+                (crafting || mode == Mode.SMITHING) && substitutes, crafting && duplicates, uses, outputs);
     }
 
     private static <C extends Container> ItemStack assemble(Recipe<C> recipe, C input, Level level) {
@@ -326,8 +329,8 @@ public record CraftingPattern(Mode mode, List<ItemStack> inputs, ResourceLocatio
 
     /** One craft of this pattern, or null when its recipe is gone or no longer does what was encoded. */
     public @Nullable Plan plan(Level level) {
-        Recipe<?> recipe = level.getRecipeManager().byKey(recipeId).orElse(null);
-        if (recipe == null || Mode.of(recipe) != mode || !stillMakes(recipe, level)) return null;
+        Recipe<?> recipe = recipe(level);
+        if (recipe == null) return null;
         List<Input> consumed = new ArrayList<>();
         List<Input> kept = new ArrayList<>();
         List<FluidStack> fluidInputs = new ArrayList<>();
@@ -337,10 +340,10 @@ public record CraftingPattern(Mode mode, List<ItemStack> inputs, ResourceLocatio
             switch (use) {
                 case EMPTY -> {}
                 case FLUID -> FluidUtil.getFluidContained(item).ifPresent(fluid -> merge(fluidInputs, fluid));
-                case CONSUMED -> addInput(consumed, item, ingredient(recipe, item, use), slot);
+                case CONSUMED -> addInput(consumed, item, ingredient(recipe, item, use, slot), slot);
                 case KEPT, CHANGED -> {
                     if (kept.stream().noneMatch(other -> ItemStack.isSameItem(other.item(), item))) {
-                        kept.add(new Input(item, ingredient(recipe, item, use), slot, use));
+                        kept.add(new Input(item, ingredient(recipe, item, use, slot), slot, use));
                     }
                 }
             }
@@ -352,6 +355,32 @@ public record CraftingPattern(Mode mode, List<ItemStack> inputs, ResourceLocatio
      * Whether the recipe still makes what is on the item: it can change and keep its id. Only the outputs are compared,
      * as what happens to a tool can come down to chance.
      */
+    /**
+     * The recipe of this pattern: the one with its id if it still makes what was encoded, else one that makes it from
+     * the same grid. Recipes a script adds without an id can swap ids between loads: KubeJS names them after their
+     * output and numbers those with the same one in the order it processes them, which isn't fixed.
+     */
+    // Untested: a pattern for a KubeJS recipe without an id (ATM10's netherite template duplication) keeps working after
+    // a rejoin; smithing patterns with substitutes take other templates and additions the recipe accepts
+    private @Nullable Recipe<?> recipe(Level level) {
+        Recipe<?> byId = level.getRecipeManager().byKey(recipeId).orElse(null);
+        if (byId != null && Mode.of(byId) == mode && stillMakes(byId, level)) return byId;
+        for (Recipe<?> candidate : candidates(level)) {
+            if (candidate != byId && stillMakes(candidate, level)) return candidate;
+        }
+        return null;
+    }
+
+    /** The recipes that match this pattern's grid. */
+    private List<? extends Recipe<?>> candidates(Level level) {
+        var recipes = level.getRecipeManager();
+        return switch (mode) {
+            case CRAFTING -> recipes.getRecipesFor(RecipeType.CRAFTING, craftingInput(inputs), level);
+            case STONECUTTING -> stonecutting(inputs, level);
+            case SMITHING -> recipes.getRecipesFor(RecipeType.SMITHING, smithingInput(inputs), level);
+        };
+    }
+
     private boolean stillMakes(Recipe<?> recipe, Level level) {
         CraftingPattern now = simulate(mode, inputs, recipe, fluids, substitutes, duplicates, level);
         if (now == null || now.outputs.size() != outputs.size()) return false;
@@ -370,8 +399,17 @@ public record CraftingPattern(Mode mode, List<ItemStack> inputs, ResourceLocatio
      * Special recipes stay exact when an item is used up: their result can depend on it, as repairing does on the
      * durability, and the result was worked out for the encoded item.
      */
-    private Ingredient ingredient(Recipe<?> recipe, ItemStack item, SlotUse use) {
+    private Ingredient ingredient(Recipe<?> recipe, ItemStack item, SlotUse use, int slot) {
         if (!substitutes || (recipe.isSpecial() && use == SlotUse.CONSUMED)) return exact(item);
+        if (recipe instanceof SmithingTransformRecipe) {
+            // the base's data (enchantments, damage) goes into the result, so it stays exact
+            var smithing = (SmithingTransformRecipeAccessor) recipe;
+            if (slot == SMITHING_SLOTS[0]) return smithing.gtmqol$template();
+            if (slot == SMITHING_SLOTS[2]) return smithing.gtmqol$addition();
+            return exact(item);
+        }
+        // a trim depends on every input
+        if (recipe instanceof SmithingRecipe) return exact(item);
         for (Ingredient ingredient : recipe.getIngredients()) {
             if (ingredient.test(item)) return ingredient;
         }

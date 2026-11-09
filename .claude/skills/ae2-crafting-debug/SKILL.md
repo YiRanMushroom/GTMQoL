@@ -33,7 +33,7 @@ For when something goes wrong in game. Why things are as they are: ae2.fast-craf
 - **Batch waits forever**: needs more AE power than stored on a CPU that isn't AE2's, or a repeated size (x2 limit, patternBatchParts > 1) that the partial push skips.
 - **Too many CPU operations**: the one-operation rule is only on AE2's CPU.
 - **Pattern in the matrix but not offered**: only AE2 crafting/stonecutting/smithing (IMolecularAssemblerSupportedPattern) and our crafting patterns; equal patterns count once; needs a formed matrix with its interface.
-- **Auto upload doesn't take it**: switched off, no free slot, the same pattern already there (then the copy becomes a blank), processing patterns never; PatternEncodingTermMenuUploadMixin runs before ExtendedAE Plus (priority 500).
+- **Auto upload doesn't take it**: not Shift-clicked (only Shift-click Encode uploads; the client's Request must reach the server before AE2's encode action), switched off, no free slot or the same pattern already there (both leave it in the terminal with a toast), processing patterns never; PatternEncodingTermMenuUploadMixin runs before ExtendedAE Plus (priority 500).
 - **Wrong amounts back on cancel**: per-slot accounting in Queued/Slot; crafts from saves before it give nothing back.
 - **Crash on world load in a decoder**: a null key (GT's buffer decodes empty slots); decoders check for null.
 - **EAP installed**: its CraftingCpuLogicPatternPowerMixin also hooks executeCrafting (only its own pattern batches).

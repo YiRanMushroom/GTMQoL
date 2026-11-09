@@ -2,8 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-09 05:29:58"
-checked = "2026-11-08"
+updated = "2026-11-09 07:14:26"
 
 [[items]]
 name = "legacy-parts-no-unification"
@@ -193,9 +192,9 @@ snippet = "// Untested: an energy acceptor's power on the same ME network goes i
 
 [[items]]
 name = "matrix-upload-toast"
-value = "Encoding a pattern for an Assembling Matrix shows a toast over the terminal (product icon and name); a pattern the matrix already has shows the copy text; encoding several in a row updates one toast"
+value = "Shift-click Encode uploads with a toast over the terminal; a duplicate or no room says so and the pattern stays; a plain click doesn't upload; scrolled-down patterns window then a search shows the matches"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixUploadToast.java"
-snippet = "// Untested: encoding a pattern for an Assembling Matrix shows the toast over the terminal; a copy shows the other text"
+snippet = "// Untested: Shift-clicking encode uploads and shows the toast over the terminal; a copy or no room says so and the"
 
 [[items]]
 name = "potion-emi-exact"
@@ -223,14 +222,20 @@ snippet = "// Untested: the modular pattern crafter wears tools like the single 
 
 [[items]]
 name = "hnn-training"
-value = "HNN simulation chamber (and modular): a run of N parallels adds N data, predictions follow the rising accuracy, circuit 1 trains from Faulty on without a matrix and stops at max tier; EMI/JEI recipes show the learning line"
+value = "HNN simulation chamber (and modular): N parallels add N data when the run ends (not when interrupted), predictions average the accuracy per craft also with many parallels, circuit 1 trains from Faulty on without a matrix up to max tier; EMI/JEI show the learning line"
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/hostilenetworks/SimulationTraining.java"
-snippet = "// the model and its predictions follow the rising accuracy; circuit 1 trains from Faulty on, without a matrix, and"
+snippet = "// Untested: in the simulation chamber (and its modular multiblock), a run of several parallels adds as many data to"
 
 [[items]]
 name = "hnn-loot-fabricator"
 value = "HNN loot fabricator: the ghost mark picks the drop, single-drop models need none; the recipe viewer shows both machines' recipes; crafting recipes exist"
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/hostilenetworks/LootFabricatorLogic.java"
 snippet = "// Untested: a prediction becomes the marked drop (a model with one drop needs no mark), EMI lists every model's drops"
+
+[[items]]
+name = "pattern-recipe-fallback"
+value = "Crafting Pattern of a KubeJS recipe without an id still works after rejoining when ids swap; smithing substitutes take other templates/additions the recipe accepts, the base stays exact"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/CraftingPattern.java"
+snippet = "// Untested: a pattern for a KubeJS recipe without an id (ATM10's netherite template duplication) keeps working after"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

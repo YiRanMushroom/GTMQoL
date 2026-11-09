@@ -40,7 +40,6 @@ import com.yiran.minecraft.gtmqol.common.crafter.PatternCrafter;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
-import com.yiran.minecraft.gtmqol.integration.KubeJSDataGenFix;
 import com.yiran.minecraft.gtmqol.integration.kubejs.GTMQoLKubeJSPlugin;
 import com.yiran.minecraft.gtmqol.common.stacklike.ae2.AEStackLikeBridges;
 import com.yiran.minecraft.gtmqol.common.stacklike.ae2.AppMekChemicalBridge;
@@ -153,10 +152,6 @@ public final class GTMQoL {
 
         if (FMLEnvironment.dist.isClient()) {
             GTMQoLClient.init(modBus);
-        }
-
-        if (FMLLoader.getLaunchHandler().isData() && ModList.get().isLoaded("kubejs")) {
-            KubeJSDataGenFix.apply();
         }
     }
 

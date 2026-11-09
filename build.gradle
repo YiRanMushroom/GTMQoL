@@ -90,10 +90,17 @@ configurations {
     // Mods only in the dev runs, never a dependency of ours; obfuscation below adds the remapped modLocalRuntime.
     runtimeClasspath.extendsFrom localRuntime
     implementation.extendsFrom modImplementation
+    // Mods only in the game runs (client, server), not in runData: KubeJS would load its scripts there for nothing.
+    gameRuntime
 }
 
 obfuscation {
     createRemappingConfiguration(configurations.localRuntime)
+    createRemappingConfiguration(configurations.gameRuntime)
+}
+
+legacyForge.runs.matching { it.name != 'data' }.configureEach {
+    additionalRuntimeClasspathConfiguration.extendsFrom configurations.gameRuntime
 }
 
 repositories {
@@ -242,11 +249,11 @@ dependencies {
 
     // Dev-only mods so the test client has recipe viewing, ME networks and KubeJS (GTCEu's optional deps).
     modLocalRuntime "mezz.jei:jei-${project.minecraft_version}-forge:${project.jei_version}"
-    modLocalRuntime "dev.latvian.mods:kubejs-forge:${project.kubejs_version}"
+    modGameRuntime "dev.latvian.mods:kubejs-forge:${project.kubejs_version}"
     // KubeJS requires the rhino mod (>= 2001.2.2-build.1). Loom pulled it in transitively; the remapping configuration
     // of ModDevGradle does not, so it is listed by hand (Latvian maven).
-    modLocalRuntime "dev.latvian.mods:rhino-forge:${project.rhino_version}"
-    // Compile-only for KubeJSDataGenFix; still not a runtime dependency of ours.
+    modGameRuntime "dev.latvian.mods:rhino-forge:${project.rhino_version}"
+    // Compile-only for integration/kubejs (our KubeJS plugin), which KubeJS only loads when it is installed.
     modCompileOnly "dev.latvian.mods:kubejs-forge:${project.kubejs_version}"
     modLocalRuntime "appeng:appliedenergistics2-forge:${project.ae2_version}"
     // Compile-only for recipedb/PatternBufferIngredients (gtceu's pattern buffer implements AE2 interfaces);

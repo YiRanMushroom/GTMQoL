@@ -68,7 +68,16 @@ class AssemblingMatrixPatternGridWidget extends Widget<AssemblingMatrixPatternGr
         super.onUpdate();
         List<PatternEntry> list = entries.get();
         String text = search.get().toLowerCase(Locale.ROOT);
+        // the list may have got shorter than where it was scrolled to (the size changes a frame later)
+        if (getParent() instanceof AbstractScrollWidget<?, ?> scroll && scroll.getScrollArea().getScrollY() != null) {
+            scroll.getScrollArea().getScrollY().clamp(scroll.getScrollArea());
+        }
         if (list.equals(seenEntries) && text.equals(seenSearch)) return;
+        if (!text.equals(seenSearch) && getParent() instanceof AbstractScrollWidget<?, ?> scroll &&
+                scroll.getScrollArea().getScrollY() != null) {
+            // a new search starts at the top, else the matches can be above what is in view
+            scroll.getScrollArea().getScrollY().scrollTo(scroll.getScrollArea(), 0);
+        }
         if (!list.equals(seenEntries)) {
             seenEntries = List.copyOf(list);
             all = list.stream().map(AssemblingMatrixPatternGridWidget::shown).toList();

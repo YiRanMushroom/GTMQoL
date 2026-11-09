@@ -37,12 +37,13 @@ import static com.yiran.minecraft.gtmqol.gregification.hostilenetworks.Simulatio
  * modular multiblock, any other): GT decides a run's parallels after the recipe is made, so the recipe can't know how
  * many crafts it teaches the model, nor that each craft's prediction chance follows the model as it learns. Once the
  * parallels are known, every craft is simulated on a copy of the model: a training run is cut to the crafts that
- * still teach it, a simulation gets the predictions of all crafts together. The model learns when the run starts,
- * like tools wear in the pattern crafter; a repeated run whose model has changed since is looked up again.
+ * still teach it, a simulation gets the predictions of all crafts together. The model learns when the run ends (an
+ * interrupted run teaches nothing); the next run, made for the model as it was, is looked up again.
  */
 // Untested: in the simulation chamber (and its modular multiblock), a run of several parallels adds as many data to
-// the model and its predictions follow the rising accuracy; circuit 1 trains from Faulty on, without a matrix, and
-// stops at max tier; the recipe viewer says which recipes teach the model
+// the model when it ends, and its predictions follow the rising accuracy (on average a craft makes accuracy
+// predictions, also with many parallels); circuit 1 trains from Faulty on, without a matrix, and stops at max tier;
+// the recipe viewer says which recipes teach the model
 final class SimulationTraining extends MachineTrait implements IRecipeLogicModifierTrait {
 
     /** In a run's data: what the model had learnt when the run was made for it. */
@@ -73,7 +74,8 @@ final class SimulationTraining extends MachineTrait implements IRecipeLogicModif
             modified = run.learnt < crafts ? cut(recipe, run.learnt, crafts) : recipe.copy();
         } else {
             modified = recipe.copy();
-            setPredictions(modified, run.predictions, new CachedModel(model.stack, 0).getPredictionDrop());
+            setPredictions(modified, run.predictions, crafts,
+                    new CachedModel(model.stack, 0).getPredictionDrop());
         }
         // the recipe was made for this search, its data is not shared with anything else
         modified.data.putInt(LEARNT_KEY, DataModelItem.getData(model.stack));
@@ -90,11 +92,22 @@ final class SimulationTraining extends MachineTrait implements IRecipeLogicModif
             ((IRecipeLogicMachine) getMachine()).getRecipeLogic().markLastRecipeDirty();
             return false;
         }
+        return true;
+    }
+
+    @Override
+    public void afterWorking() {
+        RecipeLogic logic = ((IRecipeLogicMachine) getMachine()).getRecipeLogic();
+        GTRecipe recipe = logic.getLastRecipe();
+        // also called when a run is interrupted, which teaches nothing
+        if (recipe == null || logic.getProgress() < logic.getDuration() || !recipe.data.contains(MODEL_KEY)) return;
+        Model model = model(recipe);
+        // the model was taken out or swapped during the run
+        if (model == null || recipe.data.getInt(LEARNT_KEY) != DataModelItem.getData(model.stack)) return;
         int crafts = crafts(recipe);
         ItemStack learnt = simulate(model.stack, crafts).after.getSourceStack();
         DataModelItem.setIters(learnt, DataModelItem.getIters(learnt) + crafts);
         model.items.storage.setStackInSlot(model.slot, learnt);
-        return true;
     }
 
     private static int crafts(GTRecipe recipe) {
@@ -144,8 +157,12 @@ final class SimulationTraining extends MachineTrait implements IRecipeLogicModif
         return cut;
     }
 
-    /** Replaces the predictions GT scaled with the parallels by those of all crafts, each at its own accuracy. */
-    private static void setPredictions(GTRecipe recipe, double expected, ItemStack prediction) {
+    /**
+     * Replaces the predictions GT scaled with the parallels by those of all crafts, each at its own accuracy: {@code
+     * expected} of them on average. GT rolls a chanced output once per craft of the run (its chance times the crafts),
+     * so the part below a whole prediction is given as a chance per craft.
+     */
+    private static void setPredictions(GTRecipe recipe, double expected, int crafts, ItemStack prediction) {
         List<Content> outputs = new ArrayList<>();
         for (Content content : recipe.outputs.getOrDefault(ItemRecipeCapability.CAP, List.of())) {
             if (!(content.content() instanceof Ingredient ingredient) || !ingredient.test(prediction)) {
@@ -154,7 +171,7 @@ final class SimulationTraining extends MachineTrait implements IRecipeLogicModif
         }
         int whole = (int) expected;
         int max = ChanceLogic.getMaxChancedValue();
-        int chance = expected > whole ? Gregification.chance(expected - whole) : 0;
+        int chance = expected > whole ? Gregification.chance((expected - whole) / crafts) : 0;
         if (chance >= max) {
             whole++;
             chance = 0;
