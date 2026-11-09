@@ -180,7 +180,7 @@ public final class GTMQoL {
         modBus.addListener(this::onRegisterDynamicResources);
 
         if (FMLEnvironment.dist.isClient()) {
-            GTMQoLClient.init();
+            GTMQoLClient.init(modBus);
             GregificationClient.init();
         }
     }

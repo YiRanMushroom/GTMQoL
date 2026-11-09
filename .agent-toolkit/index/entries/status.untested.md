@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-08 22:04:48"
+updated = "2026-11-09 04:13:13"
 checked = "2026-11-08"
 
 [[items]]
@@ -160,5 +160,11 @@ name = "potion-emi-exact"
 value = "EMI: recipes for a splash potion fluid don't list the plain or lingering one's (and the other way round); filling a splash recipe into a Pattern Encoding Terminal takes the splash fluid"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/potion/PotionEmi.java"
 snippet = "// Untested: in EMI, recipes for a splash potion fluid don't list the plain or lingering one's, and filling a splash"
+
+[[items]]
+name = "pattern-shift-icon"
+value = "Holding Shift shows Crafting Patterns as what they craft (inventory, pattern crafter, patterns window); chests keep the pattern look; releasing Shift brings the pattern back"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/CraftingPatternModel.java"
+snippet = "// Untested: holding Shift shows Crafting Patterns as what they craft (inventory, pattern crafter, patterns window)"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).
