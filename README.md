@@ -26,6 +26,7 @@ The **Pattern Crafter** (single block, every tier) runs crafting table, stonecut
 - Tools stay in the machine and wear out by one craft per parallel.
 - AE2 crafting, stonecutting and smithing patterns work in the Pattern Crafter too.
 - A Crafting Pattern whose recipe was changed or removed by a recipe script says so in its tooltip.
+- Holding Shift shows a Crafting Pattern as the item it crafts, like AE2's patterns.
 
 #### Assembling Matrix
 
@@ -45,7 +46,8 @@ smithing patterns, and Crafting Patterns from the Pattern Crafter. Processing pa
   up; they stay in the Input Buses, and tools wear down there.
 - **Auto upload**: crafting, stonecutting and smithing patterns encoded in a Pattern Encoding Terminal on the same
   ME network move into the Assembling Matrix by themselves. A copy of a pattern the matrix already has comes back as a
-  Blank Pattern. The switch is on the controller and on the ME Interface.
+  Blank Pattern. A notification in the top right corner, visible over the terminal, shows each pattern that moves in.
+  The switch is on the controller and on the ME Interface.
 - **ME Interface**: its name, shown in Pattern Access Terminals, can be changed in its window.
 - **Cancelling**: AE2's cancel stops the crafting job, but crafts already sent to the matrix still finish and their
   products go to the network. To get the ingredients back instead, cancel the job in the Crafting Status first, then
@@ -153,7 +155,8 @@ missing items; switching `ae2.fastCraftingPlans` off brings back AE2's own plann
 Every tiered single-block machine also gets a 3×3×3 modular multiblock, including machines from other
 addons. It can be built from any blocks and takes any hatches except parallel hatches. Recipes run 8×
 faster, with perfect sub-tick overclocking and batch mode. Generator recipes last 8× longer instead, and
-generators use their own overclock.
+generators use their own overclock. What a recipe type needs from its machine carries over: the modular pattern
+crafter wears tools, the modular simulation chamber trains data models.
 
 ### Overclocking
 
@@ -281,6 +284,8 @@ the same as Shift-clicking each slot.
 - GTCEu's brewery and canner work with potions (outputs keep their potion, EMI finds the recipes).
 - Splash and lingering potions are brewed in the brewery and bottled in the canner.
 - Potion fluids are named after their potion, including strength and duration.
+- EMI tell potion fluids apart exactly: plain, splash and lingering potions of one effect, or of other
+  strengths and durations, don't mix when looking up recipes or filling them.
 
 ### Other recipes
 
