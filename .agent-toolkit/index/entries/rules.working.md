@@ -1,8 +1,8 @@
 +++
 title = "How to work in GTMQoL: reply in Chinese, run don't guess, Gradle limits, both branches, README, UI text, warnings"
 keys = [ "author" ]
-updated = "2026-11-08 04:16:55"
-checked = "2026-11-08"
+updated = "2026-11-09 04:19:05"
+checked = "2026-11-09"
 +++
 Personal, non-serious project, not a production system.
 
@@ -16,4 +16,5 @@ Personal, non-serious project, not a production system.
 - Features go on both branches, 1.21 and 1.20 (worktrees and paths: context.md; code differences: build.branch-differences).
 - README.md is English only (credits in its Credits section). Author: README/LICENSE "Yiran"; in-game mod_author "Yiran, Frosty" (Frosty is the user's alias).
 - Names, IDs and text players see: skill.naming-and-text (read it whenever naming something). UIs: skill.modular-ui. Mixins: skill.mixins.
+- Case conversion and number formatting take Locale.ROOT (toLowerCase(Locale.ROOT), String.format(Locale.ROOT, ...)): a Turkish system turns I into a dotless i in keys, a German one writes 1,50.
 - javac runs with -Xlint:deprecation,removal,unchecked,rawtypes; keep the build warning-free (1.20.1 only has Forge's BuiltInRegistries deprecation, kept so code matches 1.21).

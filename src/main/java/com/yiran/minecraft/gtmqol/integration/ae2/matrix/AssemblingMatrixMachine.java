@@ -76,6 +76,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -189,8 +190,8 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         tier = Math.max(tier, GTValues.ULV);
         processingCores = processing;
         capacity = (long) processing * CRAFTS_PER_CORE << 2 * tier;
-        size = "%d x %d x %d".formatted(bounds.getInt(2) + bounds.getInt(3) + 1, bounds.getInt(0) + 1,
-                bounds.getInt(5) + 1);
+        size = String.format(Locale.ROOT, "%d x %d x %d", bounds.getInt(2) + bounds.getInt(3) + 1,
+                bounds.getInt(0) + 1, bounds.getInt(5) + 1);
         setRenderState(getRenderState().setValue(AssemblingMatrix.CASING_TIER, tier));
         collectParts();
     }

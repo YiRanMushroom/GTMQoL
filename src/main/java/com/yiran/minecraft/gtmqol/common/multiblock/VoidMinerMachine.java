@@ -39,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.counterRow;
 import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.popup;
@@ -234,7 +235,7 @@ public class VoidMinerMachine extends CyclicMultiblockMachine implements IDataSt
                         .height(18)
                         .childPadding(4)
                         .child(new ItemDrawable(ore.item()).asWidget().size(16))
-                        .child(new TextWidget<>(Text.of(Component.literal("%.2f%%  ".formatted(ore.chance() * 100))
+                        .child(new TextWidget<>(Text.of(Component.literal(String.format(Locale.ROOT, "%.2f%%  ", ore.chance() * 100))
                                 .append(ore.item().getDescription())))
                                 .verticalCenter()));
         // rebuilt on every open: the ore list may not have been synced yet the first time
