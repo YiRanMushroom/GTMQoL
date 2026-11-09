@@ -1,5 +1,7 @@
 package com.yiran.minecraft.gtmqol.common.wireless.channel;
 
+import java.util.Locale;
+
 /** Who sees and binds a channel. The owner and operators always can. */
 public enum ChannelAccess {
 
@@ -21,7 +23,7 @@ public enum ChannelAccess {
     }
 
     public String langKey() {
-        return "gtmqol.channel.access." + name().toLowerCase();
+        return "gtmqol.channel.access." + name().toLowerCase(Locale.ROOT);
     }
 
     /** Short form for the list. */

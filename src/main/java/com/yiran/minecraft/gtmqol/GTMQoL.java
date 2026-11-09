@@ -147,7 +147,7 @@ public final class GTMQoL {
         }
 
         if (FMLEnvironment.dist.isClient()) {
-            GTMQoLClient.init();
+            GTMQoLClient.init(modBus);
         }
 
         if (FMLLoader.getLaunchHandler().isData() && ModList.get().isLoaded("kubejs")) {
