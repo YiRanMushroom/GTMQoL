@@ -26,6 +26,8 @@
     "MEPatternBufferStackLikeMixin",
     "MEPatternBufferStackLikeSlotMixin",
     "MEPatternBufferWorkerSlotAccessor",
+    "MEOutputHatchBufferMixin",
+    "MEOutputHatchPartMachineAccessor",
     "MEStockingBusPartMachineMixin",
     "MEStockingHatchPartMachineMixin",
     "NetworkStorageMixin",
