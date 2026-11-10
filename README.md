@@ -114,8 +114,9 @@ missing items; switching `ae2.fastCraftingPlans` off brings back AE2's own plann
   the player alone when FTB Teams isn't installed. Each player also has a separate private network.
 - Machines are bound to whoever places them. They can be rebound in the UI, or by copying the binding with a
   data stick (Shift-right-click to copy, right-click to paste).
-- Steam: wireless steam input/output hatches, an accessor block (fluid handler on all sides) and a monitor
-  that shows the stored steam and the input/output rates.
+- Steam: wireless steam input/output hatches (the input hatch also works as a fluid input hatch, for recipes that
+  use steam), an accessor block (fluid handler on all sides) and a monitor that shows the stored steam and the
+  input/output rates.
 - EU, one per voltage tier: wireless energy input/output hatches, which also work as substation and laser
   hatches, and an accessor. There is also one monitor for all tiers.
   - Amperage can be set per machine, from 1 to 2^24.

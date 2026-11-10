@@ -38,7 +38,9 @@ public final class WirelessSteamMachines {
         STEAM_INPUT_HATCH = GTMQoLAddon
                 .machine("wireless_steam_input_hatch", info -> new WirelessSteamHatchPartMachine(info, IO.IN))
                 .rotationState(RotationState.ALL)
-                .abilities(PartAbility.STEAM)
+                // steam multiblocks take it as their steam hatch, others as a fluid input hatch for recipes using steam
+                // Untested: an electric multiblock forms with it in a fluid input spot and runs a recipe that uses steam
+                .abilities(PartAbility.STEAM, PartAbility.IMPORT_FLUIDS)
                 .modelProperty(IS_FORMED, false)
                 .colorOverlaySteamHullModel(WIRELESS_OVERLAY)
                 .themeId(GTGuiTheme.BRONZE.getId())
@@ -84,7 +86,7 @@ public final class WirelessSteamMachines {
                         Component.translatable(NETWORK_TOOLTIP_KEY))
                 .register();
         addLang(NETWORK_TOOLTIP_KEY, "Bound to whoever places it; shares steam with every wireless machine of their FTB team, or a separate private pool. Data stick: right-click to bind or paste, shift-right-click to copy");
-        addLang(HATCH_INPUT_TOOLTIP_KEY, "Supplies steam multiblocks from the wireless network");
+        addLang(HATCH_INPUT_TOOLTIP_KEY, "Supplies steam from the wireless network: to steam multiblocks, and as a fluid input hatch to others");
         addLang(HATCH_OUTPUT_TOOLTIP_KEY, "Sends steam produced by the multiblock to the wireless network");
         addLang(ACCESSOR_TOOLTIP_KEY, "Pipes can insert steam into or extract it from the wireless network");
         addLang(MONITOR_TOOLTIP_KEY, "Shows the steam stored in the wireless network and its input, output and net rates");

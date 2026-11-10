@@ -44,13 +44,13 @@ public interface OverclockingLogicMixin {
             maxParallels = 1;
         } else if (logic == Overclocking.PERFECT) {
             int effectiveBoostPower = OCs * 2 - IntMath.log2(Math.max(1, recipe.duration), RoundingMode.FLOOR) + 4;
-            int limit = effectiveBoostPower > 30 ? 2_000_000_000 : (1 << effectiveBoostPower) + 1;
+            int limit = effectiveBoostPower > 30 ? Overclocking.MAX_PARALLELS : (1 << effectiveBoostPower) + 1;
             maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, limit);
         } else if (logic == Overclocking.STANDARD) {
             maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe,
-                    Math.max((int) Math.min(maxVoltage / recipe.duration, 2_000_000_000), 1));
+                    Math.max((int) Math.min(maxVoltage / recipe.duration, Overclocking.MAX_PARALLELS), 1));
         } else {
-            maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, 2_000_000_000);
+            maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, Overclocking.MAX_PARALLELS);
         }
 
         var params = new OverclockingLogic.OCParams(EUt, recipe.duration, OCs, maxParallels);

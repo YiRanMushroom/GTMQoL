@@ -15,6 +15,14 @@ public final class Overclocking {
     /** 2x EU/t, 4x speed per overclock. */
     public static final OverclockingLogic PERFECT = OverclockingLogic.create(0.25, 2.0, true);
 
+    /**
+     * The most parallels we ask GTCEu's {@code ParallelLogic} for. Not {@link Integer#MAX_VALUE}: {@code getMaxByInput}
+     * starts from that and takes it for "no input capability" ("machine has no capabilities: import") when every input
+     * allows that many, as a fluid input above 2.1G mB does at a high enough voltage.
+     */
+    // Untested: the gregified rotary condensentrator at UHV max amperage with over 2.1G mB of input fluid runs
+    public static final int MAX_PARALLELS = 2_000_000_000;
+
     private Overclocking() {}
 
     public static OverclockingLogic replace(OverclockingLogic logic) {

@@ -480,7 +480,7 @@
   "gtmqol.wireless.tooltip.overclock": "Overclock mode: runs at %s, but uses 16× the energy",
   "gtmqol.wireless.tooltip.steam_accessor": "Pipes can insert steam into or extract it from the wireless network",
   "gtmqol.wireless.tooltip.steam_input_cover": "Fills the machine with steam from the wireless network",
-  "gtmqol.wireless.tooltip.steam_input_hatch": "Supplies steam multiblocks from the wireless network",
+  "gtmqol.wireless.tooltip.steam_input_hatch": "Supplies steam from the wireless network: to steam multiblocks, and as a fluid input hatch to others",
   "gtmqol.wireless.tooltip.steam_monitor": "Shows the steam stored in the wireless network and its input, output and net rates",
   "gtmqol.wireless.tooltip.steam_output_cover": "Sends steam from the machine (e.g. a boiler) to the wireless network",
   "gtmqol.wireless.tooltip.steam_output_hatch": "Sends steam produced by the multiblock to the wireless network",

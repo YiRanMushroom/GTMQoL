@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-09 07:13:10"
+updated = "2026-11-10 07:54:29"
 
 [[items]]
 name = "rotor-amount"
@@ -189,5 +189,23 @@ name = "pattern-recipe-fallback"
 value = "Crafting Pattern of a KubeJS recipe without an id (ATM10 netherite template duplication) still works after rejoining; smithing substitutes take other templates/additions the recipe accepts, the base stays exact"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/crafter/CraftingPattern.java"
 snippet = "// Untested: a pattern for a KubeJS recipe without an id (ATM10's netherite template duplication) keeps working after"
+
+[[items]]
+name = "steam-hatch-fluid-input"
+value = "Wireless steam input hatch as a fluid input hatch: an electric multiblock forms with it and runs a recipe using steam; steam multiblocks still take it"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/steam/WirelessSteamMachines.java"
+snippet = "// Untested: an electric multiblock forms with it in a fluid input spot and runs a recipe that uses steam"
+
+[[items]]
+name = "max-parallels"
+value = "Parallel limit capped at 2e9 (GT's getMaxByInput took Integer.MAX_VALUE for no capabilities): gregified rotary condensentrator, UHV max amps, input fluid over 2.1G mB runs"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/overclock/Overclocking.java"
+snippet = "// Untested: the gregified rotary condensentrator at UHV max amperage with over 2.1G mB of input fluid runs"
+
+[[items]]
+name = "me-output-hatch-buffer"
+value = "GT ME output hatch buffers more than 2.1G mB of one fluid (network full or offline) and the machine keeps running"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/MEOutputHatchBufferMixin.java"
+snippet = "// Untested: an ME output hatch buffers more than 2.1G mB of one fluid (ME network full or offline) and the machine"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

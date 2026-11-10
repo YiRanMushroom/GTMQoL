@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.yiran.minecraft.gtmqol.common.overclock.Overclocking;
 import com.yiran.minecraft.gtmqol.common.singleblock.BatchModeTrait;
 
 import net.minecraft.network.chat.Component;
@@ -77,7 +78,7 @@ public final class GregificationModifiers {
                     .build();
         }
 
-        int parallels = (int) Math.min(Integer.MAX_VALUE, (long) (speed / duration));
+        int parallels = (int) Math.min(Overclocking.MAX_PARALLELS, (long) (speed / duration));
         parallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, parallels);
         if (parallels == 0) return ModifierFunction.NULL;
         return ModifierFunction.builder()

@@ -14,9 +14,11 @@ public final class AbsoluteParallel {
 
     private AbsoluteParallel() {}
 
+    /** {@code max} is capped at {@link Overclocking#MAX_PARALLELS}. */
     public static RecipeModifier upTo(int max) {
         return (machine, recipe) -> {
-            int parallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, max);
+            int parallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe,
+                    Math.min(max, Overclocking.MAX_PARALLELS));
             if (parallels == 0) return ModifierFunction.NULL;
             if (parallels == 1) return ModifierFunction.IDENTITY;
             // tick modifiers leave EU/t alone, so this scales everything but the energy
