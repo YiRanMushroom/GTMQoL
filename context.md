@@ -21,15 +21,9 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 
 ## In progress
 
-- Project-wide improvement pass (2026-11-11): bug fixes, player text, README facts, small structure changes and the
-  decisions the user left to me (wireless settings permission, stale channel endpoints, steam rule, Magical Assembler
-  recipes under `miscRecipes`, unused jars removed from `libs/`), plus proxy pattern output marks, the fishing pond
-  water culling fix (1.21) and Mekanism circuit tags at runtime. All in both worktrees, uncommitted (version still
-  3.4.2); both compile, runData and the unit tests pass. `plan.improvement-2026-11` lists what was done, what was
-  decided, and what is still open (structure proposals, small items, the parts no review read). In-game checks:
-  `status.untested`.
-- agent-toolkit (`E:\code\agent-toolkit`): two local commits on main are not pushed (the push was denied in the
-  session); the user pushes them or allows it.
+- Nothing. 3.5.0 (2026-11-11) released the project-wide improvement pass on both branches; `plan.improvement-2026-11`
+  lists what was done, what was decided, and what is still open (structure proposals, small items, the parts no
+  review read). In-game checks: `status.untested`.
 
 ## Known bugs, not fixed
 
