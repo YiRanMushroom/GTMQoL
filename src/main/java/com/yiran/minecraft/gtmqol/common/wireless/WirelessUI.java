@@ -112,13 +112,13 @@ public final class WirelessUI {
         langAdded = true;
         addLang(BOUND_TO_KEY, "Bound to: %s");
         addLang(NETWORK_KEY, "Network: %s");
-        addLang(PRIVATE_ON_KEY, "Private network: your own, separate from any team's (your personal FTB team's too)");
+        addLang(PRIVATE_ON_KEY, "Private network: yours alone, not shared with any team");
         addLang(PRIVATE_OFF_KEY, "Team network: shared with your team");
         addLang(BIND_KEY, "Bind");
         addLang(UNBIND_KEY, "Unbind");
         addLang(MOVE_TO_TEAM_KEY, "To team");
-        addLang(MOVE_TO_TEAM_TOOLTIP_KEY, "Move all steam and EU in your private network into your team's network and " +
-                "switch this machine to the team network");
+        addLang(MOVE_TO_TEAM_TOOLTIP_KEY, "Move your private network's steam and EU to your team network and switch " +
+                "to it");
         addLang(WirelessBindingTrait.BOUND_KEY, "Bound to %s");
         addLang(WirelessBindingTrait.UNBOUND_KEY, "Unbound");
         addLang(WirelessBindingTrait.ALREADY_BOUND_KEY, "Already bound to %s");
@@ -128,8 +128,8 @@ public final class WirelessUI {
         addLang(WirelessBindingTrait.COPIED_KEY, "Wireless binding copied to the data stick");
         addLang(WirelessBindingTrait.STICK_OTHER_PLAYER_KEY, "This data stick holds %s's binding");
         addLang(WirelessBindingTrait.STICK_NAME_KEY, "Wireless Binding (%s)");
-        addLang(WirelessCovers.COVER_BINDING_TOOLTIP_KEY, "Bound to the player who attaches it. A screwdriver, or " +
-                "Shift-right-click with an empty hand, opens its settings");
+        addLang(WirelessCovers.COVER_BINDING_TOOLTIP_KEY, "Bound to the player who attaches it. Settings: " +
+                "screwdriver, or Shift-right-click with an empty hand");
     }
 
     private static void addLang(String key, String value) {

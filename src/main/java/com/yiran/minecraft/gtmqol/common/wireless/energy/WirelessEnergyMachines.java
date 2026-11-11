@@ -124,15 +124,14 @@ public final class WirelessEnergyMachines {
                         Component.translatable(NETWORK_TOOLTIP_KEY))
                 .register();
 
-        addLang(NETWORK_TOOLTIP_KEY, "Bound to the player who places it: uses the wireless network of their FTB team, " +
-                "or their private one. Data Stick: right-click binds or pastes, Shift-right-click copies");
-        addLang(AMPERAGE_TOOLTIP_KEY, "Amperage is set in its window (default %sA; change your default with /gtmqol " +
-                "default_amperage)");
+        addLang(NETWORK_TOOLTIP_KEY, "Uses the wireless network of the player who places it. Data Stick: right-click " +
+                "binds or pastes, Shift-right-click copies");
+        addLang(AMPERAGE_TOOLTIP_KEY, "Amperage is set in its window. Default: %sA, set with /gtmqol default_amperage");
         addLang(DefaultAmperageCommand.SHOW_KEY, "Your wireless energy machines are placed with %sA");
         addLang(DefaultAmperageCommand.SET_KEY, "Wireless energy machines you place now start with %sA");
-        addLang(OVERCLOCK_TOOLTIP_KEY, "Overclock: runs at %s, one tier higher; every EU then costs 4 EU from the " +
-                "wireless network");
-        addLang(HATCH_INPUT_TOOLTIP_KEY, "Powers multiblocks (including the power substation and active transformer) from the wireless network");
+        addLang(OVERCLOCK_TOOLTIP_KEY, "Can overclock to %s, at 4× EU");
+        addLang(HATCH_INPUT_TOOLTIP_KEY, "Powers multiblocks from the wireless network, power substations and active " +
+                "transformers included");
         addLang(HATCH_OUTPUT_TOOLTIP_KEY, "Sends energy produced by the multiblock to the wireless network");
         addLang(ACCESSOR_TOOLTIP_KEY, "Outputs energy from the wireless network on the front; cables on any other side feed it in");
         addLang(ACCESSOR_ANY_VOLTAGE_TOOLTIP_KEY, "Input accepts any voltage, up to its amperage per tick");
@@ -140,13 +139,10 @@ public final class WirelessEnergyMachines {
         addLang(WirelessEnergyUI.STORED_KEY, "EU: %s");
         addLang(WirelessEnergyUI.AMPERAGE_KEY, "Amperage: %sA");
         addLang(WirelessEnergyUI.AMPERAGE_TOOLTIP_KEY, "Buttons: ×4 / ÷4, Shift: ×16 / ÷16, Ctrl: ×2 / ÷2");
-        addLang(WirelessEnergyHatchPartMachine.OVERCLOCK_ON_KEY, "Overclock: on. Runs at %s; every EU costs 4 EU from " +
-                "the wireless network");
-        addLang(WirelessEnergyHatchPartMachine.OVERCLOCK_OFF_KEY, "Overclock: off. Click to run at %s, where every EU " +
-                "costs 4 EU from the wireless network");
+        addLang(WirelessEnergyHatchPartMachine.OVERCLOCK_ON_KEY, "Overclock: on. Runs at %s for 4× EU");
+        addLang(WirelessEnergyHatchPartMachine.OVERCLOCK_OFF_KEY, "Overclock: off");
         addLang(WirelessEnergyHatchPartMachine.SAVE_KEY, "Save");
-        addLang(WirelessEnergyHatchPartMachine.SAVE_TOOLTIP_KEY, "Apply amperage and overclock (closing the window " +
-                "also applies them)");
+        addLang(WirelessEnergyHatchPartMachine.SAVE_TOOLTIP_KEY, "Apply now; closing the window also applies");
         addLang(WirelessEnergyMonitorMachine.INPUT_RATE_KEY, "Input: %s EU/t");
         addLang(WirelessEnergyMonitorMachine.OUTPUT_RATE_KEY, "Output: %s EU/t");
         addLang(WirelessEnergyMonitorMachine.NET_RATE_KEY, "Net: %s EU/t (" + IOStats.SAMPLES + " s avg)");

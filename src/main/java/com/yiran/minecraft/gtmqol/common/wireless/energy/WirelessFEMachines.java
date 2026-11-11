@@ -76,7 +76,7 @@ public final class WirelessFEMachines {
                         Component.translatable(WirelessEnergyMachines.NETWORK_TOOLTIP_KEY))
                 .register();
 
-        addLang(NETWORK_TOOLTIP_KEY, "Uses the EU of its wireless network, converted to FE. No limit on the rate");
+        addLang(NETWORK_TOOLTIP_KEY, "Uses its wireless network's EU as FE, with no rate limit");
         addLang(INPUT_TOOLTIP_KEY, "Gives its multiblock FE from the wireless network");
         addLang(OUTPUT_TOOLTIP_KEY, "Sends FE from its multiblock to the wireless network");
         addLang(CUBE_TOOLTIP_KEY, "Every side can be set to take FE in or give it out");

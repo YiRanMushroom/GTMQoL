@@ -73,7 +73,7 @@ public final class WirelessCovers {
         }
 
         addLang(ENERGY_INPUT_TOOLTIP_KEY, "Charges the machine from the wireless network, at any input voltage");
-        addLang(ENERGY_OUTPUT_TOOLTIP_KEY, "Sends the energy stored in a generator, battery buffer or other EU source to the wireless network");
+        addLang(ENERGY_OUTPUT_TOOLTIP_KEY, "Sends the machine's stored EU to the wireless network");
         addLang(ENERGY_RATE_TOOLTIP_KEY, "Up to %s EU/t per ampere (%s)");
         WirelessUI.addSharedLang();
     }
@@ -89,7 +89,7 @@ public final class WirelessCovers {
                 Component.translatable(STEAM_OUTPUT_TOOLTIP_KEY));
 
         addLang(STEAM_INPUT_TOOLTIP_KEY, "Fills the machine with steam from the wireless network");
-        addLang(STEAM_OUTPUT_TOOLTIP_KEY, "Sends steam from the machine (e.g. a boiler) to the wireless network");
+        addLang(STEAM_OUTPUT_TOOLTIP_KEY, "Sends the machine's steam to the wireless network");
         WirelessUI.addSharedLang();
     }
 

@@ -15,8 +15,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 /**
- * The toast for {@link AssemblingMatrixUploadMessage}: the product's icon, what happened, and the product's name (or
- * that the pattern stays in the terminal). Toasts show above any open window. A pattern encoded while the toast shows replaces it, so
+ * The toast for {@link AssemblingMatrixUploadMessage}: the product's icon, whether it uploaded, and the product's name
+ * (or why it couldn't). Toasts show above any open window. A pattern encoded while the toast shows replaces it, so
  * encoding many in a row doesn't queue up one toast each.
  */
 // Untested: Shift-clicking encode uploads and shows the toast over the terminal; a copy or no room says so and the
@@ -49,13 +49,10 @@ public final class AssemblingMatrixUploadToast implements Toast {
         boolean shown = toast != null;
         if (!shown) toast = new AssemblingMatrixUploadToast();
         toast.icon = icon;
-        toast.title = Component.translatable(AssemblingMatrixMachine.KEY + switch (outcome) {
-            case TAKEN -> "uploaded";
-            case ALREADY_THERE -> "already_there";
-            default -> "no_room";
-        });
-        toast.detail = outcome == Outcome.TAKEN ? icon.getHoverName() :
-                Component.translatable(AssemblingMatrixMachine.KEY + "stays");
+        boolean taken = outcome == Outcome.TAKEN;
+        toast.title = Component.translatable(AssemblingMatrixMachine.KEY + (taken ? "uploaded" : "cannot_upload"));
+        toast.detail = taken ? icon.getHoverName() : Component.translatable(AssemblingMatrixMachine.KEY +
+                (outcome == Outcome.ALREADY_THERE ? "already_there" : "no_room"));
         Font font = Minecraft.getInstance().font;
         toast.width = Math.max(160, TEXT_X + Math.max(font.width(toast.title), font.width(toast.detail)) + 8);
         toast.changed = true;

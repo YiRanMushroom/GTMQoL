@@ -470,17 +470,16 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
         addLang(TITLE_KEY, "Crafting Pattern");
         addLang(ENCODE_KEY, "Encode");
         addLang(CLEAR_KEY, "Clear");
-        addLang(CLEAR_TOOLTIP_KEY, "Empties the grid; an encoded pattern goes back to blank");
+        addLang(CLEAR_TOOLTIP_KEY, "Empties the grid and the pattern");
         addLang(FLUIDS_ON_KEY, "Buckets are taken as fluid from the tanks");
         addLang(FLUIDS_OFF_KEY, "Buckets are taken as items");
-        addLang(SUBSTITUTES_ON_KEY, "Accepts anything the recipe accepts, at any durability (smithing: the " +
-                "template and the addition)");
-        addLang(SUBSTITUTES_OFF_KEY, "Accepts only these exact items, durability included");
-        addLang(DUPLICATES_ON_KEY, "An item the recipe makes more of is kept, and only what it adds comes out");
-        addLang(DUPLICATES_OFF_KEY, "Recipes that make more of an input use it up as usual");
+        addLang(SUBSTITUTES_ON_KEY, "Anything the recipe accepts, at any durability");
+        addLang(SUBSTITUTES_OFF_KEY, "Only these exact items, durability included");
+        addLang(DUPLICATES_ON_KEY, "Inputs the recipe makes more of are kept; only the extra comes out");
+        addLang(DUPLICATES_OFF_KEY, "Inputs the recipe makes more of are used up");
         addLang(MODE_KEY + "crafting", "Crafting table recipe");
         addLang(MODE_KEY + "stonecutting", "Stonecutter recipe");
-        addLang(MODE_KEY + "smithing", "Smithing table recipe: template, base item, addition");
+        addLang(MODE_KEY + "smithing", "Smithing table recipe: template, base, addition");
         addLang(NEXT_RESULT_KEY, "Result %s of %s: click it for the next");
         addLang(EMPTY_KEY, "Place a recipe in the grid");
         addLang(NO_RECIPE_KEY, "No recipe matches");
@@ -488,7 +487,7 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
         addLang(FLUID_LEGEND_KEY, "Blue: fluid");
         addLang(CHANGED_LEGEND_KEY, "Yellow: wears out");
         addLang(BLANK_KEY, "Right-click to encode a recipe");
-        addLang(BROKEN_KEY, "The recipe of this Crafting Pattern changed or no longer exists");
+        addLang(BROKEN_KEY, "Recipe changed or removed");
         addLang(CRAFTS_KEY, "Crafts %sx %s");
         addLang(GIVES_BACK_KEY, "Gives back %sx %s");
         addLang(USES_KEY, "Uses %sx %s");

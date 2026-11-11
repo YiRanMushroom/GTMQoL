@@ -55,20 +55,17 @@ public final class AE2Machines {
                 .register();
 
         addLang(PatternBatching.TITLE_KEY, "Pattern Batching");
-        addLang(PatternBatching.TOGGLE_KEY + ".enabled", "Pattern Batching: on. A crafting job sends many crafts of a " +
-                "processing pattern to this ME Pattern Buffer as one batch");
-        addLang(PatternBatching.TOGGLE_KEY + ".disabled", "Pattern Batching: off. A crafting job sends one craft at a time");
+        addLang(PatternBatching.TOGGLE_KEY + ".enabled", "Pattern Batching: on. Crafting jobs send many crafts of a " +
+                "processing pattern at once");
+        addLang(PatternBatching.TOGGLE_KEY + ".disabled", "Pattern Batching: off");
         addLang(PatternBatching.LIMIT_KEY, "Batch limit (0 = none)");
-        addLang(PatternBatching.LIMIT_KEY + ".tooltip", "Most items, or buckets of fluid, of any one ingredient in a " +
-                "batch");
-        addLang(PatternBatching.TITLE_KEY + ".tooltip", "Sends many crafts of a processing pattern to this ME " +
-                "Pattern Buffer as one batch");
-        addLang(PatternOutputMarks.TOGGLE_KEY + ".enabled", "Mark Pattern Outputs: on. Each pattern counts as a ghost " +
-                "ingredient of its main output, so the machine runs the recipe that makes that output");
+        addLang(PatternBatching.LIMIT_KEY + ".tooltip", "Most items or buckets of one ingredient per batch");
+        addLang(PatternBatching.TITLE_KEY + ".tooltip", "Sends many crafts of a processing pattern at once");
+        addLang(PatternOutputMarks.TOGGLE_KEY + ".enabled", "Mark Pattern Outputs: on. Each pattern's main output is " +
+                "a ghost ingredient, so the machine runs the recipe that makes it");
         addLang(PatternOutputMarks.TOGGLE_KEY + ".disabled", "Mark Pattern Outputs: off");
-        addLang(SharedHatches.TOGGLE_KEY + ".enabled", "Shared Hatches: on. Patterns also use ingredients from the " +
-                "machine's other buses and hatches that aren't distinct or dyed, like circuits, molds or ghost " +
-                "ingredients");
+        addLang(SharedHatches.TOGGLE_KEY + ".enabled", "Shared Hatches: on. Patterns also take circuits, molds and " +
+                "ghost ingredients from the machine's other buses and hatches that aren't distinct or dyed");
         addLang(SharedHatches.TOGGLE_KEY + ".disabled", "Shared Hatches: off");
     }
 

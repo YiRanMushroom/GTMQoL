@@ -90,9 +90,9 @@ public final class AEDualParts {
         GTMQoLAddon.registrate().addRawLang(DUAL_INPUT_TOOLTIP, "Stocks items and fluids in 36 slots");
         GTMQoLAddon.registrate().addRawLang(DUAL_OUTPUT_TOOLTIP, "Outputs items and fluids to the ME network");
         GTMQoLAddon.registrate().addRawLang(UNIVERSAL_INPUT_TOOLTIP,
-                "Stocks items, fluids and other ME types (e.g. Mekanism chemicals) in 36 slots");
+                "Stocks items, fluids and any other ME type in 36 slots");
         GTMQoLAddon.registrate().addRawLang(UNIVERSAL_OUTPUT_TOOLTIP,
-                "Outputs items, fluids and other ME types (e.g. Mekanism chemicals) to the ME network");
+                "Outputs items, fluids and any other ME type to the ME network");
     }
 
     public static void addRecipes(RecipeOutput provider, boolean meAssembler) {

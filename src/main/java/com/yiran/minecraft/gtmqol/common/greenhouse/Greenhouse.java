@@ -131,9 +131,9 @@ public final class Greenhouse {
                 .langValue("Industrial Greenhouse")
                 .register();
 
-        registrate.addRawLang(KEY + "tooltip", "Grows the seed or sapling in its input slot, which is not consumed.");
+        registrate.addRawLang(KEY + "tooltip", "Grows the seed or sapling in its input slot without consuming it.");
         registrate.addRawLang(INDUSTRIAL_KEY + "tooltip.0",
-                "Grows the seed or sapling in its input bus, which is not consumed.");
+                "Grows the seed or sapling in its input bus without consuming it.");
         registrate.addRawLang(INDUSTRIAL_KEY + "tooltip.1", "Outputs %s× as much as a Greenhouse.");
         registrate.addRawLang(INDUSTRIAL_KEY + "tooltip.2", "Needs dirt, grass or the like in the middle of its floor.");
     }

@@ -94,8 +94,8 @@ public final class AutoBuilder {
         var registrate = GTMQoLAddon.registrate();
         registrate.addRawLang(BUTTON_KEY, "Auto build");
         registrate.addRawLang(TOOLTIP_KEY + "0", "Click: place blocks from your inventory");
-        registrate.addRawLang(TOOLTIP_KEY + "1", "Shift-click: keep building until done; again to stop");
-        registrate.addRawLang(TOOLTIP_KEY + "2", "Hatches, buses and other parts are not placed");
+        registrate.addRawLang(TOOLTIP_KEY + "1", "Shift-click: build until done, again to stop");
+        registrate.addRawLang(TOOLTIP_KEY + "2", "Doesn't place hatches or buses");
         registrate.addRawLang(TOOLTIP_KEY + "3", "Right-click: settings");
         registrate.addRawLang(AutoBuildPanel.TITLE_KEY, "Auto build settings");
         registrate.addRawLang(AutoBuildPanel.LAYER_KEY, "Repeats of layer %s: %s");
@@ -104,7 +104,7 @@ public final class AutoBuilder {
         registrate.addRawLang(AutoBuildPanel.RESET_KEY, "Reset");
         registrate.addRawLang(AutoBuildPanel.NOTHING_KEY, "Nothing to configure");
         registrate.addRawLang(PROGRESS_KEY, "Auto build: placed %s, %s left");
-        registrate.addRawLang(DONE_KEY, "Auto build: every block is placed. Add the hatches to form the structure.");
+        registrate.addRawLang(DONE_KEY, "Auto build: done. Add the hatches to form the structure.");
         registrate.addRawLang(FORMED_KEY, "Auto build: the structure is formed");
         registrate.addRawLang(ALREADY_FORMED_KEY, "The structure is already formed");
         registrate.addRawLang(STARTED_KEY, "Auto build started");

@@ -631,23 +631,19 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
     static void addLang() {
         var lang = GTMQoLAddon.registrate();
         lang.addRawLang(KEY + "tooltip.0", "Crafts in bulk for an ME network: AE2 Crafting, Stonecutting and Smithing " +
-                "Patterns, and the Crafting Patterns made for the Pattern Crafter.");
-        lang.addRawLang(KEY + "tooltip.1", "A box of 3 to 15 blocks each way: edges of Machine Casings, faces of " +
-                "Quartz Glass. Inside: Assembling Matrix Processing Cores, Assembling Matrix Pattern Cores or air.");
-        lang.addRawLang(KEY + "tooltip.2", "All Machine Casings must be of one tier, and a higher tier crafts faster. " +
-                "The structure preview shows ULV, but any tier works.");
-        lang.addRawLang(KEY + "tooltip.3", "Each Assembling Matrix Processing Core does 4 crafts per tick, ×4 for each " +
-                "casing tier above ULV.");
-        lang.addRawLang(KEY + "tooltip.4", "On the edges: one Assembling Matrix ME Interface, at least one Wireless FE " +
-                "Input Hatch, and Input Buses for catalysts.");
-        lang.addRawLang(KEY + "tooltip.5", "Catalysts: tools, smithing templates and other items a Crafting Pattern " +
-                "keeps instead of using up. They stay in the Input Buses, where tools wear down.");
-        lang.addRawLang(KEY + "tooltip.6", "Each craft uses %s FE from the Wireless FE Input Hatches.");
-        lang.addRawLang(KEY + "processing_core.tooltip", "Does 4 crafts per tick inside an Assembling Matrix, ×4 for " +
-                "each casing tier above ULV");
-        lang.addRawLang(KEY + "pattern_core.tooltip", "Holds 72 patterns inside an Assembling Matrix");
-        lang.addRawLang(KEY + "interface.tooltip", "Connects an Assembling Matrix to an ME network: offers its " +
-                "patterns to crafting jobs and sends the products back");
+                "Patterns, and the Pattern Crafter's Crafting Patterns.");
+        lang.addRawLang(KEY + "tooltip.1", "3 to 15 blocks each way. Inside: Assembling Matrix Processing Cores, " +
+                "Pattern Cores or air.");
+        lang.addRawLang(KEY + "tooltip.2", "Machine Casings of any one tier.");
+        lang.addRawLang(KEY + "tooltip.3", "Each Processing Core does 4 crafts per tick, ×4 per casing tier above " +
+                "ULV.");
+        lang.addRawLang(KEY + "tooltip.4", "Needs one Assembling Matrix ME Interface and a Wireless FE Input Hatch. " +
+                "Input Buses hold catalysts.");
+        lang.addRawLang(KEY + "tooltip.5", "Catalysts: tools and other items a recipe keeps. Tools wear down.");
+        lang.addRawLang(KEY + "tooltip.6", "%s FE per craft.");
+        lang.addRawLang(KEY + "processing_core.tooltip", "4 crafts per tick, ×4 per casing tier above ULV");
+        lang.addRawLang(KEY + "pattern_core.tooltip", "Holds 72 patterns");
+        lang.addRawLang(KEY + "interface.tooltip", "Connects an Assembling Matrix to an ME network");
         lang.addRawLang(KEY + "interface.rename", "Name in Pattern Access Terminals");
         lang.addRawLang(KEY + "interface.no_matrix", "Not part of a formed Assembling Matrix");
         lang.addRawLang(KEY + "error.mixed_casings", "All Machine Casings must be of one tier");
@@ -664,19 +660,16 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         lang.addRawLang(KEY + "patterns.search", "Search");
         lang.addRawLang(KEY + "patterns.empty", "No patterns");
         lang.addRawLang(KEY + "patterns.take", "Click: take out. Shift-click: move to your inventory");
-        lang.addRawLang(KEY + "patterns.put", "Put patterns here, or Shift-click patterns in your inventory");
-        lang.addRawLang(KEY + "auto_upload.enabled", "Auto upload: on. Crafting, stonecutting and smithing patterns " +
-                "encoded with Shift-click in a Pattern Encoding Terminal on the same ME network move into this " +
-                "Assembling Matrix");
-        lang.addRawLang(KEY + "auto_upload.disabled", "Auto upload: off. Encoded patterns stay in the Pattern " +
-                "Encoding Terminal");
-        lang.addRawLang(KEY + "cancel.0", "Shift-click: cancel all crafts not done yet and return their ingredients " +
-                "to the ME network");
-        lang.addRawLang(KEY + "cancel.1", "Cancel the crafting job in the Crafting Status first, or the job waits " +
-                "for the products forever");
-        lang.addRawLang(KEY + "uploaded", "Pattern moved into an Assembling Matrix");
-        lang.addRawLang(KEY + "already_there", "Not uploaded: an Assembling Matrix already has this pattern");
-        lang.addRawLang(KEY + "no_room", "Not uploaded: no Assembling Matrix with auto upload has room");
-        lang.addRawLang(KEY + "stays", "The pattern stays in the terminal");
+        lang.addRawLang(KEY + "patterns.put", "Put patterns here, or Shift-click them in your inventory");
+        lang.addRawLang(KEY + "auto_upload.enabled", "Auto upload: on. Shift-click Encode in a Pattern Encoding " +
+                "Terminal on this ME network to upload the pattern here");
+        lang.addRawLang(KEY + "auto_upload.disabled", "Auto upload: off");
+        lang.addRawLang(KEY + "cancel.0", "Shift-click: cancel unfinished crafts and return their ingredients to the " +
+                "ME network");
+        lang.addRawLang(KEY + "cancel.1", "Cancel the job in the Crafting Status first, or it waits forever");
+        lang.addRawLang(KEY + "uploaded", "Pattern uploaded");
+        lang.addRawLang(KEY + "already_there", "Already in an Assembling Matrix");
+        lang.addRawLang(KEY + "no_room", "No room in an Assembling Matrix with auto upload");
+        lang.addRawLang(KEY + "cannot_upload", "Cannot upload");
     }
 }

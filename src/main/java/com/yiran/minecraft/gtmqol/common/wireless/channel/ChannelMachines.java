@@ -67,11 +67,12 @@ public final class ChannelMachines {
                         Component.translatable(CHANNEL_TOOLTIP_KEY))
                 .register();
         addLang("gtmqol.channel.tooltip.computation_transmission",
-                "Sends the CWU/t of its HPCA or network switch into its computation channel");
+                "Sends CWU/t to its computation channel");
         addLang("gtmqol.channel.tooltip.computation_reception",
-                "Gives its research station or network switch the CWU/t of its computation channel");
+                "Receives CWU/t from its computation channel");
         addLang("gtmqol.channel.tooltip.router",
-                "Lets its computation channel have any number of transmitters and receivers (one of each without a router). Needs no energy and doesn't need to be loaded");
+                "Lets its computation channel have any number of transmitters and receivers. Needs no energy, works " +
+                        "while unloaded");
     }
 
     public static void initOptical() {
@@ -83,9 +84,9 @@ public final class ChannelMachines {
                 info -> new WirelessDataHatchPartMachine(info, false),
                 PartAbility.OPTICAL_DATA_RECEPTION, "gtmqol.channel.tooltip.optical_data_reception");
         addLang("gtmqol.channel.tooltip.optical_data_transmission",
-                "Shares the research of its data bank with its optical data channel");
+                "Sends its data bank's research to its optical data channel");
         addLang("gtmqol.channel.tooltip.optical_data_reception",
-                "Gives its assembly line the research of every data bank on its optical data channel");
+                "Receives the research of every data bank on its optical data channel");
     }
 
     private static MachineEntry<MachineDefinition> hatch(
@@ -113,8 +114,7 @@ public final class ChannelMachines {
             ChannelComputation.clear();
         });
         addLang(CHANNEL_TOOLTIP_KEY,
-                "Open its window to create channels and bind it to one (private, team or public). Works across " +
-                        "dimensions while both ends are loaded");
+                "Bind it to a channel in its window. Works across dimensions while both ends are loaded");
         ChannelUI.addLang();
     }
 

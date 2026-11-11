@@ -29,10 +29,8 @@ public class StickyCardItem extends UpgradeCardItem {
 
     private static final String TOOLTIP_KEY = "gtmqol.item.sticky_card.tooltip.";
     private static final String[] TOOLTIPS = {
-            "Storage Bus upgrade. What matches the bus's partition goes only into that storage: when it is full, " +
-                    "nothing overflows into storage of equal or lower priority.",
-            "Needs a partition on the Storage Bus (whitelist or blacklist). Storage of higher priority still " +
-                    "takes its share first."
+            "Storage Bus upgrade: what matches the partition never overflows into storage of equal or lower priority.",
+            "Needs a partition. Higher-priority storage still fills first."
     };
 
     /** Null unless {@code ae2.stickyCard} is on in the early config; the mixins check it. */
