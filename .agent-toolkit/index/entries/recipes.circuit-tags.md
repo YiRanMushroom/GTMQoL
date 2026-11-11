@@ -1,15 +1,15 @@
 +++
 title = "CircuitTags: GT circuit tiers and Mekanism control circuits / infused alloy made interchangeable via item tags"
-keys = [ "1.21", "alloys/advanced", "circuits.mekanismcircuittags", "datagen", "forge:circuits", "ulv" ]
-updated = "2026-10-19 20:12:37"
-checked = "2026-11-07"
+keys = [ "1.21", "alloys/advanced", "forge:circuits", "mekanismcircuittags", "runtime tags", "ulv" ]
+updated = "2026-11-11 08:18:48"
+checked = "2026-11-11"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/circuit/CircuitTags.java"
-snippet = "private static final Pair[] PAIRS = {"
+snippet = "public static void addTo(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {"
 
 [[links]]
-path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoL.java"
-snippet = "if (config.circuits.mekanismCircuitTags) CircuitTags.init();"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/MixinHelpersMixin.java"
+snippet = "CircuitTags.addTo(tagMap);"
 +++
-Static datagen JSON (needs runData; datagen always sees every feature on), so the circuits.mekanismCircuitTags toggle does not remove the tags at runtime: known limitation, left on purpose. Uses forge: tags (1.21.1 uses c:). Mekanism recipes use both forge:alloys/advanced and mekanism:alloys/infused; the latter includes the former.
+Added at runtime (2026-11-11), not datagen: CircuitTags.addTo puts the entries into the tag map GTCEu fills while tags load (MixinHelpersMixin, the hook WireTags uses), only with Mekanism loaded and `circuits.mekanismCircuitTags` on, so the option works and follows /reload. Each pair goes both ways: the common tag (forge:circuits/basic ... on this branch, c: on 1.21) takes the GT tier tag, the GT tier tag takes Mekanism's item; both entries optional. Why runtime: rules.direction (static resources only for our own content, GTCEu and AE2). Mekanism recipes use both forge:alloys/advanced and mekanism:alloys/infused; the latter includes the former.

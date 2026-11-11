@@ -1,24 +1,34 @@
 package com.yiran.minecraft.gtmqol.common.circuit;
 
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.yiran.minecraft.gtmqol.GTMQoLAddon;
+import com.yiran.minecraft.gtmqol.GTMQoL;
+import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
+import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.fml.ModList;
 
-import com.tterrag.registrate.providers.ProviderType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Makes GT circuits and Mekanism control circuits interchangeable, tier by tier: {@code forge:circuits/basic}
- * includes {@code #gtceu:circuits/lv}, and {@code gtceu:circuits/lv} includes Mekanism's basic control circuit
- * (optional, so the tag still loads without Mekanism). Including each tag in the other would be a cycle,
- * which the tag loader rejects, hence one tag reference plus one item.
+ * includes {@code #gtceu:circuits/lv}, and {@code gtceu:circuits/lv} includes Mekanism's basic control circuit.
+ * Including each tag in the other would be a cycle, which the tag loader rejects, hence one tag reference plus one
+ * item.
  * <p>
  * ULV pairs with infused alloy the same way, through {@code forge:alloys/advanced} (Mekanism's
  * {@code mekanism:alloys/infused} includes that tag).
+ * <p>
+ * Added while tags load ({@code MixinHelpersMixin}), only with Mekanism installed and the option on: what concerns
+ * another mod than GTCEu or AE2 is never generated into the jar.
  */
+// Untested: with Mekanism, GT recipes take Mekanism's control circuits of the tier and Mekanism recipes take GT
+// circuits, as before; with circuits.mekanismCircuitTags off they no longer do after /reload
 public final class CircuitTags {
 
     private record Pair(TagKey<Item> gt, String forgeTag, String mekanismItem) {}
@@ -33,14 +43,18 @@ public final class CircuitTags {
 
     private CircuitTags() {}
 
-    public static void init() {
-        GTMQoLAddon.registrate().addDataGenerator(ProviderType.ITEM_TAGS, prov -> {
-            for (Pair pair : PAIRS) {
-                prov.addTag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", pair.forgeTag)))
-                        .addTag(pair.gt);
-                prov.addTag(pair.gt)
-                        .addOptional(ResourceLocation.fromNamespaceAndPath("mekanism", pair.mekanismItem));
-            }
-        });
+    public static void addTo(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap) {
+        if (!ModList.get().isLoaded("mekanism") || !GTMQoLConfig.get().circuits.mekanismCircuitTags) return;
+        for (Pair pair : PAIRS) {
+            add(tagMap, ResourceLocation.fromNamespaceAndPath("forge", pair.forgeTag),
+                    TagEntry.optionalTag(pair.gt.location()));
+            add(tagMap, pair.gt.location(),
+                    TagEntry.optionalElement(ResourceLocation.fromNamespaceAndPath("mekanism", pair.mekanismItem)));
+        }
+    }
+
+    private static void add(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap, ResourceLocation tag,
+                            TagEntry entry) {
+        tagMap.computeIfAbsent(tag, path -> new ArrayList<>()).add(new TagLoader.EntryWithSource(entry, GTMQoL.MOD_ID));
     }
 }

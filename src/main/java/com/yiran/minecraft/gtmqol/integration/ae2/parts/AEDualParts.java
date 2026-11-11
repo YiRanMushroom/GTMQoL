@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
-import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.PatternBufferReturn;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.network.chat.Component;
@@ -36,18 +35,11 @@ public final class AEDualParts {
 
     // Not "<ns>.machine.<id>.tooltip": gtceu adds that key to the tooltip by itself, it would show twice.
     private static final String DUAL_INPUT_TOOLTIP = "gtmqol.machine.me_dual_input.desc";
+    private static final String DUAL_OUTPUT_TOOLTIP = "gtmqol.machine.me_dual_output.desc";
     private static final String UNIVERSAL_INPUT_TOOLTIP = "gtmqol.machine.me_universal_input.desc";
     private static final String UNIVERSAL_OUTPUT_TOOLTIP = "gtmqol.machine.me_universal_output.desc";
 
     private AEDualParts() {}
-
-    public static void initLang() {
-        // Constant, so this doesn't load PatternBufferReturn.
-        GTMQoLAddon.registrate().addRawLang(PatternBufferReturn.TOGGLE_KEY + ".enabled",
-                "Outputs go to the ME network: on");
-        GTMQoLAddon.registrate().addRawLang(PatternBufferReturn.TOGGLE_KEY + ".disabled",
-                "Outputs go to the ME network: off");
-    }
 
     public static void init() {
         ME_DUAL_INPUT = GTMQoLAddon.machine("me_dual_input", MEDualInputPartMachine::new)
@@ -68,7 +60,7 @@ public final class AEDualParts {
                 .abilities(PartAbility.EXPORT_ITEMS, PartAbility.EXPORT_FLUIDS)
                 .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_output_bus"))
                 .langValue("ME Dual Output")
-                .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
+                .tooltips(Component.translatable(DUAL_OUTPUT_TOOLTIP),
                         Component.translatable("gtceu.machine.me.export.tooltip"),
                         Component.translatable("gtceu.part_sharing.enabled"))
                 .register();
@@ -97,6 +89,7 @@ public final class AEDualParts {
                 .register();
 
         GTMQoLAddon.registrate().addRawLang(DUAL_INPUT_TOOLTIP, "Stocks items and fluids in 36 slots");
+        GTMQoLAddon.registrate().addRawLang(DUAL_OUTPUT_TOOLTIP, "Outputs items and fluids to the ME network");
         GTMQoLAddon.registrate().addRawLang(UNIVERSAL_INPUT_TOOLTIP,
                 "Stocks items, fluids and other ME types (e.g. Mekanism chemicals) in 36 slots");
         GTMQoLAddon.registrate().addRawLang(UNIVERSAL_OUTPUT_TOOLTIP,

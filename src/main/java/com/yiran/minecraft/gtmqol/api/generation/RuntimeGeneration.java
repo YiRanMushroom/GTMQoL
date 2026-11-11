@@ -31,7 +31,6 @@ public final class RuntimeGeneration {
     private record MachineAssets(MachineBuilder<?, ?, ?> builder, MachineDefinition definition) {}
 
     private static final List<MachineAssets> MACHINES = new ArrayList<>();
-    private static final List<Runnable> CALLBACKS = new ArrayList<>();
     // namespace -> language -> key -> value
     private static final Map<String, Map<String, Map<String, String>>> LANG = new LinkedHashMap<>();
 
@@ -54,19 +53,9 @@ public final class RuntimeGeneration {
     }
 
     /**
-     * For anything not covered above. Runs at the start of every {@link #generateAll()}, so it may call
-     * the methods above or write to {@link GTDynamicResourcePack} directly.
-     */
-    public static void onGenerate(Runnable callback) {
-        CALLBACKS.add(callback);
-    }
-
-    /**
      * Call from GTCEu's {@code RegisterDynamicResourcesEvent}.
      */
     public static void generateAll() {
-        CALLBACKS.forEach(Runnable::run);
-
         RuntimeBlockstateProvider provider = RuntimeBlockstateProvider.INSTANCE;
         for (MachineAssets machine : MACHINES) {
             generateMachine(provider, machine.builder(), machine.definition());

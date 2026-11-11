@@ -1,5 +1,8 @@
 {
   "values": [
-    "gtmqol:assembling_matrix_processing_core"
+    {
+      "id": "gtmqol:assembling_matrix_processing_core",
+      "required": false
+    }
   ]
 }

@@ -8,7 +8,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -75,7 +74,7 @@ public final class WirelessEnergySavedData extends WirelessPool {
     }
 
     @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag tag) {
+    public CompoundTag save(CompoundTag tag) {
         super.save(tag);
         ListTag defaults = new ListTag();
         defaultAmperage.forEach((player, amperage) -> {

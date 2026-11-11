@@ -1,8 +1,8 @@
 +++
 title = "Upstream bug workarounds in core/mixins/gtceufix: rules, which exist on 1.20.1 vs 1.21.1, recheck after bumps"
 keys = [ "both branches", "modularui bug", "remove once fixed" ]
-updated = "2026-11-07 09:54:35"
-checked = "2026-11-07"
+updated = "2026-11-11 08:19:21"
+checked = "2026-11-11"
 
 [[items]]
 name = "package"
@@ -35,7 +35,7 @@ On 1.20.1 (checked 2026-10-29 against GTCEu 327 / MUI 25: none of their targets 
 - client: `GTEmiRecipeMixin`, `BaseSchemaRendererMixin`, `DummyChunkSourceMixin`
 AbstractWidgetMenu, BaseSchemaRenderer, EnergyContainerList and RecipeLogic are byte-identical to 1.21.1 apart from imports; DummyChunkSource lacks 1.21.1's clear() wrapper (1.20.1's MUI has no clear); FluidRecipeCapability, GTEmiRecipe and RecipeRunner use NBT / GTCEu 1.20 ingredients where 1.21.1 uses data components / NeoForge sized ingredients.
 
-1.21.1 only (bug absent on 1.20.1's GTCEu / MUI / JEI setup): AABB highlight color and see-through, BloomSafeMode, EmiCallWrapper, GameData (duplicate recipe_type RegisterEvent), GTRecipeBuilder (fluid output components), GTRecipeCategory lang, ItemDataComponentMapIngredient, MEPatternBufferInternalSlot, AEConfigSyncHandler, PotionFluidType, JEI RecipeSlot (own config). If one of these symptoms shows up on 1.20.1, port the fix from 1.21.1 rather than assuming it's absent.
+1.21.1 only (bug absent on 1.20.1's GTCEu / MUI / JEI setup): AABB highlight color and see-through, BloomSafeMode, EmiCallWrapper, GameData (duplicate recipe_type RegisterEvent), GTRecipeBuilder (fluid output components), GTRecipeCategory lang, ItemDataComponentMapIngredient, MEPatternBufferInternalSlot, AEConfigSyncHandler, PotionFluidType, JEI RecipeSlot (own config), BlockEntityWithBERModelRenderer (dynamic renders culled with the controller's block: 1.21's renderer doesn't forward the model's render box, 1.20's MetaMachine.getRenderBoundingBox does). If one of these symptoms shows up on 1.20.1, port the fix from 1.21.1 rather than assuming it's absent.
 
 Deleted after the 2026-10-14 GTCEu bump (fixed upstream, GTCEu #5540 ghost circuit into empty circuit slot, #5541 custom recipe logic copied into the type): GTMuiWidgetsMixin, GTRecipeTypeMixin.
 

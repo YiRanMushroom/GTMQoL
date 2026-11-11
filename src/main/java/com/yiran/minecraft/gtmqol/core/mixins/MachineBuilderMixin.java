@@ -27,11 +27,6 @@ public abstract class MachineBuilderMixin implements IDynamicGenerationHandler {
         this.gtmqol$dynamicGenerated = dynamicGenerated;
     }
 
-    @Override
-    public boolean gtmqol$isDynamicallyGenerated() {
-        return gtmqol$dynamicGenerated;
-    }
-
     @Shadow
     protected MachineInstanceFactory<? extends MetaMachine> instanceFactory;
 

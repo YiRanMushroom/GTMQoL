@@ -44,6 +44,7 @@ import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
+import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessEnergyMachines;
 
 import java.util.EnumSet;
 import java.util.Objects;
@@ -67,8 +68,13 @@ public class WirelessEnergyCellMachine extends MetaMachine
 
     /** Above the dense energy cell's, so the network is used first and AE2's own cells stay as a reserve. */
     private static final int PRIORITY = 3200;
-    /** AE2 adds the maximum up when the cell joins, so it can't follow the network. Far above anything it holds. */
-    private static final double MAX_POWER = 1e30;
+    /**
+     * AE2 adds the maximum up when the cell joins, so it can't follow the network. Huge, but not so huge that the
+     * other cells' maxima vanish in the grid's double sum (at 1e30 they did). The cell reports at most this much.
+     */
+    // Untested: an ME network with the cell and normal energy cells shows a sensible stored / maximum power, also
+    // after the wireless cell is removed
+    private static final double MAX_POWER = 1e19;
     private static final int RECHECK_INTERVAL = 20;
 
     @SaveField
@@ -106,11 +112,12 @@ public class WirelessEnergyCellMachine extends MetaMachine
                 .model(GTMachineModels.createBasicMachineModel(GTMQoL.id("block/wireless_energy_cell"))
                         .andThen(b -> b.addDynamicRenderer(EnergyCellSidesRender::new)))
                 .langValue("Wireless Energy Cell")
-                .tooltips(Component.translatable(TOOLTIP_KEY), Component.translatable(NETWORK_TOOLTIP_KEY))
+                .tooltips(Component.translatable(TOOLTIP_KEY), Component.translatable(NETWORK_TOOLTIP_KEY),
+                        Component.translatable(WirelessEnergyMachines.NETWORK_TOOLTIP_KEY))
                 .register();
-        GTMQoLAddon.registrate().addRawLang(TOOLTIP_KEY, "Gives its ME network power from a wireless energy network");
+        GTMQoLAddon.registrate().addRawLang(TOOLTIP_KEY, "Powers its ME network from the wireless network");
         GTMQoLAddon.registrate().addRawLang(NETWORK_TOOLTIP_KEY,
-                "Only gives power: other power sources on the ME network can't fill the wireless energy network");
+                "Only gives power: other power sources on the ME network can't fill the wireless network");
     }
 
     public static void addRecipes(Consumer<FinishedRecipe> provider) {
@@ -192,7 +199,7 @@ public class WirelessEnergyCellMachine extends MetaMachine
     @Override
     public double getAECurrentPower() {
         if (!reportsNetwork()) return 0;
-        return PowerUnits.FE.convertTo(PowerUnits.AE, buffer.getStored());
+        return Math.min(MAX_POWER, PowerUnits.FE.convertTo(PowerUnits.AE, buffer.getStored()));
     }
 
     @Override

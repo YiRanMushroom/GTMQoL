@@ -158,7 +158,7 @@ public final class AdvancedSteamMachines {
         GTMQoLAddon.registrate().addRawLang(PARALLEL_TOOLTIP_KEY,
                 "%s parallels, up to %s with a Steam Parallel Control Hatch");
         GTMQoLAddon.registrate().addRawLang(HATCH_TOOLTIP_KEY,
-                "Sets the parallels of an advanced steam multiblock, from %s to %s");
+                "Sets the parallels of a Large Steam multiblock, from %s to %s");
     }
 
     private static ResourceLocation gtOverlay(String machine) {

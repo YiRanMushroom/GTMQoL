@@ -48,7 +48,8 @@ public final class WirelessFEMachines {
                 .modelProperty(IS_FORMED, false)
                 .colorOverlayTieredHullModel(WirelessEnergyMachines.WIRELESS_OVERLAY)
                 .langValue("Wireless FE Input Hatch")
-                .tooltips(Component.translatable(INPUT_TOOLTIP_KEY), Component.translatable(NETWORK_TOOLTIP_KEY))
+                .tooltips(Component.translatable(INPUT_TOOLTIP_KEY), Component.translatable(NETWORK_TOOLTIP_KEY),
+                        Component.translatable(WirelessEnergyMachines.NETWORK_TOOLTIP_KEY))
                 .register();
 
         FE_OUTPUT_HATCH = GTMQoLAddon
@@ -59,7 +60,8 @@ public final class WirelessFEMachines {
                 .modelProperty(IS_FORMED, false)
                 .colorOverlayTieredHullModel(WirelessEnergyMachines.WIRELESS_OVERLAY)
                 .langValue("Wireless FE Output Hatch")
-                .tooltips(Component.translatable(OUTPUT_TOOLTIP_KEY), Component.translatable(NETWORK_TOOLTIP_KEY))
+                .tooltips(Component.translatable(OUTPUT_TOOLTIP_KEY), Component.translatable(NETWORK_TOOLTIP_KEY),
+                        Component.translatable(WirelessEnergyMachines.NETWORK_TOOLTIP_KEY))
                 .register();
 
         ENERGY_CUBE = GTMQoLAddon
@@ -69,7 +71,8 @@ public final class WirelessFEMachines {
                 .model(GTMachineModels.createTieredHullMachineModel(GTCEu.id("block/machine/template/sided/sided"))
                         .andThen(b -> b.addDynamicRenderer(EnergyCubeSidesRender::new)))
                 .langValue("Wireless Energy Cube")
-                .tooltips(Component.translatable(CUBE_TOOLTIP_KEY), Component.translatable(NETWORK_TOOLTIP_KEY))
+                .tooltips(Component.translatable(CUBE_TOOLTIP_KEY), Component.translatable(NETWORK_TOOLTIP_KEY),
+                        Component.translatable(WirelessEnergyMachines.NETWORK_TOOLTIP_KEY))
                 .register();
 
         addLang(NETWORK_TOOLTIP_KEY, "Uses the EU of its wireless network, converted to FE. No limit on the rate");

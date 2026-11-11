@@ -26,7 +26,7 @@ import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelPropertie
  */
 public final class WirelessEnergyMachines {
 
-    private static final String NETWORK_TOOLTIP_KEY = "gtmqol.wireless.tooltip.energy_network";
+    public static final String NETWORK_TOOLTIP_KEY = "gtmqol.wireless.tooltip.energy_network";
     public static final String AMPERAGE_TOOLTIP_KEY = "gtmqol.wireless.tooltip.adjustable_amperage";
     private static final String OVERCLOCK_TOOLTIP_KEY = "gtmqol.wireless.tooltip.overclock";
     private static final String HATCH_INPUT_TOOLTIP_KEY = "gtmqol.wireless.tooltip.energy_input_hatch";
@@ -120,11 +120,14 @@ public final class WirelessEnergyMachines {
                         Component.translatable(NETWORK_TOOLTIP_KEY))
                 .register();
 
-        addLang(NETWORK_TOOLTIP_KEY, "Bound to whoever places it; shares EU with every wireless machine of their FTB team, or a separate private pool. Data stick: right-click to bind or paste, shift-right-click to copy");
-        addLang(AMPERAGE_TOOLTIP_KEY, "Amperage adjustable in the UI (default %sA, set your own with /gtmqol default_amperage)");
+        addLang(NETWORK_TOOLTIP_KEY, "Bound to the player who places it: uses the wireless network of their FTB team, " +
+                "or their private one. Data Stick: right-click binds or pastes, Shift-right-click copies");
+        addLang(AMPERAGE_TOOLTIP_KEY, "Amperage is set in its window (default %sA; change your default with /gtmqol " +
+                "default_amperage)");
         addLang(DefaultAmperageCommand.SHOW_KEY, "Your wireless energy machines are placed with %sA");
         addLang(DefaultAmperageCommand.SET_KEY, "Wireless energy machines you place now start with %sA");
-        addLang(OVERCLOCK_TOOLTIP_KEY, "Overclock mode: runs at %s, but uses 16× the energy");
+        addLang(OVERCLOCK_TOOLTIP_KEY, "Overclock: runs at %s, one tier higher; every EU then costs 4 EU from the " +
+                "wireless network");
         addLang(HATCH_INPUT_TOOLTIP_KEY, "Powers multiblocks (including the power substation and active transformer) from the wireless network");
         addLang(HATCH_OUTPUT_TOOLTIP_KEY, "Sends energy produced by the multiblock to the wireless network");
         addLang(ACCESSOR_TOOLTIP_KEY, "Outputs energy from the wireless network on the front; cables on any other side feed it in");
@@ -133,10 +136,13 @@ public final class WirelessEnergyMachines {
         addLang(WirelessEnergyUI.STORED_KEY, "EU: %s");
         addLang(WirelessEnergyUI.AMPERAGE_KEY, "Amperage: %sA");
         addLang(WirelessEnergyUI.AMPERAGE_TOOLTIP_KEY, "Buttons: ×4 / ÷4, Shift: ×16 / ÷16, Ctrl: ×2 / ÷2");
-        addLang(WirelessEnergyHatchPartMachine.OVERCLOCK_ON_KEY, "Overclock: on (%s, every EU costs 4)");
-        addLang(WirelessEnergyHatchPartMachine.OVERCLOCK_OFF_KEY, "Overclock: off (click to run at %s, every EU costs 4)");
+        addLang(WirelessEnergyHatchPartMachine.OVERCLOCK_ON_KEY, "Overclock: on. Runs at %s; every EU costs 4 EU from " +
+                "the wireless network");
+        addLang(WirelessEnergyHatchPartMachine.OVERCLOCK_OFF_KEY, "Overclock: off. Click to run at %s, where every EU " +
+                "costs 4 EU from the wireless network");
         addLang(WirelessEnergyHatchPartMachine.SAVE_KEY, "Save");
-        addLang(WirelessEnergyHatchPartMachine.SAVE_TOOLTIP_KEY, "Apply amperage and overclock (closing the UI also applies them)");
+        addLang(WirelessEnergyHatchPartMachine.SAVE_TOOLTIP_KEY, "Apply amperage and overclock (closing the window " +
+                "also applies them)");
         addLang(WirelessEnergyMonitorMachine.INPUT_RATE_KEY, "Input: %s EU/t");
         addLang(WirelessEnergyMonitorMachine.OUTPUT_RATE_KEY, "Output: %s EU/t");
         addLang(WirelessEnergyMonitorMachine.NET_RATE_KEY, "Net: %s EU/t (" + IOStats.SAMPLES + " s avg)");

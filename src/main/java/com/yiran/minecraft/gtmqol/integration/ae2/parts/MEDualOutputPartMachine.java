@@ -49,7 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
 
     @SaveField
-    private KeyStorage fluidBuffer = new KeyStorage();
+    private final KeyStorage fluidBuffer = new KeyStorage();
 
     public MEDualOutputPartMachine(BlockEntityCreationInfo info) {
         super(info);
@@ -58,6 +58,13 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
             tank.onContentsChanged();
             updateInventorySubscription();
         });
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        // the key of a mod that is gone loads as null, and gtceu's KeyStorage keeps it
+        fluidBuffer.storage.removeLong(null);
     }
 
     /**

@@ -26,8 +26,7 @@ public final class StackLikeRecipeViewer {
 
     private StackLikeRecipeViewer() {}
 
-    /** Called for every recipe type UI layout; a recipe type's own {@code UI(...)} can still override these. */
-    /** Where the recipe type set nothing of its own for these capabilities. */
+    /** Called for every recipe type UI layout: fills in what the recipe type didn't set itself for these capabilities. */
     public static void addDefaults(GTRecipeTypeUILayout layout) {
         for (var cap : GenericStackLikeRecipeCapability.ALL) {
             var info = layout.capabilityInfo(cap);

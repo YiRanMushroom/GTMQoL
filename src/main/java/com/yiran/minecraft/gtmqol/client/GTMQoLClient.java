@@ -18,11 +18,25 @@ import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.thread.BlockableEventLoop;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 /** Called from the mod constructor on the client only, like gtceu's {@code ClientProxy}. */
 public final class GTMQoLClient {
 
     private GTMQoLClient() {}
+
+    /** The client's main thread. */
+    public static BlockableEventLoop<?> executor() {
+        return Minecraft.getInstance();
+    }
+
+    /** For recipe logic in common code, which must not load client classes itself. */
+    public static @Nullable Level level() {
+        return Minecraft.getInstance().level;
+    }
 
     public static void init(IEventBus modBus) {
         // Must be registered before machine models are generated or loaded, they reference the type by id.

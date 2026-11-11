@@ -21,7 +21,6 @@ import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
 import com.yiran.minecraft.gtmqol.integration.ae2.stickycard.StickyCardItem;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.common.autobuild.AutoBuilder;
-import com.yiran.minecraft.gtmqol.common.circuit.CircuitTags;
 import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
 import com.yiran.minecraft.gtmqol.common.blockprovider.BlockProviderRecipeCapability;
@@ -76,6 +75,8 @@ import net.minecraftforge.fml.loading.FMLLoader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.PatternBufferReturn;
+import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
 
 @Mod(GTMQoL.MOD_ID)
 public final class GTMQoL {
@@ -92,10 +93,15 @@ public final class GTMQoL {
         if (config.misc.feInput) FEInputProvider.init();
         // always: the button itself checks config.misc.autoBuild
         AutoBuilder.init();
+        // constants only, see ModularMachines
+        var registrate = GTMQoLAddon.registrate();
+        registrate.addRawLang(ModularMachines.TOOLTIP_KEY,
+                "A 3×3×3 box: buses and hatches go anywhere in it, the rest can be any blocks.");
+        registrate.addRawLang(ModularMachines.MACHINE_TOOLTIP_KEY, "Recipes run 8× faster.");
+        registrate.addRawLang(ModularMachines.GENERATOR_TOOLTIP_KEY, "Fuel lasts 8× as long.");
         if (config.circuits.universalCircuits) UniversalCircuits.init();
         if (config.circuits.controlCircuits) ControlCircuits.init();
         if (config.recipes.useLegacyPartRecipes) LegacyPartRecipes.init();
-        if (config.circuits.mekanismCircuitTags) CircuitTags.init();
         MaterialAliasTags.init();
         PotionContainers.init(modBus);
         RecipeTypeLayouts.init(modBus);
@@ -213,7 +219,7 @@ public final class GTMQoL {
     }
 
     private static boolean hasAssemblingMatrix(GTMQoLConfig config) {
-        return config.ae2.assemblingMatrix && config.machines.patternCrafter && config.wireless.energy && config.wireless.fe;
+        return config.assemblingMatrix();
     }
 
     /**
@@ -235,7 +241,7 @@ public final class GTMQoL {
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
         if (config.wireless.steam) WirelessSteamMachines.init();
         if (config.wireless.energy) WirelessEnergyMachines.init();
-        if (config.wireless.energy && config.wireless.fe) WirelessFEMachines.init();
+        if (config.wirelessFE()) WirelessFEMachines.init();
         if (config.wireless.computation) ChannelMachines.initComputation();
         if (config.wireless.opticalData) ChannelMachines.initOptical();
         if (GTCEu.Mods.isAE2Loaded()) {
@@ -244,11 +250,11 @@ public final class GTMQoL {
                 AEStackLikeBridges.register(AppMekChemicalBridge.INSTANCE);
             }
             if (config.ae2.overclockedPatternBuffer) AE2Machines.init();
-            if (config.wireless.energy && config.wireless.fe) WirelessEnergyCellMachine.init();
+            if (config.wirelessFE()) WirelessEnergyCellMachine.init();
             if (hasAssemblingMatrix(config)) AssemblingMatrix.initMachines();
             if (config.ae2.processing) AEProcessing.initMachines();
             if (config.ae2.dualHatches) AEDualParts.init();
-            if (config.ae2.patternBufferReturn) AEDualParts.initLang();
+            PatternBufferReturn.addLang();
         }
         // do not run integration tests in data generation, They are only for testing in a running game.
         if (config.integrationTests.enabled && !FMLLoader.getLaunchHandler().isData()) {

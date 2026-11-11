@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import org.spongepowered.asm.mixin.Unique;
 
 /**
  * Fusion uses perfect sub-tick overclocking (which {@code OverclockingLogicMixin} turns into our 2x power / 4x
@@ -40,6 +41,7 @@ public class FusionReactorMachineMixin {
         return original.call(logic, machine, recipe, ((FusionReactorMachine) machine).getOverclockVoltage(), true);
     }
 
+    @Unique
     private static boolean gtmqol$enabled() {
         return GTMQoLConfig.get().overclocking.buffFusionReactor;
     }

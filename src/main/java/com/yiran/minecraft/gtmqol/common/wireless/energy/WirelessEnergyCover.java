@@ -95,6 +95,8 @@ public class WirelessEnergyCover extends WirelessCover {
         column.child(WirelessEnergyUI.create(syncManager, binding, data.getPlayer())
                 .widthRel(1f)
                 .height(MachineUIPanel.DEFAULT_CONTENT_HEIGHT + 22)
-                .child(WirelessEnergyUI.amperageRow(syncManager, this::getAmperage, this::setAmperage)));
+                .child(WirelessEnergyUI.amperageRow(syncManager, this::getAmperage, amperage -> {
+                    if (binding.checkSettings(data.getPlayer())) setAmperage(amperage);
+                })));
     }
 }

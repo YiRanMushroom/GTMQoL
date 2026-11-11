@@ -103,7 +103,7 @@ public final class StructurePlanner {
         entries.sort(Comparator.<Entry>comparingInt(e -> e.pos().getY())
                 .thenComparingDouble(e -> e.pos().distSqr(center)));
 
-        GTMQoL.LOGGER.info("Auto-build: planned {} blocks ({} in pattern) for {} at {} in {} ms", entries.size(),
+        GTMQoL.LOGGER.debug("Auto-build: planned {} blocks ({} in pattern) for {} at {} in {} ms", entries.size(),
                 structure.size(), controller.getDefinition().getId(), center, (System.nanoTime() - start) / 1_000_000);
         return entries;
     }

@@ -30,6 +30,8 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import org.jetbrains.annotations.Nullable;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 
 import java.util.HashMap;
 import java.util.List;
@@ -100,10 +102,25 @@ public final class AEProcessing {
 
     /** From GTCEu's machine {@code RegisterEvent}. */
     public static void initMachines() {
-        ME_ASSEMBLER = new GTMachineUtils.SimpleMachineBuilder(GTMQoLAddon.registrate(), "me_assembler",
-                ME_ASSEMBLER_RECIPES).register();
-        ME_CIRCUIT_SLICER = new GTMachineUtils.SimpleMachineBuilder(GTMQoLAddon.registrate(), "me_circuit_slicer",
-                ME_CIRCUIT_SLICER_RECIPES).register();
+        ME_ASSEMBLER = machines("me_assembler", "ME Assembler", ME_ASSEMBLER_RECIPES);
+        ME_CIRCUIT_SLICER = machines("me_circuit_slicer", "ME Circuit Slicer", ME_CIRCUIT_SLICER_RECIPES);
+    }
+
+    /**
+     * GT's simple electric machines of every tier, named by hand: gtceu's {@code SimpleMachineBuilder} makes the
+     * name from the id ("Me Assembler").
+     */
+    // Untested: ME Assemblers and ME Circuit Slicers placed before 3.5 keep their contents and still work
+    private static MachineDefinition[] machines(String name, String englishName, GTRecipeType recipeType) {
+        MachineDefinition[] machines = new MachineDefinition[TIER_COUNT];
+        for (int tier : GTMachineUtils.ELECTRIC_TIERS) {
+            machines[tier] = GTMQoLAddon.tieredMachine(name, tier)
+                    .langValue("%s %s %s".formatted(VLVH[tier], englishName, VLVT[tier]))
+                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
+                    .workableTiered(recipeType, GTMQoL.id("block/machines/" + name))
+                    .register();
+        }
+        return machines;
     }
 
     public static void addRecipes(Consumer<FinishedRecipe> provider) {
@@ -275,7 +292,7 @@ public final class AEProcessing {
         }));
 
         // extraProcessor: 4 more processors besides the 4 logic processors, null for none
-        record Part(String id, Item aePart, Item extraProcessor, MachineDefinition output, Material plateMaterial) {}
+        record Part(String id, Item aePart, @Nullable Item extraProcessor, MachineDefinition output, Material plateMaterial) {}
         for (Part p : List.of(
                 new Part("me_input_bus", AEParts.EXPORT_BUS.asItem(), null, GTAEMachines.ITEM_IMPORT_BUS_ME,
                         Iron),

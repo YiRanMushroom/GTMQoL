@@ -25,6 +25,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.chat.Component;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -48,6 +49,8 @@ public final class ElectricImplosion {
 
     public static GTRecipeType RECIPE_TYPE;
     public static MultiblockMachineDefinition MACHINE;
+
+    private static final String TOOLTIP_KEY = "gtmqol.multiblock.electric_implosion_compressor.tooltip";
 
     private ElectricImplosion() {}
 
@@ -78,6 +81,8 @@ public final class ElectricImplosion {
                 .rotationState(RotationState.ALL)
                 .recipeType(RECIPE_TYPE)
                 .recipeModifiers(PARALLEL_HATCH, OC_PERFECT_SUBTICK, BATCH_MODE)
+                .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"),
+                        Component.translatable(TOOLTIP_KEY))
                 .appearanceBlock(CASING_TUNGSTENSTEEL_ROBUST)
                 .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                         .slice("XXXXX", "F###F", "F###F", "F###F", "F###F", "XXXXX")
@@ -99,6 +104,8 @@ public final class ElectricImplosion {
                         GTCEu.id("block/multiblock/implosion_compressor"))
                 .langValue("Electric Implosion Compressor")
                 .register();
+        GTMQoLAddon.registrate().addRawLang(TOOLTIP_KEY,
+                "Runs Implosion Compressor recipes without explosives, in 4× the time.");
     }
 
     private static void addElectricCopy(GTRecipeBuilder builder, Consumer<FinishedRecipe> provider) {

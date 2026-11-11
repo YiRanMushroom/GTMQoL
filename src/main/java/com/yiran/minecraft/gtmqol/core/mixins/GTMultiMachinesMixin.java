@@ -1,8 +1,6 @@
 package com.yiran.minecraft.gtmqol.core.mixins;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 

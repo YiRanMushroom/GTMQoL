@@ -378,7 +378,8 @@ public final class ChannelUI {
         addLang(CHANNEL_KEY, "Channel: %s");
         addLang(NOT_BOUND_KEY, "Not bound to a channel");
         addLang(ACTIVE_KEY, "Connected");
-        addLang(INACTIVE_KEY, "Not working: more than one transmitter or receiver needs a router");
+        addLang(INACTIVE_KEY, "Not working: more than one transmitter or receiver needs a Wireless Computation " +
+                "Network Router");
         addLang(CHANNELS_KEY, "Channels");
         addLang(UNBIND_KEY, "Unbind");
         addLang(NEW_KEY, "New");
@@ -387,11 +388,12 @@ public final class ChannelUI {
         addLang(NAME_KEY, "Name");
         addLang(SAVE_KEY, "Save");
         addLang(DELETE_KEY, "Delete");
-        addLang(DELETE_TOOLTIP_KEY, "Shift-click to delete; everything bound to it is unbound");
+        addLang(DELETE_TOOLTIP_KEY, "Shift-click to delete the channel; everything bound to it is unbound");
         addLang(LIST_EMPTY_KEY, "No channels yet: create one with New");
         addLang(ROW_OWNER_KEY, "Owner: %s");
         addLang(ROW_COUNTS_KEY, "Transmitters: %s, receivers: %s, routers: %s");
-        addLang(ROW_INACTIVE_KEY, "Not working: needs a router for more than one transmitter or receiver");
+        addLang(ROW_INACTIVE_KEY, "Not working: more than one transmitter or receiver needs a Wireless Computation " +
+                "Network Router");
         addLang(ROW_BIND_HINT_KEY, "Click to bind");
         addLang(ROW_BOUND_HINT_KEY, "Bound");
         addLang(ROW_EDIT_HINT_KEY, "Click to edit");
@@ -401,9 +403,11 @@ public final class ChannelUI {
         addLang(SAVED_KEY, "Channel saved");
         addLang(DELETED_KEY, "Channel deleted");
         addLang(ChannelSavedData.NOT_FOUND_KEY, "That channel no longer exists");
-        addLang(ChannelSavedData.NOT_ALLOWED_KEY, "Not allowed");
+        addLang(ChannelSavedData.NOT_ALLOWED_KEY, "Only the channel's owner can change or delete it");
+        addLang(ChannelSavedData.NO_ACCESS_KEY, "You have no access to this channel");
         addLang(ChannelSavedData.BAD_NAME_KEY, "Name must be 1 to " + Channel.MAX_NAME_LENGTH + " characters");
-        addLang(ChannelSavedData.ROUTER_NEEDED_KEY, "This channel already has one; bind a router to it for more");
+        addLang(ChannelSavedData.ROUTER_NEEDED_KEY, "This channel already has a hatch of this kind. Bind a Wireless " +
+                "Computation Network Router to the channel to add more");
     }
 
     private static void addLang(String key, String value) {

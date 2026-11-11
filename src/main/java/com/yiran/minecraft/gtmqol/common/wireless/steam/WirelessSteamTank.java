@@ -7,7 +7,6 @@ import com.yiran.minecraft.gtmqol.common.wireless.NetworkId;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -25,13 +24,18 @@ public class WirelessSteamTank extends CustomFluidTank {
 
     private final Supplier<@Nullable NetworkId> network;
 
+    /** What the network takes as steam: any fluid in GT's steam tag. It gives back GT's own steam. */
+    public static boolean isSteam(FluidStack stack) {
+        return stack.getFluid().defaultFluidState().is(GTMaterials.Steam.getFluidTag());
+    }
+
     public WirelessSteamTank(Supplier<@Nullable NetworkId> network) {
-        super(Integer.MAX_VALUE, stack -> stack.getFluid().defaultFluidState().is(GTMaterials.Steam.getFluidTag()));
+        super(Integer.MAX_VALUE, WirelessSteamTank::isSteam);
         this.network = network;
     }
 
     @Override
-    public @NotNull FluidStack getFluid() {
+    public FluidStack getFluid() {
         int amount = getFluidAmount();
         return amount > 0 ? GTMaterials.Steam.getFluid(amount) : FluidStack.EMPTY;
     }
@@ -59,13 +63,13 @@ public class WirelessSteamTank extends CustomFluidTank {
     }
 
     @Override
-    public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+    public FluidStack drain(FluidStack resource, FluidAction action) {
         if (resource.isEmpty() || !isFluidValid(resource)) return FluidStack.EMPTY;
         return drain(resource.getAmount(), action);
     }
 
     @Override
-    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+    public FluidStack drain(int maxDrain, FluidAction action) {
         NetworkId id = network.get();
         if (id == null) return FluidStack.EMPTY;
         int drained = WirelessSteamSavedData.get().extract(id, maxDrain, action.simulate());

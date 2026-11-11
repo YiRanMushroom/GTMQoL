@@ -1,5 +1,8 @@
 {
   "values": [
-    "gtmqol:max_universal_circuit"
+    {
+      "id": "gtmqol:max_universal_circuit",
+      "required": false
+    }
   ]
 }

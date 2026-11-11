@@ -22,10 +22,10 @@ import java.util.Objects;
  */
 public final class FluidGhostIngredient extends GhostIngredient<FluidStack> {
 
-    public static final Type<FluidStack> TYPE = register(new Type<>("fluid", FluidStack.class,
+    public static final Type<FluidStack> TYPE = new Type<>("fluid", FluidStack.class,
             FluidStack.CODEC, (buf, stack) -> stack.writeToPacket(buf), FluidStack::readFromPacket,
             FluidStack::isEmpty, FluidGhostIngredient::new,
-            (held, rightClick) -> rightClick ? FluidUtil.getFluidContained(held).orElse(null) : null));
+            (held, rightClick) -> rightClick ? FluidUtil.getFluidContained(held).orElse(null) : null);
 
     public FluidGhostIngredient(FluidStack stack) {
         super(new FluidStack(stack, 1));

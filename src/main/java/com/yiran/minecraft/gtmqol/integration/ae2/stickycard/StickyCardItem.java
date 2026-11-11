@@ -31,10 +31,10 @@ public class StickyCardItem extends UpgradeCardItem {
 
     private static final String TOOLTIP_KEY = "gtmqol.item.sticky_card.tooltip.";
     private static final String[] TOOLTIPS = {
-            "Prevents partitioned content from being inserted into other storage locations with equal or lower priority if it can't be inserted into the storage location with the Sticky Card.",
-            "Works similarly to Sticky Card in GTNH, however you MUST partition the inputs in the storage location (blacklist or whitelist).",
-            "The only difference is the storage system still checks storage in priority order, and will only stop inserting when a storage bus has a Sticky Card, the content is partitioned there, no higher priority storage can accept it, and the content cannot be stored in that location.",
-            "Specifically, if multiple storage locations have the same priority, storage locations with a Sticky Card are checked first."
+            "Storage Bus upgrade. What matches the bus's partition goes only into that storage: when it is full, " +
+                    "nothing overflows into storage of equal or lower priority.",
+            "Needs a partition on the Storage Bus (whitelist or blacklist). Storage of higher priority still " +
+                    "takes its share first."
     };
 
     /** Null unless {@code ae2.stickyCard} is on in the early config; the mixins check it. */

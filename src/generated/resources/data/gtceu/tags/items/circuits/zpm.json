@@ -1,5 +1,8 @@
 {
   "values": [
-    "gtmqol:zpm_universal_circuit"
+    {
+      "id": "gtmqol:zpm_universal_circuit",
+      "required": false
+    }
   ]
 }

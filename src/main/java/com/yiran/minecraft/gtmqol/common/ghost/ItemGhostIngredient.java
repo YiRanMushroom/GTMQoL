@@ -18,9 +18,9 @@ import java.util.Objects;
 /** A marked item, with its NBT; the count doesn't matter (kept at 1). Left click with it to mark it. */
 public final class ItemGhostIngredient extends GhostIngredient<ItemStack> {
 
-    public static final Type<ItemStack> TYPE = register(new Type<>("item", ItemStack.class,
+    public static final Type<ItemStack> TYPE = new Type<>("item", ItemStack.class,
             ItemStack.CODEC, FriendlyByteBuf::writeItem, FriendlyByteBuf::readItem, ItemStack::isEmpty,
-            ItemGhostIngredient::new, (held, rightClick) -> rightClick ? null : held));
+            ItemGhostIngredient::new, (held, rightClick) -> rightClick ? null : held);
 
     public ItemGhostIngredient(ItemStack stack) {
         super(stack.copyWithCount(1));

@@ -36,7 +36,8 @@ public interface OverclockingLogicMixin {
         if (EUt == 0) return ModifierFunction.IDENTITY;
 
         int OCs = GTUtil.getOCTierByVoltage(maxVoltage) - GTUtil.getTierByVoltage(EUt);
-        if (OCs == 0) return ModifierFunction.IDENTITY;
+        // below the recipe's tier too: gtceu's loops do nothing then, equivalent overclocking would slow the recipe down
+        if (OCs <= 0) return ModifierFunction.IDENTITY;
 
         OverclockingLogic logic = Overclocking.replace((OverclockingLogic) (Object) this);
         int maxParallels;
@@ -44,7 +45,12 @@ public interface OverclockingLogicMixin {
             maxParallels = 1;
         } else if (logic == Overclocking.PERFECT) {
             int effectiveBoostPower = OCs * 2 - IntMath.log2(Math.max(1, recipe.duration), RoundingMode.FLOOR) + 4;
-            int limit = effectiveBoostPower > 30 ? Overclocking.MAX_PARALLELS : (1 << effectiveBoostPower) + 1;
+            // negative: the recipe stays above 1 tick, so no parallels (a shift by -1 gave a negative limit, and
+            // recipes of 128-255 ticks one tier up, 512-1023 two tiers up, ... got no overclock at all)
+            // Untested: a perfect-overclock machine (e.g. the Smart Assembly Factory) one tier above a 128-255 tick
+            // recipe runs it overclocked
+            int limit = effectiveBoostPower > 30 ? Overclocking.MAX_PARALLELS :
+                    effectiveBoostPower < 0 ? 1 : (1 << effectiveBoostPower) + 1;
             maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, limit);
         } else if (logic == Overclocking.STANDARD) {
             maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe,

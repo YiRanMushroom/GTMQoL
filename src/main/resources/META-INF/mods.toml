@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "[47,)"
 license = "${mod_license}"
-issueTrackerURL = "https://github.com/YiRanMushroom/GTMQoL"
+issueTrackerURL = "https://github.com/YiRanMushroom/GTMQoL/issues"
 
 [[mods]]
 modId = "gtmqol"
@@ -10,7 +10,8 @@ displayName = "${mod_name}"
 displayURL = "${mod_url}"
 authors = "${mod_author}"
 description = '''
-Runtime resource and data generation utilities for GTCEu.
+Quality-of-life addon for GregTech CEu Modern: wireless energy, steam and data, AE2 crafting machines and ME parts,
+extra multiblocks, an overclocking overhaul, and other mods' recipes on GT machines.
 '''
 
 [[dependencies.gtmqol]]

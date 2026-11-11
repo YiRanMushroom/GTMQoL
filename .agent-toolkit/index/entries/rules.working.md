@@ -1,10 +1,10 @@
 +++
 title = "How to work in GTMQoL 1.20.1: Chinese replies, run don't guess, Gradle limits, port from 1.21, warnings"
 keys = [ "author" ]
-updated = "2026-11-09 04:19:14"
-checked = "2026-11-09"
+updated = "2026-11-11 07:17:17"
+checked = "2026-11-11"
 +++
-Personal, non-serious project, not a production system.
+What the project is for and what counts as done: rules.direction. This entry is the mechanics.
 
 - Reply to the user in Chinese.
 - Finding things: same ids and key tree as on 1.21, linked to this branch's code. index_keys("gtmqol") lists the areas (one per id prefix); index_find("<area>") lists an area's entries and, for the big ones, its topics (subkeys), which index_find narrows to. Build setup: build.*.
@@ -17,4 +17,5 @@ Personal, non-serious project, not a production system.
 - README.md is English only (credits in its Credits section). Author: README/LICENSE "Yiran"; in-game mod_author "Yiran, Frosty" (Frosty is the user's alias).
 - Names, IDs and text players see: skill.naming-and-text (read it whenever naming something). UIs: skill.modular-ui. Mixins: skill.mixins.
 - Case conversion and number formatting take Locale.ROOT (toLowerCase(Locale.ROOT), String.format(Locale.ROOT, ...)): a Turkish system turns I into a dotless i in keys, a German one writes 1,50.
+- Nullability: every package has a package-info.java with @ParametersAreNonnullByDefault and @MethodsReturnNonnullByDefault (as GTCEu's packages; a new package gets one too), so only what can be null is marked, with org.jetbrains @Nullable; no @NotNull. Not fields (static registry entries are set in init()) and not the mixin packages (core/mixins: a non-mixin class there breaks loading).
 - javac runs with -Xlint:deprecation,removal,unchecked,rawtypes; the only accepted warnings are Forge's BuiltInRegistries deprecation (kept so code matches 1.21).

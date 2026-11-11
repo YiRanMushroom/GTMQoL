@@ -1,5 +1,8 @@
 {
   "values": [
-    "gtmqol:uxv_universal_circuit"
+    {
+      "id": "gtmqol:uxv_universal_circuit",
+      "required": false
+    }
   ]
 }

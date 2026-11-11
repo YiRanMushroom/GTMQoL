@@ -10,7 +10,6 @@ import com.yiran.minecraft.gtmqol.common.wireless.channel.ChannelSavedData;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -68,7 +67,7 @@ public final class ChannelComputation {
         }
 
         @Override
-        public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+        public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
             if (seen.contains(this)) return 0;
             seen.add(this);
             if (cwut <= 0 || !flows()) return 0;
@@ -91,7 +90,7 @@ public final class ChannelComputation {
         }
 
         @Override
-        public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
+        public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
             if (seen.contains(this)) return 0;
             seen.add(this);
             if (!flows()) return 0;
@@ -106,7 +105,7 @@ public final class ChannelComputation {
 
         // no bridge components needed (user's choice)
         @Override
-        public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
+        public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
             seen.add(this);
             return true;
         }

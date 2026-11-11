@@ -10,6 +10,4 @@ package com.yiran.minecraft.gtmqol.api.generation;
 public interface IDynamicGenerationHandler {
 
     void gtmqol$setDynamicallyGenerated(boolean dynamicGenerated);
-
-    boolean gtmqol$isDynamicallyGenerated();
 }

@@ -18,7 +18,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -64,7 +63,7 @@ public final class FEInputProvider implements ICapabilityProvider {
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
         if (cap != ForgeCapabilities.ENERGY) return LazyOptional.empty();
         IEnergyContainer container = energyContainer(side);
         if (container == null) return LazyOptional.empty();

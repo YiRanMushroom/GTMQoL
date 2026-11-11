@@ -47,11 +47,6 @@ public class ChannelBindingTrait extends MachineTrait {
         return channel != null && channel.endpoints.get(globalPos()) == role ? channel : null;
     }
 
-    /** Server only: bound to a channel on which things flow (see {@link Channel#isActive}). */
-    public boolean isActive() {
-        Channel channel = getChannel();
-        return channel != null && channel.isActive();
-    }
 
     private void setChannelId(int id) {
         if (registered) {

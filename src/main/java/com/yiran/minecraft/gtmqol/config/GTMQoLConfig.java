@@ -23,15 +23,30 @@ import dev.toma.configuration.config.format.ConfigFormats;
 @Config(id = GTMQoL.MOD_ID)
 public final class GTMQoLConfig {
 
-    private static GTMQoLConfig instance;
+    private static volatile GTMQoLConfig instance;
 
     public static GTMQoLConfig get() {
+        GTMQoLConfig config = instance;
+        return config != null ? config : load();
+    }
+
+    private static synchronized GTMQoLConfig load() {
         if (instance == null) {
             // Data generation must see every feature, otherwise their lang, models and tags go missing.
             instance = FMLLoader.getLaunchHandler().isData() ? new GTMQoLConfig() :
                     Configuration.registerConfig(GTMQoLConfig.class, ConfigFormats.YAML).getConfigInstance();
         }
         return instance;
+    }
+
+    /** FE from the wireless EU network: both switches. */
+    public boolean wirelessFE() {
+        return wireless.energy && wireless.fe;
+    }
+
+    /** The Assembling Matrix: its switch, and what it is made of (Crafting Patterns, wireless FE). */
+    public boolean assemblingMatrix() {
+        return ae2.assemblingMatrix && machines.patternCrafter && wirelessFE();
     }
 
     @Configurable
@@ -57,7 +72,8 @@ public final class GTMQoLConfig {
         public boolean dimensionallyTranscendentFusionReactor = true;
 
         @Configurable
-        @Configurable.Comment({ "Void Miner (mines the dimension's vein ores for wireless EU)", "Default: true" })
+        @Configurable.Comment({ "Void Miner (mines the dimension's vein ores for wireless EU). Needs wireless.energy",
+                "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean voidMiner = true;
 
@@ -80,7 +96,8 @@ public final class GTMQoLConfig {
         public boolean greenhouse = true;
 
         @Configurable
-        @Configurable.Comment({ "Pattern Crafter (runs crafting table recipes from crafting patterns)", "Default: true" })
+        @Configurable.Comment({ "Pattern Crafter (runs crafting table, stonecutter and smithing table recipes from Crafting",
+                "Patterns and AE2 patterns)", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean patternCrafter = true;
 
@@ -110,7 +127,7 @@ public final class GTMQoLConfig {
     }
 
     @Configurable
-    @Configurable.Comment("Multiblock versions of tiered single-block machines")
+    @Configurable.Comment("Multiblock versions of tiered single-block machines. Requires a restart.")
     public ModularMachines modularMachines = new ModularMachines();
 
     public static class ModularMachines {
@@ -122,7 +139,7 @@ public final class GTMQoLConfig {
     }
 
     @Configurable
-    @Configurable.Comment("GT recipe types and machines running other mods' machine recipes")
+    @Configurable.Comment("GT recipe types and machines running other mods' machine recipes. Requires a restart.")
     public Gregification gregification = new Gregification();
 
     public static class Gregification {
@@ -165,7 +182,7 @@ public final class GTMQoLConfig {
 
         @Configurable
         @Configurable.Comment({ "FE from the wireless energy network: FE input and output hatches, energy cube and,",
-                "with AE2, the wireless energy cell. Needs energy", "Default: true" })
+                "with AE2, the wireless energy cell. Needs wireless.energy", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean fe = true;
 
@@ -203,9 +220,10 @@ public final class GTMQoLConfig {
         public boolean controlCircuits = true;
 
         @Configurable
-        @Configurable.Comment({ "Tags making GT circuits and Mekanism control circuits interchangeable", "Default: true" })
-        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        @Configurable.Comment({ "With Mekanism: GT circuits and Mekanism's control circuits count as each other, tier by tier",
+                "(tags, so it applies when data is reloaded)", "Default: true" })
         public boolean mekanismCircuitTags = true;
+
     }
 
     @Configurable
@@ -215,7 +233,8 @@ public final class GTMQoLConfig {
     public static class Recipes {
 
         @Configurable
-        @Configurable.Comment({ "Miscellaneous recipes (steel from iron in the EBF with circuit 24, ...)", "Default: true" })
+        @Configurable.Comment({ "Miscellaneous recipes (steel from iron in the EBF with circuit 24, the creative",
+                "data access hatch and rubber saplings in the magical assembler, ...)", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean miscRecipes = true;
 
@@ -280,7 +299,7 @@ public final class GTMQoLConfig {
 
     @Configurable
     @Configurable.Comment({ "Overclocking changes for specific multiblocks. The overclocking overhaul itself is",
-            "overclocking.overhaul in gtmqol-early.properties." })
+            "overclocking.overhaul in gtmqol-early.properties. Requires a restart." })
     public Overclocking overclocking = new Overclocking();
 
     public static class Overclocking {
@@ -305,7 +324,7 @@ public final class GTMQoLConfig {
     }
 
     @Configurable
-    @Configurable.Comment("AE2 content, only when AE2 is installed. Requires a restart.")
+    @Configurable.Comment("AE2 content, only when AE2 is installed. Machines and items require a restart, the rest applies at once.")
     public AE2 ae2 = new AE2();
 
     public static class AE2 {
@@ -321,13 +340,14 @@ public final class GTMQoLConfig {
         public boolean processing = true;
 
         @Configurable
-        @Configurable.Comment({ "ME Dual Input (stocking bus + hatch) and ME Dual Output (bus + hatch)", "Default: true" })
+        @Configurable.Comment({ "ME Dual Input (stocking bus + hatch), ME Dual Output (bus + hatch), and the ME Universal",
+                "Input and Output, which also take other ME types (e.g. Mekanism chemicals)", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean dualHatches = true;
 
         @Configurable
         @Configurable.Comment({ "Pattern buffers send the outputs of their multiblock straight to the ME network",
-                "(per-buffer switch in the GUI)", "Default: true" })
+                "(every buffer has a switch in its window)", "Default: true" })
         public boolean patternBufferReturn = true;
 
         @Configurable
@@ -337,8 +357,8 @@ public final class GTMQoLConfig {
 
         @Configurable
         @Configurable.Comment({ "Assembling Matrix: a multiblock that crafts AE2 crafting, stonecutting and smithing",
-                "patterns and GTMQoL Crafting Patterns in bulk for an ME network. Also needs machines.patternCrafter,",
-                "wireless.energy and wireless.fe", "Default: true" })
+                "patterns and the Pattern Crafter's Crafting Patterns in bulk for an ME network. Also needs",
+                "machines.patternCrafter, wireless.energy and wireless.fe", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean assemblingMatrix = true;
 
@@ -372,7 +392,7 @@ public final class GTMQoLConfig {
         public boolean feInput = true;
 
         @Configurable
-        @Configurable.Comment({ "Auto-build button on multiblock controllers: places the structure from the player's inventory.",
+        @Configurable.Comment({ "Auto build button on multiblock controllers: places the structure from the player's inventory.",
                 "Default: true" })
         public boolean autoBuild = true;
     }

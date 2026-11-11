@@ -119,6 +119,7 @@ public class AssemblingMatrixPatternCoreMachine extends MultiblockPartMachine im
 
     @Override
     public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         patterns.dropInventoryInWorld(getLevel(), getBlockPos());
     }
 

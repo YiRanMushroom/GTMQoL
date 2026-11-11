@@ -107,7 +107,9 @@ public class WirelessSteamAccessorMachine extends MetaMachine implements IMuiMac
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        var autoOutputValue = new BooleanSyncValue(this::isAutoOutput, this::setAutoOutput).allowC2S();
+        var autoOutputValue = new BooleanSyncValue(this::isAutoOutput, value -> {
+            if (binding.checkSettings(guiData.getPlayer())) setAutoOutput(value);
+        }).allowC2S();
         syncManager.syncValue("auto_output", autoOutputValue);
         mainWidget.child(WirelessSteamUI.create(syncManager, binding, guiData.getPlayer())
                 .child(new ToggleButton()

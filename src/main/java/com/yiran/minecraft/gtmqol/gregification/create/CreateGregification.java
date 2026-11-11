@@ -101,7 +101,7 @@ public final class CreateGregification {
         RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", SequencedAssemblyMachine.TOO_SHORT,
                 "Line too short for this recipe");
         RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", SequencedAssemblyMachine.MIN_LENGTH_INFO,
-                "Minimum Line Length: %s");
+                "Minimum line length: %s");
     }
 
     private CreateGregification() {}

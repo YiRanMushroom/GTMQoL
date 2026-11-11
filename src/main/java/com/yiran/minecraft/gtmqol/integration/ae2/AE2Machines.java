@@ -64,15 +64,13 @@ public final class AE2Machines {
                 "batch");
         addLang(PatternBatching.TITLE_KEY + ".tooltip", "Sends many crafts of a processing pattern to this ME " +
                 "Pattern Buffer as one batch");
-        addLang(PatternOutputMarks.TOGGLE_KEY + ".enabled", "Mark Pattern Outputs: \u00a7eEnabled");
-        addLang(PatternOutputMarks.TOGGLE_KEY + ".disabled", "Mark Pattern Outputs: \u00a7eDisabled");
-        addLang(PatternOutputMarks.TOGGLE_KEY + ".info", "If enabled, each pattern counts as a ghost " +
-                "ingredient mark for its main output, so it picks the recipe making that output.");
-        addLang(SharedHatches.TOGGLE_KEY + ".enabled", "Shared Hatches: \u00a7eEnabled");
-        addLang(SharedHatches.TOGGLE_KEY + ".disabled", "Shared Hatches: \u00a7eDisabled");
-        addLang(SharedHatches.TOGGLE_KEY + ".info", "If enabled, patterns can also use ingredients from the " +
-                "machine's other buses and hatches that aren't distinct or dyed, like circuits, molds or " +
-                "ghost ingredient marks.");
+        addLang(PatternOutputMarks.TOGGLE_KEY + ".enabled", "Mark Pattern Outputs: on. Each pattern counts as a ghost " +
+                "ingredient of its main output, so the machine runs the recipe that makes that output");
+        addLang(PatternOutputMarks.TOGGLE_KEY + ".disabled", "Mark Pattern Outputs: off");
+        addLang(SharedHatches.TOGGLE_KEY + ".enabled", "Shared Hatches: on. Patterns also use ingredients from the " +
+                "machine's other buses and hatches that aren't distinct or dyed, like circuits, molds or ghost " +
+                "ingredients");
+        addLang(SharedHatches.TOGGLE_KEY + ".disabled", "Shared Hatches: off");
     }
 
     private static void addLang(String key, String value) {

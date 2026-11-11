@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
+import com.yiran.minecraft.gtmqol.common.overclock.Overclocking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ public final class PatternWear extends MachineTrait implements IRecipeLogicModif
     public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
         ICrafterPattern pattern = pattern(recipe, getMachine().getLevel());
         if (pattern == null) return recipe;
-        int crafts = crafts(recipe);
+        int crafts = Overclocking.crafts(recipe);
         int possible = simulate(buses((IRecipeCapabilityHolder) getMachine()), pattern, crafts).crafts;
         if (possible >= crafts) return recipe;
         if (possible == 0) {
@@ -71,10 +72,6 @@ public final class PatternWear extends MachineTrait implements IRecipeLogicModif
 
 
     private record Simulation(int crafts, List<Runnable> writes) {}
-
-    private static int crafts(GTRecipe recipe) {
-        return recipe.parallels * recipe.subtickParallels * recipe.batchParallels;
-    }
 
     private static @Nullable ICrafterPattern pattern(GTRecipe recipe, Level level) {
         if (!recipe.data.contains(PATTERN_KEY)) return null;
@@ -138,7 +135,7 @@ public final class PatternWear extends MachineTrait implements IRecipeLogicModif
         ICrafterPattern pattern = pattern(recipe, getMachine().getLevel());
         if (pattern == null) return true;
         var machine = (IRecipeLogicMachine) getMachine();
-        int crafts = crafts(recipe);
+        int crafts = Overclocking.crafts(recipe);
         Simulation simulation = simulate(buses(machine), pattern, crafts);
         if (simulation.crafts < crafts) {
             // a repeated recipe that no longer fits: look for it again, modifyRecipe cuts it down

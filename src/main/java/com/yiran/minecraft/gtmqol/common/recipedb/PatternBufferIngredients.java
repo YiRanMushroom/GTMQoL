@@ -45,9 +45,8 @@ final class PatternBufferIngredients {
         int kind = GroupedIngredientList.DISTINCT;
         int catalyst = GroupedIngredientList.CATALYST;
         boolean shares = handlerList instanceof SharedHatches.HandlerList shared && shared.gtmqol$sharesHatches();
-        // the buffer's own list only: proxies don't get the marks (PatternOutputMarks)
-        boolean marks = handlerList.getClass().getEnclosingClass() == MEPatternBufferPartMachine.class &&
-                buffer instanceof AbstractMEPatternBufferPartMachine ours && ours.marksPatternOutputs();
+        // through a proxy too: its recipes run through the buffer's own list, slot by slot
+        boolean marks = buffer instanceof AbstractMEPatternBufferPartMachine ours && ours.marksPatternOutputs();
         list.addContents(ItemRecipeCapability.CAP, buffer.getCircuitSlot().getContents(), kind, owner, catalyst,
                 shares);
         list.addContents(ItemRecipeCapability.CAP, buffer.getShareInventory().getContents(), kind, owner, catalyst,

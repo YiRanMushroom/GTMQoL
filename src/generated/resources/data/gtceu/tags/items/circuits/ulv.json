@@ -1,9 +1,11 @@
 {
   "values": [
-    "gtmqol:ulv_universal_circuit",
-    "gtmqol:very_simple_control_circuit",
     {
-      "id": "mekanism:alloy_infused",
+      "id": "gtmqol:ulv_universal_circuit",
+      "required": false
+    },
+    {
+      "id": "gtmqol:very_simple_control_circuit",
       "required": false
     }
   ]

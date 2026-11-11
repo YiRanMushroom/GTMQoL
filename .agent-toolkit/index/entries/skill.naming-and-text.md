@@ -1,8 +1,8 @@
 +++
 title = "Naming and player text: class, ID, lang, config and item names, tooltips, UI labels; use when naming or writing them"
 keys = [ "id", "lang", "naming", "tooltip", "user-facing text", "wording" ]
-updated = "2026-11-08 05:10:00"
-checked = "2026-11-08"
+updated = "2026-11-11 07:39:36"
+checked = "2026-11-11"
 
 [[items]]
 name = "renamed-ids"
@@ -26,10 +26,12 @@ Use whenever you name something (class, field, method, block or item ID, lang ke
 
 ## Player text
 - Context-free: written for someone who has never seen the code, the index, the handoff notes or the conversation. No internal names, nicknames or words that only mean something to the developers ("our patterns", "the buffer", "batches", "the work").
-- Name things fully and concretely, by the names the player sees in the game (an item's in-game name, a block's name, a button's label), above all the first time: "Crafting Patterns encoded in a Pattern Crafter", not "our patterns".
+- Name things fully and concretely, by the names the player sees in the game (an item's in-game name, a block's name, a button's label), above all the first time: "the Crafting Patterns made for the Pattern Crafter", not "our patterns".
 - Few pronouns (it, they, this, its), and never as the first mention of something; repeat the name when "it" could mean two things.
 - Not verbose, but detailed where it helps: every sentence says something the player needs to decide or act; no filler, no implementation details, no history.
 - Names say what the thing is or does, in the game's and the parent mod's naming style.
+- One word per thing, in every tooltip, message and the README: "ghost ingredient" (to mark is the verb; not ghost mark, marked ingredient); "wireless network", a player's "private network" and "team network" (not pool, team mode); "window" (not UI, GUI); mouse actions as "Click", "Right-click", "Shift-click", "Shift-right-click".
+- A toggle's tooltip: "<Name>: on. <what it does>" and "<Name>: off", no colour codes, no separate info line.
 - Tooltips GT-style: short and plain, only what affects the player's decision (no tick counts, batch sizes, nothing the structure preview already shows).
 
 ## Machine tooltip lang keys

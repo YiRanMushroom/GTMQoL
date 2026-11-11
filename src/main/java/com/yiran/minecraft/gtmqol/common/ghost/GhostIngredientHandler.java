@@ -14,7 +14,6 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.layout.Flow;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class GhostIngredientHandler extends NotifiableRecipeHandlerTrait<GhostIn
     }
 
     @Override
-    public @NotNull List<GhostIngredient<?>> handleRecipeInner(IO io, @Nullable GTRecipe recipe,
+    public List<GhostIngredient<?>> handleRecipeInner(IO io, @Nullable GTRecipe recipe,
                                                                   List<GhostIngredient<?>> left,
                                                                   boolean simulate) {
         if (io != IO.IN) return left;
@@ -52,7 +51,7 @@ public class GhostIngredientHandler extends NotifiableRecipeHandlerTrait<GhostIn
     }
 
     @Override
-    public @NotNull List<Object> getContents() {
+    public List<Object> getContents() {
         return new ArrayList<>(new LinkedHashSet<>(marks.view()));
     }
 

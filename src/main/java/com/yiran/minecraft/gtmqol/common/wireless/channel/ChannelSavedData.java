@@ -1,11 +1,13 @@
 package com.yiran.minecraft.gtmqol.common.wireless.channel;
 
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.yiran.minecraft.gtmqol.common.wireless.WirelessNetworks;
 
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -29,6 +31,7 @@ public final class ChannelSavedData extends SavedData {
 
     public static final String NOT_FOUND_KEY = "gtmqol.channel.error.not_found";
     public static final String NOT_ALLOWED_KEY = "gtmqol.channel.error.not_allowed";
+    public static final String NO_ACCESS_KEY = "gtmqol.channel.error.no_access";
     public static final String BAD_NAME_KEY = "gtmqol.channel.error.bad_name";
     public static final String ROUTER_NEEDED_KEY = "gtmqol.channel.error.router_needed";
 
@@ -119,8 +122,11 @@ public final class ChannelSavedData extends SavedData {
     public @Nullable String bind(Player player, int id, ChannelKind kind, GlobalPos pos, ChannelRole role) {
         Channel channel = channels.get(id);
         if (channel == null || channel.kind != kind) return NOT_FOUND_KEY;
-        if (!canSee(player, channel)) return NOT_ALLOWED_KEY;
+        if (!canSee(player, channel)) return NO_ACCESS_KEY;
         if (channel.kind.routerForMany && role != ChannelRole.ROUTER && channel.count(ChannelRole.ROUTER) == 0) {
+            // Untested: a channel whose only transmitter was lost with its region (deleted or regenerated) takes a
+            // new transmitter again, once the old position is loaded
+            if (channel.endpoints.keySet().removeIf(other -> isGone(channel, other))) setDirty();
             for (var e : channel.endpoints.entrySet()) {
                 if (e.getValue() == role && !e.getKey().equals(pos)) return ROUTER_NEEDED_KEY;
             }
@@ -129,6 +135,19 @@ public final class ChannelSavedData extends SavedData {
         channel.endpoints.put(pos, role);
         setDirty();
         return null;
+    }
+
+    /**
+     * Whether an endpoint's machine went away without telling us (a deleted or regenerated region, a removed
+     * dimension): its position is loaded and nothing there is bound to the channel. Unloaded ones count as there.
+     */
+    private static boolean isGone(Channel channel, GlobalPos pos) {
+        ServerLevel level = ServerLifecycleHooks.getCurrentServer().getLevel(pos.dimension());
+        if (level == null) return true;
+        if (!level.isLoaded(pos.pos())) return false;
+        if (!(level.getBlockEntity(pos.pos()) instanceof MetaMachine machine)) return true;
+        ChannelBindingTrait binding = machine.getTrait(ChannelBindingTrait.class);
+        return binding == null || binding.getChannelId() != channel.id;
     }
 
     /** No permission check: for the bound machine itself (removed, or unbound from its UI). */

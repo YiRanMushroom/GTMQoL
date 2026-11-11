@@ -1,11 +1,12 @@
 +++
 title = "Source layout: package tree of com.yiran.minecraft.gtmqol (1.20.1) and where resources live"
 keys = [ "packages", "src/generated/resources", "where is" ]
-updated = "2026-11-09 07:14:20"
+updated = "2026-11-11 07:20:20"
+checked = "2026-11-11"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol"
-dir = [ "GTMQoL.java", "GTMQoLAddon.java", "RenamedIds.java", "api/", "client/", "common/", "config/", "core/", "data/", "gregification/", "integration/" ]
+dir = [ "GTMQoL.java", "GTMQoLAddon.java", "RenamedIds.java", "api/", "client/", "common/", "config/", "core/", "data/", "gregification/", "integration/", "package-info.java" ]
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common"
@@ -13,7 +14,7 @@ dir = [ "assembler/", "autobuild/", "blockprovider/", "circuit/", "crafter/", "c
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core"
-dir = [ "AE2MixinPlugin.java", "GTMQoLMixinConfigPlugin.java", "GTMQoLMixinPlugin.java", "RecipeDBMixinPlugin.java", "mixins/" ]
+dir = [ "AE2MixinPlugin.java", "GTMQoLMixinConfigPlugin.java", "GTMQoLMixinPlugin.java", "RecipeDBMixinPlugin.java", "mixins/", "package-info.java" ]
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/data"

@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import com.yiran.minecraft.gtmqol.common.circuit.CircuitTags;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,9 @@ public class MixinHelpersMixin {
     @Inject(method = "generateGTDynamicTags", at = @At("TAIL"))
     private static void gtmqol$addTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap,
                                        Registry<?> registry, CallbackInfo ci) {
-        if (registry == BuiltInRegistries.ITEM) WireTags.addTo(tagMap);
+        if (registry == BuiltInRegistries.ITEM) {
+            WireTags.addTo(tagMap);
+            CircuitTags.addTo(tagMap);
+        }
     }
 }

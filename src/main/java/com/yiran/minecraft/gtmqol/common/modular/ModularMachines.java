@@ -27,6 +27,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.network.chat.Component;
 
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -38,6 +40,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.LV;
+import static com.gregtechceu.gtceu.api.GTValues.VLVH;
+import static com.gregtechceu.gtceu.api.GTValues.VLVT;
 import static com.gregtechceu.gtceu.api.GTValues.VN;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.FRONT;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.RIGHT;
@@ -63,7 +67,27 @@ public final class ModularMachines {
             .apply(OverclockingLogic.create(0.5, 4.0, true));
     private static final ResourceLocation BASE_CASING = GTCEu.id("block/casings/solid/machine_casing_solid_steel");
 
+    // their lang is added in the GTMQoL constructor: loading this class there would load gtceu's recipe modifiers
+    // before their registries are open
+    public static final String TOOLTIP_KEY = "gtmqol.multiblock.modular.tooltip";
+    public static final String MACHINE_TOOLTIP_KEY = "gtmqol.multiblock.modular.tooltip.machine";
+    public static final String GENERATOR_TOOLTIP_KEY = "gtmqol.multiblock.modular.tooltip.generator";
+
     private ModularMachines() {}
+
+    /** The single block's English name without GT's tier words ("Basic ... ", " II"), else one made from its id. */
+    private static String englishName(@Nullable String langValue, int tier, String name) {
+        if (langValue != null) {
+            String head = VLVH[tier] + " ";
+            String tail = " " + VLVT[tier];
+            if (langValue.length() > head.length() + tail.length() && langValue.startsWith(head) &&
+                    langValue.endsWith(tail)) {
+                return langValue.substring(head.length(), langValue.length() - tail.length());
+            }
+        }
+        return FormattingUtil.toEnglishName(name);
+    }
+
 
     public static void register(MachineDefinition simple) {
         if (simple instanceof MultiblockMachineDefinition) return;
@@ -119,7 +143,11 @@ public final class ModularMachines {
                                 .or(Predicates.any()))
                         .build())
                 .workableCasingModel(BASE_CASING, overlay(namespace, name, generator))
-                .langValue("Modular " + FormattingUtil.toEnglishName(name))
+                // Untested: modular machines are named after their single block ("Modular ME Assembler") and say
+                // what they are in their tooltip
+                .langValue("Modular " + englishName(simple.getLangValue(), tier, name))
+                .tooltips(Component.translatable(TOOLTIP_KEY),
+                        Component.translatable(generator ? GENERATOR_TOOLTIP_KEY : MACHINE_TOOLTIP_KEY))
                 .dynamicallyGenerated(true)
                 .register();
 
