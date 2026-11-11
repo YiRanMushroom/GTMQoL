@@ -38,12 +38,12 @@ public final class GhostIngredients {
         var lang = GTMQoLAddon.registrate();
         String key = GhostIngredientHatchPartMachine.KEY;
         // gtceu shows <namespace>.machine.<id>.tooltip on its own
-        lang.addRawLang(key + "tooltip", "Holds ghost ingredients: marked items and fluids that tell the machine what " +
-                "to make. Nothing is consumed.");
+        lang.addRawLang(key + "tooltip", "Holds ghost ingredients: items and fluids that choose the machine's recipe " +
+                "and are never consumed.");
         lang.addRawLang(key + "tooltip.pattern_buffer", "With an ME Pattern Buffer, turn on its Shared Hatches.");
         lang.addRawLang(key + "title", "Ghost ingredients");
         lang.addRawLang(key + "hint.mark",
-                "Click: mark the held item. Right-click: mark what it holds. Or drag from the recipe viewer.");
+                "Click: mark the held item. Right-click: mark its contents. Or drag from the recipe viewer.");
         lang.addRawLang(key + "hint.remove", "Click with an empty hand to remove");
         lang.addRawLang(GhostIngredientRecipeViewer.TOOLTIP_KEY, "Mark it in a Ghost Ingredient Hatch; not consumed");
     }

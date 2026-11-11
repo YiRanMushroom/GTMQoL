@@ -99,8 +99,8 @@ public final class PatternCrafter {
                     .register();
         }
         PatternWear.init();
-        GTMQoLAddon.registrate().addRawLang(KEY + "tooltip", "Crafts the recipes of the Crafting Patterns in its " +
-                "input slots. AE2 crafting patterns work too.");
+        GTMQoLAddon.registrate().addRawLang(KEY + "tooltip", "Crafts from the Crafting Patterns in its input slots, " +
+                "AE2's included.");
         GTMQoLAddon.registrate().addRawLang(PatternWear.WORN_OUT_KEY, "No tool left that can do this");
     }
 

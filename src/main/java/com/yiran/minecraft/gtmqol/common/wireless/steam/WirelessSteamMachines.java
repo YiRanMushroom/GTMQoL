@@ -84,9 +84,10 @@ public final class WirelessSteamMachines {
                 .tooltips(Component.translatable(MONITOR_TOOLTIP_KEY),
                         Component.translatable(NETWORK_TOOLTIP_KEY))
                 .register();
-        addLang(NETWORK_TOOLTIP_KEY, "Bound to the player who places it: uses the wireless network of their FTB team, " +
-                "or their private one. Data Stick: right-click binds or pastes, Shift-right-click copies");
-        addLang(HATCH_INPUT_TOOLTIP_KEY, "Supplies steam from the wireless network: to steam multiblocks, and as a fluid input hatch to others");
+        addLang(NETWORK_TOOLTIP_KEY, "Uses the wireless network of the player who places it. Data Stick: right-click " +
+                "binds or pastes, Shift-right-click copies");
+        addLang(HATCH_INPUT_TOOLTIP_KEY, "Supplies steam from the wireless network, also as a fluid input to other " +
+                "multiblocks");
         addLang(HATCH_OUTPUT_TOOLTIP_KEY, "Sends steam produced by the multiblock to the wireless network");
         addLang(ACCESSOR_TOOLTIP_KEY, "Pipes can insert steam into or extract it from the wireless network");
         addLang(MONITOR_TOOLTIP_KEY, "Shows the steam stored in the wireless network and its input, output and net rates");

@@ -1,7 +1,7 @@
 +++
 title = "Naming and player text: class, ID, lang, config and item names, tooltips, UI labels; use when naming or writing them"
 keys = [ "id", "lang", "naming", "tooltip", "user-facing text", "wording" ]
-updated = "2026-11-11 07:39:36"
+updated = "2026-11-11 08:49:18"
 checked = "2026-11-11"
 
 [[items]]
@@ -33,6 +33,7 @@ Use whenever you name something (class, field, method, block or item ID, lang ke
 - One word per thing, in every tooltip, message and the README: "ghost ingredient" (to mark is the verb; not ghost mark, marked ingredient); "wireless network", a player's "private network" and "team network" (not pool, team mode); "window" (not UI, GUI); mouse actions as "Click", "Right-click", "Shift-click", "Shift-right-click".
 - A toggle's tooltip: "<Name>: on. <what it does>" and "<Name>: off", no colour codes, no separate info line.
 - Tooltips GT-style: short and plain, only what affects the player's decision (no tick counts, batch sizes, nothing the structure preview already shows).
+- The user (2026-11-11): cut hard. Parentheses are almost always filler (keep only key hints like "Shift: ±8" or "0 = none"); don't describe what the player sees happen anyway ("encoded patterns stay in the terminal", "the grid empties"). A result message is the outcome plus, on failure, the reason: "Pattern uploaded" / "Cannot upload" + "Already in an Assembling Matrix".
 
 ## Machine tooltip lang keys
 gtceu's MetaMachineBlock.appendHoverText shows <ns>.machine.<id>.tooltip by itself. Either just register lang under that key (gtceu shows it; ProbableDevices, Create sequenced assembly) or, for tooltips passed via .tooltips(...) or with arguments, use a .desc key (AEDualParts *.desc, steam_parallel_hatch.desc). Never pass the .tooltip key to .tooltips(), or it shows twice.

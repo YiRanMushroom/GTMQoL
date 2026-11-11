@@ -117,7 +117,7 @@ public class WirelessEnergyCellMachine extends MetaMachine
                 .register();
         GTMQoLAddon.registrate().addRawLang(TOOLTIP_KEY, "Powers its ME network from the wireless network");
         GTMQoLAddon.registrate().addRawLang(NETWORK_TOOLTIP_KEY,
-                "Only gives power: other power sources on the ME network can't fill the wireless network");
+                "Only gives power, never takes it");
     }
 
     public static void addRecipes(Consumer<FinishedRecipe> provider) {

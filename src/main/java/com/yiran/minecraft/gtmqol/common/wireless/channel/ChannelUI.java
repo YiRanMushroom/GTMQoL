@@ -388,7 +388,7 @@ public final class ChannelUI {
         addLang(NAME_KEY, "Name");
         addLang(SAVE_KEY, "Save");
         addLang(DELETE_KEY, "Delete");
-        addLang(DELETE_TOOLTIP_KEY, "Shift-click to delete the channel; everything bound to it is unbound");
+        addLang(DELETE_TOOLTIP_KEY, "Shift-click: delete the channel and unbind everything on it");
         addLang(LIST_EMPTY_KEY, "No channels yet: create one with New");
         addLang(ROW_OWNER_KEY, "Owner: %s");
         addLang(ROW_COUNTS_KEY, "Transmitters: %s, receivers: %s, routers: %s");
@@ -406,8 +406,8 @@ public final class ChannelUI {
         addLang(ChannelSavedData.NOT_ALLOWED_KEY, "Only the channel's owner can change or delete it");
         addLang(ChannelSavedData.NO_ACCESS_KEY, "You have no access to this channel");
         addLang(ChannelSavedData.BAD_NAME_KEY, "Name must be 1 to " + Channel.MAX_NAME_LENGTH + " characters");
-        addLang(ChannelSavedData.ROUTER_NEEDED_KEY, "This channel already has a hatch of this kind. Bind a Wireless " +
-                "Computation Network Router to the channel to add more");
+        addLang(ChannelSavedData.ROUTER_NEEDED_KEY, "This channel already has one of these. Bind a Wireless " +
+                "Computation Network Router to it to add more");
     }
 
     private static void addLang(String key, String value) {

@@ -192,8 +192,7 @@ public final class GTMQoLMultiblocks {
                 .register();
 
         GTMQoLAddon.registrate().addRawLang(DTFR_TOOLTIP_KEY,
-                "Runs fusion recipes of any tier, with no energy needed to start. Takes energy, substation and laser " +
-                        "hatches.");
+                "Runs fusion recipes of any tier with no startup energy. Takes energy, substation and laser hatches.");
     }
 
     private static void initIndustrialLargeChemicalReactor() {
@@ -279,11 +278,11 @@ public final class GTMQoLMultiblocks {
         var lang = GTMQoLAddon.registrate();
         String key = VoidMinerMachine.KEY;
         lang.addRawLang(key + "tooltip.0",
-                "Mines the ores of its dimension's GregTech veins, averaged by vein weight, out of thin air.");
+                "Mines the ores of its dimension's GregTech veins out of thin air, by vein weight.");
         lang.addRawLang(key + "tooltip.1",
-                "Paid from its wireless network: 1,000,000 EU per stack, all up front. Cycles take 15 s.");
+                "1,000,000 EU per stack from its wireless network, paid up front. 15 s per cycle.");
         lang.addRawLang(key + "tooltip.2",
-                "Each operation mines one ore, several stacks of it (limits in the config). Stopping finishes the current cycle.");
+                "Each cycle mines several stacks of one ore. Stopping finishes the current cycle.");
         addCyclicMachineLang(key, "Mining: %s / %s s", "Output full: %s ores left");
         lang.addRawLang(key + "status.no_network", "No wireless network bound");
         lang.addRawLang(key + "status.not_enough_eu", "Not enough EU in the network");
@@ -334,13 +333,11 @@ public final class GTMQoLMultiblocks {
         var lang = GTMQoLAddon.registrate();
         String key = IndustrialFishingPondMachine.KEY;
         lang.addRawLang(key + "tooltip.0",
-                "Fishes vanilla fishing loot with the rod in its controller, every 5 s. The rod takes no damage.");
+                "Fishes with the rod in its controller every 5 s. The rod takes no damage.");
         lang.addRawLang(key + "tooltip.1",
-                "1,000 EU per roll; 4× in treasure mode, which adds treasure to the loot. Lure makes rolls cheaper, " +
-                        "Luck of the Sea works as usual.");
+                "1,000 EU per roll, 4× in treasure mode. Lure lowers the cost, Luck of the Sea applies.");
         lang.addRawLang(key + "tooltip.2",
-                "Spends everything its Energy Hatches deliver in a cycle: energy for all the rolls twice over gives " +
-                        "twice the loot, and so on.");
+                "Uses all the energy its Energy Hatches deliver: twice the energy, twice the loot.");
         lang.addRawLang(key + "tooltip.3", "Never loses progress for lack of power.");
         addCyclicMachineLang(key, "Fishing: %s / %s s", "Output full: %s items left");
         lang.addRawLang(key + "status.no_rod", "No fishing rod");
@@ -350,7 +347,7 @@ public final class GTMQoLMultiblocks {
         lang.addRawLang(key + "mode.treasure", "with treasure");
         lang.addRawLang(key + "rod", "Fishing rod");
         lang.addRawLang(key + "config", "Settings");
-        lang.addRawLang(key + "treasure.on", "Treasure mode: on (4× EU)");
+        lang.addRawLang(key + "treasure.on", "Treasure mode: on. Treasure loot at 4× EU");
         lang.addRawLang(key + "treasure.off", "Treasure mode: off");
         lang.addRawLang(key + "config.title", "Settings (Shift: ±8, Ctrl: ×2 / ÷2)");
         lang.addRawLang(key + "config.rolls", "Rolls per cycle: %s");
