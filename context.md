@@ -21,9 +21,9 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 
 ## In progress
 
-- Nothing. 3.5.0 (2026-11-11) released the project-wide improvement pass on both branches; `plan.improvement-2026-11`
-  lists what was done, what was decided, and what is still open (structure proposals, small items, the parts no
-  review read). In-game checks: `status.untested`.
+- Nothing. 3.5.0 (2026-11-11) released the project-wide improvement pass on both branches, 3.5.1 the shortened
+  tooltips; `plan.improvement-2026-11` lists what was done, what was decided, and what is still open (structure
+  proposals, small items, the parts no review read). In-game checks: `status.untested`.
 
 ## Known bugs, not fixed
 
