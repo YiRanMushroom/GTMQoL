@@ -110,12 +110,11 @@ public abstract class GhostIngredient<T> {
         type().valueStreamCodec().encode(buf, value);
     }
 
-    /** Registers a type; its id must be unique. */
-    public static <T> Type<T> register(Type<T> type) {
+    /** Registers a type, before anything is decoded; its id must be unique. */
+    public static void register(Type<?> type) {
         if (TYPES.putIfAbsent(type.id(), type) != null) {
             throw new IllegalArgumentException("Ghost ingredient type " + type.id() + " registered twice");
         }
-        return type;
     }
 
     public static Collection<Type<?>> types() {

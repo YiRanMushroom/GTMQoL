@@ -13,11 +13,9 @@ import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import static com.gregtechceu.gtceu.api.GTValues.LV;
 import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.IS_FORMED;
-import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.OVERLAY_ITEM_HATCH_INPUT;
 
 /** The {@link GhostIngredientRecipeCapability} and its {@link GhostIngredientHatchPartMachine}. */
 public final class GhostIngredients {
@@ -31,9 +29,9 @@ public final class GhostIngredients {
 
     /** Call during mod construction. */
     public static void init() {
-        // the types register themselves when loaded; load them before anything is decoded
-        ItemGhostIngredient.TYPE.id();
-        FluidGhostIngredient.TYPE.id();
+        // Untested: a Ghost Ingredient Hatch keeps its marked items and fluids after rejoining the world
+        GhostIngredient.register(ItemGhostIngredient.TYPE);
+        GhostIngredient.register(FluidGhostIngredient.TYPE);
         GhostIngredientRecipeCapability.init();
         GHOST_INGREDIENT_HATCH = GTMQoLAddon.machine("ghost_ingredient_hatch", GhostIngredientHatchPartMachine::new)
                 .rotationState(RotationState.ALL)
@@ -43,7 +41,7 @@ public final class GhostIngredients {
                 .modelProperty(IS_FORMED, false)
                 // gtceu's configurable maintenance hatch texture (a gear); the String overload would look in our
                 // namespace
-                .colorOverlayTieredHullModel(overlay("overlay_maintenance_configurable"))
+                .colorOverlayTieredHullModel(GTCEu.id("block/overlay/machine/overlay_maintenance_configurable"))
                 .langValue("Ghost Ingredient Hatch")
                 // the main line is gtceu's own <namespace>.machine.<id>.tooltip
                 .tooltips(Component.translatable(GhostIngredientHatchPartMachine.KEY + "tooltip.pattern_buffer"))
@@ -52,17 +50,14 @@ public final class GhostIngredients {
         var lang = GTMQoLAddon.registrate();
         String key = GhostIngredientHatchPartMachine.KEY;
         // gtceu shows <namespace>.machine.<id>.tooltip on its own
-        lang.addRawLang(key + "tooltip", "Marks ingredients that tell the machine what to make. Nothing is consumed.");
+        lang.addRawLang(key + "tooltip", "Holds ghost ingredients: marked items and fluids that tell the machine what " +
+                "to make. Nothing is consumed.");
         lang.addRawLang(key + "tooltip.pattern_buffer", "With an ME Pattern Buffer, turn on its Shared Hatches.");
-        lang.addRawLang(key + "title", "Marked ingredients");
+        lang.addRawLang(key + "title", "Ghost ingredients");
         lang.addRawLang(key + "hint.mark",
-                "Left click: the held item. Right click: what it holds. Or drag from the recipe viewer.");
+                "Click: mark the held item. Right-click: mark what it holds. Or drag from the recipe viewer.");
         lang.addRawLang(key + "hint.remove", "Click with an empty hand to remove");
         lang.addRawLang(GhostIngredientRecipeViewer.TOOLTIP_KEY, "Mark it in a Ghost Ingredient Hatch; not consumed");
-    }
-
-    private static ResourceLocation overlay(String name) {
-        return GTCEu.id("block/overlay/machine/" + name);
     }
 
     public static void addRecipes(RecipeOutput provider) {

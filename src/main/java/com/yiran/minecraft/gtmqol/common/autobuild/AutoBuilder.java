@@ -93,12 +93,12 @@ public final class AutoBuilder {
 
         var registrate = GTMQoLAddon.registrate();
         registrate.addRawLang(BUTTON_KEY, "Auto build");
-        registrate.addRawLang(TOOLTIP_KEY + "0", "Left click: place blocks from your inventory");
-        registrate.addRawLang(TOOLTIP_KEY + "1", "Shift + left click: keep building until done, again to stop");
+        registrate.addRawLang(TOOLTIP_KEY + "0", "Click: place blocks from your inventory");
+        registrate.addRawLang(TOOLTIP_KEY + "1", "Shift-click: keep building until done; again to stop");
         registrate.addRawLang(TOOLTIP_KEY + "2", "Hatches, buses and other parts are not placed");
-        registrate.addRawLang(TOOLTIP_KEY + "3", "Right click: settings");
+        registrate.addRawLang(TOOLTIP_KEY + "3", "Right-click: settings");
         registrate.addRawLang(AutoBuildPanel.TITLE_KEY, "Auto build settings");
-        registrate.addRawLang(AutoBuildPanel.LAYER_KEY, "Layer %s: %s");
+        registrate.addRawLang(AutoBuildPanel.LAYER_KEY, "Repeats of layer %s: %s");
         registrate.addRawLang(AutoBuildPanel.SIZE_KEY, "Size %s: %s");
         registrate.addRawLang(AutoBuildPanel.BLOCKS_KEY, "Block %s");
         registrate.addRawLang(AutoBuildPanel.RESET_KEY, "Reset");
@@ -114,7 +114,7 @@ public final class AutoBuilder {
         registrate.addRawLang(STUCK_KEY, "Auto build: nothing could be placed, %s left");
         registrate.addRawLang(MISSING_KEY, "Missing: %s");
         registrate.addRawLang(BLOCKED_KEY, "%s positions are blocked, protected or not loaded");
-        registrate.addRawLang(FAILED_KEY, "Auto build: cannot lay out this structure (%s)");
+        registrate.addRawLang(FAILED_KEY, "Auto build: cannot lay out this structure");
     }
 
     /** Server side of the button. */
@@ -136,7 +136,7 @@ public final class AutoBuilder {
         } catch (RuntimeException e) {
             GTMQoL.LOGGER.warn("Auto-build: cannot plan {} at {}", controller.getDefinition().getId(),
                     controller.getBlockPos(), e);
-            player.displayClientMessage(Component.translatable(FAILED_KEY, String.valueOf(e.getMessage())), false);
+            player.displayClientMessage(Component.translatable(FAILED_KEY), false);
             return;
         }
         if (shift) {
@@ -249,7 +249,7 @@ public final class AutoBuilder {
                 blocked++;
             }
         }
-        GTMQoL.LOGGER.info("Auto-build: placed {} of {} planned blocks in {} us", placed, plan.size(),
+        GTMQoL.LOGGER.debug("Auto-build: placed {} of {} planned blocks in {} us", placed, plan.size(),
                 (System.nanoTime() - start) / 1000);
         return new Batch(placed, remaining, blocked, missing);
     }

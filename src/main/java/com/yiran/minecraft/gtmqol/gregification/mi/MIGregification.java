@@ -50,6 +50,7 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import brachy.modularui.drawable.progress.CircularProgressDrawable;
 import org.jetbrains.annotations.Nullable;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -237,17 +238,17 @@ public final class MIGregification {
         for (var input : recipe.fluidInputs) {
             if (input.fluid().hasNoFluids()) return false;
             withChance(builder, input.probability(), true, () -> builder
-                    .inputFluids(new SizedFluidIngredient(widenToGT(input.fluid()), (int) input.amount())));
+                    .inputFluids(new SizedFluidIngredient(widenToGT(input.fluid()), GTMath.saturatedCast(input.amount()))));
         }
         for (var output : recipe.itemOutputs) {
             withChance(builder, output.probability(), false, () -> builder.outputItems(output.getStack()));
         }
         for (var output : recipe.fluidOutputs) {
             withChance(builder, output.probability(), false,
-                    () -> builder.outputFluids(new FluidStack(toGT(output.fluid()), (int) output.amount())));
+                    () -> builder.outputFluids(new FluidStack(toGT(output.fluid()), GTMath.saturatedCast(output.amount()))));
         }
         // same total energy as in MI (1 MI EU = 1 GT EU), at VA[LV]
-        builder.EUt(VA[LV]).duration((int) Math.max(1, Math.ceilDiv(recipe.getTotalEu(), VA[LV])));
+        builder.EUt(VA[LV]).duration(GTMath.saturatedCast(Math.max(1, Math.ceilDiv(recipe.getTotalEu(), VA[LV]))));
         return true;
     }
 

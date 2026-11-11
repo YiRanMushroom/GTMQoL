@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputBusPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
@@ -137,6 +136,10 @@ public class MEUniversalInputPartMachine extends MEInputBusPartMachine implement
         GenericStack config = slot.getConfig();
         GenericStack stock = slot.getStock();
         if (config == null || stock == null || amount <= 0 || !isOnline()) return 0;
+        // the recipe matched the stock: never take another key for it
+        // Untested: pasting another configuration with a Data Stick onto a working ME Universal / Dual Input never
+        // makes a recipe consume the newly configured item for the old one
+        if (!config.what().equals(stock.what())) return 0;
         IGrid grid = getMainNode().getGrid();
         if (grid == null) return 0;
         long extracted = grid.getStorageService().getInventory().extract(config.what(), amount,
@@ -328,7 +331,12 @@ public class MEUniversalInputPartMachine extends MEInputBusPartMachine implement
                 String key = Integer.toString(i);
                 GenericStack config = configStacks.contains(key) ?
                         GenericStack.readTag(provider, configStacks.getCompound(key)) : null;
-                list.getInventory()[i].setConfig(config != null && isSupported(config.what()) ? config : null);
+                var slot = list.getInventory()[i];
+                GenericStack pasted = config != null && isSupported(config.what()) ? config : null;
+                GenericStack old = slot.getConfig();
+                // the stock is of the old key until the next sync with the network
+                if (old == null || pasted == null || !old.what().equals(pasted.what())) slot.setStock(null);
+                slot.setConfig(pasted);
             }
         }
         if (tag.contains("DistinctBuses")) setDistinct(tag.getBoolean("DistinctBuses"));

@@ -20,9 +20,9 @@ import brachy.modularui.integration.recipeviewer.entry.fluid.FluidStackList;
  */
 public final class FluidGhostIngredient extends GhostIngredient<FluidStack> {
 
-    public static final Type<FluidStack> TYPE = register(new Type<>("fluid", FluidStack.class,
+    public static final Type<FluidStack> TYPE = new Type<>("fluid", FluidStack.class,
             FluidStack.CODEC, FluidStack.STREAM_CODEC, FluidStack::isEmpty, FluidGhostIngredient::new,
-            (held, rightClick) -> rightClick ? FluidUtil.getFluidContained(held).orElse(null) : null));
+            (held, rightClick) -> rightClick ? FluidUtil.getFluidContained(held).orElse(null) : null);
 
     public FluidGhostIngredient(FluidStack stack) {
         super(stack.copyWithAmount(1));

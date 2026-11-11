@@ -10,10 +10,8 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
-import com.yiran.minecraft.gtmqol.common.circuit.UniversalCircuits;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 
 import net.minecraft.data.recipes.RecipeOutput;
@@ -58,19 +56,10 @@ public final class MagicalAssembler {
                 'G', Items.GLASS,
                 'C', CIRCUIT,
                 'P', PLATE);
+        if (GTMQoLConfig.get().recipes.miscRecipes) addMiscRecipes(provider);
+    }
 
-        if (GTMQoLConfig.get().circuits.universalCircuits) {
-            for (int tier : ALL_TIERS) {
-                RECIPE_TYPE.recipeBuilder(GTMQoL.id("circuit_conversion_tier_" + tier))
-                        .inputItems(CustomTags.CIRCUITS_ARRAY[tier])
-                        .outputItems(UniversalCircuits.UNIVERSAL_CIRCUITS[tier])
-                        .circuitMeta(5)
-                        .duration(1)
-                        .EUt(1)
-                        .save(provider);
-            }
-        }
-
+    private static void addMiscRecipes(RecipeOutput provider) {
         RECIPE_TYPE.recipeBuilder(GTMQoL.id("produce_creative_data_access_hatch"))
                 .inputItems(GTResearchMachines.RESEARCH_STATION)
                 .inputItems(GTResearchMachines.DATA_BANK, 4)

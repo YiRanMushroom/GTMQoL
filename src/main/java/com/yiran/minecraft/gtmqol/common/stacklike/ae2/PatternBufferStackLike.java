@@ -25,7 +25,6 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -239,7 +238,7 @@ public final class PatternBufferStackLike {
         }
 
         @Override
-        public @NotNull List<I> handleRecipeInner(IO io, @Nullable GTRecipe recipe, List<I> left, boolean simulate) {
+        public List<I> handleRecipeInner(IO io, @Nullable GTRecipe recipe, List<I> left, boolean simulate) {
             return left;
         }
 
@@ -286,7 +285,7 @@ public final class PatternBufferStackLike {
         }
 
         @Override
-        public List<I> handleRecipeInner(IO io, GTRecipe recipe, List<I> left, boolean simulate) {
+        public List<I> handleRecipeInner(IO io, @Nullable GTRecipe recipe, List<I> left, boolean simulate) {
             return proxy == null ? left : proxy.handleRecipeInner(io, recipe, left, simulate);
         }
 

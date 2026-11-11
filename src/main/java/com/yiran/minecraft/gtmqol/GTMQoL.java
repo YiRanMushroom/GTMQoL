@@ -18,7 +18,6 @@ import com.yiran.minecraft.gtmqol.common.stacklike.ae2.AppMekChemicalBridge;
 import com.yiran.minecraft.gtmqol.integration.productivebees.LegacyCapabilityAliases;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
 import com.yiran.minecraft.gtmqol.common.autobuild.AutoBuilder;
-import com.yiran.minecraft.gtmqol.common.circuit.CircuitTags;
 import com.yiran.minecraft.gtmqol.data.tag.MaterialAliasTags;
 import com.yiran.minecraft.gtmqol.common.circuit.ControlCircuits;
 import com.yiran.minecraft.gtmqol.common.blockprovider.BlockProviderRecipeCapability;
@@ -61,7 +60,6 @@ import com.yiran.minecraft.gtmqol.gregification.productivebees.ProductiveBeesGre
 
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -71,6 +69,7 @@ import net.neoforged.neoforge.data.loading.DatagenModLoader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.yiran.minecraft.gtmqol.integration.ae2.patternbuffer.PatternBufferReturn;
 
 @Mod(GTMQoL.MOD_ID)
 public final class GTMQoL {
@@ -79,10 +78,10 @@ public final class GTMQoL {
 
     private static final ResourceLocation TEMPLATE_LOCATION = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
 
-    public GTMQoL(IEventBus modBus, ModContainer container) {
+    public GTMQoL(IEventBus modBus) {
         GTMQoLConfig config = GTMQoLConfig.get();
         GTMQoLAddon.registrate().registerEventListeners(modBus);
-        // Always on: the void miner uses the wireless EU network too.
+        // always: the void miner uses the wireless EU network too
         WirelessNetworks.init();
         if (config.misc.feInput) FEInputProvider.init(modBus);
         // always: the button itself checks config.misc.autoBuild
@@ -90,7 +89,6 @@ public final class GTMQoL {
         if (config.circuits.universalCircuits) UniversalCircuits.init();
         if (config.circuits.controlCircuits) ControlCircuits.init();
         if (config.recipes.useLegacyPartRecipes) LegacyPartRecipes.init(modBus);
-        if (config.circuits.mekanismCircuitTags) CircuitTags.init();
         MaterialAliasTags.init();
         PotionContainers.init(modBus);
         RecipeTypeLayouts.init(modBus);
@@ -146,7 +144,7 @@ public final class GTMQoL {
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
         if (config.wireless.steam) WirelessSteamMachines.init();
         if (config.wireless.energy) WirelessEnergyMachines.init();
-        if (config.wireless.energy && config.wireless.fe) WirelessFEMachines.init();
+        if (config.wirelessFE()) WirelessFEMachines.init();
         if (config.wireless.computation) ChannelMachines.initComputation();
         if (config.wireless.opticalData) ChannelMachines.initOptical();
         if (GTCEu.Mods.isAE2Loaded()) {
@@ -156,9 +154,8 @@ public final class GTMQoL {
                 AEStackLikeBridges.register(AppMekChemicalBridge.INSTANCE);
             }
             if (config.ae2.overclockedPatternBuffer) AE2Machines.init();
-            if (config.wireless.energy && config.wireless.fe) WirelessEnergyCellMachine.init();
-            if (config.ae2.assemblingMatrix && config.machines.patternCrafter && config.wireless.energy &&
-                    config.wireless.fe) {
+            if (config.wirelessFE()) WirelessEnergyCellMachine.init();
+            if (config.assemblingMatrix()) {
                 AssemblingMatrix.init();
                 AssemblingMatrixUploadMessage.register(modBus);
             }
@@ -168,7 +165,7 @@ public final class GTMQoL {
                 AEProcessing.initMachines();
             }
             if (config.ae2.dualHatches) AEDualParts.init();
-            if (config.ae2.patternBufferReturn) AEDualParts.initLang();
+            PatternBufferReturn.addLang();
             if (EarlyConfig.AE2_STICKY_CARD) {
                 StickyCardItem.init();
                 modBus.addListener(FMLCommonSetupEvent.class, event -> event.enqueueWork(StickyCardItem::registerUpgrades));

@@ -1,8 +1,8 @@
 +++
 title = "Which machines get a modular multiblock: MachineBuilderMixin queues all, first >=LV per recipe-type set wins"
 keys = [ "hp_", "kubejs", "machinebuilderaccessor", "recipe types", "registertieredmachines", "steam", "tier" ]
-updated = "2026-10-19 20:08:34"
-checked = "2026-11-07"
+updated = "2026-11-11 07:39:07"
+checked = "2026-11-11"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/MachineBuilderMixin.java"
@@ -10,6 +10,6 @@ snippet = "ModularMachines.queue(self.getOwner().getModid(), self.getName(), sel
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/modular/ModularMachines.java"
-snippet = "public static void queue(String namespace, String name, int tier, MachineEntry<?> simple,"
+snippet = "public static synchronized void queue(String namespace, String name, int tier, @Nullable String langValue,"
 +++
-User's rule (2026-10-08): per set of recipe types, the first machine with tier >= LV wins (steam ones share types but are tier 0). The VN-prefix check exists because gtceu and addons register hp_ steam machines with tier(1) = LV. Hooking register() replaced the old 1.20.1 approach (RETURN of registerTieredMachines + a KJSTieredMachineBuilder mixin) that missed self-looping addons. Late (KubeJS) machines get none and log a warning.
+User's rule (2026-10-08): per set of recipe types, the first machine with tier >= LV wins (steam ones share types but are tier 0). The VN-prefix check exists because gtceu and addons register hp_ steam machines with tier(1) = LV. Hooking register() replaced the old 1.20.1 approach (RETURN of registerTieredMachines + a KJSTieredMachineBuilder mixin) that missed self-looping addons. Late (KubeJS) machines get none and log a warning. The modular machine is named "Modular " + the single block's lang value without GT's tier words (VLVH/VLVT), else from the id; queue and declareAll are synchronized, since mods are constructed in parallel.

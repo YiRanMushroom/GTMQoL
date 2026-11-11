@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-10 07:54:29"
+updated = "2026-11-11 08:19:37"
 
 [[items]]
 name = "rotor-amount"
@@ -207,5 +207,113 @@ name = "me-output-hatch-buffer"
 value = "GT ME output hatch buffers more than 2.1G mB of one fluid (network full or offline) and the machine keeps running"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/MEOutputHatchBufferMixin.java"
 snippet = "// Untested: an ME output hatch buffers more than 2.1G mB of one fluid (ME network full or offline) and the machine"
+
+[[items]]
+name = "optional-tags"
+value = "Our entries in shared tags are optional: with circuits.universalCircuits off, or without AE2, no \"Couldn't load tag\" in the log and circuit recipes still take every circuit of the tier"
+path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoLAddon.java"
+snippet = "// Untested: with circuits.universalCircuits off (or without AE2) the log has no \"Couldn't load tag\" line and GT's"
+
+[[items]]
+name = "ghost-type-registration"
+value = "Ghost ingredient types registered in init: a Ghost Ingredient Hatch keeps its marked items and fluids after rejoining"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/GhostIngredients.java"
+snippet = "// Untested: a Ghost Ingredient Hatch keeps its marked items and fluids after rejoining the world"
+
+[[items]]
+name = "ilcr-tooltip"
+value = "Industrial Large Chemical Reactor tooltip: \"Available Recipe Types: Large Chemical Reactor\" instead of a raw key"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/multiblock/GTMQoLMultiblocks.java"
+snippet = "// Untested: the tooltip names the recipe type (it showed a raw key)"
+
+[[items]]
+name = "perfect-oc-gap"
+value = "Perfect overclock: a recipe of 128-255 ticks one tier above its own (512-1023 two tiers, ...) is overclocked again; it ran at base speed (Smart Assembly Factory, modular machines)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/OverclockingLogicMixin.java"
+snippet = "// Untested: a perfect-overclock machine (e.g. the Smart Assembly Factory) one tier above a 128-255 tick"
+
+[[items]]
+name = "me-assembler-machines"
+value = "ME Assembler / ME Circuit Slicer are now named \"ME ...\" and registered through our tiered machine: ones placed before keep their contents and work"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/AEProcessing.java"
+snippet = "// Untested: ME Assemblers and ME Circuit Slicers placed before 3.5 keep their contents and still work"
+
+[[items]]
+name = "modular-names"
+value = "Modular machines are named after their single block (\"Modular ME Assembler\", \"Modular HNN Simulation Chamber\") and have a tooltip (3x3x3, 8x faster / fuel lasts 8x)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/modular/ModularMachines.java"
+snippet = "// Untested: modular machines are named after their single block (\"Modular ME Assembler\") and say"
+
+[[items]]
+name = "universal-input-paste"
+value = "ME Universal / Dual Input: pasting another configuration with a Data Stick while it works never makes a recipe consume the new item for the old one"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/parts/MEUniversalInputPartMachine.java"
+snippet = "// Untested: pasting another configuration with a Data Stick onto a working ME Universal / Dual Input never"
+
+[[items]]
+name = "matrix-reload"
+value = "Assembling Matrix after /reload with a changed recipe offers and crafts the new result; Shift-cancel gives inputs back at once; a non-wearing Crafting Pattern job above 2.1G crafts starts"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixMachine.java"
+snippet = "// Untested: after /reload with a changed recipe, an Assembling Matrix offers and crafts the new result"
+
+[[items]]
+name = "wireless-hatch-window"
+value = "Wireless energy hatch window: closing it untouched keeps amperage and overclock (another player's change survives); changing them and closing or Save still applies"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/energy/WirelessEnergyHatchPartMachine.java"
+snippet = "// Untested: closing a wireless energy hatch's window without touching anything keeps amperage and overclock,"
+
+[[items]]
+name = "stacklike-simulated"
+value = "Recipes taking chemicals from an ME Universal Input or a pattern buffer still start and run (inputs are now simulated against the storage)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/GenericStackLikeNotifiableHandler.java"
+snippet = "// Untested: recipes taking chemicals from an ME Universal Input or a pattern buffer still start and run"
+
+[[items]]
+name = "implosion-hook"
+value = "Electric Implosion Compressor still has its recipes (the hook now runs on the main thread)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/implosion/ElectricImplosion.java"
+snippet = "// Untested: the Electric Implosion Compressor still has its recipes"
+
+[[items]]
+name = "energy-cell-max"
+value = "Wireless Energy Cell on an ME network with normal energy cells: stored / maximum power look sensible, also after the wireless cell is removed"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/energy/ae2/WirelessEnergyCellMachine.java"
+snippet = "// Untested: an ME network with the cell and normal energy cells shows a sensible stored / maximum power, also"
+
+[[items]]
+name = "proxy-output-marks"
+value = "ME Pattern Buffer Proxy of an Overclocked ME Pattern Buffer with Mark Pattern Outputs on: two patterns with the same inputs and different outputs each run their own recipe in the proxy's multiblock (ae2.pattern-output-marks)."
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/MEPatternBufferProxyStackLikeMixin.java"
+snippet = "// Untested: a multiblock fed through an ME Pattern Buffer Proxy"
+
+[[items]]
+name = "ber-render-box"
+value = "1.21: the Industrial Fishing Pond's water (and a fusion reactor's ring) stays visible when the controller is outside the view and the rest of the structure is inside (gtceufix.ber-render-box)."
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/BlockEntityWithBERModelRendererMixin.java"
+snippet = "// Untested: the Industrial Fishing Pond's water"
+
+[[items]]
+name = "circuit-tags-runtime"
+value = "With Mekanism: GT recipes take Mekanism's control circuits and Mekanism's take GT circuits of the tier; mekanismCircuitTags off + /reload ends it (recipes.circuit-tags)."
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/circuit/CircuitTags.java"
+snippet = "// Untested:"
+
+[[items]]
+name = "wireless-settings-permission"
+value = "A player outside the bound player's team can't change a wireless hatch's amperage/overclock, a cube's sides, an accessor's or cover's amperage, the steam accessor's auto output (action bar message, old value back); owner, team member, op can."
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/WirelessBindingTrait.java"
+snippet = "// Untested: a player outside the bound player's team"
+
+[[items]]
+name = "channel-stale-endpoint"
+value = "A computation/data channel without a router whose only transmitter was lost with its region (deleted/regenerated chunk) takes a new transmitter once the old position is loaded, instead of 'router needed'."
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/channel/ChannelSavedData.java"
+snippet = "// Untested: a channel whose only transmitter was lost"
+
+[[items]]
+name = "steam-cover-tag"
+value = "An output Wireless Steam Cover drains another mod's steam (any fluid in the steam tag) into the network, not only GT's steam."
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/steam/WirelessSteamCover.java"
+snippet = "// Untested: an output Wireless Steam Cover also drains"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

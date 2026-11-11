@@ -62,12 +62,15 @@ public final class WirelessNetworks {
         if (binding != null) {
             binding.bind(player.getUUID(), false);
         }
-        int amperage = WirelessEnergySavedData.get().getDefaultAmperage(player.getUUID());
         if (machine instanceof WirelessEnergyHatchPartMachine hatch) {
-            hatch.applySettings(amperage, hatch.isOverclocked());
+            hatch.applySettings(defaultAmperage(player), hatch.isOverclocked());
         } else if (machine instanceof WirelessEnergyAccessorMachine accessor) {
-            accessor.setAmperage(amperage);
+            accessor.setAmperage(defaultAmperage(player));
         }
+    }
+
+    private static int defaultAmperage(Player player) {
+        return WirelessEnergySavedData.get().getDefaultAmperage(player.getUUID());
     }
 
     /** Every kind's pool. Server only. */

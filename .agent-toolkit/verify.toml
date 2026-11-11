@@ -1,0 +1,3 @@
+# verify(): both worktrees compile without errors or new warnings. Data runs and unit tests take longer and are a job:
+# sh_exec("bash .agent-toolkit/gradle.sh both runData test")
+always = ["bash .agent-toolkit/gradle.sh both compileJava"]

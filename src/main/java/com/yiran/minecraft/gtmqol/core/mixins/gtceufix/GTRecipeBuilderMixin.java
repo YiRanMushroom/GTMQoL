@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.Arrays;
 
@@ -43,6 +44,7 @@ public class GTRecipeBuilderMixin {
         cir.setReturnValue(((GTRecipeBuilder) (Object) this).output(FluidRecipeCapability.CAP, ingredients));
     }
 
+    @Unique
     private static SizedFluidIngredient gtmqol$sized(FluidStack stack) {
         return new SizedFluidIngredient(DataComponentFluidIngredient.of(true, stack), stack.getAmount());
     }

@@ -2,7 +2,6 @@ package com.yiran.minecraft.gtmqol.core.mixins.ae2;
 
 import appeng.api.stacks.GenericStack;
 import appeng.integration.modules.emi.EmiEncodePatternHandler;
-import appeng.integration.modules.emi.EmiStackHelper;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;

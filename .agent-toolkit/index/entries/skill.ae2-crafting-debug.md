@@ -2,8 +2,8 @@
 title = "Debugging AE crafting, batches and the Assembling Matrix: a job's path, saved state, symptoms; use when a job misbehaves"
 kind = "howto"
 keys = [ "assembling matrix bug", "batch debugging", "crafting job stuck", "lost items", "waitingfor" ]
-updated = "2026-11-09 07:01:11"
-checked = "2026-11-09"
+updated = "2026-11-11 07:38:56"
+checked = "2026-11-11"
 
 [[items]]
 name = "plan"
@@ -45,7 +45,7 @@ sha256 = "d559ee3890fc9810240eb7a029521cd7c1554f0f79bf3fdade02810c69191d64"
 name = "work"
 value = "Step 7 and saved matrix state: tick, cancel, giveBackAll"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixWork.java"
-sha256 = "ed6cdde03cae5c0f4e5707e4fe6306514fb32d5cb6d11cdc1aff9b1569f8501c"
+sha256 = "b715da3044ddc65396de71096ea9c424dcecf17a38422cd7c23982e588de198b"
 
 [[items]]
 name = "upload"
@@ -57,7 +57,7 @@ sha256 = "dbbcea811a918633c0bd3d05a1b2e86ea554008ad6f97de8f69db278aa3d8cf0"
 name = "batch"
 value = "Saved batches: hidden Pattern Batch item and decoder"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/crafting/PatternBatch.java"
-sha256 = "417e9f8905691b3fa0006aaeea9d675b6b26fc6b0e5a6296dbd2ea96a16f9d18"
+sha256 = "967ae70f59037586f010a3dbeb9db2548264c82fdcd0bd28c108b7b0f6d46eb6"
 +++
 For when something goes wrong in game. Why things are as they are: ae2.fast-crafting (planner, batches, push time), ae2.pattern-matrix, ae2.pattern-batching. Class names below are in integration/ae2/crafting, integration/ae2/matrix and core/mixins/ae2.
 

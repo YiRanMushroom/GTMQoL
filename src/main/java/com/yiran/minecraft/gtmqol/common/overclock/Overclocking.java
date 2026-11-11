@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.common.overclock;
 
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 /**
  * Replacement factors for gtceu's four overclock constants. The constants themselves are
@@ -25,6 +26,15 @@ public final class Overclocking {
 
     private Overclocking() {}
 
+    /**
+     * How many crafts a run does: its parallels of every kind multiplied, at most {@link #MAX_PARALLELS}. Each of
+     * the three is capped there, their plain int product wraps.
+     */
+    public static int crafts(GTRecipe recipe) {
+        long crafts = Math.min(MAX_PARALLELS, (long) recipe.parallels * recipe.subtickParallels);
+        return (int) Math.min(MAX_PARALLELS, crafts * recipe.batchParallels);
+    }
+
     public static OverclockingLogic replace(OverclockingLogic logic) {
         if (logic == OverclockingLogic.NON_PERFECT_OVERCLOCK || logic == OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK) {
             return STANDARD;
@@ -33,11 +43,6 @@ public final class Overclocking {
             return PERFECT;
         }
         return logic;
-    }
-
-    /** Both replacements gain 4x speed per overclock. */
-    public static boolean isReplacement(OverclockingLogic logic) {
-        return logic == STANDARD || logic == PERFECT;
     }
 
     /**

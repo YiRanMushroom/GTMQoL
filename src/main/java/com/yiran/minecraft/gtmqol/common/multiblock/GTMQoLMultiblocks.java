@@ -49,6 +49,7 @@ import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.createWor
  */
 public final class GTMQoLMultiblocks {
 
+    private static final String SAF_TOOLTIP_KEY = "gtmqol.multiblock.smart_assembly_factory.tooltip";
     private static final String DTFR_TOOLTIP_KEY = "gtmqol.multiblock.dimensionally_transcendent_fusion_reactor.tooltip";
     private static final String ILCR_TOOLTIP_KEY = "gtmqol.multiblock.industrial_large_chemical_reactor.tooltip";
 
@@ -61,11 +62,17 @@ public final class GTMQoLMultiblocks {
 
     private GTMQoLMultiblocks() {}
 
+    /** The void miner is paid from a wireless EU network, which only wireless energy machines can fill. */
+    private static boolean voidMinerEnabled() {
+        GTMQoLConfig config = GTMQoLConfig.get();
+        return config.machines.voidMiner && config.wireless.energy;
+    }
+
     public static void init() {
         GTMQoLConfig.Machines config = GTMQoLConfig.get().machines;
         if (config.smartAssemblyFactory) initSmartAssemblyFactory();
         if (config.dimensionallyTranscendentFusionReactor) initDTFR();
-        if (config.voidMiner) initVoidMiner();
+        if (voidMinerEnabled()) initVoidMiner();
         if (config.industrialFishingPond) initIndustrialFishingPond();
         if (config.industrialLargeChemicalReactor) initIndustrialLargeChemicalReactor();
     }
@@ -74,7 +81,7 @@ public final class GTMQoLMultiblocks {
         GTMQoLConfig.Machines config = GTMQoLConfig.get().machines;
         if (config.smartAssemblyFactory) addSmartAssemblyFactoryRecipe(provider);
         if (config.dimensionallyTranscendentFusionReactor) addDTFRRecipe(provider);
-        if (config.voidMiner) addVoidMinerRecipe(provider);
+        if (voidMinerEnabled()) addVoidMinerRecipe(provider);
         if (config.industrialFishingPond) addIndustrialFishingPondRecipe(provider);
         if (config.industrialLargeChemicalReactor) addIndustrialLargeChemicalReactorRecipe(provider);
     }
@@ -85,6 +92,8 @@ public final class GTMQoLMultiblocks {
                 .rotationState(RotationState.ALL)
                 .recipeType(GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
                 .recipeModifiers(PARALLEL_HATCH, OC_PERFECT_SUBTICK, BATCH_MODE)
+                .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"),
+                        Component.translatable(SAF_TOOLTIP_KEY, SAF_MAX_DATA_HATCHES))
                 .appearanceBlock(CASING_STEEL_SOLID)
                 // startOffset is the controller -> first block of the first slice: 5 slices to its left (1 + 4
                 // repeats), S is in string 0 and char 0. Without it gtceu guesses from the controller's slice index,
@@ -112,6 +121,9 @@ public final class GTMQoLMultiblocks {
                         GTCEu.id("block/multiblock/assembly_line"))
                 .langValue("Smart Assembly Factory")
                 .register();
+
+        GTMQoLAddon.registrate().addRawLang(SAF_TOOLTIP_KEY, "Runs Assembly Line recipes. Takes up to %s Data Access " +
+                "Hatches and Optical Data Reception Hatches.");
     }
 
     /**
@@ -135,7 +147,8 @@ public final class GTMQoLMultiblocks {
                 .rotationState(RotationState.ALL)
                 .recipeType(GTRecipeTypes.FUSION_RECIPES)
                 .recipeModifiers(PARALLEL_HATCH, OC_PERFECT_SUBTICK, BATCH_MODE)
-                .tooltips(Component.translatable(DTFR_TOOLTIP_KEY))
+                .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"),
+                        Component.translatable(DTFR_TOOLTIP_KEY))
                 .appearanceBlock(() -> FusionReactorMachine.getCasingState(UV))
                 .pattern(definition -> {
                     var casing = blocks(FusionReactorMachine.getCasingState(UV));
@@ -178,7 +191,8 @@ public final class GTMQoLMultiblocks {
                 .register();
 
         GTMQoLAddon.registrate().addRawLang(DTFR_TOOLTIP_KEY,
-                "Can run fusion recipes of any tier, as long as you have enough energy inputs.");
+                "Runs fusion recipes of any tier, with no energy needed to start. Takes energy, substation and laser " +
+                        "hatches.");
     }
 
     private static void initIndustrialLargeChemicalReactor() {
@@ -192,7 +206,8 @@ public final class GTMQoLMultiblocks {
                 .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"),
                         Component.translatable(ILCR_TOOLTIP_KEY),
                         Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
-                                Component.translatable("gtceu.large_chemical_reactor")))
+                                // Untested: the tooltip names the recipe type (it showed a raw key)
+                                GTRecipeTypes.LARGE_CHEMICAL_RECIPES.getName()))
                 .appearanceBlock(CASING_PTFE_INERT)
                 .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                         .slice("XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
@@ -216,7 +231,7 @@ public final class GTMQoLMultiblocks {
                 .langValue("Industrial Large Chemical Reactor")
                 .register();
 
-        GTMQoLAddon.registrate().addRawLang(ILCR_TOOLTIP_KEY, "Runs large chemical reactor recipes 64 times faster.");
+        GTMQoLAddon.registrate().addRawLang(ILCR_TOOLTIP_KEY, "Runs Large Chemical Reactor recipes 64× faster.");
     }
 
     private static void initVoidMiner() {
@@ -266,7 +281,7 @@ public final class GTMQoLMultiblocks {
         lang.addRawLang(key + "tooltip.0",
                 "Mines the ores of its dimension's GregTech veins, averaged by vein weight, out of thin air.");
         lang.addRawLang(key + "tooltip.1",
-                "Paid from the bound wireless EU network: 1,000,000 EU per stack, all up front. Cycles take 15 s.");
+                "Paid from its wireless network: 1,000,000 EU per stack, all up front. Cycles take 15 s.");
         lang.addRawLang(key + "tooltip.2",
                 "Each operation mines one ore, several stacks of it (limits in the config). Stopping finishes the current cycle.");
         addCyclicMachineLang(key, "Mining: %s / %s s", "Output full: %s ores left");
@@ -321,18 +336,18 @@ public final class GTMQoLMultiblocks {
         lang.addRawLang(key + "tooltip.0",
                 "Fishes vanilla fishing loot with the rod in its controller, every 5 s. The rod takes no damage.");
         lang.addRawLang(key + "tooltip.1",
-                "1,000 EU per fish, 4× in treasure mode (open water: treasure too). Lure makes fish cheaper, " +
+                "1,000 EU per roll; 4× in treasure mode, which adds treasure to the loot. Lure makes rolls cheaper, " +
                         "Luck of the Sea works as usual.");
         lang.addRawLang(key + "tooltip.2",
-                "Buffers up to 5 s of its energy hatches' input and spends all it can each cycle: " +
-                        "every roll is multiplied by how many times the buffer pays for all of them.");
+                "Spends everything its Energy Hatches deliver in a cycle: energy for all the rolls twice over gives " +
+                        "twice the loot, and so on.");
         lang.addRawLang(key + "tooltip.3", "Never loses progress for lack of power.");
         addCyclicMachineLang(key, "Fishing: %s / %s s", "Output full: %s items left");
         lang.addRawLang(key + "status.no_rod", "No fishing rod");
         lang.addRawLang(key + "buffer", "Buffer: %s / %s EU");
         lang.addRawLang(key + "settings", "%s rolls per cycle, %s");
-        lang.addRawLang(key + "mode.normal", "fish and junk");
-        lang.addRawLang(key + "mode.treasure", "treasure mode");
+        lang.addRawLang(key + "mode.normal", "no treasure");
+        lang.addRawLang(key + "mode.treasure", "with treasure");
         lang.addRawLang(key + "rod", "Fishing rod");
         lang.addRawLang(key + "config", "Settings");
         lang.addRawLang(key + "treasure.on", "Treasure mode: on (4× EU)");

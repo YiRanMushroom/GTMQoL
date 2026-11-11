@@ -13,6 +13,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.spongepowered.asm.mixin.throwables.ClassMetadataNotFoundException;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,7 +91,7 @@ public final class MixinTargetCheck {
             new ClassReader(classFile).accept(new ClassVisitor(Opcodes.ASM9) {
 
                 @Override
-                public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+                public @Nullable AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
                     if (!MIXIN.equals(descriptor)) return null;
                     return new AnnotationVisitor(Opcodes.ASM9) {
 

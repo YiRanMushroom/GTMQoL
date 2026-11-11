@@ -80,9 +80,9 @@ public final class PatternBatch implements IPatternDetails {
         ITEM = GTMQoLAddon.registrate().item("pattern_batch", Item::new)
                 .lang("Pattern Batch")
                 .removeTab(GTMQoLAddon.MAIN_TAB.getKey())
-                .tag(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS)
                 .model((context, provider) -> provider.withExistingParent(context.getName(), "minecraft:item/paper"))
                 .register();
+        GTMQoLAddon.optionalItemTag(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS, "pattern_batch");
         PatternDetailsHelper.registerDecoder(Decoder.INSTANCE);
     }
 

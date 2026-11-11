@@ -14,16 +14,13 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredientRecipeCapability;
 import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
-import com.yiran.minecraft.gtmqol.gregification.client.GregificationClient;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 import dev.shadowsoffire.hostilenetworks.Hostile;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,16 +54,16 @@ public final class HostileNetworksGregification {
 
     static {
         RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", SIM_TOOLTIP,
-                "Simulates a data model with a prediction matrix; programmed circuit 1 only trains the model, " +
-                        "from any tier.");
+                "Simulates a data model with a prediction matrix. With programmed circuit 1 it only trains the data " +
+                        "model, even a Faulty one.");
         RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", FAB_TOOLTIP,
-                "Turns a prediction into the drop its ghost mark picks.");
+                "Turns a prediction into one of its drops, picked by a ghost ingredient.");
         RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", MODEL_DONE,
-                "The data model can't learn more here");
+                "The data model can't learn any more from simulations");
         RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", SimulationChamberLogic.LEARNS_INFO,
                 "The data model learns: +1 data per craft");
         RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", SimulationChamberLogic.TRAINING_INFO,
-                "Training only: +1 data per craft, from any tier, Faulty too");
+                "Training only: +1 data per craft, for a Faulty data model too");
     }
 
     private HostileNetworksGregification() {}
@@ -134,12 +131,6 @@ public final class HostileNetworksGregification {
     static void addRepresentative(GTRecipeType type, GTRecipe recipe) {
         recipe.setId(recipe.getId().withPrefix("/"));
         type.addToMainCategory(recipe);
-    }
-
-    /** The server's level, or the client's one when the recipe viewer loads on a remote server. */
-    static @Nullable Level level() {
-        var server = GTCEu.getMinecraftServer();
-        return server != null ? server.overworld() : GregificationClient.level();
     }
 
     /** Input items of each distinct bus on its own, then of all the others together. */

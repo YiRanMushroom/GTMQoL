@@ -96,10 +96,11 @@ public final class AssemblingMatrix {
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(),
                         new ModelFile.UncheckedModelFile(GTMQoL.id("block/assembling_matrix_processing_core"))))
-                .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
                 .item(BlockItem::new)
                 .build()
                 .register();
+        GTMQoLAddon.optionalBlockTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH,
+                "assembling_matrix_processing_core");
         PATTERN_CORE = GTMQoLAddon.machine("assembling_matrix_pattern_core", AssemblingMatrixPatternCoreMachine::new)
                 .rotationState(RotationState.NONE)
                 .model(GTMachineModels.createBasicMachineModel(GTMQoL.id("block/assembling_matrix_pattern_core")))
@@ -130,10 +131,12 @@ public final class AssemblingMatrix {
                 .tooltips(Component.translatable(AssemblingMatrixMachine.KEY + "tooltip.0"),
                         Component.translatable(AssemblingMatrixMachine.KEY + "tooltip.1"),
                         Component.translatable(AssemblingMatrixMachine.KEY + "tooltip.2"),
-                        Component.translatable(AssemblingMatrixMachine.KEY + "tooltip.3",
-                                GTMQoLConfig.get().ae2.assemblingMatrixFEPerCraft),
+                        Component.translatable(AssemblingMatrixMachine.KEY + "tooltip.3"),
                         Component.translatable(AssemblingMatrixMachine.KEY + "tooltip.4"),
                         Component.translatable(AssemblingMatrixMachine.KEY + "tooltip.5"))
+                // read when shown: the option can change while the game runs
+                .tooltipBuilder((stack, lines) -> lines.add(Component.translatable(
+                        AssemblingMatrixMachine.KEY + "tooltip.6", GTMQoLConfig.get().ae2.assemblingMatrixFEPerCraft)))
                 .register();
         AssemblingMatrixMachine.addLang();
     }

@@ -15,8 +15,7 @@ import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import com.yiran.minecraft.gtmqol.integration.ae2.stickycard.ISticky;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.Iterator;
 import java.util.List;
@@ -27,13 +26,6 @@ import java.util.List;
  */
 @Mixin(NetworkStorage.class)
 public class NetworkStorageMixin {
-
-    @Inject(method = "insert", at = @At("HEAD"))
-    private void gtmqol$resetStop(AEKey what, long amount, Actionable type, IActionSource src,
-                                  CallbackInfoReturnable<Long> cir,
-                                  @Share("stop") LocalBooleanRef stop) {
-        stop.set(false);
-    }
 
     @Definition(id = "priorityInventory",
                 field = "Lappeng/me/storage/NetworkStorage;priorityInventory:Ljava/util/NavigableMap;")
@@ -98,6 +90,7 @@ public class NetworkStorageMixin {
         return gtmqol$insertAndCheck(instance, what, amount, mode, source, original, stop);
     }
 
+    @Unique
     private static long gtmqol$insertAndCheck(MEStorage instance, AEKey what, long amount, Actionable mode,
                                               IActionSource source, Operation<Long> original,
                                               LocalBooleanRef stop) {

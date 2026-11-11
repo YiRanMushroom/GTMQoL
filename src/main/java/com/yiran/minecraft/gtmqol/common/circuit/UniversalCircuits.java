@@ -6,6 +6,9 @@ import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import net.minecraft.world.item.Item;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.yiran.minecraft.gtmqol.GTMQoL;
+import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.Locale;
 
@@ -24,11 +27,24 @@ public final class UniversalCircuits {
 
     public static void init() {
         for (int tier : ALL_TIERS) {
+            String name = VN[tier].toLowerCase(Locale.ROOT) + "_universal_circuit";
             UNIVERSAL_CIRCUITS[tier] = GTMQoLAddon.registrate()
-                    .item(VN[tier].toLowerCase(Locale.ROOT) + "_universal_circuit", Item::new)
+                    .item(name, Item::new)
                     .lang(VN[tier] + " Universal Circuit")
-                    .tag(CustomTags.CIRCUITS_ARRAY[tier])
                     .register();
+            GTMQoLAddon.optionalItemTag(CustomTags.CIRCUITS_ARRAY[tier], name);
+        }
+    }
+
+    public static void addRecipes(RecipeOutput provider) {
+        for (int tier : ALL_TIERS) {
+            MagicalAssembler.RECIPE_TYPE.recipeBuilder(GTMQoL.id("circuit_conversion_tier_" + tier))
+                    .inputItems(CustomTags.CIRCUITS_ARRAY[tier])
+                    .outputItems(UNIVERSAL_CIRCUITS[tier])
+                    .circuitMeta(5)
+                    .duration(1)
+                    .EUt(1)
+                    .save(provider);
         }
     }
 }

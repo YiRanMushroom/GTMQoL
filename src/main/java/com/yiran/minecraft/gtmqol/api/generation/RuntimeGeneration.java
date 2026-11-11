@@ -32,7 +32,6 @@ public final class RuntimeGeneration {
     private record MachineAssets(MachineBuilder<?, ?, ?> builder, MachineEntry<?> entry) {}
 
     private static final List<MachineAssets> MACHINES = new ArrayList<>();
-    private static final List<Runnable> CALLBACKS = new ArrayList<>();
     // namespace -> language -> key -> value
     private static final Map<String, Map<String, Map<String, String>>> LANG = new LinkedHashMap<>();
 
@@ -55,19 +54,9 @@ public final class RuntimeGeneration {
     }
 
     /**
-     * For anything not covered above. Runs at the start of every {@link #generateAll()}, so it may call
-     * the methods above or write to {@link GTDynamicResourcePack} directly.
-     */
-    public static void onGenerate(Runnable callback) {
-        CALLBACKS.add(callback);
-    }
-
-    /**
      * Call from GTCEu's {@code RegisterDynamicResourcesEvent}.
      */
     public static void generateAll() {
-        CALLBACKS.forEach(Runnable::run);
-
         RuntimeBlockstateProvider provider = RuntimeBlockstateProvider.INSTANCE;
         for (MachineAssets machine : MACHINES) {
             generateMachine(provider, machine.builder(), machine.entry().get());
@@ -89,11 +78,12 @@ public final class RuntimeGeneration {
 
         // Same dispatch GTCEu uses in MachineBuilder.KJSCallWrapper#generateAssetJsons for a null
         // generator. We cannot call that method because its signature needs a KubeJS type.
-        var properties = builder.properties();
-        if (properties.blockModel() != null) {
-            properties.blockModel().accept(context, provider);
-        } else if (properties.model() != null) {
-            GTMachineModels.createMachineModel(properties.model()).accept(context, provider);
+        var blockModel = builder.properties().blockModel();
+        var model = builder.properties().model();
+        if (blockModel != null) {
+            blockModel.accept(context, provider);
+        } else if (model != null) {
+            GTMachineModels.createMachineModel(model).accept(context, provider);
         }
 
         // The provider belongs to GTCEu's registrate, so a bare name would land in the gtceu namespace;

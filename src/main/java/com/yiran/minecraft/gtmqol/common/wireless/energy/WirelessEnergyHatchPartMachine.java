@@ -138,7 +138,15 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine
                             UISettings settings) {
         // Edits stay in this UI until saved; closing the UI saves too.
         var pending = new PendingSettings(getAmperage(), isOverclocked());
-        Runnable save = () -> applySettings(pending.amperage, pending.overclocked);
+        // only what was changed here: another player may have saved other values while this window was open
+        // Untested: closing a wireless energy hatch's window without touching anything keeps amperage and overclock,
+        // and changing them and closing (or Save) still applies them
+        Runnable save = () -> {
+            if (pending.changed && binding.checkSettings(guiData.getPlayer())) {
+                applySettings(pending.amperage, pending.overclocked);
+            }
+            pending.changed = false;
+        };
         syncManager.addCloseListener(player -> {
             if (!syncManager.isClient()) save.run();
         });
@@ -152,7 +160,7 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine
                 .childPadding(4)
                 .horizontalCenter();
         if (canOverclock()) {
-            var overclockValue = new BooleanSyncValue(() -> pending.overclocked, v -> pending.overclocked = v)
+            var overclockValue = new BooleanSyncValue(() -> pending.overclocked, pending::setOverclocked)
                     .allowC2S();
             syncManager.syncValue("overclocked", overclockValue);
             buttons.child(new ToggleButton()
@@ -175,7 +183,7 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine
         mainWidget.child(WirelessEnergyUI.create(syncManager, binding, guiData.getPlayer())
                 .height(MachineUIPanel.DEFAULT_CONTENT_HEIGHT + 44)
                 .child(WirelessEnergyUI.amperageRow(syncManager, () -> pending.amperage,
-                        v -> pending.amperage = clampAmperage(v)))
+                        v -> pending.setAmperage(clampAmperage(v))))
                 .child(buttons));
     }
 
@@ -187,8 +195,20 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine
         int amperage;
         boolean overclocked;
 
+        boolean changed;
+
         PendingSettings(int amperage, boolean overclocked) {
             this.amperage = amperage;
+            this.overclocked = overclocked;
+        }
+
+        void setAmperage(int amperage) {
+            if (amperage != this.amperage) changed = true;
+            this.amperage = amperage;
+        }
+
+        void setOverclocked(boolean overclocked) {
+            if (overclocked != this.overclocked) changed = true;
             this.overclocked = overclocked;
         }
     }

@@ -197,6 +197,8 @@ final class AssemblingMatrixWork implements INBTSerializable<CompoundTag> {
             for (Slot slot : queued.slots) {
                 for (Part part : slot.parts) outputs.addTo(part.key, part.amount);
             }
+            // offered to the network at once, also while it waits to retry what was refused
+            outputsAdded = true;
             queued.crafts -= queued.withInputs;
             queued.slots = new ArrayList<>();
             queued.withInputs = 0;

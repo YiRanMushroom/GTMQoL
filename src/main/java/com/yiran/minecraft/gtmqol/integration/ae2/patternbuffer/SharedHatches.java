@@ -77,7 +77,6 @@ public final class SharedHatches {
                 .overlay(GTGuiTextures.BUTTON_ITEM_ALLOW_INPUT_OUTPUT)
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder(r -> r
-                        .addLine(Text.lang(TOGGLE_KEY + (value.getBoolValue() ? ".enabled" : ".disabled")))
-                        .addLine(Text.lang(TOGGLE_KEY + ".info"))))));
+                        .addLine(Text.lang(TOGGLE_KEY + (value.getBoolValue() ? ".enabled" : ".disabled")))))));
     }
 }

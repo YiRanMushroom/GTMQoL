@@ -46,6 +46,7 @@
     "GTEmiRecipeIngredientsMixin",
     "gtceufix.GTEmiRecipeMixin",
     "gtceufix.BaseSchemaRendererMixin",
+    "gtceufix.BlockEntityWithBERModelRendererMixin",
     "gtceufix.DummyChunkSourceMixin",
     "gtceufix.AABBHighlightColorMixin",
     "gtceufix.AABBHighlightSeeThroughMixin",

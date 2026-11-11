@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.core.mixins.PotionBrewingContainerMixesAccessor;
-import com.yiran.minecraft.gtmqol.gregification.client.GregificationClient;
 
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -23,6 +22,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import com.yiran.minecraft.gtmqol.client.GTMQoLClient;
 
 import java.util.List;
 
@@ -81,7 +81,7 @@ public final class PotionContainers {
     /** Vanilla's container mixes, empty when the recipe viewer loads before the client has a level. */
     public static List<PotionBrewing.Mix<Item>> mixes() {
         MinecraftServer server = GTCEu.getMinecraftServer();
-        Level level = server != null ? server.overworld() : GregificationClient.level();
+        Level level = server != null ? server.overworld() : GTMQoLClient.level();
         if (level == null) return List.of();
         return ((PotionBrewingContainerMixesAccessor) level.potionBrewing()).gtmqol$getContainerMixes();
     }

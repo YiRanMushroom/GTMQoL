@@ -480,15 +480,15 @@ final class CraftingPatternBehavior implements IItemUIHolder, IAddInformation {
         addLang(DUPLICATES_OFF_KEY, "Recipes that make more of an input use it up as usual");
         addLang(MODE_KEY + "crafting", "Crafting table recipe");
         addLang(MODE_KEY + "stonecutting", "Stonecutter recipe");
-        addLang(MODE_KEY + "smithing", "Smithing table recipe: template, item, material");
+        addLang(MODE_KEY + "smithing", "Smithing table recipe: template, base item, addition");
         addLang(NEXT_RESULT_KEY, "Result %s of %s: click it for the next");
         addLang(EMPTY_KEY, "Place a recipe in the grid");
         addLang(NO_RECIPE_KEY, "No recipe matches");
         addLang(KEPT_LEGEND_KEY, "Green: not consumed");
         addLang(FLUID_LEGEND_KEY, "Blue: fluid");
         addLang(CHANGED_LEGEND_KEY, "Yellow: wears out");
-        addLang(BLANK_KEY, "Right click to encode a recipe");
-        addLang(BROKEN_KEY, "Its recipe changed or no longer exists");
+        addLang(BLANK_KEY, "Right-click to encode a recipe");
+        addLang(BROKEN_KEY, "The recipe of this Crafting Pattern changed or no longer exists");
         addLang(CRAFTS_KEY, "Crafts %sx %s");
         addLang(GIVES_BACK_KEY, "Gives back %sx %s");
         addLang(USES_KEY, "Uses %sx %s");

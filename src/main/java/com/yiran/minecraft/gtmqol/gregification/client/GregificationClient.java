@@ -5,16 +5,13 @@ import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.GregifiedRecipeType;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,16 +35,6 @@ public final class GregificationClient {
         // before the recipe viewers reload
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, RecipesUpdatedEvent.class,
                 GregificationClient::onRecipesUpdated);
-    }
-
-    /** The client's main thread. */
-    public static BlockableEventLoop<?> executor() {
-        return Minecraft.getInstance();
-    }
-
-    /** For recipe logic in common code, which must not load client classes itself. */
-    public static @Nullable Level level() {
-        return Minecraft.getInstance().level;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

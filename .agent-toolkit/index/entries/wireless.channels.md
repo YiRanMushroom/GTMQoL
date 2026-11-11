@@ -2,8 +2,8 @@
 title = "Wireless channels (Flux Networks style): computation and optical data hatches, router, channel list UI"
 kind = "design"
 keys = [ "channel", "computation", "cwu", "flux networks", "optical data", "password", "router" ]
-updated = "2026-11-07 09:54:54"
-checked = "2026-11-07"
+updated = "2026-11-11 07:20:20"
+checked = "2026-11-11"
 
 [[items]]
 name = "kinds"
@@ -31,9 +31,9 @@ snippet = "public final class ChannelRegistry {"
 
 [[items]]
 name = "computation"
-value = "computation flow like gtceu's network switch (seen, saturation)"
+value = "Per-channel provider like gtceu's network switch, itself in seen"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/channel/computation/ChannelComputation.java"
-snippet = "public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {"
+snippet = "public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {"
 
 [[items]]
 name = "ui"

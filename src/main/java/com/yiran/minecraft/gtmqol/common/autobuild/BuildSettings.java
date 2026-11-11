@@ -8,13 +8,10 @@ import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
-import it.unimi.dsi.fastutil.chars.Char2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntMaps;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.ints.IntLists;
 
 /**
  * What to build. Keyed by things that stay stable for a multiblock type (slice index, the expandable pattern's bounds
@@ -25,9 +22,6 @@ import it.unimi.dsi.fastutil.ints.IntLists;
  * Empty means the pattern's defaults: minimum repeats, minimum bounds, GTCEu's first candidates.
  */
 public record BuildSettings(Int2IntMap sliceRepeats, IntList dimensions, Char2ObjectMap<BlockChoice> blocks) {
-
-    public static final BuildSettings DEFAULTS = new BuildSettings(Int2IntMaps.EMPTY_MAP, IntLists.EMPTY_LIST,
-            Char2ObjectMaps.emptyMap());
 
     private static final StreamCodec<RegistryFriendlyByteBuf, Block> BLOCK = ByteBufCodecs.registry(Registries.BLOCK);
 

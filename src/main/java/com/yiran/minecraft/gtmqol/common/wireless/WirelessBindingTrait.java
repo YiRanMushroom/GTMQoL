@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigInteger;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
@@ -42,6 +43,7 @@ public class WirelessBindingTrait extends MachineTrait {
     public static final String UNBOUND_KEY = "gtmqol.wireless.message.unbound";
     public static final String ALREADY_BOUND_KEY = "gtmqol.wireless.message.already_bound";
     public static final String NOT_ALLOWED_KEY = "gtmqol.wireless.message.not_allowed";
+    public static final String NOT_ON_NETWORK_KEY = "gtmqol.wireless.message.not_on_network";
     public static final String MOVED_TO_TEAM_KEY = "gtmqol.wireless.message.moved_to_team";
     public static final String COPIED_KEY = "gtmqol.wireless.message.copied";
     public static final String STICK_OTHER_PLAYER_KEY = "gtmqol.wireless.message.stick_other_player";
@@ -94,10 +96,6 @@ public class WirelessBindingTrait extends MachineTrait {
         owner.getSyncDataHolder().setHasDirtyChildSyncObject(true);
     }
 
-    public @Nullable UUID getBoundPlayer() {
-        return boundPlayer;
-    }
-
     public boolean isBound() {
         return boundPlayer != null;
     }
@@ -148,6 +146,23 @@ public class WirelessBindingTrait extends MachineTrait {
     private boolean checkConfigure(Player player) {
         if (canConfigure(player)) return true;
         player.displayClientMessage(Component.translatable(NOT_ALLOWED_KEY, getBoundPlayerName()), true);
+        return false;
+    }
+
+    /**
+     * For a machine's settings (amperage, overclock, an energy cube's sides, auto output): anyone while it is unbound,
+     * then everyone on its wireless network (the bound player; in team mode their team too) and operators. Sends the
+     * player a message and returns false otherwise. On the client always true: the server's value comes back.
+     */
+    // Untested: a player outside the bound player's team can't change a wireless energy hatch's amperage or overclock,
+    // an energy cube's sides, an accessor's or cover's amperage or the steam accessor's auto output (message in the
+    // action bar, the window shows the old value again); the bound player, a team member and an operator can
+    public boolean checkSettings(Player player) {
+        if (isRemote() || boundPlayer == null || canConfigure(player)) return true;
+        if (!privateNetwork && Objects.equals(getNetworkId(), WirelessNetworks.networkId(player.getUUID(), false))) {
+            return true;
+        }
+        player.displayClientMessage(Component.translatable(NOT_ON_NETWORK_KEY, getNetworkName()), true);
         return false;
     }
 

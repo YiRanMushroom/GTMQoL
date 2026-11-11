@@ -11,7 +11,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -42,7 +41,7 @@ public class BlockProviderTrait extends NotifiableRecipeHandlerTrait<Block> {
     }
 
     @Override
-    public @NotNull List<Block> handleRecipeInner(IO io, @Nullable GTRecipe recipe, List<Block> left,
+    public List<Block> handleRecipeInner(IO io, @Nullable GTRecipe recipe, List<Block> left,
                                                   boolean simulate) {
         if (io != IO.IN) return left;
         Block block = getBlock();
@@ -51,7 +50,7 @@ public class BlockProviderTrait extends NotifiableRecipeHandlerTrait<Block> {
     }
 
     @Override
-    public @NotNull List<Object> getContents() {
+    public List<Object> getContents() {
         Block block = getBlock();
         return block == null ? List.of() : List.of(block);
     }

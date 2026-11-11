@@ -1,6 +1,6 @@
 # GTMQoL
 
-A personal quality-of-life addon for GregTech CEu Modern v8.
+A personal quality-of-life addon for GregTech CEu Modern v8. In game it is listed as **GTM Quality of Life**.
 
 | Minecraft | Loader | Branch | Recipe viewer |
 |---|---|---|---|
@@ -8,7 +8,7 @@ A personal quality-of-life addon for GregTech CEu Modern v8.
 | 1.20.1 | Forge 47 | `1.20` | JEI or EMI |
 
 Both branches have the same features, except the few marked 1.21.1 only. Releases are `v<version>-1.21` and
-`v<version>-1.20`.
+`v<version>-1.20`; each release's notes name the GTCEu build it needs.
 
 ## Features
 
@@ -31,7 +31,7 @@ The **Pattern Crafter** (single block, every tier) runs crafting table, stonecut
 #### Assembling Matrix
 
 The **Assembling Matrix** is a multiblock that crafts for its ME network in bulk: AE2 crafting, stonecutting and
-smithing patterns, and Crafting Patterns from the Pattern Crafter. Processing patterns are not crafted here.
+smithing patterns, and the Crafting Patterns made for the Pattern Crafter. Processing patterns are not crafted here.
 
 - **Structure**: a box of 3 to 15 blocks each way, built like the cleanroom, with the controller in the middle of the
   front's bottom edge. The edges are Machine Casings, all of one tier; the faces are Quartz Glass; the inside holds
@@ -100,10 +100,10 @@ missing items; switching `ae2.fastCraftingPlans` off brings back AE2's own plann
 - **Universal ME input/output parts**: any AE key the mod knows, including Mekanism chemicals.
 - **Pattern buffer return**: a multiblock's outputs go straight back into the ME network for waiting crafting jobs.
   Toggle per buffer.
-- **Shared hatches** (toggle per pattern buffer): a pattern can use circuits, molds and ghost marks from the machine's
-  other, undyed buses and hatches.
-- **Mark pattern outputs** (toggle on the Overclocked ME Pattern Buffer): each pattern counts as a ghost mark for its
-  own output, so the machine picks the recipe the pattern is for.
+- **Shared hatches** (toggle per pattern buffer): a pattern can use circuits, molds and ghost ingredients from the
+  machine's other, undyed buses and hatches.
+- **Mark pattern outputs** (toggle on the Overclocked ME Pattern Buffer): each pattern counts as a ghost ingredient of
+  its own output, so the machine picks the recipe the pattern is for. Works through an ME Pattern Buffer Proxy too.
 - **Sticky card**: a storage bus upgrade. Items that match its partition only go into that storage bus.
   ExtendedAE's storage buses work too.
 - Pattern encoding prefers universal circuits and skips inputs that a recipe doesn't consume.
@@ -112,8 +112,10 @@ missing items; switching `ae2.fastCraftingPlans` off brings back AE2's own plann
 
 - A global steam pool and a global EU pool per network. A network belongs to the player's FTB team, or to
   the player alone when FTB Teams isn't installed. Each player also has a separate private network.
-- Machines are bound to whoever places them. They can be rebound in the UI, or by copying the binding with a
-  data stick (Shift-right-click to copy, right-click to paste).
+- Machines are bound to whoever places them. They can be rebound in their window, or by copying the binding with a
+  Data Stick (Shift-right-click to copy, right-click to paste).
+- A bound machine's settings (amperage, overclock, an energy cube's sides) can be changed by the players on its
+  network and by operators; only the bound player or an operator can unbind it or switch its network.
 - Steam: wireless steam input/output hatches (the input hatch also works as a fluid input hatch, for recipes that
   use steam), an accessor block (fluid handler on all sides) and a monitor that shows the stored steam and the
   input/output rates.
@@ -121,13 +123,14 @@ missing items; switching `ae2.fastCraftingPlans` off brings back AE2's own plann
   hatches, and an accessor. There is also one monitor for all tiers.
   - Amperage can be set per machine, from 1 to 2^24.
   - `/gtmqol default_amperage [amperage]` sets the default for machines you place.
-  - Input hatches have an overclock toggle: one tier higher voltage, at 4× the energy cost.
+  - Input hatches have an overclock toggle: they run one tier higher, and every EU then costs 4 EU from the network.
 - FE, from the EU in the network, with no rate limit and no storage of their own:
   - The **Wireless Energy Cube**: each side is set to input, output or off, like Mekanism's.
   - **Wireless FE Input and Output Hatches**, for multiblocks that use or make FE.
   - With AE2, the **Wireless Energy Cell** powers an ME network from the wireless network. It only gives power:
     other power sources on the ME network can't fill the wireless network.
 - Wireless covers (steam and EU, input and output) connect any machine to the network.
+- The steam network takes any fluid in GT's steam tag and gives back GT's steam.
 - **Channels** link research machines across any distance and dimension, while both ends are loaded. A channel is
   private, shared with the FTB team, or public, and is created and bound in the machine's window.
   - Computation: **Wireless Computation Transmission and Reception Hatches** link one transmitter to one receiver.
@@ -139,11 +142,13 @@ missing items; switching `ae2.fastCraftingPlans` off brings back AE2's own plann
 ### Energy
 
 - Every GT machine and cable that accepts EU also accepts Forge Energy (FE).
-- EU → FE uses GTCEu's own conversion.
+- FE is converted at GTCEu's `feToEuRatio`.
 
 ### Magical assembler and circuits
 
 - The magical assembler: a tiered machine with 16 item and 4 fluid inputs that makes most of this mod's items.
+  With `recipes.miscRecipes` it also makes GTCEu's Creative Data Access Hatch (ZPM; one hatch then copies itself
+  onto Advanced Data Access Hatches) and turns any sapling and a Sticky Resin into a Rubber Sapling.
 - Universal circuits, one per tier, which count as any circuit of that tier. AE2 patterns encode them in
   place of a specific circuit.
 - GT circuit tags and Mekanism's circuit tags are merged (LV/MV/HV/EV ↔ basic/advanced/elite/ultimate).
@@ -179,18 +184,18 @@ crafter wears tools, the modular simulation chamber trains data models.
 ### Multiblocks
 
 - **Smart Assembly Factory**: runs assembly line recipes, with parallel hatches, perfect sub-tick
-  overclocking and batch mode.
+  overclocking and batch mode. It takes up to 9 Data Access Hatches and Optical Data Reception Hatches.
 - **Dimensionally Transcendent Fusion Reactor**: runs fusion recipes of any tier, without the start energy
   requirement.
-- **Electric Implosion Compressor**: every TNT implosion recipe without the explosive, with parallel hatches
-  and perfect sub-tick overclocking. Nether star dust can be mixed from diamond and silver dust at HV, so
+- **Electric Implosion Compressor**: every TNT implosion recipe without the explosive, in 4× the time, with
+  parallel hatches and perfect sub-tick overclocking. Nether star dust can be mixed from diamond and silver dust at HV, so
   nether stars are available before IV. Vanilla TNT crafting is kept.
 - **Void Miner**: mines the ores of its dimension's GT ore veins, weighted like the veins, with no energy
   hatch: it draws EU from the wireless network. The number of ore types and stacks per cycle can be set.
-- **Industrial Fishing Pond**: a water-filled pond that rolls vanilla fishing loot with the fishing rod placed
-  in it (Lure and Luck of the Sea count). Normal or treasure mode, up to 64 rolls per cycle, and the output
+- **Industrial Fishing Pond**: a basin of Watertight Casings, built empty (the machine shows the water itself),
+  that rolls vanilla fishing loot with the fishing rod placed in it (Lure and Luck of the Sea count). Normal or treasure mode, up to 64 rolls per cycle, and the output
   scales with the energy put in.
-- **Crystal Growth Chamber**: grows shards from the budding block in its center: amethyst, certus quartz and
+- **Crystal Growth Chamber**: grows shards from the budding block in its middle: amethyst, certus quartz and
   any mod's `budding_<x>` block with an `<x>_shard`.
 - **Greenhouse** (single block, every tier) and **Industrial Greenhouse** (IV multiblock, 16× outputs, parallel
   hatches): grow crops and trees from a seed or sapling and water. Mystical Agriculture crops are supported,
@@ -202,19 +207,20 @@ crafter wears tools, the modular simulation chamber trains data models.
   largest amount. Improbability: chanced inputs are never consumed, and ranged inputs use their smallest amount.
 - The Assembling Matrix is described under Crafting and AE2.
 
-Unlike GTCEu's, the void miner and the fishing pond never void their outputs: they wait until everything fits.
+Unlike GTCEu's multiblocks, the Void Miner and the Industrial Fishing Pond never void their outputs: they wait
+until everything fits.
 
 ### Ghost ingredients
 
 A ghost ingredient tells a machine which recipe to run when its inputs fit several, for example planks or stairs
 from the same log. It is never used up.
 
-- The **Ghost Ingredient Hatch** holds a list of marks (click or drag items and fluids from the recipe viewer).
-  It counts as an input bus, so any multiblock takes it.
-- Single blocks that need marks get a button for them in their UI.
-- Recipes that need a mark show it in the recipe viewer.
+- The **Ghost Ingredient Hatch** holds a list of ghost ingredients (click with an item, or drag items and fluids
+  from the recipe viewer). It counts as an input bus, so any multiblock takes it.
+- Single blocks whose recipes need ghost ingredients get a button for them in their window.
+- Recipes that need a ghost ingredient show it in the recipe viewer.
 
-### Advanced steam multiblocks and steam tweaks
+### Large Steam multiblocks and steam tweaks
 
 - Large steam versions of 21 machines (macerator, compressor, forge hammer, extractor, alloy smelter,
   furnace, bender, wiremill, lathe, cutter, extruder, forming press, mixer, centrifuge, thermal centrifuge,
@@ -266,11 +272,11 @@ Each machine is crafted from the original mod's machine.
     it learns, so a craft makes on average as many predictions as the model's accuracy. With programmed circuit 1 it
     only trains the model, from any tier (Faulty too), without a prediction matrix and without outputs, at the same
     energy.
-  - Loot fabricator: a ghost mark of the drop picks what a prediction turns into.
+  - Loot fabricator: a ghost ingredient of the drop picks what a prediction turns into.
 
-Gregified single blocks have batch mode, and ghost marks where their recipes need them.
+Gregified single blocks have batch mode, and ghost ingredients where their recipes need them.
 
-### Survival auto-build
+### Survival auto build
 
 A button on every multiblock controller builds the structure from the player's inventory: a click places up to
 64 blocks, Shift-click keeps building until the structure is done. Right click opens a window for the structure's
@@ -317,22 +323,23 @@ crashing on machines with many model variants.
 
 ## Configuration
 
-`config/gtmqol.yaml`. Every feature has a toggle, on by default. Toggles need a restart; the options marked "live"
-below apply at once. The full list, with descriptions, is in the config file itself.
+`config/gtmqol.yaml`. Most features have a toggle, on by default. Toggles need a restart; the options marked "live"
+below apply at once. The full list, with descriptions, is in the config file itself. Without a toggle: the Magical
+Assembler, the Ghost Ingredient Hatch, potion fluids, the circuit and material tags and the fixes to GTCEu.
 
 | Group | Options |
 |---|---|
-| `machines` | one per multiblock above, `greenhouse`, `patternCrafter`, `probableDevices`, `advancedSteamMachines`, `easySAFRecipe` |
+| `machines` | `smartAssemblyFactory`, `easySAFRecipe`, `dimensionallyTranscendentFusionReactor`, `voidMiner` (needs `wireless.energy`), `industrialFishingPond`, `crystalGrowthChamber`, `greenhouse`, `patternCrafter`, `electricImplosionCompressor`, `industrialLargeChemicalReactor`, `probableDevices`, `advancedSteamMachines` |
 | `modularMachines` | `enabled` |
 | `gregification` | `modernIndustrialization` (1.21.1), `mekanism`, `productiveBees`, `create`, `hostileNeuralNetworks` |
 | `wireless` | `energy`, `fe`, `steam`, `computation`, `opticalData` |
-| `circuits` | `universalCircuits`, `controlCircuits`, `mekanismCircuitTags` |
+| `circuits` | `universalCircuits`, `controlCircuits`, `mekanismCircuitTags` (live on `/reload`) |
 | `recipes` | `miscRecipes`, `earlyGame`, `keepManualCompression`, `keepVanillaTNT`, `netherStarDust`, `useLegacyPartRecipes` |
 | `steamTweaks` | `circuitSlots`, `fluidTanks`, `noOutputLimits`, `optionalLargeBoilerParts` |
 | `overclocking` | `buffFusionReactor`, `enableMultiTierSkipping`, `absoluteParallelHatches` |
 | `ae2` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn` (live), `skipNotConsumedInputs` (live), `assemblingMatrix`, `assemblingMatrixFEPerCraft` (live, default 64), `patternBatchParts` (live, default 1), `fastCraftingPlans` (live) |
 | `misc` | `feInput`, `autoBuild` (live) |
-| `voidMiner` (live) | `dimensionMapping`: mine another dimension's veins (`"from=to"`); `maxOperations` (default 64), `maxMultiplier` (default 4096): the most ore types and stacks per cycle |
+| `voidMiner` (live) | `dimensionMapping`: mine another dimension's veins (`"from=to"`, read when a Void Miner loads); `maxOperations` (default 64), `maxMultiplier` (default 4096): the most ore types and stacks per cycle |
 | `integrationTests` | `enabled` (default off): runtime-generated example machines, for development |
 
 `config/gtmqol-early.properties` holds options that are read before mods load (needs a restart):
@@ -352,6 +359,8 @@ None are required.
 - AE2: the Crafting and AE2 features above, the Wireless Energy Cell, and pattern buffers split by pattern in the
   grouped recipe search.
 - ExtendedAE: the sticky card works on its storage buses.
+- ExtendedAE, Advanced AE, MEGA Cells, Applied Flux: recipes for their processors and materials in the ME
+  Assembler and ME Circuit Slicer.
 - ExtendedAE Plus: works alongside; patterns encoded for an Assembling Matrix go there before ExtendedAE Plus's own
   upload.
 - Mekanism: chemicals as a recipe capability, Mekanism gregification, merged circuit tags.
@@ -359,6 +368,7 @@ None are required.
 - Modern Industrialization (1.21.1): MI gregification.
 - Productive Bees: Productive Bees gregification.
 - Create: Create gregification.
+- Hostile Neural Networks: Hostile Neural Networks gregification.
 - Mystical Agriculture: greenhouse recipes for its crops.
 - Jade: chemical outputs in the machine overlay.
 - EMI or JEI (1.20.1): chemicals, potions and ghost ingredients in recipes, the pattern encoding tweaks.

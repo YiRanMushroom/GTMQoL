@@ -34,6 +34,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.neoforged.fml.ModList;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -103,7 +104,8 @@ public final class Greenhouse {
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(RECIPE_TYPE)
                 .recipeModifiers(PARALLEL_HATCH, INDUSTRIAL_OUTPUT, OC_PERFECT_SUBTICK, BATCH_MODE)
-                .tooltips(Component.translatable(INDUSTRIAL_KEY + "tooltip.0"),
+                .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"),
+                        Component.translatable(INDUSTRIAL_KEY + "tooltip.0"),
                         Component.translatable(INDUSTRIAL_KEY + "tooltip.1", INDUSTRIAL_OUTPUT_MULTIPLIER),
                         Component.translatable(INDUSTRIAL_KEY + "tooltip.2"))
                 .appearanceBlock(CASING_TUNGSTENSTEEL_ROBUST)
@@ -132,7 +134,7 @@ public final class Greenhouse {
         registrate.addRawLang(KEY + "tooltip", "Grows the seed or sapling in its input slot, which is not consumed.");
         registrate.addRawLang(INDUSTRIAL_KEY + "tooltip.0",
                 "Grows the seed or sapling in its input bus, which is not consumed.");
-        registrate.addRawLang(INDUSTRIAL_KEY + "tooltip.1", "Outputs %sx as much.");
+        registrate.addRawLang(INDUSTRIAL_KEY + "tooltip.1", "Outputs %s× as much as a Greenhouse.");
         registrate.addRawLang(INDUSTRIAL_KEY + "tooltip.2", "Needs dirt, grass or the like in the middle of its floor.");
     }
 
@@ -239,7 +241,7 @@ public final class Greenhouse {
     }
 
     /** 16 logs, 8 leaves (if any) and 2 saplings back. */
-    private static GTRecipeBuilder tree(Item sapling, Item log, Item leaves) {
+    private static GTRecipeBuilder tree(Item sapling, Item log, @Nullable Item leaves) {
         var builder = plant(sapling, TREE_DURATION).outputItems(log, 16);
         if (leaves != null) builder.outputItems(leaves, 8);
         return builder.outputItems(sapling, 2);

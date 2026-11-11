@@ -1,6 +1,5 @@
 package com.yiran.minecraft.gtmqol.core.mixins.gtceufix;
 
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.world.phys.AABB;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;

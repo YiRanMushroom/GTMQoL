@@ -28,6 +28,7 @@ import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.minecraft.network.chat.Component;
 
 import java.util.function.BiConsumer;
 
@@ -53,6 +54,8 @@ public final class ElectricImplosion {
     public static GTRecipeTypeEntry RECIPE_TYPE;
     public static MachineEntry<MultiblockMachineDefinition> MACHINE;
 
+    private static final String TOOLTIP_KEY = "gtmqol.multiblock.electric_implosion_compressor.tooltip";
+
     private ElectricImplosion() {}
 
     public static void init(IEventBus modBus) {
@@ -71,6 +74,8 @@ public final class ElectricImplosion {
                 .rotationState(RotationState.ALL)
                 .recipeType(RECIPE_TYPE)
                 .recipeModifiers(PARALLEL_HATCH, OC_PERFECT_SUBTICK, BATCH_MODE)
+                .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"),
+                        Component.translatable(TOOLTIP_KEY))
                 .appearanceBlock(CASING_TUNGSTENSTEEL_ROBUST)
                 .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                         .slice("XXXXX", "F###F", "F###F", "F###F", "F###F", "XXXXX")
@@ -92,9 +97,13 @@ public final class ElectricImplosion {
                         GTCEu.id("block/multiblock/implosion_compressor"))
                 .langValue("Electric Implosion Compressor")
                 .register();
+        GTMQoLAddon.registrate().addRawLang(TOOLTIP_KEY,
+                "Runs Implosion Compressor recipes without explosives, in 4× the time.");
 
         // The implosion type exists after the recipe type RegisterEvent; recipes are built on data reload.
-        modBus.addListener(FMLCommonSetupEvent.class, event -> hookImplosionRecipes());
+        // Untested: the Electric Implosion Compressor still has its recipes
+        modBus.addListener(FMLCommonSetupEvent.class,
+                event -> event.enqueueWork(ElectricImplosion::hookImplosionRecipes));
     }
 
     private static void hookImplosionRecipes() {

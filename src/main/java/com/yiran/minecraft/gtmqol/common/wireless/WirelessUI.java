@@ -112,21 +112,24 @@ public final class WirelessUI {
         langAdded = true;
         addLang(BOUND_TO_KEY, "Bound to: %s");
         addLang(NETWORK_KEY, "Network: %s");
-        addLang(PRIVATE_ON_KEY, "Private: your own network, separate from any team (including your personal FTB team)");
-        addLang(PRIVATE_OFF_KEY, "Shared: using your team's network");
+        addLang(PRIVATE_ON_KEY, "Private network: your own, separate from any team's (your personal FTB team's too)");
+        addLang(PRIVATE_OFF_KEY, "Team network: shared with your team");
         addLang(BIND_KEY, "Bind");
         addLang(UNBIND_KEY, "Unbind");
         addLang(MOVE_TO_TEAM_KEY, "To team");
-        addLang(MOVE_TO_TEAM_TOOLTIP_KEY, "Move all steam and EU in your private network into your team's network and switch this machine to team mode");
+        addLang(MOVE_TO_TEAM_TOOLTIP_KEY, "Move all steam and EU in your private network into your team's network and " +
+                "switch this machine to the team network");
         addLang(WirelessBindingTrait.BOUND_KEY, "Bound to %s");
         addLang(WirelessBindingTrait.UNBOUND_KEY, "Unbound");
         addLang(WirelessBindingTrait.ALREADY_BOUND_KEY, "Already bound to %s");
         addLang(WirelessBindingTrait.NOT_ALLOWED_KEY, "Only the bound player (%s) can do that");
+        addLang(WirelessBindingTrait.NOT_ON_NETWORK_KEY, "Only players on its wireless network (%s) can change its settings");
         addLang(WirelessBindingTrait.MOVED_TO_TEAM_KEY, "Moved %s mB of steam and %s EU from your private network to %s");
         addLang(WirelessBindingTrait.COPIED_KEY, "Wireless binding copied to the data stick");
         addLang(WirelessBindingTrait.STICK_OTHER_PLAYER_KEY, "This data stick holds %s's binding");
         addLang(WirelessBindingTrait.STICK_NAME_KEY, "Wireless Binding (%s)");
-        addLang(WirelessCovers.COVER_BINDING_TOOLTIP_KEY, "Bound to whoever attaches it; screwdriver or shift-right-click with an empty hand opens the settings");
+        addLang(WirelessCovers.COVER_BINDING_TOOLTIP_KEY, "Bound to the player who attaches it. A screwdriver, or " +
+                "Shift-right-click with an empty hand, opens its settings");
     }
 
     private static void addLang(String key, String value) {

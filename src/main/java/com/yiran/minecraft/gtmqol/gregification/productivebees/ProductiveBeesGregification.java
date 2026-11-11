@@ -17,7 +17,6 @@ import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
 import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
-import com.yiran.minecraft.gtmqol.gregification.client.GregificationClient;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -46,6 +45,7 @@ import cy.jdkdigital.productivebees.init.ModRecipeTypes;
 import cy.jdkdigital.productivebees.util.BeeHelper;
 import cy.jdkdigital.productivelib.common.recipe.TagOutputRecipe;
 import org.jetbrains.annotations.Nullable;
+import com.yiran.minecraft.gtmqol.client.GTMQoLClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,7 +77,8 @@ public final class ProductiveBeesGregification {
 
     /** Lets gtceu's canner move bees between cages and spawn eggs. */
     public static void init(IEventBus modBus) {
-        RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", BeehiveUI.INFO, "Works like PB's advanced beehive");
+        RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", BeehiveUI.INFO, "Works like Productive Bees' Advanced " +
+                "Beehive");
         modBus.addListener(FMLCommonSetupEvent.class, event -> event.enqueueWork(
                 () -> GTRecipeTypes.CANNER_RECIPES.get().getCustomRecipeLogicRunners().add(CannerBeeLogic.INSTANCE)));
     }
@@ -210,7 +211,7 @@ public final class ProductiveBeesGregification {
     /** The server's level, or the client's one when the recipe viewer loads on a remote server. */
     static @Nullable Level level() {
         var server = GTCEu.getMinecraftServer();
-        return server != null ? server.overworld() : GregificationClient.level();
+        return server != null ? server.overworld() : GTMQoLClient.level();
     }
 
     /** Input items of each distinct bus on its own, then of all the others together. */
@@ -252,7 +253,7 @@ public final class ProductiveBeesGregification {
         Level level = level();
         if (level == null) return;
         BlockableEventLoop<?> owner = level instanceof ServerLevel server ? server.getServer() :
-                GregificationClient.executor();
+                GTMQoLClient.executor();
         if (owner.isSameThread()) build.accept(level);
         else owner.submit(() -> build.accept(level)).join();
     }

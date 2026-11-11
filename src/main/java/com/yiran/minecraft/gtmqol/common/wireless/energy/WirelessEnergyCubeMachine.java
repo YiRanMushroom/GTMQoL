@@ -40,6 +40,7 @@ import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
+import java.util.function.Function;
 
 /**
  * FE block on the bound network, like Mekanism's energy cube with the network as its storage: every side is set to
@@ -156,16 +157,17 @@ public class WirelessEnergyCubeMachine extends MetaMachine
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
         // a map: north at the top, up in the middle as seen from above, down next to it
+        Function<Direction, IWidget> button = side -> sideButton(syncManager, guiData.getPlayer(), side);
         mainWidget.child(WirelessEnergyUI.create(syncManager, binding, guiData.getPlayer())
                 .height(MachineUIPanel.DEFAULT_CONTENT_HEIGHT + 60)
                 .child(Flow.col().coverChildren()
                         .horizontalCenter()
                         .childPadding(2)
-                        .child(sideRow(gap("north_left"), sideButton(syncManager, Direction.NORTH), gap("north_right")))
-                        .child(sideRow(sideButton(syncManager, Direction.WEST), sideButton(syncManager, Direction.UP),
-                                sideButton(syncManager, Direction.EAST)))
-                        .child(sideRow(gap("south_left"), sideButton(syncManager, Direction.SOUTH),
-                                sideButton(syncManager, Direction.DOWN)))));
+                        .child(sideRow(gap("north_left"), button.apply(Direction.NORTH), gap("north_right")))
+                        .child(sideRow(button.apply(Direction.WEST), button.apply(Direction.UP),
+                                button.apply(Direction.EAST)))
+                        .child(sideRow(gap("south_left"), button.apply(Direction.SOUTH),
+                                button.apply(Direction.DOWN)))));
     }
 
     private static Flow sideRow(IWidget left, IWidget middle, IWidget right) {
@@ -178,10 +180,10 @@ public class WirelessEnergyCubeMachine extends MetaMachine
     }
 
     /** A square in the color of the side's mode, with the side's first letter. */
-    private ButtonWidget<?> sideButton(PanelSyncManager syncManager, Direction side) {
+    private ButtonWidget<?> sideButton(PanelSyncManager syncManager, Player player, Direction side) {
         var cycle = new InteractionSyncHandler();
         cycle.setOnMousePressed(mouse -> {
-            if (!syncManager.isClient()) cycleMode(side);
+            if (!syncManager.isClient() && binding.checkSettings(player)) cycleMode(side);
         });
         return new ButtonWidget<>()
                 .size(BUTTON_SIZE)

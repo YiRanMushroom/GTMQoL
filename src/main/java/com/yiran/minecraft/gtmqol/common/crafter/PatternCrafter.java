@@ -91,7 +91,8 @@ public final class PatternCrafter {
         }
 
         PatternWear.init();
-        registrate.addRawLang(KEY + "tooltip", "Crafts the recipe of the crafting pattern among its inputs.");
+        registrate.addRawLang(KEY + "tooltip", "Crafts the recipes of the Crafting Patterns in its input slots. AE2 " +
+                "crafting patterns work too.");
         registrate.addRawLang(PatternWear.WORN_OUT_KEY, "No tool left that can do this");
         CraftingPatternBehavior.addLang();
     }

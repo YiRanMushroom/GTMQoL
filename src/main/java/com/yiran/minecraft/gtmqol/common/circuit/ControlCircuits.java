@@ -48,10 +48,10 @@ public final class ControlCircuits {
                 Component.literal(VN[tier] + "-Tier").withStyle(tierColor)
         };
         GTMQoLAddon.registrate().addRawLang("item.gtmqol.%s_control_circuit.tooltip".formatted(id), description);
+        GTMQoLAddon.optionalItemTag(CustomTags.CIRCUITS_ARRAY[tier], id + "_control_circuit");
         return GTMQoLAddon.registrate()
                 .item(id + "_control_circuit", p -> new ControlCircuitItem(p, tooltip))
                 .lang(name + " Control Circuit")
-                .tag(CustomTags.CIRCUITS_ARRAY[tier])
                 .register();
     }
 

@@ -37,6 +37,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import com.google.common.base.Suppliers;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.network.chat.Component;
 
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -51,6 +53,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.GTValues.LV;
+import static com.gregtechceu.gtceu.api.GTValues.VLVH;
+import static com.gregtechceu.gtceu.api.GTValues.VLVT;
 import static com.gregtechceu.gtceu.api.GTValues.VN;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.FRONT;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.RIGHT;
@@ -74,7 +78,7 @@ import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.createWor
  */
 public final class ModularMachines {
 
-    private record Pending(String namespace, String name, MachineEntry<?> simple,
+    private record Pending(String namespace, String name, String englishName, MachineEntry<?> simple,
                            List<DeferredHolder<RecipeType<?>, GTRecipeType>> recipeTypes) {}
 
     private record Entry(MachineEntry<?> simple, MachineEntry<MultiblockMachineDefinition> modular) {}
@@ -103,9 +107,17 @@ public final class ModularMachines {
             .apply(OverclockingLogic.create(0.5, 4.0, true));
     private static final ResourceLocation BASE_CASING = GTCEu.id("block/casings/solid/machine_casing_solid_steel");
 
+    private static final String TOOLTIP_KEY = "gtmqol.multiblock.modular.tooltip";
+    private static final String MACHINE_TOOLTIP_KEY = "gtmqol.multiblock.modular.tooltip.machine";
+    private static final String GENERATOR_TOOLTIP_KEY = "gtmqol.multiblock.modular.tooltip.generator";
+
     private ModularMachines() {}
 
     public static void init(IEventBus modBus) {
+        var lang = GTMQoLAddon.registrate();
+        lang.addRawLang(TOOLTIP_KEY, "A 3×3×3 box: buses and hatches go anywhere in it, the rest can be any blocks.");
+        lang.addRawLang(MACHINE_TOOLTIP_KEY, "Recipes run 8× faster.");
+        lang.addRawLang(GENERATOR_TOOLTIP_KEY, "Fuel lasts 8× as long.");
         // Our registrate registers at LOW priority, so this runs first.
         modBus.addListener(RegisterEvent.class, event -> {
             if (event.getRegistryKey().equals(GTRegistries.Keys.MACHINE)) {
@@ -114,8 +126,10 @@ public final class ModularMachines {
         });
     }
 
-    public static void queue(String namespace, String name, int tier, MachineEntry<?> simple,
-                             List<DeferredHolder<RecipeType<?>, GTRecipeType>> recipeTypes) {
+    /** Synchronized: mods are constructed in parallel, and any of them may register machines in its constructor. */
+    public static synchronized void queue(String namespace, String name, int tier, @Nullable String langValue,
+                                          MachineEntry<?> simple,
+                                          List<DeferredHolder<RecipeType<?>, GTRecipeType>> recipeTypes) {
         if (tier < LV || recipeTypes.isEmpty()) return;
         // Electric machines are named <voltage>_<name>; this also keeps out hp_ steam machines, which are tier 1 (LV).
         String prefix = VN[tier].toLowerCase(Locale.ROOT) + "_";
@@ -128,10 +142,24 @@ public final class ModularMachines {
             }
             return;
         }
-        PENDING.add(new Pending(namespace, family, simple, recipeTypes));
+        PENDING.add(new Pending(namespace, family, englishName(langValue, tier, family), simple, recipeTypes));
     }
 
-    private static void declareAll() {
+    /** The single block's English name without GT's tier words ("Basic ... ", " II"), else one made from its id. */
+    private static String englishName(@Nullable String langValue, int tier, String name) {
+        if (langValue != null) {
+            String head = VLVH[tier] + " ";
+            String tail = " " + VLVT[tier];
+            if (langValue.length() > head.length() + tail.length() && langValue.startsWith(head) &&
+                    langValue.endsWith(tail)) {
+                return langValue.substring(head.length(), langValue.length() - tail.length());
+            }
+        }
+        return FormattingUtil.toEnglishName(name);
+    }
+
+
+    private static synchronized void declareAll() {
         declared = true;
         List<Pending> pending = new ArrayList<>(PENDING);
         PENDING.clear();
@@ -150,7 +178,7 @@ public final class ModularMachines {
         return new Kind(generator, Gregification.allGregified(types));
     }
 
-    /** Whether a modular machine runs generator recipes; false before its recipe types are registered. */
+    /** Whether a modular machine runs generator recipes. Only after the recipe types are registered. */
     static boolean isGenerator(MachineDefinition definition) {
         Supplier<Kind> kind = KINDS.get(definition.getId());
         return kind != null && kind.get().generator();
@@ -199,7 +227,13 @@ public final class ModularMachines {
                 .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
                 .model((context, provider, model) -> createWorkableCasingMachineModel(BASE_CASING,
                         overlay(namespace, name, kind.get().generator())).configureModel(context, provider, model))
-                .langValue("Modular " + FormattingUtil.toEnglishName(name))
+                // Untested: modular machines are named after their single block ("Modular ME Assembler") and say
+                // what they are in their tooltip
+                .langValue("Modular " + pending.englishName())
+                .tooltips(Component.translatable(TOOLTIP_KEY))
+                // the kind is only known once the recipe types are registered
+                .tooltipBuilder((stack, lines) -> lines.add(Component.translatable(
+                        kind.get().generator() ? GENERATOR_TOOLTIP_KEY : MACHINE_TOOLTIP_KEY)))
                 .register();
 
         KINDS.put(modular.getId(), kind);

@@ -16,7 +16,6 @@ import com.yiran.minecraft.gtmqol.common.singleblock.BatchModeTrait;
 
 import net.minecraft.network.chat.Component;
 
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Recipe logic of gregified machines, single blocks and multiblocks alike.
@@ -44,7 +43,7 @@ public final class GregificationModifiers {
 
     private GregificationModifiers() {}
 
-    private static @NotNull ModifierFunction coilTemperature(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    private static ModifierFunction coilTemperature(MetaMachine machine, GTRecipe recipe) {
         if (!recipe.data.contains("ebf_temp")) return ModifierFunction.IDENTITY;
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
@@ -58,7 +57,7 @@ public final class GregificationModifiers {
         return ModifierFunction.IDENTITY;
     }
 
-    private static @NotNull ModifierFunction overclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    private static ModifierFunction overclock(MetaMachine machine, GTRecipe recipe) {
         if (!(machine instanceof IOverclockMachine overclockMachine)) return ModifierFunction.IDENTITY;
         long eut = RecipeHelper.getRealEUt(recipe).getTotalEU();
         if (eut <= 0) return ModifierFunction.IDENTITY;
@@ -89,7 +88,7 @@ public final class GregificationModifiers {
                 .build();
     }
 
-    private static @NotNull ModifierFunction batch(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    private static ModifierFunction batch(MetaMachine machine, GTRecipe recipe) {
         BatchModeTrait trait = machine.getTrait(BatchModeTrait.class);
         if (trait == null || !trait.isBatchEnabled()) return ModifierFunction.IDENTITY;
         int batchDuration = ConfigHolder.INSTANCE.machines.batchDuration;

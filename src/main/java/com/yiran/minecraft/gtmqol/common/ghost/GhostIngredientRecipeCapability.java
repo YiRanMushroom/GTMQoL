@@ -17,6 +17,7 @@ import net.minecraft.world.level.ItemLike;
 
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -122,7 +123,7 @@ public final class GhostIngredientRecipeCapability extends RecipeCapability<Ghos
                     .orElseThrow(() -> new IllegalArgumentException("Unknown item: " + o)));
         }
 
-        private static <T> GhostIngredient<T> ofValue(GhostIngredient.Type<T> type, Object o) {
+        private static <T> @Nullable GhostIngredient<T> ofValue(GhostIngredient.Type<T> type, Object o) {
             return type.valueClass().isInstance(o) ? type.of(type.valueClass().cast(o)) : null;
         }
 

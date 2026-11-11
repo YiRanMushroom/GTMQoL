@@ -36,7 +36,6 @@ import com.yiran.minecraft.gtmqol.common.steam.AdvancedSteamMachines;
 import com.yiran.minecraft.gtmqol.data.recipe.EarlyGameRecipes;
 import com.yiran.minecraft.gtmqol.api.generation.GTMQoLMachineBuilder;
 import com.yiran.minecraft.gtmqol.api.generation.GTMQoLMultiblockBuilder;
-import com.yiran.minecraft.gtmqol.api.generation.RuntimeGeneration;
 import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
@@ -47,9 +46,14 @@ import com.yiran.minecraft.gtmqol.common.wireless.WirelessRecipes;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
+import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import com.yiran.minecraft.gtmqol.common.circuit.UniversalCircuits;
 
 import java.util.Locale;
 
@@ -79,11 +83,27 @@ public final class GTMQoLAddon implements IGTAddon {
 
     static {
         REGISTRATE.creativeModeTab(MAIN_TAB);
-        RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", MAIN_TAB_TITLE_KEY, "GTM Quality of Life");
+        REGISTRATE.addRawLang(MAIN_TAB_TITLE_KEY, "GTM Quality of Life");
     }
 
     public static GTRegistrate registrate() {
         return REGISTRATE;
+    }
+
+    /**
+     * Adds one of our items to a tag as an optional entry. Registrate's {@code .tag()} writes a required one, and a
+     * tag with a required entry that isn't registered (its feature turned off, AE2 not installed) doesn't load at all:
+     * every mod's entries in it are lost.
+     */
+    // Untested: with circuits.universalCircuits off (or without AE2) the log has no "Couldn't load tag" line and GT's
+    // circuit recipes still accept every circuit of the tier
+    public static void optionalItemTag(TagKey<Item> tag, String item) {
+        REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, prov -> prov.addTag(tag).addOptional(GTMQoL.id(item)));
+    }
+
+    /** {@link #optionalItemTag} for a block. */
+    public static void optionalBlockTag(TagKey<Block> tag, String block) {
+        REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, prov -> prov.addTag(tag).addOptional(GTMQoL.id(block)));
     }
 
     /**
@@ -132,7 +152,7 @@ public final class GTMQoLAddon implements IGTAddon {
         GhostIngredients.addRecipes(provider);
         ProbableDevices.addRecipes(provider);
         if (config.wireless.energy) WirelessRecipes.addEnergyRecipes(provider);
-        if (config.wireless.energy && config.wireless.fe) WirelessRecipes.addFERecipes(provider);
+        if (config.wirelessFE()) WirelessRecipes.addFERecipes(provider);
         if (config.wireless.steam) WirelessRecipes.addSteamRecipes(provider);
         if (config.wireless.computation) WirelessRecipes.addComputationRecipes(provider);
         if (config.wireless.opticalData) WirelessRecipes.addOpticalRecipes(provider);
@@ -140,6 +160,7 @@ public final class GTMQoLAddon implements IGTAddon {
         Gregification.addRecipes(provider);
         GTMQoLMultiblocks.addRecipes(provider);
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.addRecipes(provider);
+        if (config.circuits.universalCircuits) UniversalCircuits.addRecipes(provider);
         if (config.circuits.controlCircuits) ControlCircuits.addRecipes(provider);
         if (config.recipes.miscRecipes) MiscRecipes.addRecipes(provider);
         if (config.recipes.earlyGame) EarlyGameRecipes.addRecipes(provider);
@@ -151,8 +172,8 @@ public final class GTMQoLAddon implements IGTAddon {
         if (config.machines.patternCrafter) PatternCrafter.addRecipes(provider);
         if (GTCEu.Mods.isAE2Loaded()) {
             if (config.ae2.overclockedPatternBuffer) AE2Machines.addRecipes(provider);
-            if (config.wireless.energy && config.wireless.fe) WirelessEnergyCellMachine.addRecipes(provider);
-            if (AssemblingMatrix.CONTROLLER != null) AssemblingMatrix.addRecipes(provider, config.ae2.processing);
+            if (config.wirelessFE()) WirelessEnergyCellMachine.addRecipes(provider);
+            if (config.assemblingMatrix()) AssemblingMatrix.addRecipes(provider, config.ae2.processing);
             if (config.ae2.processing) AEProcessing.addRecipes(provider);
             if (config.ae2.dualHatches) AEDualParts.addRecipes(provider, config.ae2.processing);
             if (EarlyConfig.AE2_STICKY_CARD) StickyCardItem.addRecipes(provider, config.ae2.processing);

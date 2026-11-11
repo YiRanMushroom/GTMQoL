@@ -1,14 +1,14 @@
 +++
 title = "1.21.1 vs 1.20.1 branch: code differences to keep in mind when cherry-picking"
 keys = [ "forge", "neoforge", "port" ]
-updated = "2026-11-07 09:52:57"
-checked = "2026-11-07"
+updated = "2026-11-11 07:18:17"
+checked = "2026-11-11"
 
 [[items]]
 name = "constructor"
 value = "1.21: all content declared in the GTMQoL constructor, recipe types before their machines"
 path = "src/main/java/com/yiran/minecraft/gtmqol/GTMQoL.java"
-snippet = "public GTMQoL(IEventBus modBus, ModContainer container) {"
+snippet = "public GTMQoL(IEventBus modBus) {"
 
 [[items]]
 name = "modular-queue"

@@ -20,11 +20,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
-import dev.shadowsoffire.hostilenetworks.Hostile;
 import dev.shadowsoffire.hostilenetworks.data.DataModelInstance;
 import dev.shadowsoffire.hostilenetworks.data.DataModelRegistry;
 import dev.shadowsoffire.hostilenetworks.item.DataModelItem;
 import org.jetbrains.annotations.Nullable;
+import com.yiran.minecraft.gtmqol.common.overclock.Overclocking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ final class SimulationTraining extends MachineTrait implements IRecipeLogicModif
         if (!recipe.data.contains(MODEL_KEY)) return recipe;
         Model model = model(recipe);
         if (model == null) return recipe;
-        int crafts = crafts(recipe);
+        int crafts = Overclocking.crafts(recipe);
         Run run = simulate(model.stack, crafts);
         GTRecipe modified;
         if (recipe.data.getBoolean(TRAINING_KEY)) {
@@ -105,14 +105,10 @@ final class SimulationTraining extends MachineTrait implements IRecipeLogicModif
         Model model = model(recipe);
         // the model was taken out or swapped during the run
         if (model == null || recipe.data.getInt(LEARNT_KEY) != DataModelItem.getData(model.stack)) return;
-        int crafts = crafts(recipe);
+        int crafts = Overclocking.crafts(recipe);
         ItemStack learnt = simulate(model.stack, crafts).after.getSourceStack();
         DataModelItem.setIters(learnt, DataModelItem.getIters(learnt) + crafts);
         model.items.storage.setStackInSlot(model.slot, learnt);
-    }
-
-    private static int crafts(GTRecipe recipe) {
-        return recipe.parallels * recipe.subtickParallels * recipe.batchParallels;
     }
 
     /** {@code crafts} simulations on a copy of {@code stack}: what it learns and how many predictions they make. */
@@ -121,8 +117,12 @@ final class SimulationTraining extends MachineTrait implements IRecipeLogicModif
         int learnt = 0;
         double predictions = 0;
         for (int i = 0; i < crafts; i++) {
+            if (!canLearn(model)) {
+                // nothing changes from here on; a run can have billions of crafts
+                predictions += model.getAccuracy() * (double) (crafts - i);
+                break;
+            }
             predictions += model.getAccuracy();
-            if (!canLearn(model)) continue;
             model.setData(model.getData() + 1);
             learnt++;
         }
@@ -139,7 +139,7 @@ final class SimulationTraining extends MachineTrait implements IRecipeLogicModif
                     ItemStack stack = items.storage.getStackInSlot(slot);
                     if (!(stack.getItem() instanceof DataModelItem) || stack.getCount() != 1) continue;
                     var stored = DataModelItem.getStoredModel(stack);
-                    if (stored.isBound() && id.equals(DataModelRegistry.INSTANCE.getKey(stored.get()).toString())) {
+                    if (stored.isBound() && id.equals(String.valueOf(DataModelRegistry.INSTANCE.getKey(stored.get())))) {
                         return new Model(items, slot, stack);
                     }
                 }

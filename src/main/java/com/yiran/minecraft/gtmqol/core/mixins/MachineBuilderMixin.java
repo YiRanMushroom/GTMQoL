@@ -43,11 +43,6 @@ public abstract class MachineBuilderMixin implements IDynamicGenerationHandler {
         this.gtmqol$dynamicGenerated = dynamicGenerated;
     }
 
-    @Override
-    public boolean gtmqol$isDynamicallyGenerated() {
-        return gtmqol$dynamicGenerated;
-    }
-
     /** Every machine this builder makes gets its {@link MachineFeatures} right after it is built. */
     @Inject(method = "register()Lcom/gregtechceu/gtceu/api/registry/registrate/entry/MachineEntry;",
             at = @At("HEAD"))
@@ -66,7 +61,7 @@ public abstract class MachineBuilderMixin implements IDynamicGenerationHandler {
         }
         if (!(self instanceof MultiblockMachineBuilder<?>)) {
             ModularMachines.queue(self.getOwner().getModid(), self.getName(), self.properties().tier(),
-                    cir.getReturnValue(), unresolvedRecipeTypes);
+                    self.properties().langValue(), cir.getReturnValue(), unresolvedRecipeTypes);
         }
     }
 }

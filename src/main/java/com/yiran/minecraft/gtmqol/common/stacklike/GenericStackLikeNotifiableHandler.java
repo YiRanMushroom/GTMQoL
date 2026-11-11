@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableRecipeHandle
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public abstract class GenericStackLikeNotifiableHandler<S, I> extends Notifiable
     }
 
     @Override
-    public @NotNull List<I> handleRecipeInner(IO io, @Nullable GTRecipe recipe, List<I> left, boolean simulate) {
+    public List<I> handleRecipeInner(IO io, @Nullable GTRecipe recipe, List<I> left, boolean simulate) {
         if (io != handlerIO) return left;
         if (io == IO.IN) {
             handleInput(recipe, left, simulate);
@@ -75,11 +74,10 @@ public abstract class GenericStackLikeNotifiableHandler<S, I> extends Notifiable
                 if (remaining[i] <= 0) continue;
                 S stack = stacks.get(i);
                 if (!type.test(ingredient, stack)) continue;
-                long taken = Math.min(amount, remaining[i]);
-                if (!simulate) {
-                    taken = extract(stack, taken, false);
-                    if (taken > 0) addConsumedInput(recipe, type.copyWithAmount(stack, taken));
-                }
+                // simulated against the storage too: the stacks may be a cached view of it (ME stock)
+                // Untested: recipes taking chemicals from an ME Universal Input or a pattern buffer still start and run
+                long taken = extract(stack, Math.min(amount, remaining[i]), simulate);
+                if (!simulate && taken > 0) addConsumedInput(recipe, type.copyWithAmount(stack, taken));
                 if (taken > 0) changed = true;
                 remaining[i] -= taken;
                 amount -= taken;
@@ -137,7 +135,7 @@ public abstract class GenericStackLikeNotifiableHandler<S, I> extends Notifiable
     }
 
     @Override
-    public @NotNull List<Object> getContents() {
+    public List<Object> getContents() {
         return new ArrayList<>(getStacks());
     }
 

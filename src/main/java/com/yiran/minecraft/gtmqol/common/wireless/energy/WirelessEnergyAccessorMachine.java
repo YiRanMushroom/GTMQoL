@@ -76,6 +76,8 @@ public class WirelessEnergyAccessorMachine extends MetaMachine
                             UISettings settings) {
         mainWidget.child(WirelessEnergyUI.create(syncManager, binding, guiData.getPlayer())
                 .height(MachineUIPanel.DEFAULT_CONTENT_HEIGHT + 22)
-                .child(WirelessEnergyUI.amperageRow(syncManager, this::getAmperage, this::setAmperage)));
+                .child(WirelessEnergyUI.amperageRow(syncManager, this::getAmperage, amperage -> {
+                    if (binding.checkSettings(guiData.getPlayer())) setAmperage(amperage);
+                })));
     }
 }

@@ -32,6 +32,7 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.scroll.VerticalScrollData;
 import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
 
     @SaveField
-    private KeyStorage fluidBuffer = new KeyStorage();
+    private final KeyStorage fluidBuffer = new KeyStorage();
 
     public MEDualOutputPartMachine(BlockEntityCreationInfo info) {
         super(info);
@@ -57,6 +58,13 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
             tank.onContentsChanged();
             updateInventorySubscription();
         });
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        // the key of a mod that is gone loads as null, and gtceu's KeyStorage keeps it
+        fluidBuffer.storage.removeLong(null);
     }
 
     /**
@@ -236,7 +244,8 @@ public class MEDualOutputPartMachine extends MEOutputBusPartMachine {
         }
 
         @Override
-        public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,
+        public List<SizedFluidIngredient> handleRecipeInner(IO io, @Nullable GTRecipe recipe,
+                                                            List<SizedFluidIngredient> left,
                                                             boolean simulate) {
             if (io != IO.OUT) return left;
             FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;

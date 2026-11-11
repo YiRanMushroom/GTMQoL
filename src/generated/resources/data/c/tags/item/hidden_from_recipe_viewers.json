@@ -1,5 +1,8 @@
 {
   "values": [
-    "gtmqol:pattern_batch"
+    {
+      "id": "gtmqol:pattern_batch",
+      "required": false
+    }
   ]
 }

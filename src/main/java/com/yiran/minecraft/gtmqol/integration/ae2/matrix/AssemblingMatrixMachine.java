@@ -70,6 +70,7 @@ import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.item.crafting.RecipeManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -247,6 +248,9 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
 
     // ---------- crafting (server) ----------
 
+    /** The recipe manager the patterns were last decoded with. */
+    private @Nullable RecipeManager decodedWith;
+
     void onPatternsChanged() {
         patternsChanged = true;
         entries = null;
@@ -254,6 +258,13 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
 
     private void tick() {
         if (!isFormed() || meInterface == null) return;
+        // a data reload makes a new recipe manager: Crafting Patterns are decoded against it again
+        // Untested: after /reload with a changed recipe, an Assembling Matrix offers and crafts the new result
+        RecipeManager recipes = getLevel().getRecipeManager();
+        if (recipes != decodedWith) {
+            decodedWith = recipes;
+            patternsChanged = true;
+        }
         if (patternsChanged) {
             patternsChanged = false;
             meInterface.updatePatterns(decodePatterns());
@@ -294,10 +305,14 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
     }
 
     private boolean useCatalysts(ICrafterPattern pattern, long crafts) {
+        boolean wears = false;
         for (var input : pattern.itemInputs()) {
-            if (input.consumed() || input.changes()) continue;
-            if (!hasCatalyst(input)) return false;
+            if (input.consumed()) continue;
+            if (input.changes()) wears = true;
+            else if (!hasCatalyst(input)) return false;
         }
+        // nothing wears: such patterns come in batches of any size, past an int too
+        if (!wears) return true;
         return crafts <= Integer.MAX_VALUE && PatternWear.wear(catalysts, pattern, (int) crafts);
     }
 
@@ -616,17 +631,18 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
     static void addLang() {
         var lang = GTMQoLAddon.registrate();
         lang.addRawLang(KEY + "tooltip.0", "Crafts in bulk for an ME network: AE2 Crafting, Stonecutting and Smithing " +
-                "Patterns, and Crafting Patterns encoded in a Pattern Crafter.");
+                "Patterns, and the Crafting Patterns made for the Pattern Crafter.");
         lang.addRawLang(KEY + "tooltip.1", "A box of 3 to 15 blocks each way: edges of Machine Casings, faces of " +
                 "Quartz Glass. Inside: Assembling Matrix Processing Cores, Assembling Matrix Pattern Cores or air.");
         lang.addRawLang(KEY + "tooltip.2", "All Machine Casings must be of one tier, and a higher tier crafts faster. " +
                 "The structure preview shows ULV, but any tier works.");
         lang.addRawLang(KEY + "tooltip.3", "Each Assembling Matrix Processing Core does 4 crafts per tick, ×4 for each " +
-                "casing tier above ULV. Each craft uses %s FE.");
+                "casing tier above ULV.");
         lang.addRawLang(KEY + "tooltip.4", "On the edges: one Assembling Matrix ME Interface, at least one Wireless FE " +
                 "Input Hatch, and Input Buses for catalysts.");
         lang.addRawLang(KEY + "tooltip.5", "Catalysts: tools, smithing templates and other items a Crafting Pattern " +
                 "keeps instead of using up. They stay in the Input Buses, where tools wear down.");
+        lang.addRawLang(KEY + "tooltip.6", "Each craft uses %s FE from the Wireless FE Input Hatches.");
         lang.addRawLang(KEY + "processing_core.tooltip", "Does 4 crafts per tick inside an Assembling Matrix, ×4 for " +
                 "each casing tier above ULV");
         lang.addRawLang(KEY + "pattern_core.tooltip", "Holds 72 patterns inside an Assembling Matrix");

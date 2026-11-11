@@ -113,7 +113,8 @@ public final class ChannelMachines {
             ChannelComputation.clear();
         });
         addLang(CHANNEL_TOOLTIP_KEY,
-                "Open its UI to create channels and bind it (private, team or public; works across dimensions while both ends are loaded)");
+                "Open its window to create channels and bind it to one (private, team or public). Works across " +
+                        "dimensions while both ends are loaded");
         ChannelUI.addLang();
     }
 

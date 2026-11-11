@@ -33,6 +33,7 @@ import appeng.api.storage.MEStorage;
 import brachy.modularui.api.drawable.Text;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import org.jetbrains.annotations.Nullable;
+import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,6 +53,12 @@ public final class PatternBufferReturn {
     public static final String TOGGLE_KEY = "gtmqol.gui.pattern_buffer.return";
 
     private PatternBufferReturn() {}
+
+    /** Always: ae2.patternBufferReturn can be switched while the game runs. */
+    public static void addLang() {
+        GTMQoLAddon.registrate().addRawLang(TOGGLE_KEY + ".enabled", "Outputs go to the ME network: on");
+        GTMQoLAddon.registrate().addRawLang(TOGGLE_KEY + ".disabled", "Outputs go to the ME network: off");
+    }
 
     /**
      * The handlers check the switches themselves, on every call: the list is added to the multiblock when it

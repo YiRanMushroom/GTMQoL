@@ -53,8 +53,14 @@ public class WirelessSteamCover extends WirelessCover {
             int filled = handler.fill(GTMaterials.Steam.getFluid(taken), FluidAction.EXECUTE);
             if (filled < taken) data.insert(network, taken - filled);
         } else {
-            FluidStack drained = handler.drain(GTMaterials.Steam.getFluid(Integer.MAX_VALUE), FluidAction.EXECUTE);
-            if (!drained.isEmpty()) data.insert(network, drained.getAmount());
+            // Untested: an output Wireless Steam Cover also drains another mod's steam (any fluid in the steam tag,
+            // as the wireless steam hatches take), not only GT's
+            for (int tank = 0; tank < handler.getTanks(); tank++) {
+                FluidStack stack = handler.getFluidInTank(tank);
+                if (stack.isEmpty() || !WirelessSteamTank.isSteam(stack)) continue;
+                FluidStack drained = handler.drain(stack.copyWithAmount(Integer.MAX_VALUE), FluidAction.EXECUTE);
+                if (!drained.isEmpty()) data.insert(network, drained.getAmount());
+            }
         }
     }
 

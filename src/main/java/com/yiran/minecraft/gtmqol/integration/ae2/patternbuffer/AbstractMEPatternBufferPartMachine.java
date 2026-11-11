@@ -81,7 +81,8 @@ public abstract class AbstractMEPatternBufferPartMachine extends MEPatternBuffer
         getSyncDataHolder().markClientSyncFieldDirty("marksPatternOutputs");
     }
 
-    private List<GhostIngredient<?>> allOutputMarks() {
+    /** The marks of every pattern, for the recipe lookup of this buffer and of its proxies; empty with the toggle off. */
+    public List<GhostIngredient<?>> allOutputMarks() {
         if (!marksPatternOutputs) return List.of();
         List<GhostIngredient<?>> marks = new ArrayList<>();
         for (IPatternDetails pattern : getAvailablePatterns()) {
@@ -102,8 +103,7 @@ public abstract class AbstractMEPatternBufferPartMachine extends MEPatternBuffer
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder(r -> r
                         .addLine(Text.lang(PatternOutputMarks.TOGGLE_KEY +
-                                (value.getBoolValue() ? ".enabled" : ".disabled")))
-                        .addLine(Text.lang(PatternOutputMarks.TOGGLE_KEY + ".info"))))));
+                                (value.getBoolValue() ? ".enabled" : ".disabled")))))));
     }
 
     /**
