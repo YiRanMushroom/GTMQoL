@@ -34,6 +34,7 @@ import com.yiran.minecraft.gtmqol.common.test.MixinTargetCheck;
 import com.yiran.minecraft.gtmqol.common.crafter.PatternCrafter;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
+import com.yiran.minecraft.gtmqol.common.engraving.AdvancedChipEngraving;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
@@ -138,6 +139,7 @@ public final class GTMQoL {
         MagicalAssembler.initMachines();
         GTMQoLMultiblocks.init();
         if (config.machines.electricImplosionCompressor) ElectricImplosion.init(modBus);
+        if (config.machines.advancedChipEngravingFactory) AdvancedChipEngraving.init(modBus);
         if (config.machines.crystalGrowthChamber) CrystalGrowth.init();
         if (config.machines.greenhouse) Greenhouse.init();
         if (config.machines.patternCrafter) PatternCrafter.init();

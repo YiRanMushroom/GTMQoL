@@ -27,6 +27,7 @@ import com.yiran.minecraft.gtmqol.common.crafter.PatternCrafter;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
 import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredients;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
+import com.yiran.minecraft.gtmqol.common.engraving.AdvancedChipEngraving;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.data.recipe.LegacyPartRecipes;
 import com.yiran.minecraft.gtmqol.common.singleblock.ComposableTieredMachine;
@@ -167,6 +168,7 @@ public final class GTMQoLAddon implements IGTAddon {
         if (config.recipes.netherStarDust) MiscRecipes.addNetherStarDust(provider);
         if (config.recipes.useLegacyPartRecipes) LegacyPartRecipes.addRecipes(provider);
         if (config.machines.electricImplosionCompressor) ElectricImplosion.addRecipes(provider);
+        if (config.machines.advancedChipEngravingFactory) AdvancedChipEngraving.addRecipes(provider);
         if (config.machines.crystalGrowthChamber) CrystalGrowth.addRecipes(provider);
         if (config.machines.greenhouse) Greenhouse.addRecipes(provider);
         if (config.machines.patternCrafter) PatternCrafter.addRecipes(provider);

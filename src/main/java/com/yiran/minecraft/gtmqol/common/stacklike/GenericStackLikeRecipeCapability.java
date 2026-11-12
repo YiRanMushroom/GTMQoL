@@ -116,10 +116,8 @@ public class GenericStackLikeRecipeCapability<S, I> extends RecipeCapability<I> 
         if (type.ingredientClass().isInstance(object)) {
             // mutable: GT's recipe lookup pools these in place (MapIngredientPool.applyPooling sets list elements)
             List<AbstractMapIngredient> list = new ArrayList<>();
-            Set<Object> seen = new HashSet<>();
-            for (S stack : type.getStacks(type.ingredientClass().cast(object))) {
-                Object key = type.lookupKey(stack);
-                if (seen.add(key)) list.add(new GenericStackLikeMapIngredient(key));
+            for (Object key : type.lookupKeys(type.ingredientClass().cast(object))) {
+                list.add(new GenericStackLikeMapIngredient(key));
             }
             return list;
         }

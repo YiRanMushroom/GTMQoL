@@ -201,7 +201,7 @@ public final class MekanismGregification {
     // Mekanism lists one output per possible input; its own recipes all have the same, so the first is taken.
 
     private static boolean convertItemToItem(RecipeHolder<?> holder, GTRecipeBuilder builder, int ticks) {
-        if (!(holder.value() instanceof ItemStackToItemStackRecipe recipe) || recipe.isIncomplete()) return false;
+        if (!(holder.value() instanceof ItemStackToItemStackRecipe recipe)) return false;
         var outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) return false;
         builder.inputItems(recipe.getInput().ingredient());
@@ -212,9 +212,7 @@ public final class MekanismGregification {
 
     /** Item + chemical to an item, or to a chemical (dissolution). */
     private static boolean convertItemChemical(RecipeHolder<?> holder, GTRecipeBuilder builder, int ticks) {
-        if (!(holder.value() instanceof ItemStackChemicalToObjectRecipe<?> recipe) || recipe.isIncomplete()) {
-            return false;
-        }
+        if (!(holder.value() instanceof ItemStackChemicalToObjectRecipe<?> recipe)) return false;
         var outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) return false;
         var chemical = recipe.getChemicalInput();
@@ -234,7 +232,7 @@ public final class MekanismGregification {
     }
 
     private static boolean convertItemToChemical(RecipeHolder<?> holder, GTRecipeBuilder builder, int ticks) {
-        if (!(holder.value() instanceof ItemStackToChemicalRecipe recipe) || recipe.isIncomplete()) return false;
+        if (!(holder.value() instanceof ItemStackToChemicalRecipe recipe)) return false;
         var outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) return false;
         builder.inputItems(recipe.getInput().ingredient());
@@ -244,7 +242,7 @@ public final class MekanismGregification {
     }
 
     private static boolean convertCombining(RecipeHolder<?> holder, GTRecipeBuilder builder) {
-        if (!(holder.value() instanceof CombinerRecipe recipe) || recipe.isIncomplete()) return false;
+        if (!(holder.value() instanceof CombinerRecipe recipe)) return false;
         var outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) return false;
         builder.inputItems(recipe.getMainInput().ingredient());
@@ -255,7 +253,7 @@ public final class MekanismGregification {
     }
 
     private static boolean convertSawing(RecipeHolder<?> holder, GTRecipeBuilder builder) {
-        if (!(holder.value() instanceof SawmillRecipe recipe) || recipe.isIncomplete()) return false;
+        if (!(holder.value() instanceof SawmillRecipe recipe)) return false;
         var main = recipe.getMainOutputDefinition();
         var secondary = recipe.getSecondaryOutputDefinition();
         if (main.isEmpty() && secondary.isEmpty()) return false;
@@ -270,7 +268,7 @@ public final class MekanismGregification {
     }
 
     private static boolean convertCrystallizing(RecipeHolder<?> holder, GTRecipeBuilder builder) {
-        if (!(holder.value() instanceof ChemicalCrystallizerRecipe recipe) || recipe.isIncomplete()) return false;
+        if (!(holder.value() instanceof ChemicalCrystallizerRecipe recipe)) return false;
         var outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) return false;
         builder.input(ChemicalStackLike.CAP, recipe.getInput());
@@ -280,7 +278,7 @@ public final class MekanismGregification {
     }
 
     private static boolean convertReaction(RecipeHolder<?> holder, GTRecipeBuilder builder) {
-        if (!(holder.value() instanceof PressurizedReactionRecipe recipe) || recipe.isIncomplete()) return false;
+        if (!(holder.value() instanceof PressurizedReactionRecipe recipe)) return false;
         var outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) return false;
         var output = outputs.getFirst();
@@ -296,9 +294,7 @@ public final class MekanismGregification {
     }
 
     private static boolean convertChemicalChemical(RecipeHolder<?> holder, GTRecipeBuilder builder) {
-        if (!(holder.value() instanceof ChemicalChemicalToChemicalRecipe recipe) || recipe.isIncomplete()) {
-            return false;
-        }
+        if (!(holder.value() instanceof ChemicalChemicalToChemicalRecipe recipe)) return false;
         var outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) return false;
         builder.input(ChemicalStackLike.CAP, recipe.getLeftInput());
@@ -309,7 +305,7 @@ public final class MekanismGregification {
     }
 
     private static boolean convertChemicalToChemical(RecipeHolder<?> holder, GTRecipeBuilder builder) {
-        if (!(holder.value() instanceof ChemicalToChemicalRecipe recipe) || recipe.isIncomplete()) return false;
+        if (!(holder.value() instanceof ChemicalToChemicalRecipe recipe)) return false;
         var outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) return false;
         builder.input(ChemicalStackLike.CAP, recipe.getInput());
@@ -319,7 +315,7 @@ public final class MekanismGregification {
     }
 
     private static boolean convertWashing(RecipeHolder<?> holder, GTRecipeBuilder builder) {
-        if (!(holder.value() instanceof FluidChemicalToChemicalRecipe recipe) || recipe.isIncomplete()) return false;
+        if (!(holder.value() instanceof FluidChemicalToChemicalRecipe recipe)) return false;
         var outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) return false;
         builder.inputFluids(recipe.getFluidInput().ingredient());
@@ -330,7 +326,7 @@ public final class MekanismGregification {
     }
 
     private static boolean convertSeparating(RecipeHolder<?> holder, GTRecipeBuilder builder) {
-        if (!(holder.value() instanceof ElectrolysisRecipe recipe) || recipe.isIncomplete()) return false;
+        if (!(holder.value() instanceof ElectrolysisRecipe recipe)) return false;
         var outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) return false;
         var output = outputs.getFirst();
@@ -345,7 +341,7 @@ public final class MekanismGregification {
 
     /** A GT recipe per direction the Mek recipe has: chemical to fluid, fluid to chemical. */
     private static void convertRotary(RecipeHolder<?> holder, ForeignRecipeConverter.Output output) {
-        if (!(holder.value() instanceof RotaryRecipe recipe) || recipe.isIncomplete()) return;
+        if (!(holder.value() instanceof RotaryRecipe recipe)) return;
         if (recipe.hasChemicalToFluid()) {
             output.add(builder -> {
                 var outputs = recipe.getFluidOutputDefinition();
@@ -369,7 +365,7 @@ public final class MekanismGregification {
     }
 
     private static boolean convertEvaporating(RecipeHolder<?> holder, GTRecipeBuilder builder) {
-        if (!(holder.value() instanceof FluidToFluidRecipe recipe) || recipe.isIncomplete()) return false;
+        if (!(holder.value() instanceof FluidToFluidRecipe recipe)) return false;
         var outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) return false;
         builder.inputFluids(recipe.getInput().ingredient());

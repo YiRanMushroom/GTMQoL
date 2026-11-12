@@ -108,6 +108,13 @@ public final class GTMQoLConfig {
         public boolean electricImplosionCompressor = true;
 
         @Configurable
+        @Configurable.Comment({ "Advanced Chip Engraving Factory (every laser engraver recipe without the lens or a",
+                "cleanroom; wafers take 4x the time for 4x the output; the product is marked in a Ghost",
+                "Ingredient Hatch)", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean advancedChipEngravingFactory = true;
+
+        @Configurable
         @Configurable.Comment({ "Industrial Large Chemical Reactor (large chemical reactor recipes 64x faster)",
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)

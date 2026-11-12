@@ -23,6 +23,7 @@ import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
 import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
 import com.yiran.minecraft.gtmqol.gregification.GTMaterialTags;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
+import com.yiran.minecraft.gtmqol.gregification.LoadingTags;
 import com.yiran.minecraft.gtmqol.gregification.MarkCoveredRecipes;
 import com.yiran.minecraft.gtmqol.gregification.MultiblockShape;
 
@@ -33,7 +34,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -70,7 +70,14 @@ import static java.util.Map.entry;
 public final class MIGregification {
 
     private static final String MI = "modern_industrialization";
-    private static final int MULTIBLOCK_SLOTS = 6;
+    /**
+     * Single blocks whose recipes share inputs, picked by hand in MI: the assembler, the distillery (one product of
+     * a fluid per recipe) and the mixer (MOX and uranium fuels differ only in amounts).
+     */
+    // Untested: no "Recipe duplicate or conflict" warnings for gtmqol:mi_distillery / mi_mixer; each distillery
+    // product and the MOX / uranium mixes run with their output marked in the single block's ghost slot; EMI shows
+    // all quarry drops (up to 10), the distillation tower's 8 products and Create crushing's 5 outputs
+    private static final Set<String> MARKED = Set.of("assembler", "distillery", "mixer");
 
     // MI's guidebook, kept when crafting a machine
     private static final ResourceLocation GUIDEBOOK = ResourceLocation.fromNamespaceAndPath(MI, "guidebook");
@@ -89,7 +96,11 @@ public final class MIGregification {
         }
     }
 
-    private record Multiblock(boolean itemInputs, boolean itemOutputs, boolean fluidInputs, boolean fluidOutputs,
+    /**
+     * Slot counts for the recipe viewer: 6 where MI's machine takes any number of hatches, more where MI's recipes
+     * have more (quarry drops, distillation products).
+     */
+    private record Multiblock(int itemInputs, int itemOutputs, int fluidInputs, int fluidOutputs,
                               MultiblockShape shape, String counterpart, @Nullable Holder<SoundEntry> sound,
                               UnaryOperator<GTRecipeTypeUILayout.Builder> ui) {}
 
@@ -127,31 +138,31 @@ public final class MIGregification {
 
     // no GT counterpart: crafted from MI's own machine, no sound
     private static final Map<String, Multiblock> MULTIBLOCKS = Map.ofEntries(
-            entry("blast_furnace", new Multiblock(true, true, true, true, MultiblockShape.ELECTRIC_BLAST_FURNACE,
+            entry("blast_furnace", new Multiblock(6, 6, 6, 6, MultiblockShape.ELECTRIC_BLAST_FURNACE,
                     "gtceu:electric_blast_furnace", GTSoundEntries.FURNACE,
                     builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                             .addRecipeUIModifier(GTRecipeUIModifiers.TEMP_COIL_INFO))),
-            entry("coke_oven", new Multiblock(true, true, false, true, MultiblockShape.GENERIC,
+            entry("coke_oven", new Multiblock(6, 6, 0, 6, MultiblockShape.GENERIC,
                     "gtceu:pyrolyse_oven", GTSoundEntries.FIRE, progress(GTGuiTextures.PROGRESS_ARROW))),
-            entry("distillation_tower", new Multiblock(false, false, true, true, MultiblockShape.DISTILLATION_TOWER,
+            entry("distillation_tower", new Multiblock(0, 0, 6, 8, MultiblockShape.DISTILLATION_TOWER,
                     "gtceu:distillation_tower", GTSoundEntries.CHEMICAL,
                     progress(GTGuiTextures.PROGRESS_ARROW_MULTIPLE))),
-            entry("fusion_reactor", new Multiblock(false, false, true, true, MultiblockShape.GENERIC,
+            entry("fusion_reactor", new Multiblock(0, 0, 6, 6, MultiblockShape.GENERIC,
                     "gtceu:luv_fusion_reactor", GTSoundEntries.ARC, progress(GTGuiTextures.PROGRESS_FUSION))),
-            entry("heat_exchanger", new Multiblock(true, true, true, true, MultiblockShape.GENERIC,
+            entry("heat_exchanger", new Multiblock(6, 6, 6, 6, MultiblockShape.GENERIC,
                     MI + ":heat_exchanger", null, progress(GTGuiTextures.PROGRESS_ARROW))),
-            entry("implosion_compressor", new Multiblock(true, true, false, false,
+            entry("implosion_compressor", new Multiblock(6, 6, 0, 0,
                     MultiblockShape.IMPLOSION_COMPRESSOR, "gtceu:implosion_compressor",
                     // same as GT's
                     Holder.direct(new ExistingSoundEntry(SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS)),
                     progress(GTGuiTextures.PROGRESS_ARROW))),
-            entry("oil_drilling_rig", new Multiblock(true, false, false, true, MultiblockShape.GENERIC,
+            entry("oil_drilling_rig", new Multiblock(6, 0, 0, 6, MultiblockShape.GENERIC,
                     MI + ":oil_drilling_rig", null, progress(GTGuiTextures.PROGRESS_ARROW))),
-            entry("pressurizer", new Multiblock(true, false, true, true, MultiblockShape.GENERIC,
+            entry("pressurizer", new Multiblock(6, 0, 6, 6, MultiblockShape.GENERIC,
                     MI + ":pressurizer", null, progress(GTGuiTextures.PROGRESS_ARROW))),
-            entry("quarry", new Multiblock(true, true, false, false, MultiblockShape.GENERIC,
+            entry("quarry", new Multiblock(6, 10, 0, 0, MultiblockShape.GENERIC,
                     MI + ":electric_quarry", null, progress(GTGuiTextures.PROGRESS_ARROW))),
-            entry("vacuum_freezer", new Multiblock(true, true, true, true, MultiblockShape.VACUUM_FREEZER,
+            entry("vacuum_freezer", new Multiblock(6, 6, 6, 6, MultiblockShape.VACUUM_FREEZER,
                     "gtceu:vacuum_freezer", GTSoundEntries.COOLING, progress(GTGuiTextures.PROGRESS_ARROW))));
 
     private MIGregification() {}
@@ -167,8 +178,8 @@ public final class MIGregification {
             SingleBlock single = SINGLE_BLOCKS.get(path);
             Multiblock multi = MULTIBLOCKS.get(path);
             if (single != null) {
-                // the assembler is picked by hand: recipes with the same inputs get a mark, see MarkCoveredRecipes
-                boolean marks = path.equals("assembler");
+                // recipes with the same inputs get a mark, see MarkCoveredRecipes
+                boolean marks = MARKED.contains(path);
                 ForeignRecipeConverter converter = marks ?
                         new MarkCoveredRecipes(MIGregification::convert, MIGregification::inputs,
                                 MIGregification::mainOutputMark) :
@@ -185,8 +196,7 @@ public final class MIGregification {
                 ForeignRecipeConverter converter = ForeignRecipeConverter.single(path.equals("blast_furnace") ?
                         MIGregification::convertBlastFurnace : MIGregification::convert);
                 types.add(ForeignMachineType.multiblock(name, englishName, () -> recipeType, converter,
-                        multi.itemInputs ? MULTIBLOCK_SLOTS : 0, multi.itemOutputs ? MULTIBLOCK_SLOTS : 0,
-                        multi.fluidInputs ? MULTIBLOCK_SLOTS : 0, multi.fluidOutputs ? MULTIBLOCK_SLOTS : 0,
+                        multi.itemInputs, multi.itemOutputs, multi.fluidInputs, multi.fluidOutputs,
                         multi.sound, multi.ui, GUIDEBOOK, ResourceLocation.parse(multi.counterpart),
                         multi.shape));
             } else {
@@ -196,19 +206,17 @@ public final class MIGregification {
         return types;
     }
 
-    /** Per input, the items or fluids it takes. */
+    /** Per input, the items or fluids it takes, read through {@link LoadingTags}. */
     private static List<Set<Object>> inputs(Recipe<?> foreign) {
         List<Set<Object>> inputs = new ArrayList<>();
         if (!(foreign instanceof MachineRecipe recipe)) return inputs;
         for (var input : recipe.itemInputs) {
-            Set<Object> items = new HashSet<>();
-            for (ItemStack stack : input.ingredient().getItems()) items.add(stack.getItem());
-            if (!items.isEmpty()) inputs.add(items);
+            Set<Item> items = LoadingTags.items(input.ingredient());
+            if (items != null && !items.isEmpty()) inputs.add(new HashSet<>(items));
         }
         for (var input : recipe.fluidInputs) {
-            Set<Object> fluids = new HashSet<>();
-            for (FluidStack stack : input.fluid().getStacks()) fluids.add(stack.getFluid());
-            if (!fluids.isEmpty()) inputs.add(fluids);
+            Set<Fluid> fluids = LoadingTags.fluids(input.fluid());
+            if (fluids != null && !fluids.isEmpty()) inputs.add(new HashSet<>(fluids));
         }
         return inputs;
     }
@@ -231,12 +239,12 @@ public final class MIGregification {
         if (!recipe.conditions.isEmpty()) return false;
 
         for (var input : recipe.itemInputs) {
-            if (input.ingredient().hasNoItems()) return false;
+            if (isEmpty(LoadingTags.items(input.ingredient()))) return false;
             withChance(builder, input.probability(), true,
                     () -> builder.inputItems(new SizedIngredient(widenToGT(input.ingredient()), input.amount())));
         }
         for (var input : recipe.fluidInputs) {
-            if (input.fluid().hasNoFluids()) return false;
+            if (isEmpty(LoadingTags.fluids(input.fluid()))) return false;
             withChance(builder, input.probability(), true, () -> builder
                     .inputFluids(new SizedFluidIngredient(widenToGT(input.fluid()), GTMath.saturatedCast(input.amount()))));
         }
@@ -294,11 +302,17 @@ public final class MIGregification {
 
     /** A single-fluid input also accepts the same-named GT material's fluid tag. */
     private static FluidIngredient widenToGT(FluidIngredient ingredient) {
-        FluidStack[] stacks = ingredient.getStacks();
-        if (stacks.length != 1) return ingredient;
-        Material material = gtMaterial(stacks[0].getFluid());
-        if (material == null || material.getFluid() == stacks[0].getFluid()) return ingredient;
+        Set<Fluid> fluids = LoadingTags.fluids(ingredient);
+        if (fluids == null || fluids.size() != 1) return ingredient;
+        Fluid fluid = fluids.iterator().next();
+        Material material = gtMaterial(fluid);
+        if (material == null || material.getFluid() == fluid) return ingredient;
         return CompoundFluidIngredient.of(ingredient, FluidIngredient.tag(material.getFluidTag()));
+    }
+
+    /** Takes nothing; an ingredient {@link LoadingTags} can't read counts as taking something. */
+    private static boolean isEmpty(@Nullable Set<?> taken) {
+        return taken != null && taken.isEmpty();
     }
 
     /** Outputs the same-named GT material's fluid instead, so it stacks with GT's. */

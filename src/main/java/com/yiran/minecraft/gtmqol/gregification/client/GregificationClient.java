@@ -53,6 +53,10 @@ public final class GregificationClient {
             List<GTRecipe> added = new ArrayList<>();
             for (RecipeType<?> proxy : type.getProxyRecipes().keySet()) {
                 List<RecipeHolder<?>> holders = (List) manager.getAllRecipesFor((RecipeType) proxy);
+                // as the server does before converting: the ghost marks of MarkCoveredRecipes come from it
+                // Untested: on a dedicated server, EMI shows the ghost mark of Create saw / MI assembler recipes that
+                // share inputs, as in singleplayer
+                type.prepare(holders);
                 for (RecipeHolder<?> holder : holders) {
                     for (RecipeHolder<GTRecipe> converted : type.toGTRecipes(holder)) {
                         type.addToCategoryMap(converted.value().recipeCategory, converted.value());

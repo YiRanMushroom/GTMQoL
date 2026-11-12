@@ -21,7 +21,14 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 
 ## In progress
 
-- Nothing. 3.5.0 (2026-11-11) released the project-wide improvement pass on both branches, 3.5.1 the shortened
+- Dev client crashed at every first world load (2026-11-12): gregification read other mods' ingredients while
+  recipes load, before tags are bound, so the ingredients cached an empty result; Mekanism's incomplete recipe scan
+  then crashed (`gregification.loading-tags`). Fixed on both branches with MI distillery/mixer marks and slot
+  counts (`gregification.mi`), not committed; waiting for the in-game check (`status.untested`
+  reload-ingredient-reads, chemical-lookup-keys, mi-marks-slots).
+- Advanced Chip Engraving Factory (`multiblock.advanced-chip-engraving`): written on both branches, runData done, not
+  committed; waiting for the user's in-game check (`status.untested` advanced-chip-engraving).
+- Otherwise nothing. 3.5.0 (2026-11-11) released the project-wide improvement pass on both branches, 3.5.1 the shortened
   tooltips; `plan.improvement-2026-11` lists what was done, what was decided, and what is still open (structure
   proposals, small items, the parts no review read). In-game checks: `status.untested`.
 

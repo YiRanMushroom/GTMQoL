@@ -1,4 +1,5 @@
 {
+  "block.gtmqol.advanced_chip_engraving_factory": "ʎɹoʇɔɐℲ buıʌɐɹbuƎ dıɥƆ pǝɔuɐʌpⱯ",
   "block.gtmqol.assembling_matrix": "xıɹʇɐW buıןqɯǝssⱯ",
   "block.gtmqol.assembling_matrix_interface": "ǝɔɐɟɹǝʇuI ƎW xıɹʇɐW buıןqɯǝssⱯ",
   "block.gtmqol.assembling_matrix_pattern_core": "ǝɹoƆ uɹǝʇʇɐԀ xıɹʇɐW buıןqɯǝssⱯ",
@@ -383,6 +384,9 @@
   "gtmqol.machine.probable_certainty_device.tooltip": "˙ʇunoɯɐ ʇsǝbɹɐן ɹıǝɥʇ ǝʌıb sʇndʇno pǝbuɐɹ puɐ 'ʇno ǝɯoɔ sʎɐʍןɐ sʇndʇno pǝɔuɐɥƆ",
   "gtmqol.machine.probable_improbability_device.tooltip": "˙ʇunoɯɐ ʇsǝןןɐɯs ɹıǝɥʇ ǝsn sʇnduı pǝbuɐɹ puɐ 'pǝɯnsuoɔ ɹǝʌǝu ǝɹɐ sʇnduı pǝɔuɐɥƆ",
   "gtmqol.machine.steam_parallel_hatch.desc": "%s oʇ %s ɯoɹɟ 'ʞɔoןqıʇןnɯ ɯɐǝʇS ǝbɹɐꞀ ɐ ɟo sןǝןןɐɹɐd ǝɥʇ sʇǝS",
+  "gtmqol.multiblock.advanced_chip_engraving_factory.tooltip.0": "˙ʇndʇno ǝɥʇ ×ㄣ ɹoɟ ǝɯıʇ ǝɥʇ ×ㄣ ǝʞɐʇ sɹǝɟɐM ˙ɯooɹuɐǝןɔ ɐ ɹo suǝן ǝɥʇ ʇnoɥʇıʍ sǝdıɔǝɹ ɹǝʌɐɹbuƎ ɹǝsɐꞀ sunᴚ",
+  "gtmqol.multiblock.advanced_chip_engraving_factory.tooltip.1": "˙ɥɔʇɐH ʇuǝıpǝɹbuI ʇsoɥ⅁ ɐ uı ʇɔnpoɹd ǝɥʇ ʞɹɐW",
+  "gtmqol.multiblock.advanced_chip_engraving_factory.tooltip.2": "˙ɹǝɟɟnᗺ uɹǝʇʇɐԀ ƎW pǝʞɔoןɔɹǝʌO uɐ uo sʇndʇnO uɹǝʇʇɐԀ ʞɹɐW uo uɹnʇ 'ǝʇɐɯoʇnɐ o⟘",
   "gtmqol.multiblock.advanced_steam.tooltip.modifier": "ʞɔıʇ ɹǝd ɯɐǝʇs ǝɥʇ ɟo %%ϛㄥ puɐ ǝɯıʇ ǝɥʇ ɟo %%08 ǝʞɐʇ sǝdıɔǝᴚ",
   "gtmqol.multiblock.advanced_steam.tooltip.parallel": "ɥɔʇɐH ןoɹʇuoƆ ןǝןןɐɹɐԀ ɯɐǝʇS ɐ ɥʇıʍ %s oʇ dn 'sןǝןןɐɹɐd %s",
   "gtmqol.multiblock.advanced_steam.tooltip.tier": "ɹǝıʇ ʇɐɥʇ oʇ pǝʞɔoןɔɹǝʌo ʎןʇɔǝɟɹǝd-uou '%s oʇ dn sǝdıɔǝɹ sunᴚ",
@@ -565,6 +569,7 @@
   "recipe_capability.gtmqol.block": "ʞɔoןᗺ",
   "recipe_capability.gtmqol.chemical": "ןɐɔıɯǝɥƆ",
   "recipe_capability.gtmqol.ghost_ingredient": "ʇuǝıpǝɹbuI ʇsoɥ⅁",
+  "recipe_type.gtmqol.advanced_chip_engraving_factory": "ʎɹoʇɔɐℲ buıʌɐɹbuƎ dıɥƆ pǝɔuɐʌpⱯ",
   "recipe_type.gtmqol.crystal_growth": "ɥʇʍoɹ⅁ ןɐʇsʎɹƆ",
   "recipe_type.gtmqol.electric_implosion_compressor": "ɹossǝɹdɯoƆ uoısoןdɯI ɔıɹʇɔǝןƎ",
   "recipe_type.gtmqol.greenhouse": "ǝsnoɥuǝǝɹ⅁",

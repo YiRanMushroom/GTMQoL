@@ -1,4 +1,5 @@
 {
+  "block.gtmqol.advanced_chip_engraving_factory": "Advanced Chip Engraving Factory",
   "block.gtmqol.assembling_matrix": "Assembling Matrix",
   "block.gtmqol.assembling_matrix_interface": "Assembling Matrix ME Interface",
   "block.gtmqol.assembling_matrix_pattern_core": "Assembling Matrix Pattern Core",
@@ -383,6 +384,9 @@
   "gtmqol.machine.probable_certainty_device.tooltip": "Chanced outputs always come out, and ranged outputs give their largest amount.",
   "gtmqol.machine.probable_improbability_device.tooltip": "Chanced inputs are never consumed, and ranged inputs use their smallest amount.",
   "gtmqol.machine.steam_parallel_hatch.desc": "Sets the parallels of a Large Steam multiblock, from %s to %s",
+  "gtmqol.multiblock.advanced_chip_engraving_factory.tooltip.0": "Runs Laser Engraver recipes without the lens or a cleanroom. Wafers take 4× the time for 4× the output.",
+  "gtmqol.multiblock.advanced_chip_engraving_factory.tooltip.1": "Mark the product in a Ghost Ingredient Hatch.",
+  "gtmqol.multiblock.advanced_chip_engraving_factory.tooltip.2": "To automate, turn on Mark Pattern Outputs on an Overclocked ME Pattern Buffer.",
   "gtmqol.multiblock.advanced_steam.tooltip.modifier": "Recipes take 80%% of the time and 75%% of the steam per tick",
   "gtmqol.multiblock.advanced_steam.tooltip.parallel": "%s parallels, up to %s with a Steam Parallel Control Hatch",
   "gtmqol.multiblock.advanced_steam.tooltip.tier": "Runs recipes up to %s, non-perfectly overclocked to that tier",
@@ -565,6 +569,7 @@
   "recipe_capability.gtmqol.block": "Block",
   "recipe_capability.gtmqol.chemical": "Chemical",
   "recipe_capability.gtmqol.ghost_ingredient": "Ghost Ingredient",
+  "recipe_type.gtmqol.advanced_chip_engraving_factory": "Advanced Chip Engraving Factory",
   "recipe_type.gtmqol.crystal_growth": "Crystal Growth",
   "recipe_type.gtmqol.electric_implosion_compressor": "Electric Implosion Compressor",
   "recipe_type.gtmqol.greenhouse": "Greenhouse",
