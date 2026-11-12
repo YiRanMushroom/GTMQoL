@@ -64,8 +64,15 @@ public final class GregificationClient {
             }
             List<GTRecipe> added = new ArrayList<>();
             for (RecipeType<?> proxy : type.getProxyRecipes().keySet()) {
+                List<Recipe<?>> ofType = new ArrayList<>();
                 for (Recipe<?> recipe : manager.getRecipes()) {
-                    if (recipe.getType() != proxy) continue;
+                    if (recipe.getType() == proxy) ofType.add(recipe);
+                }
+                // as the server does before converting: the ghost marks of MarkCoveredRecipes come from it (with the
+                // tags once they arrive, when this runs again)
+                // Untested: on a dedicated server, EMI shows the ghost mark of Create saw recipes that share inputs
+                type.prepare(ofType);
+                for (Recipe<?> recipe : ofType) {
                     for (GTRecipe converted : type.toGTRecipes(recipe)) {
                         type.addToCategoryMap(converted.recipeCategory, converted);
                         added.add(converted);

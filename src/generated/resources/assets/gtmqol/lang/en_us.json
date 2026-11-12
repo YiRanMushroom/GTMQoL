@@ -1,4 +1,5 @@
 {
+  "block.gtmqol.advanced_chip_engraving_factory": "Advanced Chip Engraving Factory",
   "block.gtmqol.assembling_matrix": "Assembling Matrix",
   "block.gtmqol.assembling_matrix_interface": "Assembling Matrix ME Interface",
   "block.gtmqol.assembling_matrix_pattern_core": "Assembling Matrix Pattern Core",
@@ -196,6 +197,7 @@
   "block.gtmqol.zpm_wireless_energy_input_hatch": "§cZPM Wireless Energy Hatch",
   "block.gtmqol.zpm_wireless_energy_output_hatch": "§cZPM Wireless Dynamo Hatch",
   "config.jade.plugin_gtmqol.stack_like_recipe_output": "Recipe Output (Chemicals)",
+  "gtmqol.advanced_chip_engraving_factory": "Advanced Chip Engraving Factory",
   "gtmqol.assembling_matrix.already_there": "Already in an Assembling Matrix",
   "gtmqol.assembling_matrix.auto_upload.disabled": "Auto upload: off",
   "gtmqol.assembling_matrix.auto_upload.enabled": "Auto upload: on. Shift-click Encode in a Pattern Encoding Terminal on this ME network to upload the pattern here",
@@ -385,6 +387,9 @@
   "gtmqol.magical_assembler": "Magical Assembler",
   "gtmqol.me_assembler": "ME Assembler",
   "gtmqol.me_circuit_slicer": "ME Circuit Slicer",
+  "gtmqol.multiblock.advanced_chip_engraving_factory.tooltip.0": "Runs Laser Engraver recipes without the lens or a cleanroom. Wafers take 4× the time for 4× the output.",
+  "gtmqol.multiblock.advanced_chip_engraving_factory.tooltip.1": "Mark the product in a Ghost Ingredient Hatch.",
+  "gtmqol.multiblock.advanced_chip_engraving_factory.tooltip.2": "To automate, turn on Mark Pattern Outputs on an Overclocked ME Pattern Buffer.",
   "gtmqol.multiblock.advanced_steam.tooltip.modifier": "Recipes take 80%% of the time and 75%% of the steam per tick",
   "gtmqol.multiblock.advanced_steam.tooltip.parallel": "%s parallels, up to %s with a Steam Parallel Control Hatch",
   "gtmqol.multiblock.advanced_steam.tooltip.tier": "Runs recipes up to %s, non-perfectly overclocked to that tier",

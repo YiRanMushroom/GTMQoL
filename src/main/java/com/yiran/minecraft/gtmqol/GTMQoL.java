@@ -38,6 +38,7 @@ import com.yiran.minecraft.gtmqol.common.test.MixinTargetCheck;
 import com.yiran.minecraft.gtmqol.common.crafter.PatternCrafter;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
+import com.yiran.minecraft.gtmqol.common.engraving.AdvancedChipEngraving;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.integration.kubejs.GTMQoLKubeJSPlugin;
 import com.yiran.minecraft.gtmqol.common.stacklike.ae2.AEStackLikeBridges;
@@ -194,6 +195,7 @@ public final class GTMQoL {
     private void onRegisterRecipeTypes(GTCEuAPI.RegisterEvent<ResourceLocation, GTRecipeType> event) {
         MagicalAssembler.initRecipeType();
         if (GTMQoLConfig.get().machines.electricImplosionCompressor) ElectricImplosion.initRecipeType();
+        if (GTMQoLConfig.get().machines.advancedChipEngravingFactory) AdvancedChipEngraving.initRecipeType();
         if (GTMQoLConfig.get().machines.crystalGrowthChamber) CrystalGrowth.initRecipeType();
         if (GTMQoLConfig.get().machines.greenhouse) Greenhouse.initRecipeType();
         if (GTMQoLConfig.get().machines.patternCrafter) PatternCrafter.initRecipeType();
@@ -235,6 +237,7 @@ public final class GTMQoL {
         GhostIngredients.registerMachines();
         ProbableDevices.registerMachines();
         if (config.machines.electricImplosionCompressor) ElectricImplosion.initMachine();
+        if (config.machines.advancedChipEngravingFactory) AdvancedChipEngraving.initMachine();
         if (config.machines.crystalGrowthChamber) CrystalGrowth.initMachine();
         if (config.machines.greenhouse) Greenhouse.initMachines();
         if (config.machines.patternCrafter) PatternCrafter.initMachines();

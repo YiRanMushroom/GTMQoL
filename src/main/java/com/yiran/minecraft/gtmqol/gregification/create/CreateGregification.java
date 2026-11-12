@@ -20,6 +20,7 @@ import com.yiran.minecraft.gtmqol.gregification.ForeignMachineType;
 import com.yiran.minecraft.gtmqol.gregification.ForeignRecipeConverter;
 import com.yiran.minecraft.gtmqol.gregification.Gregification;
 import com.yiran.minecraft.gtmqol.gregification.GregificationModifiers;
+import com.yiran.minecraft.gtmqol.gregification.LoadingTags;
 import com.yiran.minecraft.gtmqol.gregification.MarkCoveredRecipes;
 import com.yiran.minecraft.gtmqol.gregification.MultiblockShape;
 
@@ -111,8 +112,9 @@ public final class CreateGregification {
                 machine("millstone", "Create Millstone", createType("milling"),
                         CreateGregification::convertProcessing, 1, 4, 0, 0,
                         GTSoundEntries.MACERATOR, GTGuiTextures.PROGRESS_MACERATE, "millstone"),
+                // Create's own crushing recipes give up to 5 items (horse armor, tuff), addons may give more
                 machine("crushing_wheels", "Create Crushing Wheels", createType("crushing"),
-                        CreateGregification::convertProcessing, 1, 4, 0, 0,
+                        CreateGregification::convertProcessing, 1, 6, 0, 0,
                         GTSoundEntries.MACERATOR, GTGuiTextures.PROGRESS_MACERATE, "crushing_wheel"),
                 machine("press", "Create Mechanical Press", createType("pressing"),
                         CreateGregification::convertProcessing, 1, 2, 0, 0,
@@ -239,12 +241,12 @@ public final class CreateGregification {
                 CreateGregification::firstOutputMark);
     }
 
+    /** Per input, the items it takes, read through {@link LoadingTags}. */
     private static List<Set<Object>> itemInputs(Recipe<?> recipe) {
         List<Set<Object>> inputs = new ArrayList<>();
         for (Ingredient ingredient : recipe.getIngredients()) {
-            Set<Object> items = new HashSet<>();
-            for (ItemStack stack : ingredient.getItems()) items.add(stack.getItem());
-            if (!items.isEmpty()) inputs.add(items);
+            Set<Item> items = LoadingTags.items(ingredient);
+            if (items != null && !items.isEmpty()) inputs.add(new HashSet<>(items));
         }
         return inputs;
     }

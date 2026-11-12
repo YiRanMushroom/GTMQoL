@@ -31,7 +31,8 @@ public final class MarkCoveredRecipes implements ForeignRecipeConverter {
     private Set<ResourceLocation> covered = Set.of();
 
     /**
-     * @param inputs per input, the items (or fluids) it takes
+     * @param inputs per input, the items (or fluids) it takes, read through {@link LoadingTags}: this runs while the
+     *               recipes load, before the registries have the new tags
      * @param mark   the recipe's main output as a mark, or null for none
      */
     public MarkCoveredRecipes(Single converter, Function<Recipe<?>, List<Set<Object>>> inputs,

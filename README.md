@@ -190,6 +190,10 @@ crafter wears tools, the modular simulation chamber trains data models.
 - **Electric Implosion Compressor**: every TNT implosion recipe without the explosive, in 4× the time, with
   parallel hatches and perfect sub-tick overclocking. Nether star dust can be mixed from diamond and silver dust at HV, so
   nether stars are available before IV. Vanilla TNT crafting is kept.
+- **Advanced Chip Engraving Factory**: every laser engraver recipe without the lens and without a cleanroom or any
+  other condition; engraving a wafer takes 4× the time for 4× the output. Parallel hatches, overclocking and batch mode like GTCEu's Large Engraving Laser. Mark the
+  product in a Ghost Ingredient Hatch, or turn on Mark pattern outputs on an Overclocked ME Pattern Buffer. The
+  controller is made in the magical assembler from a Large Engraving Laser, ZPM circuits and IV emitters.
 - **Void Miner**: mines the ores of its dimension's GT ore veins, weighted like the veins, with no energy
   hatch: it draws EU from the wireless network. The number of ore types and stacks per cycle can be set.
 - **Industrial Fishing Pond**: a basin of Watertight Casings, built empty (the machine shows the water itself),
@@ -329,7 +333,7 @@ Assembler, the Ghost Ingredient Hatch, potion fluids, the circuit and material t
 
 | Group | Options |
 |---|---|
-| `machines` | `smartAssemblyFactory`, `easySAFRecipe`, `dimensionallyTranscendentFusionReactor`, `voidMiner` (needs `wireless.energy`), `industrialFishingPond`, `crystalGrowthChamber`, `greenhouse`, `patternCrafter`, `electricImplosionCompressor`, `industrialLargeChemicalReactor`, `probableDevices`, `advancedSteamMachines` |
+| `machines` | `smartAssemblyFactory`, `easySAFRecipe`, `dimensionallyTranscendentFusionReactor`, `voidMiner` (needs `wireless.energy`), `industrialFishingPond`, `crystalGrowthChamber`, `greenhouse`, `patternCrafter`, `electricImplosionCompressor`, `advancedChipEngravingFactory`, `industrialLargeChemicalReactor`, `probableDevices`, `advancedSteamMachines` |
 | `modularMachines` | `enabled` |
 | `gregification` | `modernIndustrialization` (1.21.1), `mekanism`, `productiveBees`, `create`, `hostileNeuralNetworks` |
 | `wireless` | `energy`, `fe`, `steam`, `computation`, `opticalData` |

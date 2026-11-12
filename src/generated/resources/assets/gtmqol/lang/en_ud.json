@@ -1,4 +1,5 @@
 {
+  "block.gtmqol.advanced_chip_engraving_factory": "ʎɹoʇɔɐℲ buıʌɐɹbuƎ dıɥƆ pǝɔuɐʌpⱯ",
   "block.gtmqol.assembling_matrix": "xıɹʇɐW buıןqɯǝssⱯ",
   "block.gtmqol.assembling_matrix_interface": "ǝɔɐɟɹǝʇuI ƎW xıɹʇɐW buıןqɯǝssⱯ",
   "block.gtmqol.assembling_matrix_pattern_core": "ǝɹoƆ uɹǝʇʇɐԀ xıɹʇɐW buıןqɯǝssⱯ",
@@ -196,6 +197,7 @@
   "block.gtmqol.zpm_wireless_energy_input_hatch": "ɥɔʇɐH ʎbɹǝuƎ ssǝןǝɹıM WԀZɔ§",
   "block.gtmqol.zpm_wireless_energy_output_hatch": "ɥɔʇɐH oɯɐuʎᗡ ssǝןǝɹıM WԀZɔ§",
   "config.jade.plugin_gtmqol.stack_like_recipe_output": ")sןɐɔıɯǝɥƆ( ʇndʇnO ǝdıɔǝᴚ",
+  "gtmqol.advanced_chip_engraving_factory": "ʎɹoʇɔɐℲ buıʌɐɹbuƎ dıɥƆ pǝɔuɐʌpⱯ",
   "gtmqol.assembling_matrix.already_there": "xıɹʇɐW buıןqɯǝssⱯ uɐ uı ʎpɐǝɹןⱯ",
   "gtmqol.assembling_matrix.auto_upload.disabled": "ɟɟo :pɐoןdn oʇnⱯ",
   "gtmqol.assembling_matrix.auto_upload.enabled": "ǝɹǝɥ uɹǝʇʇɐd ǝɥʇ pɐoןdn oʇ ʞɹoʍʇǝu ƎW sıɥʇ uo ןɐuıɯɹǝ⟘ buıpoɔuƎ uɹǝʇʇɐԀ ɐ uı ǝpoɔuƎ ʞɔıןɔ-ʇɟıɥS ˙uo :pɐoןdn oʇnⱯ",
@@ -385,6 +387,9 @@
   "gtmqol.magical_assembler": "ɹǝןqɯǝssⱯ ןɐɔıbɐW",
   "gtmqol.me_assembler": "ɹǝןqɯǝssⱯ ƎW",
   "gtmqol.me_circuit_slicer": "ɹǝɔıןS ʇınɔɹıƆ ƎW",
+  "gtmqol.multiblock.advanced_chip_engraving_factory.tooltip.0": "˙ʇndʇno ǝɥʇ ×ㄣ ɹoɟ ǝɯıʇ ǝɥʇ ×ㄣ ǝʞɐʇ sɹǝɟɐM ˙ɯooɹuɐǝןɔ ɐ ɹo suǝן ǝɥʇ ʇnoɥʇıʍ sǝdıɔǝɹ ɹǝʌɐɹbuƎ ɹǝsɐꞀ sunᴚ",
+  "gtmqol.multiblock.advanced_chip_engraving_factory.tooltip.1": "˙ɥɔʇɐH ʇuǝıpǝɹbuI ʇsoɥ⅁ ɐ uı ʇɔnpoɹd ǝɥʇ ʞɹɐW",
+  "gtmqol.multiblock.advanced_chip_engraving_factory.tooltip.2": "˙ɹǝɟɟnᗺ uɹǝʇʇɐԀ ƎW pǝʞɔoןɔɹǝʌO uɐ uo sʇndʇnO uɹǝʇʇɐԀ ʞɹɐW uo uɹnʇ 'ǝʇɐɯoʇnɐ o⟘",
   "gtmqol.multiblock.advanced_steam.tooltip.modifier": "ʞɔıʇ ɹǝd ɯɐǝʇs ǝɥʇ ɟo %%ϛㄥ puɐ ǝɯıʇ ǝɥʇ ɟo %%08 ǝʞɐʇ sǝdıɔǝᴚ",
   "gtmqol.multiblock.advanced_steam.tooltip.parallel": "ɥɔʇɐH ןoɹʇuoƆ ןǝןןɐɹɐԀ ɯɐǝʇS ɐ ɥʇıʍ %s oʇ dn 'sןǝןןɐɹɐd %s",
   "gtmqol.multiblock.advanced_steam.tooltip.tier": "ɹǝıʇ ʇɐɥʇ oʇ pǝʞɔoןɔɹǝʌo ʎןʇɔǝɟɹǝd-uou '%s oʇ dn sǝdıɔǝɹ sunᴚ",

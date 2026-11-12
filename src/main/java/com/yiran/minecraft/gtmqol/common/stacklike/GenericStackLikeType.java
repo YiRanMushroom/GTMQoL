@@ -6,7 +6,9 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Describes a fluid-like stack type (a resource with a type and a long amount, e.g. Mekanism chemicals) to
@@ -54,6 +56,18 @@ public interface GenericStackLikeType<S, I> {
 
     /** Every stack the ingredient matches, with the ingredient's amount. Empty if it matches nothing. */
     List<S> getStacks(I ingredient);
+
+    /**
+     * The {@link #lookupKey}s of everything the ingredient matches, for GT's recipe lookup. That is built while
+     * recipes load, before the registries have the new tags, so a type whose ingredients resolve tags (and keep what
+     * they find) works them out from the ingredient's parts and {@code LoadingTags} instead. By default the keys of
+     * {@link #getStacks}.
+     */
+    default Set<Object> lookupKeys(I ingredient) {
+        Set<Object> keys = new LinkedHashSet<>();
+        for (S stack : getStacks(ingredient)) keys.add(lookupKey(stack));
+        return keys;
+    }
 
     /** Ingredient matching exactly this stack's type and amount. */
     I of(S stack);

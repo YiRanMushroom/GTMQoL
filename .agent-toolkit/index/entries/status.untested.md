@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-11 08:19:37"
+updated = "2026-11-12 07:49:22"
 
 [[items]]
 name = "legacy-parts-no-unification"
@@ -345,5 +345,29 @@ name = "steam-cover-tag"
 value = "An output Wireless Steam Cover drains another mod's steam (any fluid in the steam tag) into the network, not only GT's steam."
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/wireless/steam/WirelessSteamCover.java"
 snippet = "// Untested: an output Wireless Steam Cover also drains"
+
+[[items]]
+name = "advanced-chip-engraving"
+value = "Advanced Chip Engraving Factory forms (preview, auto build); EMI shows the product as a ghost ingredient; Silicon Wafer + marked ILC Wafer gives 4 in 4x the time, a non-wafer input 1x in 1x; nothing runs unmarked"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/engraving/AdvancedChipEngraving.java"
+snippet = "// Untested: the Advanced Chip Engraving Factory forms"
+
+[[items]]
+name = "reload-ingredient-reads"
+value = "Launch and load a world: Mek enrichment chamber / metallurgic infuser take iron ore / iron ingot, Create saw takes tagged inputs; EMI lists gregified Mek recipes with tag inputs"
+path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/LoadingTags.java"
+snippet = "// Untested: launch the game and load a world: Mekanism's enrichment chamber and metallurgic infuser take tagged"
+
+[[items]]
+name = "chemical-lookup-keys"
+value = "Launch, load a world: the gregified metallurgic infuser runs carbon and redstone infusing (tagged infuse types) with the right amounts"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/stacklike/mekanism/ChemicalStackLike.java"
+snippet = "// Untested: after launching and loading a world, the gregified metallurgic infuser runs carbon and redstone"
+
+[[items]]
+name = "client-prepare"
+value = "On a dedicated server, EMI shows the ghost mark of Create saw recipes that share inputs (the client never ran MarkCoveredRecipes.prepare before; tags may arrive after recipes on 1.20)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/client/GregificationClient.java"
+snippet = "// Untested: on a dedicated server, EMI shows the ghost mark of Create saw recipes that share inputs"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

@@ -4,7 +4,9 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.common.stacklike.GenericStackLikeRecipeCapability;
 import com.yiran.minecraft.gtmqol.common.stacklike.GenericStackLikeType;
 import com.yiran.minecraft.gtmqol.core.mixins.mekanism.TaggedChemicalStackIngredientAccessor;
+import com.yiran.minecraft.gtmqol.gregification.LoadingTags;
 
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -24,8 +26,12 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
+import net.minecraftforge.registries.tags.ITag;
 
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -119,9 +125,19 @@ public final class ChemicalStackLike implements GenericStackLikeType<ChemicalSta
         return stack.getTextComponent();
     }
 
-    /** The amount of the first matched stack; the elements of a multi ingredient may have different amounts. */
+    /**
+     * The amount of the first element; the elements of a multi ingredient may have different amounts. Read from the
+     * parts, not the matched stacks: a tag ingredient matches nothing while recipes load, before the registries have
+     * the new tags.
+     */
     @Override
     public long ingredientAmount(ChemicalStackIngredient<?, ?> ingredient) {
+        if (ingredient instanceof TaggedChemicalStackIngredient<?, ?> tagged) {
+            return ((TaggedChemicalStackIngredientAccessor) tagged).gtmqol$getAmount();
+        } else if (ingredient instanceof IMultiIngredient<?, ?> multi) {
+            List<?> children = multi.getIngredients();
+            return children.isEmpty() ? 0 : ingredientAmount((ChemicalStackIngredient<?, ?>) children.get(0));
+        }
         List<ChemicalStack<?>> stacks = getStacks(ingredient);
         return stacks.isEmpty() ? 0 : stacks.get(0).getAmount();
     }
@@ -161,6 +177,28 @@ public final class ChemicalStackLike implements GenericStackLikeType<ChemicalSta
     @Override
     public List<ChemicalStack<?>> getStacks(ChemicalStackIngredient<?, ?> ingredient) {
         return (List) ingredient.getRepresentations();
+    }
+
+    /** A tag ingredient's chemicals come from {@link LoadingTags} while recipes load, see {@link #ingredientAmount}. */
+    // Untested: after launching and loading a world, the gregified metallurgic infuser runs carbon and redstone
+    // infusing (tagged infuse types) with the right amounts
+    @Override
+    public Set<Object> lookupKeys(ChemicalStackIngredient<?, ?> ingredient) {
+        Set<Object> keys = new LinkedHashSet<>();
+        if (ingredient instanceof TaggedChemicalStackIngredient<?, ?> tagged) {
+            ITag<?> tag = ((TaggedChemicalStackIngredientAccessor) tagged).gtmqol$getTag();
+            Collection<? extends Holder<?>> loading = LoadingTags.loading(tag.getKey());
+            if (loading != null) {
+                loading.forEach(holder -> keys.add(holder.value()));
+            } else {
+                tag.forEach(keys::add);
+            }
+        } else if (ingredient instanceof IMultiIngredient<?, ?> multi) {
+            for (Object child : multi.getIngredients()) keys.addAll(lookupKeys((ChemicalStackIngredient<?, ?>) child));
+        } else {
+            for (ChemicalStack<?> stack : getStacks(ingredient)) keys.add(lookupKey(stack));
+        }
+        return keys;
     }
 
     @Override
