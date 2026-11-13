@@ -53,7 +53,8 @@ public final class StackLikeRecipeViewer {
         };
     }
 
-    private static <S> RecipeViewerSlotWidget<S, ?> slot(GenericStackLikeRecipeCapability<S, ?> cap,
+    /** Slot {@code i} of a stack-like capability; also {@code DynamicRecipeSlots}' slot for it. */
+    public static <S> RecipeViewerSlotWidget<S, ?> slot(GenericStackLikeRecipeCapability<S, ?> cap,
                                                          GTRecipeTypeUILayout layout, IO io, int i) {
         return RecipeViewerSlotWidget.create(cap.type.stackClass())
                 .value(new StackLikeEntryList<>(cap.type.stackClass(), List.of()))

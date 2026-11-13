@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.common.ghost;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -14,13 +15,15 @@ import brachy.modularui.integration.recipeviewer.entry.EntryList;
 import brachy.modularui.integration.recipeviewer.entry.item.ItemStackList;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /** A marked item, with its NBT; the count doesn't matter (kept at 1). Left click with it to mark it. */
 public final class ItemGhostIngredient extends GhostIngredient<ItemStack> {
 
     public static final Type<ItemStack> TYPE = new Type<>("item", ItemStack.class,
             ItemStack.CODEC, FriendlyByteBuf::writeItem, FriendlyByteBuf::readItem, ItemStack::isEmpty,
-            ItemGhostIngredient::new, (held, rightClick) -> rightClick ? null : held);
+            ItemGhostIngredient::new, (held, rightClick) -> rightClick ? null : held,
+            id -> BuiltInRegistries.ITEM.getOptional(id).map(ItemStack::new).orElse(null));
 
     public ItemGhostIngredient(ItemStack stack) {
         super(stack.copyWithCount(1));
@@ -48,6 +51,11 @@ public final class ItemGhostIngredient extends GhostIngredient<ItemStack> {
     @Override
     public Component getName() {
         return value.getHoverName();
+    }
+
+    @Override
+    protected Stream<ItemTagGhostIngredient> tagGhosts() {
+        return value.getTags().map(ItemTagGhostIngredient::new);
     }
 
     @Override

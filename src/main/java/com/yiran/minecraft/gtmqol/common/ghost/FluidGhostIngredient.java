@@ -1,8 +1,10 @@
 package com.yiran.minecraft.gtmqol.common.ghost;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -15,6 +17,7 @@ import brachy.modularui.integration.recipeviewer.entry.EntryList;
 import brachy.modularui.integration.recipeviewer.entry.fluid.FluidStackList;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * A marked fluid, with its NBT; the amount doesn't matter (kept at 1). Right click with a container of it to mark
@@ -25,7 +28,9 @@ public final class FluidGhostIngredient extends GhostIngredient<FluidStack> {
     public static final Type<FluidStack> TYPE = new Type<>("fluid", FluidStack.class,
             FluidStack.CODEC, (buf, stack) -> stack.writeToPacket(buf), FluidStack::readFromPacket,
             FluidStack::isEmpty, FluidGhostIngredient::new,
-            (held, rightClick) -> rightClick ? FluidUtil.getFluidContained(held).orElse(null) : null);
+            (held, rightClick) -> rightClick ? FluidUtil.getFluidContained(held).orElse(null) : null,
+            id -> BuiltInRegistries.FLUID.getOptional(id).filter(fluid -> fluid != Fluids.EMPTY)
+                    .map(fluid -> new FluidStack(fluid, 1)).orElse(null));
 
     public FluidGhostIngredient(FluidStack stack) {
         super(new FluidStack(stack, 1));
@@ -48,6 +53,11 @@ public final class FluidGhostIngredient extends GhostIngredient<FluidStack> {
     @Override
     protected int valueHash() {
         return Objects.hash(value.getFluid(), value.getTag());
+    }
+
+    @Override
+    protected Stream<FluidTagGhostIngredient> tagGhosts() {
+        return BuiltInRegistries.FLUID.wrapAsHolder(value.getFluid()).tags().map(FluidTagGhostIngredient::new);
     }
 
     @Override

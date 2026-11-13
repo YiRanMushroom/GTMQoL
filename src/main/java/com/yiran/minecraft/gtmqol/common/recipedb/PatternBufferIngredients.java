@@ -70,7 +70,8 @@ final class PatternBufferIngredients {
                 GhostIngredient<?> mark = PatternOutputMarks.of(
                         ((MEPatternBufferWorkerPatternAccessor) (Object) worker).gtmqol$getWorkerPattern());
                 if (mark != null) {
-                    list.addContents(GhostIngredientRecipeCapability.CAP, List.<Object>of(mark), kind, owner, slot, shares);
+                    list.addContents(GhostIngredientRecipeCapability.CAP, GhostIngredient.lookupContents(List.of(mark)),
+                            kind, owner, slot, shares);
                 }
             }
         }

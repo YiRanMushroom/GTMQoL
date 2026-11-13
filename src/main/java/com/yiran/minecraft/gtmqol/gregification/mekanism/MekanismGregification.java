@@ -45,6 +45,7 @@ import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.Mult
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
+import com.yiran.minecraft.gtmqol.common.ui.DynamicRecipeSlots;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -199,8 +200,9 @@ public final class MekanismGregification {
                         itemInputs, itemOutputs, fluidInputs, fluidOutputs, sound,
                         builder -> builder.setProgressBar(progressBar), null, counterpart, MultiblockShape.ANY_PARTS)
                 .withRecipeType(recipeType -> {
-                    if (chemicalInputs > 0) recipeType.setMaxSize(IO.IN, ChemicalStackLike.CAP, chemicalInputs);
-                    if (chemicalOutputs > 0) recipeType.setMaxSize(IO.OUT, ChemicalStackLike.CAP, chemicalOutputs);
+                    // a multiblock: each recipe's own chemical slots, like its items and fluids (Gregification.slots)
+                    if (chemicalInputs > 0) recipeType.setMaxSize(IO.IN, ChemicalStackLike.CAP, DynamicRecipeSlots.ANY);
+                    if (chemicalOutputs > 0) recipeType.setMaxSize(IO.OUT, ChemicalStackLike.CAP, DynamicRecipeSlots.ANY);
                     return recipeType;
                 });
     }

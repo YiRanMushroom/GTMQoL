@@ -15,7 +15,6 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -49,13 +48,13 @@ public final class PatternOutputMarks implements IRecipeHandler<GhostIngredient<
                                                      boolean simulate) {
         if (io != IO.IN) return left;
         List<GhostIngredient<?>> current = marks.get();
-        left.removeIf(current::contains);
+        left.removeIf(required -> current.stream().anyMatch(required::isSatisfiedBy));
         return left;
     }
 
     @Override
     public List<Object> getContents() {
-        return new ArrayList<>(marks.get());
+        return GhostIngredient.lookupContents(marks.get());
     }
 
     @Override

@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-12 07:49:22"
+updated = "2026-11-13 05:02:28"
 
 [[items]]
 name = "legacy-parts-no-unification"
@@ -369,5 +369,29 @@ name = "client-prepare"
 value = "On a dedicated server, EMI shows the ghost mark of Create saw recipes that share inputs (the client never ran MarkCoveredRecipes.prepare before; tags may arrive after recipes on 1.20)"
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/client/GregificationClient.java"
 snippet = "// Untested: on a dedicated server, EMI shows the ghost mark of Create saw recipes that share inputs"
+
+[[items]]
+name = "dynamic-slots"
+value = "EMI and JEI show every gregified multiblock recipe with its own slots, 3 per row: Create crushing horse armor's 5 outputs, Mekanism chemicals; no empty slot for a kind a recipe lacks"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/ui/DynamicRecipeSlots.java"
+snippet = "// Untested: EMI (and JEI on 1.20) shows every gregified multiblock recipe with its own slots, three to a row: all"
+
+[[items]]
+name = "ghost-column"
+value = "Recipes with a ghost ingredient (Create saw, Advanced Chip Engraving Factory) show it above the progress bar, faded and slowly pulsing, inside the recipe's bounds, with its tooltip on hover"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/GhostIngredientRecipeViewer.java"
+snippet = "// Untested: a recipe with a ghost ingredient (Create saw, MI assembler, Advanced Chip Engraving Factory) shows it"
+
+[[items]]
+name = "tag-ghosts"
+value = "A KubeJS recipe with a \"#c:...\" ghost input runs with any item of the tag marked; EMI/JEI show the tag's items in its ghost slot"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/TagGhostIngredient.java"
+snippet = "// Untested: a recipe with a tag ghost runs with any item or fluid of the tag marked (a gregified MI distillery"
+
+[[items]]
+name = "ghost-by-id"
+value = "Clicking the + row of a ghost mark list empty-handed opens Mark by ID (hatch and single block popup); for minecraft:water only Add as fluid is active and shows water, an unknown id greys both buttons out and says so, Enter adds when only one kind matches, adding closes the popup"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/GhostIdPanel.java"
+snippet = "// Untested: clicking the + row empty-handed opens it"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

@@ -35,6 +35,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.loading.FMLLoader;
 
 import org.jetbrains.annotations.Nullable;
+import com.yiran.minecraft.gtmqol.common.ui.DynamicRecipeSlots;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -117,7 +118,8 @@ public final class Gregification {
         GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.registryName, new GTRecipeSerializer());
         GTRegistries.RECIPE_TYPES.register(recipeType.registryName, recipeType);
-        recipeType.setMaxIOSize(type.itemInputs(), type.itemOutputs(), type.fluidInputs(), type.fluidOutputs())
+        recipeType.setMaxIOSize(slots(type, type.itemInputs()), slots(type, type.itemOutputs()),
+                        slots(type, type.fluidInputs()), slots(type, type.fluidOutputs()))
                 .setEUIO(IO.IN)
                 .UI(type.ui())
                 .setSound(type.sound());
@@ -126,6 +128,18 @@ public final class Gregification {
         RuntimeGeneration.addLanguageEntry(GTMQoL.MOD_ID, "en_us", recipeType.registryName.toLanguageKey(),
                 type.englishName());
         return recipeType;
+    }
+
+    /**
+     * A recipe type's slot count. A multiblock takes any number of hatches, so every kind it has shows each recipe's
+     * own slots ({@link DynamicRecipeSlots#ANY}); a single block has real slots, its counts as given.
+     */
+    static int slots(ForeignMachineType type, int count) {
+        if (type.isMultiblock()) return count > 0 ? DynamicRecipeSlots.ANY : 0;
+        if (count == DynamicRecipeSlots.ANY) {
+            throw new IllegalArgumentException(type.name() + ": a single block needs real slot counts");
+        }
+        return count;
     }
 
     private static void declareSingleBlocks(ForeignMachineType type, GregifiedRecipeType recipeType) {

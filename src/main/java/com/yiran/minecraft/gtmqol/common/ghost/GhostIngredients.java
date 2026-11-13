@@ -33,6 +33,8 @@ public final class GhostIngredients {
         // Untested: a Ghost Ingredient Hatch keeps its marked items and fluids after rejoining the world
         GhostIngredient.register(ItemGhostIngredient.TYPE);
         GhostIngredient.register(FluidGhostIngredient.TYPE);
+        GhostIngredient.register(ItemTagGhostIngredient.TYPE);
+        GhostIngredient.register(FluidTagGhostIngredient.TYPE);
         GhostIngredientRecipeCapability.init();
 
         var lang = GTMQoLAddon.registrate();
@@ -45,6 +47,11 @@ public final class GhostIngredients {
         lang.addRawLang(key + "hint.mark",
                 "Click: mark the held item. Right-click: mark its contents. Or drag from the recipe viewer.");
         lang.addRawLang(key + "hint.remove", "Click with an empty hand to remove");
+        lang.addRawLang(key + "hint.by_id", "Click with an empty hand to type an ID");
+        lang.addRawLang(GhostIdPanel.TITLE_KEY, "Mark by ID");
+        lang.addRawLang(GhostIdPanel.ADD_KEY + ItemGhostIngredient.TYPE.id(), "Add as item");
+        lang.addRawLang(GhostIdPanel.ADD_KEY + FluidGhostIngredient.TYPE.id(), "Add as fluid");
+        lang.addRawLang(GhostIdPanel.UNKNOWN_KEY, "No item or fluid has this ID");
         lang.addRawLang(GhostIngredientRecipeViewer.TOOLTIP_KEY, "Mark it in a Ghost Ingredient Hatch; not consumed");
     }
 

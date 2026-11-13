@@ -7,6 +7,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
 
+import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.widget.Interactable;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.integration.recipeviewer.handlers.GhostIngredientSlot;
@@ -25,7 +26,8 @@ import java.util.function.Supplier;
  * bottom which marking adds to, so the list grows as you mark. Its height follows the synced list; put it in a
  * scrolling parent.
  *
- * <p>Left click marks the held item, right click what the held container holds, an empty hand removes the row.
+ * <p>Left click marks the held item, right click what the held container holds, an empty hand removes the row; on the
+ * empty row it opens {@link GhostIdPanel} to type an id.
  * Recipe viewer drags mark what is dragged. The ghost slot takes any ingredient ({@code Object}): JEI hands over
  * its own stacks (items, fluids), asking {@link #castGhostIngredientIfValid} for each; EMI goes through
  * {@link #ingredientHandlingOverride}.</p>
@@ -47,6 +49,7 @@ public class GhostIngredientListWidget extends Widget<GhostIngredientListWidget>
     private final PanelSyncManager syncManager;
     private final int width;
     private int rows = -1;
+    private @Nullable IPanelHandler byIdPanel;
 
     // Local and already scrolled: the parent's scroll is a transform of the context.
     private double lastMouseY = -1;
@@ -112,7 +115,8 @@ public class GhostIngredientListWidget extends Widget<GhostIngredientListWidget>
         List<Component> lines = new ArrayList<>();
         if (index < list.size()) lines.addAll(list.get(index).getTooltip());
         lines.add(Component.translatable(GhostIngredientHatchPartMachine.KEY + "hint.mark"));
-        if (index < list.size()) lines.add(Component.translatable(GhostIngredientHatchPartMachine.KEY + "hint.remove"));
+        lines.add(Component.translatable(GhostIngredientHatchPartMachine.KEY +
+                (index < list.size() ? "hint.remove" : "hint.by_id")));
         context.getGraphics().renderComponentTooltip(Minecraft.getInstance().font, lines,
                 context.getAbsMouseX(), context.getAbsMouseY());
     }
@@ -122,6 +126,16 @@ public class GhostIngredientListWidget extends Widget<GhostIngredientListWidget>
         if (button != 0 && button != 1) return Result.IGNORE;
         int index = rowAt(getContext().getMouseY());
         if (index < 0) return Result.IGNORE;
+        // nothing in hand to mark on the empty row: type an id instead
+        boolean emptyHand = syncManager.getPlayer().containerMenu.getCarried().isEmpty();
+        if (button == 0 && index == marks.get().size() && emptyHand) {
+            if (byIdPanel == null) {
+                byIdPanel = IPanelHandler.simple(getPanel(),
+                        (parent, player) -> GhostIdPanel.build(ghost -> sendAt(marks.get().size(), ghost)), true);
+            }
+            byIdPanel.togglePanel();
+            return Result.SUCCESS;
+        }
         syncManager.callSyncedAction(CLICK, buf -> {
             buf.writeVarInt(index);
             buf.writeVarInt(button);
@@ -160,7 +174,10 @@ public class GhostIngredientListWidget extends Widget<GhostIngredientListWidget>
     /** Onto the hovered row, else a new one at the bottom. */
     private void send(GhostIngredient<?> ghost) {
         int hovered = rowAt(lastMouseY);
-        int index = hovered >= 0 ? hovered : marks.get().size();
+        sendAt(hovered >= 0 ? hovered : marks.get().size(), ghost);
+    }
+
+    private void sendAt(int index, GhostIngredient<?> ghost) {
         syncManager.callSyncedAction(SET, buf -> {
             buf.writeVarInt(index);
             GhostIngredient.write(buf, ghost);

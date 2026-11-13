@@ -219,10 +219,13 @@ until everything fits.
 A ghost ingredient tells a machine which recipe to run when its inputs fit several, for example planks or stairs
 from the same log. It is never used up.
 
-- The **Ghost Ingredient Hatch** holds a list of ghost ingredients (click with an item, or drag items and fluids
-  from the recipe viewer). It counts as an input bus, so any multiblock takes it.
+- The **Ghost Ingredient Hatch** holds a list of ghost ingredients (click with an item, drag items and fluids from
+  the recipe viewer, or click the + row empty-handed to type an ID). It counts as an input bus, so any multiblock
+  takes it.
 - Single blocks whose recipes need ghost ingredients get a button for them in their window.
-- Recipes that need a ghost ingredient show it in the recipe viewer.
+- Recipes that need a ghost ingredient show it in the recipe viewer, faded, above the progress bar.
+- A recipe's ghost ingredient can be a tag: marking any item or fluid of it works. In KubeJS scripts,
+  `"#namespace:path"` is an item tag.
 
 ### Large Steam multiblocks and steam tweaks
 
@@ -258,7 +261,8 @@ buffers (with Applied Mekanistics), show up in EMI recipes, and Jade shows them 
 ### Gregification
 
 Other mods' machine recipes run on GT machines and multiblocks, with GT overclocking, parallels and batch mode.
-Each machine is crafted from the original mod's machine.
+Each machine is crafted from the original mod's machine. In the recipe viewer, each multiblock recipe shows as many
+slots as it has inputs and outputs.
 
 - **Modern Industrialization** (1.21.1 only): 14 single blocks and 10 multiblocks, including the blast furnace with
   GT coils.
