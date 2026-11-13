@@ -17,8 +17,6 @@ import brachy.modularui.widgets.layout.Flow;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -47,13 +45,14 @@ public class GhostIngredientHandler extends NotifiableRecipeHandlerTrait<GhostIn
                                                                   List<GhostIngredient<?>> left,
                                                                   boolean simulate) {
         if (io != IO.IN) return left;
-        left.removeIf(marks::contains);
+        List<GhostIngredient<?>> current = marks.view();
+        left.removeIf(required -> current.stream().anyMatch(required::isSatisfiedBy));
         return left;
     }
 
     @Override
     public List<Object> getContents() {
-        return new ArrayList<>(new LinkedHashSet<>(marks.view()));
+        return GhostIngredient.lookupContents(marks.view());
     }
 
     /**

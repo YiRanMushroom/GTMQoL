@@ -5,6 +5,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -16,13 +17,18 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Something marked in a {@link GhostIngredientHatchPartMachine}: a {@link Type} (its id is a string, which
@@ -71,6 +77,30 @@ public abstract class GhostIngredient<T> {
     /** Whether {@code other} marks the same thing, ignoring its amount. */
     protected abstract boolean sameValue(T other);
 
+    /**
+     * Whether a mark satisfies this ghost ingredient of a recipe: the same thing, or for a tag kind any item or fluid
+     * of the tag.
+     */
+    public boolean isSatisfiedBy(GhostIngredient<?> mark) {
+        return equals(mark);
+    }
+
+    /** As a mark: the tag kinds it stands for in the recipe lookup, one per tag its item or fluid is in. */
+    protected Stream<? extends GhostIngredient<?>> tagGhosts() {
+        return Stream.empty();
+    }
+
+    /**
+     * What a handler of marks gives gtceu's recipe lookup: the marks, then the tag ghosts they stand for, so a recipe
+     * taking a tag is found by any mark in it. Only for marks: a recipe's own ghost ingredients are looked up as they
+     * are (a recipe needing one item must not be found through that item's tags).
+     */
+    public static List<Object> lookupContents(Collection<? extends GhostIngredient<?>> marks) {
+        Set<Object> contents = new LinkedHashSet<>(marks);
+        for (GhostIngredient<?> mark : marks) mark.tagGhosts().forEach(contents::add);
+        return new ArrayList<>(contents);
+    }
+
     /** Consistent with {@link #sameValue}. */
     protected abstract int valueHash();
 
@@ -80,8 +110,8 @@ public abstract class GhostIngredient<T> {
         return List.of(getName());
     }
 
-    /** The value for recipe viewers: slots, and EMI through ModularUI's converters. */
-    public abstract EntryList<T> toEntryList();
+    /** What it shows in recipe viewers: slots, and EMI through ModularUI's converters (a tag kind: its items). */
+    public abstract EntryList<?> toEntryList();
 
     /** Background of its recipe viewer slot. */
     public abstract IDrawable slotBackground();
@@ -130,6 +160,17 @@ public abstract class GhostIngredient<T> {
         return null;
     }
 
+    /** An id typed by the player ({@code minecraft:water}, without a namespace minecraft's), or null. */
+    public static @Nullable ResourceLocation parseId(String text) {
+        String id = text.trim().toLowerCase(Locale.ROOT);
+        return id.isEmpty() ? null : ResourceLocation.tryParse(id);
+    }
+
+    /** The kinds that can be marked by typing an id ({@link Type#idReader}), in registration order. */
+    public static List<Type<?>> typeable() {
+        return TYPES.values().stream().filter(type -> type.idReader() != null).toList();
+    }
+
     private static Type<?> type(String id) {
         Type<?> type = TYPES.get(id);
         if (type == null) throw new IllegalArgumentException("Unknown ghost ingredient type " + id);
@@ -150,6 +191,14 @@ public abstract class GhostIngredient<T> {
         T read(ItemStack held, boolean rightClick);
     }
 
+    /** Reads what an id marks, or null. */
+    @FunctionalInterface
+    public interface IdReader<T> {
+
+        @Nullable
+        T read(ResourceLocation id);
+    }
+
     /**
      * @param id               the type string written with every ghost ingredient
      * @param valueClass       also how ModularUI's recipe viewer converters are found
@@ -158,10 +207,12 @@ public abstract class GhostIngredient<T> {
      * @param isEmpty          values that mark nothing
      * @param factory          makes the ghost ingredient of a value
      * @param heldReader       what clicking with an item marks
+ * @param idReader         what an id typed by the player marks; null for kinds not marked by id (tags)
      */
     public record Type<T>(String id, Class<T> valueClass, Codec<T> valueCodec,
                           StreamCodec<RegistryFriendlyByteBuf, T> valueStreamCodec, Predicate<T> isEmpty,
-                          Function<T, ? extends GhostIngredient<T>> factory, HeldReader<T> heldReader) {
+                          Function<T, ? extends GhostIngredient<T>> factory, HeldReader<T> heldReader,
+                          @Nullable IdReader<T> idReader) {
 
         /** The ghost ingredient of a value, or null if it is empty. */
         public @Nullable GhostIngredient<T> of(@Nullable T value) {
@@ -170,6 +221,10 @@ public abstract class GhostIngredient<T> {
 
         public @Nullable GhostIngredient<T> fromHeld(ItemStack held, boolean rightClick) {
             return of(heldReader.read(held, rightClick));
+        }
+
+        public @Nullable GhostIngredient<T> fromId(ResourceLocation id) {
+            return idReader == null ? null : of(idReader.read(id));
         }
 
         private MapCodec<GhostIngredient<T>> mapCodec() {

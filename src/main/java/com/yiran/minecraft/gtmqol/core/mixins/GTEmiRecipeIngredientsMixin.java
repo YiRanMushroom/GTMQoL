@@ -8,6 +8,7 @@ import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredientRecipeCapability;
 import com.yiran.minecraft.gtmqol.common.stacklike.StackLikeEmi;
 
 import brachy.modularui.integration.emi.EmiStackConverter;
+import brachy.modularui.integration.recipeviewer.entry.EntryList;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -57,7 +58,12 @@ public abstract class GTEmiRecipeIngredientsMixin {
     }
 
     @Unique
-    private static <T> EmiIngredient gtmqol$toEmi(GhostIngredient<T> ghost) {
-        return EmiStackConverter.convertToEmiEntry(ghost.toEntryList(), 0, UnaryOperator.identity());
+    private static EmiIngredient gtmqol$toEmi(GhostIngredient<?> ghost) {
+        return gtmqol$toEmi(ghost.toEntryList());
+    }
+
+    @Unique
+    private static <E> EmiIngredient gtmqol$toEmi(EntryList<E> entries) {
+        return EmiStackConverter.convertToEmiEntry(entries, 0, UnaryOperator.identity());
     }
 }

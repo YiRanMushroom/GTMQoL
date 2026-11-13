@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.common.recipe.gui.GTRecipeUIModifiers;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.common.ghost.FluidGhostIngredient;
+import com.yiran.minecraft.gtmqol.common.ghost.FluidTagGhostIngredient;
 import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredient;
 import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredientRecipeCapability;
 import com.yiran.minecraft.gtmqol.common.ghost.ItemGhostIngredient;
@@ -51,6 +52,7 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import brachy.modularui.drawable.progress.CircularProgressDrawable;
 import org.jetbrains.annotations.Nullable;
 import com.gregtechceu.gtceu.utils.GTMath;
+import com.yiran.minecraft.gtmqol.common.ui.DynamicRecipeSlots;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -96,11 +98,8 @@ public final class MIGregification {
         }
     }
 
-    /**
-     * Slot counts for the recipe viewer: 6 where MI's machine takes any number of hatches, more where MI's recipes
-     * have more (quarry drops, distillation products).
-     */
-    private record Multiblock(int itemInputs, int itemOutputs, int fluidInputs, int fluidOutputs,
+    /** Which kinds a multiblock takes; each recipe shows its own slots of them (Gregification.slots). */
+    private record Multiblock(boolean itemInputs, boolean itemOutputs, boolean fluidInputs, boolean fluidOutputs,
                               MultiblockShape shape, String counterpart, @Nullable Holder<SoundEntry> sound,
                               UnaryOperator<GTRecipeTypeUILayout.Builder> ui) {}
 
@@ -138,31 +137,31 @@ public final class MIGregification {
 
     // no GT counterpart: crafted from MI's own machine, no sound
     private static final Map<String, Multiblock> MULTIBLOCKS = Map.ofEntries(
-            entry("blast_furnace", new Multiblock(6, 6, 6, 6, MultiblockShape.ELECTRIC_BLAST_FURNACE,
+            entry("blast_furnace", new Multiblock(true, true, true, true, MultiblockShape.ELECTRIC_BLAST_FURNACE,
                     "gtceu:electric_blast_furnace", GTSoundEntries.FURNACE,
                     builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                             .addRecipeUIModifier(GTRecipeUIModifiers.TEMP_COIL_INFO))),
-            entry("coke_oven", new Multiblock(6, 6, 0, 6, MultiblockShape.GENERIC,
+            entry("coke_oven", new Multiblock(true, true, false, true, MultiblockShape.GENERIC,
                     "gtceu:pyrolyse_oven", GTSoundEntries.FIRE, progress(GTGuiTextures.PROGRESS_ARROW))),
-            entry("distillation_tower", new Multiblock(0, 0, 6, 8, MultiblockShape.DISTILLATION_TOWER,
+            entry("distillation_tower", new Multiblock(false, false, true, true, MultiblockShape.DISTILLATION_TOWER,
                     "gtceu:distillation_tower", GTSoundEntries.CHEMICAL,
                     progress(GTGuiTextures.PROGRESS_ARROW_MULTIPLE))),
-            entry("fusion_reactor", new Multiblock(0, 0, 6, 6, MultiblockShape.GENERIC,
+            entry("fusion_reactor", new Multiblock(false, false, true, true, MultiblockShape.GENERIC,
                     "gtceu:luv_fusion_reactor", GTSoundEntries.ARC, progress(GTGuiTextures.PROGRESS_FUSION))),
-            entry("heat_exchanger", new Multiblock(6, 6, 6, 6, MultiblockShape.GENERIC,
+            entry("heat_exchanger", new Multiblock(true, true, true, true, MultiblockShape.GENERIC,
                     MI + ":heat_exchanger", null, progress(GTGuiTextures.PROGRESS_ARROW))),
-            entry("implosion_compressor", new Multiblock(6, 6, 0, 0,
+            entry("implosion_compressor", new Multiblock(true, true, false, false,
                     MultiblockShape.IMPLOSION_COMPRESSOR, "gtceu:implosion_compressor",
                     // same as GT's
                     Holder.direct(new ExistingSoundEntry(SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS)),
                     progress(GTGuiTextures.PROGRESS_ARROW))),
-            entry("oil_drilling_rig", new Multiblock(6, 0, 0, 6, MultiblockShape.GENERIC,
+            entry("oil_drilling_rig", new Multiblock(true, false, false, true, MultiblockShape.GENERIC,
                     MI + ":oil_drilling_rig", null, progress(GTGuiTextures.PROGRESS_ARROW))),
-            entry("pressurizer", new Multiblock(6, 0, 6, 6, MultiblockShape.GENERIC,
+            entry("pressurizer", new Multiblock(true, false, true, true, MultiblockShape.GENERIC,
                     MI + ":pressurizer", null, progress(GTGuiTextures.PROGRESS_ARROW))),
-            entry("quarry", new Multiblock(6, 10, 0, 0, MultiblockShape.GENERIC,
+            entry("quarry", new Multiblock(true, true, false, false, MultiblockShape.GENERIC,
                     MI + ":electric_quarry", null, progress(GTGuiTextures.PROGRESS_ARROW))),
-            entry("vacuum_freezer", new Multiblock(6, 6, 6, 6, MultiblockShape.VACUUM_FREEZER,
+            entry("vacuum_freezer", new Multiblock(true, true, true, true, MultiblockShape.VACUUM_FREEZER,
                     "gtceu:vacuum_freezer", GTSoundEntries.COOLING, progress(GTGuiTextures.PROGRESS_ARROW))));
 
     private MIGregification() {}
@@ -196,7 +195,7 @@ public final class MIGregification {
                 ForeignRecipeConverter converter = ForeignRecipeConverter.single(path.equals("blast_furnace") ?
                         MIGregification::convertBlastFurnace : MIGregification::convert);
                 types.add(ForeignMachineType.multiblock(name, englishName, () -> recipeType, converter,
-                        multi.itemInputs, multi.itemOutputs, multi.fluidInputs, multi.fluidOutputs,
+                        any(multi.itemInputs), any(multi.itemOutputs), any(multi.fluidInputs), any(multi.fluidOutputs),
                         multi.sound, multi.ui, GUIDEBOOK, ResourceLocation.parse(multi.counterpart),
                         multi.shape));
             } else {
@@ -221,13 +220,21 @@ public final class MIGregification {
         return inputs;
     }
 
-    /** The first item output, or else the first fluid output. */
+    /**
+     * The first item output, or else the first fluid output. A fluid output that {@link #toGT} turns into GT's is
+     * marked by that GT material's fluid tag: the mark follows what the recipe makes, so marking GT's fluid (or a
+     * pattern making it) picks the recipe.
+     */
     private static @Nullable GhostIngredient<?> mainOutputMark(Recipe<?> foreign) {
         if (!(foreign instanceof MachineRecipe recipe)) return null;
         for (var output : recipe.itemOutputs) {
             if (!output.getStack().isEmpty()) return new ItemGhostIngredient(output.getStack());
         }
         for (var output : recipe.fluidOutputs) {
+            Material material = gtMaterial(output.fluid());
+            if (material != null && material.getFluid() != output.fluid()) {
+                return new FluidTagGhostIngredient(material.getFluidTag());
+            }
             return new FluidGhostIngredient(new FluidStack(output.fluid(), 1));
         }
         return null;
@@ -308,6 +315,10 @@ public final class MIGregification {
         Material material = gtMaterial(fluid);
         if (material == null || material.getFluid() == fluid) return ingredient;
         return CompoundFluidIngredient.of(ingredient, FluidIngredient.tag(material.getFluidTag()));
+    }
+
+    private static int any(boolean takes) {
+        return takes ? DynamicRecipeSlots.ANY : 0;
     }
 
     /** Takes nothing; an ingredient {@link LoadingTags} can't read counts as taking something. */

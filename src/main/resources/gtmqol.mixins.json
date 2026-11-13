@@ -10,6 +10,7 @@
     "GTMachineUtilsMixin",
     "GTMultiMachinesMixin",
     "GTRecipeModifiersMixin",
+    "GTRecipeViewerWidgetLayoutMixin",
     "GTRecipeViewerWidgetMixin",
     "GTSingleblockMachinePanelsMixin",
     "HatchParallelMixin",

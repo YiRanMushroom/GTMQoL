@@ -2,7 +2,8 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-12 07:49:22"
+updated = "2026-11-13 05:11:32"
+checked = "2026-11-13"
 
 [[items]]
 name = "rotor-amount"
@@ -345,5 +346,17 @@ name = "client-prepare"
 value = "On a dedicated server, EMI shows the ghost mark of Create saw / MI assembler recipes that share inputs, as in singleplayer (the client never ran MarkCoveredRecipes.prepare before)"
 path = "src/main/java/com/yiran/minecraft/gtmqol/gregification/client/GregificationClient.java"
 snippet = "// Untested: on a dedicated server, EMI shows the ghost mark of Create saw / MI assembler recipes that"
+
+[[items]]
+name = "ghost-column"
+value = "Recipes with a ghost ingredient (Create saw, MI assembler, Advanced Chip Engraving Factory) show it above the progress bar, faded and slowly pulsing, inside the recipe's bounds, with its tooltip on hover"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/GhostIngredientRecipeViewer.java"
+snippet = "// Untested: a recipe with a ghost ingredient (Create saw, MI assembler, Advanced Chip Engraving Factory) shows it"
+
+[[items]]
+name = "tag-ghosts"
+value = "A gregified MI distillery recipe runs with GT's fluid (or a pattern making it) marked; EMI shows the tag's fluids in its ghost slot; a KubeJS recipe with a \"#c:...\" ghost input runs with any item of the tag marked"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/TagGhostIngredient.java"
+snippet = "// Untested: a recipe with a tag ghost runs with any item or fluid of the tag marked (a gregified MI distillery"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

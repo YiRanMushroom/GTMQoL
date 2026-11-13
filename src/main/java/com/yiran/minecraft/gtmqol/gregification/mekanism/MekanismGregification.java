@@ -46,6 +46,7 @@ import mekanism.common.tile.machine.TileEntityPigmentExtractor;
 import mekanism.common.tile.machine.TileEntityPrecisionSawmill;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
+import com.yiran.minecraft.gtmqol.common.ui.DynamicRecipeSlots;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -192,8 +193,9 @@ public final class MekanismGregification {
                         itemInputs, itemOutputs, fluidInputs, fluidOutputs, sound,
                         builder -> builder.setProgressBar(progressBar), null, counterpart, MultiblockShape.ANY_PARTS)
                 .withRecipeType(builder -> {
-                    if (chemicalInputs > 0) builder.setMaxSize(IO.IN, ChemicalStackLike.CAP, chemicalInputs);
-                    if (chemicalOutputs > 0) builder.setMaxSize(IO.OUT, ChemicalStackLike.CAP, chemicalOutputs);
+                    // a multiblock: each recipe's own chemical slots, like its items and fluids (Gregification.slots)
+                    if (chemicalInputs > 0) builder.setMaxSize(IO.IN, ChemicalStackLike.CAP, DynamicRecipeSlots.ANY);
+                    if (chemicalOutputs > 0) builder.setMaxSize(IO.OUT, ChemicalStackLike.CAP, DynamicRecipeSlots.ANY);
                     return builder;
                 });
     }

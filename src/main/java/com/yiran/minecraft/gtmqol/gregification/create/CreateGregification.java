@@ -96,9 +96,8 @@ public final class CreateGregification {
                 machine("millstone", "Create Millstone", createType("milling"),
                         CreateGregification::convertProcessing, 1, 4, 0, 0,
                         GTSoundEntries.MACERATOR, GTGuiTextures.PROGRESS_MACERATE, "millstone"),
-                // Create's own crushing recipes give up to 5 items (horse armor, tuff), addons may give more
                 machine("crushing_wheels", "Create Crushing Wheels", createType("crushing"),
-                        CreateGregification::convertProcessing, 1, 6, 0, 0,
+                        CreateGregification::convertProcessing, 1, 4, 0, 0,
                         GTSoundEntries.MACERATOR, GTGuiTextures.PROGRESS_MACERATE, "crushing_wheel"),
                 machine("press", "Create Mechanical Press", createType("pressing"),
                         CreateGregification::convertProcessing, 1, 2, 0, 0,

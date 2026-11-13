@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.common.ghost;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -12,12 +13,15 @@ import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.integration.recipeviewer.entry.EntryList;
 import brachy.modularui.integration.recipeviewer.entry.item.ItemStackList;
 
+import java.util.stream.Stream;
+
 /** A marked item, with its components; the count doesn't matter (kept at 1). Left click with it to mark it. */
 public final class ItemGhostIngredient extends GhostIngredient<ItemStack> {
 
     public static final Type<ItemStack> TYPE = new Type<>("item", ItemStack.class,
             ItemStack.SINGLE_ITEM_CODEC, ItemStack.STREAM_CODEC, ItemStack::isEmpty, ItemGhostIngredient::new,
-            (held, rightClick) -> rightClick ? null : held);
+            (held, rightClick) -> rightClick ? null : held,
+            id -> BuiltInRegistries.ITEM.getOptional(id).map(ItemStack::new).orElse(null));
 
     public ItemGhostIngredient(ItemStack stack) {
         super(stack.copyWithCount(1));
@@ -45,6 +49,11 @@ public final class ItemGhostIngredient extends GhostIngredient<ItemStack> {
     @Override
     public Component getName() {
         return value.getHoverName();
+    }
+
+    @Override
+    protected Stream<ItemTagGhostIngredient> tagGhosts() {
+        return value.getTags().map(ItemTagGhostIngredient::new);
     }
 
     @Override

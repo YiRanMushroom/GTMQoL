@@ -11,7 +11,9 @@ import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
@@ -105,8 +107,8 @@ public final class GhostIngredientRecipeCapability extends RecipeCapability<Ghos
         INSTANCE;
 
         /**
-         * Also takes the value of any type (an item stack, a fluid stack...), and items and item ids (as KubeJS
-         * scripts give them).
+         * Also takes the value of any type (an item stack, a fluid stack, an item or fluid TagKey...), and items, item
+         * ids and "#tag" strings (as KubeJS scripts give them).
          */
         @Override
         public GhostIngredient<?> of(Object o) {
@@ -116,6 +118,11 @@ public final class GhostIngredientRecipeCapability extends RecipeCapability<Ghos
                 if (ghost != null) return ghost;
             }
             if (o instanceof ItemLike item) return new ItemGhostIngredient(item);
+            // "#namespace:path" as KubeJS scripts write tags: an item tag (a fluid tag comes as a TagKey)
+            if (o instanceof CharSequence s && s.toString().startsWith("#")) {
+                ResourceLocation tag = ResourceLocation.parse(s.toString().substring(1));
+                return new ItemTagGhostIngredient(TagKey.create(Registries.ITEM, tag));
+            }
             ResourceLocation id = o instanceof ResourceLocation rl ? rl :
                     o instanceof CharSequence s ? ResourceLocation.tryParse(s.toString()) : null;
             if (id == null) throw new IllegalArgumentException("Not a ghost ingredient: " + o);

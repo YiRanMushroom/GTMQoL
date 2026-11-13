@@ -21,7 +21,12 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 
 ## In progress
 
-- Nothing. 3.6.0 (2026-11-12) released the Advanced Chip Engraving Factory (`multiblock.advanced-chip-engraving`) and
+- Committed and pushed on both branches, not released: tag ghost ingredients (`ghost.tags`; MI fluid marks follow
+  the GT fluid), per-recipe recipe viewer slots (`recipeviewer.dynamic-slots`, `DynamicRecipeSlots.ANY` for every
+  gregified multiblock), ghost slots above the progress bar (`ghost.recipe-viewer`) and Mark by ID
+  (`ghost.list-widget`). The user checked the slots and Mark by ID on 1.21; still to check: `status.untested`
+  tag-ghosts, ghost-column (and on 1.20 dynamic-slots, ghost-by-id with JEI).
+- Otherwise nothing. 3.6.0 (2026-11-12) released the Advanced Chip Engraving Factory (`multiblock.advanced-chip-engraving`) and
   the fix for gregification reading other mods' ingredients while recipes load (`gregification.loading-tags`; the
   dev client crashed at every first world load), with MI distillery/mixer marks and slot counts (`gregification.mi`).
   Nobody has tried them in game yet: `status.untested` advanced-chip-engraving, reload-ingredient-reads,
