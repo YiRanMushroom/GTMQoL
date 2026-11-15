@@ -37,11 +37,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Batches on AE2's own CPU. The batches of a pattern pushed together cost one of the CPU's operations, not one each: the
- * pieces are one job cut up so that they can leave as soon as their inputs are there. And a batch that can't go whole,
- * for inputs still being made or too little power, pushes what {@link PartialPush} says can go, the rest becoming a
- * piece of its own. Only on AE2's CPU; others push the plan's pieces as they are and spend more operations. A pattern
- * that can't get the inputs of a single craft is skipped for the rest of the pass: neither can its bigger pieces.
+ * Batches on AE2's own CPU. A batch that can't go whole, for inputs still being made or too little power, pushes what
+ * {@link PartialPush} says can go, the rest becoming a piece of its own: this is what lets a chain's next step start
+ * with the first items, and the plan cuts nothing smaller for it ({@link
+ * com.yiran.minecraft.gtmqol.integration.ae2.crafting.BatchSizes}). The batches of a pattern pushed together (a
+ * provider's limit makes several) cost one of the CPU's operations, not one each. Only on AE2's CPU; on others a
+ * batch waits for all of its inputs and power. A pattern that can't get the inputs of a single craft is skipped for
+ * the rest of the pass: neither can its other pieces.
  */
 // Untested: a chain's next step starts with part of a batch as the step before delivers; a batch needing more power
 // than the network stores still goes, in parts; the rest of a part shows in the CPU's list and survives a restart

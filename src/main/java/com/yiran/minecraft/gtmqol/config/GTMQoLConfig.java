@@ -406,12 +406,6 @@ public final class GTMQoLConfig {
         public int assemblingMatrixFEPerCraft = 64;
 
         @Configurable
-        @Configurable.Comment({ "Pattern batching: the crafts of a pattern go out in batches of 1, 2, 4 and so on. Above 1,",
-                "the largest batch is about this fraction of them, so the next step of a chain starts sooner", "Default: 1" })
-        @Configurable.Range(min = 1, max = 4096)
-        public int patternBatchParts = 1;
-
-        @Configurable
         @Configurable.Comment({ "Work out crafting plans by adding up what each item needs instead of walking AE2's",
                 "tree, so that the amount doesn't matter. Requests it can't judge still go AE2's way", "Default: true" })
         public boolean fastCraftingPlans = true;

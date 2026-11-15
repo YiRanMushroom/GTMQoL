@@ -3,7 +3,6 @@ package com.yiran.minecraft.gtmqol.core.mixins.ae2;
 import com.yiran.minecraft.gtmqol.integration.ae2.crafting.BatchPlan;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.stacks.KeyCounter;
 import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingPlan;
 import appeng.crafting.inv.CraftingSimulationState;
@@ -23,9 +22,6 @@ public abstract class CraftingSimulationStateBatchMixin {
     @Shadow
     @Final
     private Map<IPatternDetails, Long> crafts;
-    @Shadow
-    @Final
-    private KeyCounter emittedItems;
 
     @Inject(method = "buildCraftingPlan", at = @At("HEAD"))
     private static void gtmqol$cutIntoBatches(CraftingSimulationState state, CraftingCalculation calculation,
@@ -33,6 +29,6 @@ public abstract class CraftingSimulationStateBatchMixin {
         var node = ((CraftingCalculationAccessor) calculation).gtmqol$getRequester().getGridNode();
         if (node == null) return;
         var self = (CraftingSimulationStateBatchMixin) (Object) state;
-        BatchPlan.cut(self.crafts, self.emittedItems.keySet(), node);
+        BatchPlan.cut(self.crafts, node);
     }
 }

@@ -112,17 +112,15 @@ of one craft at a time. Big orders finish in far fewer steps and need fewer Craf
   settings, an on/off switch (on by default) and a batch limit, the most items or buckets of fluid of any one
   ingredient in a batch (0 = no limit). Only processing patterns are batched.
 - **Assembling Matrix**: always takes batches, except for Crafting Patterns whose catalyst wears out.
-- **How orders are cut**: a pattern whose ingredients are all in storage goes out as one batch. A pattern whose
-  ingredients are still being crafted goes out in batches of 1, 2, 4 and so on, so the next step of a chain starts as
-  soon as the first items arrive.
-- **AE2's own Crafting CPUs**: the batches of one pattern cost one co-processing operation together. A batch that
-  can't go whole, because some ingredients are still on their way or the ME network lacks power, sends the part that
-  can go now and keeps the rest for later. Other mods' crafting CPUs get the batches too, without these extras.
+- **How orders are cut**: all crafts of a pattern go out as one batch, or as few batches as the batch limit allows.
+- **AE2's own Crafting CPUs**: a batch that can't go whole, because some ingredients are still being crafted or the
+  ME network lacks power, sends the part that can go now and keeps the rest for later, so the next step of a chain
+  starts as soon as the first items arrive. The batches of one pattern cost one co-processing operation together.
+  Other mods' crafting CPUs get the batches too, but a batch waits there until all of its ingredients and power are
+  there.
 - **Not batched**: patterns that give something back (an empty bucket, for example) or make one of their own
   ingredients, and patterns that a plain Pattern Provider also offers.
 - Running crafting jobs keep their batches over a restart.
-- `ae2.patternBatchParts` (default 1): above 1, the largest batch is about this fraction of the order, so the next
-  step of a chain starts even sooner, at the cost of more steps.
 
 #### Faster crafting plans
 
@@ -380,7 +378,7 @@ crashing on machines with many model variants.
   their names (**Industrial Fishing Pond**, **Wireless Computation Transmission / Reception Hatch**, **Wireless
   Optical Data Transmission / Reception Hatch**). Placed blocks, their contents and channel bindings are kept.
 - Renamed config keys start from their defaults: `ae2.patternMatrix` → `ae2.assemblingMatrix`,
-  `ae2.patternMatrixFEPerCraft` → `ae2.assemblingMatrixFEPerCraft`, `ae2.batchParts` → `ae2.patternBatchParts`,
+  `ae2.patternMatrixFEPerCraft` → `ae2.assemblingMatrixFEPerCraft`,
   `machines.fishingPond` → `machines.industrialFishingPond`.
 
 ## Configuration
@@ -399,7 +397,7 @@ Assembler, the Ghost Ingredient Hatch, potion fluids, the circuit and material t
 | `recipes` | `miscRecipes`, `earlyGame`, `keepManualCompression`, `keepVanillaTNT`, `netherStarDust`, `useLegacyPartRecipes` |
 | `steamTweaks` | `circuitSlots`, `fluidTanks`, `noOutputLimits`, `optionalLargeBoilerParts` |
 | `overclocking` | `buffFusionReactor`, `enableMultiTierSkipping`, `absoluteParallelHatches` |
-| `ae2` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn` (live), `skipNotConsumedInputs` (live), `assemblingMatrix`, `meDataCenter`, `meCableCover`, `assemblingMatrixFEPerCraft` (live, default 64), `patternBatchParts` (live, default 1), `fastCraftingPlans` (live) |
+| `ae2` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn` (live), `skipNotConsumedInputs` (live), `assemblingMatrix`, `meDataCenter`, `meCableCover`, `assemblingMatrixFEPerCraft` (live, default 64), `fastCraftingPlans` (live) |
 | `misc` | `feInput`, `autoBuild` (live) |
 | `voidMiner` (live) | `dimensionMapping`: mine another dimension's veins (`"from=to"`, read when a Void Miner loads); `maxOperations` (default 64), `maxMultiplier` (default 4096): the most ore types and stacks per cycle |
 | `integrationTests` | `enabled` (default off): runtime-generated example machines, for development |
