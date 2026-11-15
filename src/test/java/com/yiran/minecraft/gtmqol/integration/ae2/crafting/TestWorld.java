@@ -96,9 +96,7 @@ final class TestWorld implements CraftingSolver.Source<String, String> {
         assertEquals(CraftingSolver.Status.PLANNED, plan.status());
         plan.used().forEach((key, used) -> assertTrue(used <= stock(key), key + ": took more than there is"));
         assertAddsUp(what, amount, plan);
-        runPlan(what, amount, plan, 0, random);
-        runPlan(what, amount, plan, 1, random);
-        runPlan(what, amount, plan, 16, random);
+        runPlan(what, amount, plan, random);
     }
 
     private void assertAddsUp(String what, long amount, Result<String, String> plan) {
@@ -119,22 +117,11 @@ final class TestWorld implements CraftingSolver.Source<String, String> {
     private record Piece(String pattern, long crafts) {}
 
     /** Inputs are all there before a piece starts, as the CPU extracts them; the order is whatever can go. */
-    /** @param parts as the config, 0 for no pieces */
-    private void runPlan(String what, long amount, Result<String, String> plan, int parts, Random random) {
-        boolean inPieces = parts > 0;
+    private void runPlan(String what, long amount, Result<String, String> plan, Random random) {
         Map<String, Long> cpu = new HashMap<>(plan.used());
         plan.emitted().forEach((key, emitted) -> cpu.merge(key, emitted, Long::sum));
         List<Piece> pieces = new ArrayList<>();
-        plan.crafts().forEach((pattern, count) -> {
-            if (inPieces) {
-                BatchSizes.split(count, Long.MAX_VALUE, parts)
-                        .forEach((size, times) -> {
-                            for (long i = 0; i < times; i++) pieces.add(new Piece(pattern, size));
-                        });
-            } else {
-                pieces.add(new Piece(pattern, count));
-            }
-        });
+        plan.crafts().forEach((pattern, count) -> pieces.add(new Piece(pattern, count)));
         // single crafts would be a very long list: a whole pattern goes as one when it can, else piece by piece
         while (!pieces.isEmpty()) {
             List<Piece> ready = new ArrayList<>();
@@ -142,10 +129,7 @@ final class TestWorld implements CraftingSolver.Source<String, String> {
                 if (canRun(piece, cpu)) ready.add(piece);
             }
             if (ready.isEmpty()) {
-                if (!inPieces) {
-                    Piece split = splitOne(pieces, cpu);
-                    if (split != null) continue;
-                }
+                if (splitOne(pieces, cpu) != null) continue;
                 fail("Stuck with " + pieces + " and " + cpu + " for " + amount + " " + what);
             }
             Piece piece = ready.get(random.nextInt(ready.size()));

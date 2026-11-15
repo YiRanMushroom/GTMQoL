@@ -1,41 +1,26 @@
 package com.yiran.minecraft.gtmqol.integration.ae2.crafting;
 
-import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
-
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyService;
-import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.me.service.CraftingService;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Pattern batching: makes a crafting plan's crafts of a pattern into batches, when everything that offers the pattern can
  * take them. Every CPU works from the plan, so all of them do this without knowing about it. A CPU pushes a batch once,
- * which is what saves its co-processors the work. Crafts go as one when they have all they need from the start and there
- * is power for them, else in {@linkplain BatchSizes#split pieces} that leave with what has arrived.
+ * which is what saves its co-processors the work. A pattern's crafts are one batch, or {@linkplain BatchSizes#pieces as
+ * few} as its providers' limits allow.
  */
 public final class BatchPlan {
 
     private BatchPlan() {}
 
-    /**
-     * Replaces the crafts in the map.
-     *
-     * @param emitted what level emitters will make for the plan, which comes in over time
-     */
-    public static void cut(Map<IPatternDetails, Long> crafts, Set<AEKey> emitted, IGridNode node) {
+    /** Replaces the crafts in the map. */
+    public static void cut(Map<IPatternDetails, Long> crafts, IGridNode node) {
         var service = (CraftingService) node.getGrid().getCraftingService();
-        int parts = GTMQoLConfig.get().ae2.patternBatchParts;
-        IEnergyService energy = node.getGrid().getEnergyService();
-        Set<AEKey> arriving = arriving(crafts, emitted);
         Map<IPatternDetails, Long> cut = new HashMap<>();
         for (var entry : crafts.entrySet()) {
             IPatternDetails pattern = entry.getKey();
@@ -44,42 +29,12 @@ public final class BatchPlan {
                 cut.merge(pattern, entry.getValue(), Long::sum);
                 continue;
             }
-            long total = entry.getValue();
-            boolean whole = !waitsFor(pattern, arriving) && hasPowerFor(pattern, total, energy);
-            (whole ? BatchSizes.whole(total, limit) : BatchSizes.split(total, limit, parts)).forEach((size, times) -> {
+            BatchSizes.pieces(entry.getValue(), limit).forEach((size, times) -> {
                 cut.merge(PatternBatch.piece(pattern, size), times, Long::sum);
             });
         }
         crafts.clear();
         crafts.putAll(cut);
-    }
-
-    /** Everything that turns up while the job runs, instead of being there from the start. */
-    private static Set<AEKey> arriving(Map<IPatternDetails, Long> crafts, Set<AEKey> emitted) {
-        Set<AEKey> arriving = new HashSet<>(emitted);
-        for (IPatternDetails pattern : crafts.keySet()) {
-            for (GenericStack output : pattern.getOutputs()) arriving.add(output.what());
-        }
-        return arriving;
-    }
-
-    private static boolean waitsFor(IPatternDetails pattern, Set<AEKey> arriving) {
-        for (var input : pattern.getInputs()) {
-            for (GenericStack possible : input.getPossibleInputs()) {
-                if (arriving.contains(possible.what())) return true;
-            }
-        }
-        return false;
-    }
-
-    /** As the CPU works it out for a push: it won't start on one it can't pay for in full. */
-    private static boolean hasPowerFor(IPatternDetails pattern, long crafts, IEnergyService energy) {
-        double power = 0;
-        for (var input : pattern.getInputs()) {
-            GenericStack first = input.getPossibleInputs()[0];
-            power += (double) first.amount() * input.getMultiplier() * crafts / first.what().getAmountPerOperation();
-        }
-        return energy.extractAEPower(power, Actionable.SIMULATE, PowerMultiplier.CONFIG) >= power - 0.01;
     }
 
     /** What all of them take; not with one that doesn't, it would never get any of the crafts. */
