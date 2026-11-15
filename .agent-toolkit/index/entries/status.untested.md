@@ -2,8 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-15 02:14:57"
-checked = "2026-11-15"
+updated = "2026-11-15 07:06:23"
 
 [[items]]
 name = "rotor-amount"
@@ -370,5 +369,29 @@ name = "me-cable-cover"
 value = "ME Cable Cover: on a plain machine cables on any sides connect through it and channels pass (32 by default); on an ME hatch or pattern buffer cables connect on all sides, still after a wrench turn, front only again once removed; survives a reload; one per machine, not on a Machine Hull"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/cablecover/MECableCover.java"
 snippet = "// Untested: on a machine without an ME connection, cables on any sides connect through it and channels pass (32"
+
+[[items]]
+name = "personal-beacon-effects"
+value = "Personal Beacon: bound online players get the effects every 15 s at their hatch levels, other dimensions too; Not enough FE without FE"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PersonalBeaconMachine.java"
+snippet = "// Untested: a bound online player gets the effects every 15 s"
+
+[[items]]
+name = "beacon-chunk-loading"
+value = "Personal Beacon Chunk Loader keeps the beacon working with nobody near; released when broken; again after restart"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PersonalBeaconMachine.java"
+snippet = "// Untested: with a chunk loader the beacon keeps working"
+
+[[items]]
+name = "beacon-flight"
+value = "Flight effect lets survival players fly and ends cleanly; Flight Speed per level, speed resets after it ends and after death"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/BeaconEffects.java"
+snippet = "// Untested: Flight lets a survival player fly"
+
+[[items]]
+name = "potion-core-infuser"
+value = "Potion Core Infuser: potions turn into time at 1A EV (strong ×2 per level, lingering ×4), wrong potions refused, core at 24 h, Clear"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PotionCoreInfuserMachine.java"
+snippet = "// Untested: a potion piped or poured in turns into time"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

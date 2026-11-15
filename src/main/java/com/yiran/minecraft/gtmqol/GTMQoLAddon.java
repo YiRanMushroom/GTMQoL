@@ -29,6 +29,7 @@ import com.yiran.minecraft.gtmqol.common.crafter.PatternCrafter;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
 import com.yiran.minecraft.gtmqol.common.ghost.GhostIngredients;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
+import com.yiran.minecraft.gtmqol.common.beacon.PersonalBeacon;
 import com.yiran.minecraft.gtmqol.common.engraving.AdvancedChipEngraving;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.data.recipe.LegacyPartRecipes;
@@ -52,13 +53,18 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.yiran.minecraft.gtmqol.common.circuit.UniversalCircuits;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.VN;
 
@@ -74,12 +80,37 @@ public final class GTMQoLAddon implements IGTAddon {
         REGISTRATE.defaultCreativeTab((ResourceKey<CreativeModeTab>) null);
     }
 
+    /** {@link #tabVariants}. */
+    private static final Map<Supplier<? extends Item>, Supplier<List<ItemStack>>> TAB_VARIANTS = new LinkedHashMap<>();
+
+    /** Lists {@code stacks} in the creative tab in place of {@code item}'s plain stack. */
+    public static void tabVariants(Supplier<? extends Item> item, Supplier<List<ItemStack>> stacks) {
+        TAB_VARIANTS.put(item, stacks);
+    }
+
+    /** GTCEu's listing of everything registered, with the {@link #tabVariants}. */
+    private static void tabItems(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
+        new GTCreativeModeTabs.RegistrateDisplayItemsGenerator("main", REGISTRATE).accept(parameters,
+                new CreativeModeTab.Output() {
+
+                    @Override
+                    public void accept(ItemStack stack, CreativeModeTab.TabVisibility visibility) {
+                        for (var variants : TAB_VARIANTS.entrySet()) {
+                            if (!stack.is(variants.getKey().get())) continue;
+                            variants.getValue().get().forEach(variant -> output.accept(variant, visibility));
+                            return;
+                        }
+                        output.accept(stack, visibility);
+                    }
+                });
+    }
+
     private static final String MAIN_TAB_TITLE_KEY = "itemGroup." + GTMQoL.MOD_ID + ".main";
 
     // Same pattern as GTCreativeModeTabs. Everything registered through REGISTRATE after this line
     // (items, blocks, machine items) is tagged with this tab and listed by the display generator.
     public static final RegistryEntry<CreativeModeTab, CreativeModeTab> MAIN_TAB = REGISTRATE.defaultCreativeTab("main",
-            builder -> builder.displayItems(new GTCreativeModeTabs.RegistrateDisplayItemsGenerator("main", REGISTRATE))
+            builder -> builder.displayItems(GTMQoLAddon::tabItems)
                     .icon(() -> GTItems.TOOL_DATA_STICK.asStack())
                     .title(Component.translatable(MAIN_TAB_TITLE_KEY)))
             .register();
@@ -173,6 +204,7 @@ public final class GTMQoLAddon implements IGTAddon {
         if (config.machines.advancedChipEngravingFactory) AdvancedChipEngraving.addRecipes(provider);
         if (config.machines.crystalGrowthChamber) CrystalGrowth.addRecipes(provider);
         if (config.machines.greenhouse) Greenhouse.addRecipes(provider);
+        if (config.personalBeacon()) PersonalBeacon.addRecipes(provider);
         if (config.machines.patternCrafter) PatternCrafter.addRecipes(provider);
         if (GTCEu.Mods.isAE2Loaded()) {
             if (config.ae2.overclockedPatternBuffer) AE2Machines.addRecipes(provider);

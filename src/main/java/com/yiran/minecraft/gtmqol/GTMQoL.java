@@ -40,6 +40,7 @@ import com.yiran.minecraft.gtmqol.common.engraving.AdvancedChipEngraving;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.common.modular.ModularMachines;
 import com.yiran.minecraft.gtmqol.common.multiblock.GTMQoLMultiblocks;
+import com.yiran.minecraft.gtmqol.common.beacon.PersonalBeacon;
 import com.yiran.minecraft.gtmqol.common.potion.PotionContainers;
 import com.yiran.minecraft.gtmqol.common.ui.RecipeTypeLayouts;
 import com.yiran.minecraft.gtmqol.common.stacklike.mekanism.ChemicalStackLike;
@@ -144,6 +145,7 @@ public final class GTMQoL {
         if (config.machines.advancedChipEngravingFactory) AdvancedChipEngraving.init(modBus);
         if (config.machines.crystalGrowthChamber) CrystalGrowth.init();
         if (config.machines.greenhouse) Greenhouse.init();
+        if (config.personalBeacon()) PersonalBeacon.init(modBus);
         if (config.machines.patternCrafter) PatternCrafter.init();
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
         if (config.wireless.steam) WirelessSteamMachines.init();

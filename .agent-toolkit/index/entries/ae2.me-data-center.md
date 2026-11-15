@@ -2,7 +2,7 @@
 title = "ME Data Center: a GT multiblock of AE2 crafting CPUs, one per job, from crafting units in CPU frames; virtual cores"
 kind = "design"
 keys = [ "advanced ae quantum computer", "ae2", "casing frame box", "cpu frame", "crafting cpu", "craftingcpucluster", "me data center", "tiered multiblock", "virtual crafting block entity" ]
-updated = "2026-11-15 00:58:27"
+updated = "2026-11-15 06:49:43"
 checked = "2026-11-15"
 
 [[items]]
@@ -38,7 +38,7 @@ snippet = "final class MEDataCenterCompat"
 The user's design (2026-11-14), both branches, config ae2.meDataCenter. Ids me_data_center, me_data_center_interface, <tier>_me_data_center_cpu_frame.
 
 ## What players get
-- Structure: CasingFrameBox, shared with the Assembling Matrix (expandable box, quartz glass faces, edges of one tier of machine casings). One ME Data Center Interface on an edge; inside CPU frames (ULV to MAX, mixable, unrelated to the casing tier) or air. The inside renders as the End portal's stars (shaders not considered).
+- Structure: CasingFrameBox, shared with the Assembling Matrix (expandable box, quartz glass faces, edges of one tier of machine casings). One ME Data Center Interface on an edge; inside CPU frames (ULV to MAX, mixable, unrelated to the casing tier) or air. The glass renders as the End portal's stars (shaders not considered): one face per side, as large as that side's glass and 2/1024 of a block outside it (0.01 showed as a raised sheet; GTCEu lifts its overlays 1/1024 per face layer on 1.21, FaceLayerCompositor, and 0.01/16 on 1.20) (the user, 2026-11-14: stars inside the glass let the CPU frames' overlays flicker through at a distance). CPU frames have their overlay on all six sides.
 - A CPU frame owns tier+1 slots, one item each: any block item built on AE2's AbstractCraftingUnitBlock with storage or threads (ICraftingUnitType), so addons using AE2's unit blocks work and Advanced AE's don't. The controller's units window shows all frames' units, each kind once with its number (ItemGridEntry.count; ItemGridWidget, scrolling, no cap); a click takes up to a stack of that kind.
 - Casing tier: ULV is 0, each tier above one credit; a credit is ×4 storage or ×4 co-processors. Credits start unspent; the controller has one row each for storage and co-processors with - and + (Shift: all), saved as storageCredits and coProcessorCredits, clamped at forming. Storage saturates at Long.MAX; co-processors cap at 2^30 (AE2 adds 1 to them in an int).
 - Jobs: storage is one pool, a job takes plan.bytes(); every job has all the co-processors. Terminals show one CPU per job plus one with what is left (hidden at 0). Units and credits are locked while a job exists.

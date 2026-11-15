@@ -98,6 +98,9 @@ public abstract class CyclicMultiblockMachine extends MultiblockControllerMachin
     /** Called every tick of a cycle, before {@link #progress} is advanced. */
     protected void onCycleTick() {}
 
+    /** Called every tick that the formed machine waits to start a cycle. */
+    protected void onIdleTick() {}
+
     /** Called when a cycle ends; add the products to {@link #output}. */
     protected abstract void finishCycle();
 
@@ -124,6 +127,7 @@ public abstract class CyclicMultiblockMachine extends MultiblockControllerMachin
         if (!isFormed()) return;
         switch (state) {
             case IDLE -> {
+                onIdleTick();
                 if (enabled && getOffsetTimer() % RETRY_TICKS == 0) tryStart();
             }
             case WORKING -> {
@@ -164,6 +168,13 @@ public abstract class CyclicMultiblockMachine extends MultiblockControllerMachin
         setRenderState(getRenderState().setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS,
                 state == State.WORKING ? RecipeLogic.Status.WORKING : RecipeLogic.Status.IDLE));
         markAsChanged();
+    }
+
+    /** Drops the running cycle: nothing of it is finished, and the next one starts from its beginning. */
+    protected void cancelCycle() {
+        if (state != State.WORKING) return;
+        progress = 0;
+        setState(State.IDLE);
     }
 
     private void setEnabled(boolean enabled) {

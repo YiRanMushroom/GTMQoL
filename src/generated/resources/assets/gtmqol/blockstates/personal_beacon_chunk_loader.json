@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "gtmqol:block/machine/personal_beacon_chunk_loader"
+    }
+  }
+}

@@ -250,6 +250,18 @@ crafter wears tools, the modular simulation chamber trains data models.
 - **Probable Certainty Device** (ZPM) and **Probable Improbability Device** (IV): parts that fit most multiblocks
   (wherever their buses and hatches go). Certainty: chanced outputs always come out, and ranged outputs give their
   largest amount. Improbability: chanced inputs are never consumed, and ranged inputs use their smallest amount.
+- **Personal Beacon** (EV): built like a beacon: the controller stands on a pyramid of 1 to 7 layers of
+  Stable Titanium Machine Casings. It gives the players bound in its Personal Beacon Binding Hatches the effects of the
+  beacon cores in its Core Sockets, in any dimension, and shows a beacon beam while it works. Each core of an effect
+  is one level of it, with no limit. Cores: Flight, Flight Speed, Haste, Saturation, Resistance, Health Boost, and
+  Potion Beacon Cores for any potion effect, made in the Potion Core Infuser. Every 15 s it costs, per online player, the voltage of each effect
+  level's tier (level 1 is LV) and 1A EV for Flight, in FE from Wireless FE Input Hatches. Each player sets their own
+  levels in their hatch. Sockets, hatches and the Personal Beacon Chunk Loader, which keeps the beacon's chunks
+  loaded, replace casings on the outer ring of a layer, so more layers have room for more. After adding a layer,
+  press Check structure in the beacon's window.
+- **Potion Core Infuser** (EV single block): turns potions into time for one effect, 1A EV while it works. Each
+  level of a potion doubles its time and a lingering potion counts 4 times; 24 hours make a Potion Beacon Core. The
+  stored time can be cleared.
 - The Assembling Matrix is described under Crafting and AE2.
 
 Unlike GTCEu's multiblocks, the Void Miner and the Industrial Fishing Pond never void their outputs: they wait
@@ -379,7 +391,7 @@ Assembler, the Ghost Ingredient Hatch, potion fluids, the circuit and material t
 
 | Group | Options |
 |---|---|
-| `machines` | `smartAssemblyFactory`, `easySAFRecipe`, `dimensionallyTranscendentFusionReactor`, `voidMiner` (needs `wireless.energy`), `industrialFishingPond`, `crystalGrowthChamber`, `greenhouse`, `patternCrafter`, `electricImplosionCompressor`, `advancedChipEngravingFactory`, `industrialLargeChemicalReactor`, `probableDevices`, `advancedSteamMachines` |
+| `machines` | `smartAssemblyFactory`, `easySAFRecipe`, `dimensionallyTranscendentFusionReactor`, `voidMiner` (needs `wireless.energy`), `industrialFishingPond`, `crystalGrowthChamber`, `greenhouse`, `personalBeacon` (needs `wireless.fe`), `patternCrafter`, `electricImplosionCompressor`, `advancedChipEngravingFactory`, `industrialLargeChemicalReactor`, `probableDevices`, `advancedSteamMachines` |
 | `modularMachines` | `enabled` |
 | `gregification` | `modernIndustrialization` (1.21.1), `mekanism`, `productiveBees`, `create`, `hostileNeuralNetworks` |
 | `wireless` | `energy`, `fe`, `steam`, `computation`, `opticalData` |

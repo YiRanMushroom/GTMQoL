@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:block/block",
+  "dynamic_renders": [
+    {
+      "type": "gtmqol:personal_beacon_beam"
+    }
+  ],
+  "loader": "gtceu:machine",
+  "machine": "gtmqol:personal_beacon",
+  "texture_overrides": {
+    "all": "gtceu:block/casings/solid/machine_casing_stable_titanium"
+  },
+  "variants": {
+    "": {
+      "model": "gtmqol:block/personal_beacon"
+    }
+  }
+}
