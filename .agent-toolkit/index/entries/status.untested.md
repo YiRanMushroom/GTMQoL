@@ -2,7 +2,8 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-13 05:02:28"
+updated = "2026-11-15 01:16:55"
+checked = "2026-11-15"
 
 [[items]]
 name = "legacy-parts-no-unification"
@@ -174,9 +175,9 @@ snippet = "// Untested: Shift + drag over the inventory moves stacks into a GTCE
 
 [[items]]
 name = "patterns-window-speed"
-value = "Patterns window fast with thousands of patterns, icons and tooltips unchanged"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixPatternGridWidget.java"
-snippet = "// Untested: the patterns window opens and updates quickly with thousands of patterns, icons and tooltips as before"
+value = "Assembling Matrix: patterns window fast with thousands of patterns; since 2026-11-14 (shared ItemGridWidget, CasingFrameBox) the matrix still forms and its window still takes and puts patterns"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/ui/ItemGridWidget.java"
+snippet = "// Untested: the patterns window opens and updates quickly"
 
 [[items]]
 name = "matrix-fe-flush"
@@ -393,5 +394,33 @@ name = "ghost-by-id"
 value = "Clicking the + row of a ghost mark list empty-handed opens Mark by ID (hatch and single block popup); for minecraft:water only Add as fluid is active and shows water, an unknown id greys both buttons out and says so, Enter adds when only one kind matches, adding closes the popup"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/GhostIdPanel.java"
 snippet = "// Untested: clicking the + row empty-handed opens it"
+
+[[items]]
+name = "me-data-center"
+value = "ME Data Center in game: forms; one CPU per job plus one with the free storage; storage returns when a job ends; credits; locked while a job runs; broken casing pauses, reforming resumes; job survives a reload; breaking the controller cancels and returns items"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/datacenter/MEDataCenterMachine.java"
+snippet = "// Untested: in game, a formed ME Data Center with crafting units"
+
+[[items]]
+name = "me-data-center-stars"
+value = "A formed ME Data Center shows the End portal's stars behind its glass on every side, at any size and facing"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/datacenter/MEDataCenterStarsRender.java"
+snippet = "// Untested: a formed ME Data Center shows the End portal's stars"
+
+[[items]]
+name = "me-data-center-compat"
+value = "An AE2 lacking a member the ME Data Center uses: the probe throws a LinkageError and the controller shows \"This AE2 version is not supported\"; cannot be tried with the supported AE2"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/datacenter/MEDataCenterCompat.java"
+snippet = "// Untested: with an AE2 that lacks one of these"
+
+[[items]]
+name = "matrix-problems"
+value = "Assembling Matrix: a Crafting Pattern whose catalyst is missing or worn out shows as a red Patterns with problems line in the controller (tooltip names it), the line leaves a few seconds after the catalyst is back or the job is cancelled, and the window keeps its layout when the line appears"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixMachine.java"
+snippet = "// Untested: a pattern whose catalyst is missing or worn out shows under Patterns with problems in the"
+
+[[items]]
+name = "number-text"
+value = "Short numbers (NumberText): ME Data Center storage, Assembling Matrix speed/crafting/stored, wireless network stored energy and monitor rates read like 232G with the full number in the tooltip; the +/- credit buttons say Locked while a job runs"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

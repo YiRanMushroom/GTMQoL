@@ -2,8 +2,8 @@ package com.yiran.minecraft.gtmqol.common.wireless;
 
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
+import com.yiran.minecraft.gtmqol.common.ui.NumberText;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -78,8 +78,7 @@ public final class WirelessUI {
                         .horizontalCenter())
                 .child(new TextWidget<>(Text.dynamic(() -> Component.translatable(NETWORK_KEY, name.getValue())))
                         .horizontalCenter())
-                .child(new TextWidget<>(Text.dynamic(() -> Component.translatable(storedKey,
-                        FormattingUtil.formatNumbers(stored.getValue()))))
+                .child(NumberText.line(format -> Component.translatable(storedKey, format.apply(stored.getValue())))
                         .horizontalCenter())
                 .child(Flow.row()
                         .coverChildren()

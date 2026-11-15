@@ -7,7 +7,8 @@ A personal quality-of-life addon for GregTech CEu Modern v8. In game it is liste
 | 1.21.1 | NeoForge 21.1 | `1.21` | EMI |
 | 1.20.1 | Forge 47 | `1.20` | JEI or EMI |
 
-Both branches have the same features, except the few marked 1.21.1 only. Releases are `v<version>-1.21` and
+Both branches have the same features, except the few marked 1.21.1 only. 1.21.1 is the main version and the one
+tested in game; 1.20.1 gets the same content with less testing. Releases are `v<version>-1.21` and
 `v<version>-1.20`; each release's notes name the GTCEu build it needs.
 
 ## Features
@@ -43,7 +44,8 @@ smithing patterns, and the Crafting Patterns made for the Pattern Crafter. Proce
   field; patterns are taken out with a click and put in from the cursor or with Shift-click from the inventory.
 - **Parts on the edges**: one **Assembling Matrix ME Interface**, at least one Wireless FE Input Hatch, and Input
   Buses for catalysts. Catalysts are the tools and smithing templates that a Crafting Pattern keeps instead of using
-  up; they stay in the Input Buses, and tools wear down there.
+  up; they stay in the Input Buses, and tools wear down there. When a craft can't start because its catalyst is
+  missing or worn out, the controller's window says so in red, and its tooltip names the patterns.
 - **Auto upload**: Shift-clicking Encode in a Pattern Encoding Terminal on the same ME network moves a crafting,
   stonecutting or smithing pattern right into the Assembling Matrix; a plain click keeps it in the terminal as usual.
   A notification in the top right corner, visible over the terminal, says what happened: a pattern the matrix already
@@ -61,6 +63,31 @@ smithing patterns, and the Crafting Patterns made for the Pattern Crafter. Proce
   circuits and a Crafting Co-Processing Unit.
 - Needs AE2, and the config switches `machines.patternCrafter`, `wireless.energy` and `wireless.fe` on (all on by
   default).
+
+#### ME Data Center
+
+The **ME Data Center** is a multiblock that is the Crafting CPUs of its ME network. Every crafting job gets a CPU of
+its own, so one data center runs any number of jobs at once.
+
+- **Structure**: the same box as the Assembling Matrix, 3 to 15 blocks each way, with the controller in the middle of
+  the front's bottom edge. The edges are Machine Casings, all of one tier, with one **ME Data Center Interface** among
+  them; the faces are Quartz Glass; the inside holds **ME Data Center CPU Frames** or air.
+- **CPU Frames** hold AE2 Crafting Storages and Crafting Co-Processing Units, one per slot. A ULV frame has one slot,
+  and each tier above has one more. Other mods' storages and co-processing units work if they are built on AE2's.
+  The controller's crafting units window shows the units of all frames, each kind once with its number, and has a
+  search field; a click takes a stack out, and units are put in from the cursor or with Shift-click from the
+  inventory.
+- **Jobs**: a job takes as much storage as it needs and gives it back when it ends. Every job has all the
+  co-processors. Crafting terminals show one CPU per running job and one more with the storage that is left.
+- **Credits**: each casing tier above ULV gives one credit. In the controller's window a credit is spent on the
+  storage or on the co-processors, and multiplies that by 4. Credits start unspent.
+- **While a job runs**, crafting units and credits can't be changed.
+- **Breaking and rebuilding**: a broken structure pauses its jobs, and they go on when it is formed again. Breaking
+  the controller cancels them: what they hold goes to the ME network, and whatever the network can't hold is lost.
+- **Recipes**: the CPU Frames and the ME Interface in the ME Assembler (the assembler without `ae2.processing`); the
+  controller is crafted from an IV Machine Hull, 256k Crafting Storages, Crafting Co-Processing Units, IV Robot Arms
+  and IV circuits.
+- Needs AE2. Uses the ME network's power as AE2's Crafting CPUs do, and no EU.
 
 #### Pattern Batching
 
@@ -345,7 +372,7 @@ Assembler, the Ghost Ingredient Hatch, potion fluids, the circuit and material t
 | `recipes` | `miscRecipes`, `earlyGame`, `keepManualCompression`, `keepVanillaTNT`, `netherStarDust`, `useLegacyPartRecipes` |
 | `steamTweaks` | `circuitSlots`, `fluidTanks`, `noOutputLimits`, `optionalLargeBoilerParts` |
 | `overclocking` | `buffFusionReactor`, `enableMultiTierSkipping`, `absoluteParallelHatches` |
-| `ae2` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn` (live), `skipNotConsumedInputs` (live), `assemblingMatrix`, `assemblingMatrixFEPerCraft` (live, default 64), `patternBatchParts` (live, default 1), `fastCraftingPlans` (live) |
+| `ae2` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn` (live), `skipNotConsumedInputs` (live), `assemblingMatrix`, `meDataCenter`, `assemblingMatrixFEPerCraft` (live, default 64), `patternBatchParts` (live, default 1), `fastCraftingPlans` (live) |
 | `misc` | `feInput`, `autoBuild` (live) |
 | `voidMiner` (live) | `dimensionMapping`: mine another dimension's veins (`"from=to"`, read when a Void Miner loads); `maxOperations` (default 64), `maxMultiplier` (default 4096): the most ore types and stacks per cycle |
 | `integrationTests` | `enabled` (default off): runtime-generated example machines, for development |

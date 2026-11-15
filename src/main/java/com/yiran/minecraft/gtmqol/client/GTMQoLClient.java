@@ -12,6 +12,7 @@ import com.yiran.minecraft.gtmqol.common.wireless.energy.EnergyCubeSidesRender;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.ae2.EnergyCellSidesRender;
 import com.yiran.minecraft.gtmqol.gregification.CasingPartRender;
 import com.yiran.minecraft.gtmqol.gregification.client.GregificationClient;
+import com.yiran.minecraft.gtmqol.integration.ae2.datacenter.MEDataCenterStarsRender;
 import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixPartRender;
 
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
@@ -47,6 +48,7 @@ public final class GTMQoLClient {
         if (GTCEu.Mods.isAE2Loaded()) {
             DynamicRenderManager.register(GTMQoL.id("energy_cell_sides"), EnergyCellSidesRender.TYPE);
             DynamicRenderManager.register(GTMQoL.id("matrix_part"), AssemblingMatrixPartRender.TYPE);
+            DynamicRenderManager.register(GTMQoL.id("me_data_center_stars"), MEDataCenterStarsRender.TYPE);
         }
         // Mekanism 10.4's chemicals only exist in EMI through JEMI, see ChemicalEmiConverter.
         if (ModList.get().isLoaded("emi") && ModList.get().isLoaded("jei") && ModList.get().isLoaded("mekanism")) {

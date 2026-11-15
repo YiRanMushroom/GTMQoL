@@ -1,8 +1,8 @@
 +++
 title = "Direction: ship good features fast and keep iterating; light process, but a public mod players install"
 keys = [ "definition of done", "direction", "priorities", "quality bar", "when to ask" ]
-updated = "2026-11-11 08:19:21"
-checked = "2026-11-11"
+updated = "2026-11-15 00:21:24"
+checked = "2026-11-15"
 
 [[items]]
 name = "optional-tags"
@@ -15,8 +15,8 @@ The same entry as on 1.21 (features are written there first and ported here in t
 GTMQoL is a public GTCEu addon that one person builds for fun and releases for others to play. The aim: turn ideas into good features quickly and keep iterating. It is not a production system, so no formal process: no sign-off steps, no documents or tests for their own sake. But players install every release, so what ships has to be right.
 
 ## Fast
-- Decide and act. Design, names, layout and small refactors inside these rules are yours to choose; say what you chose when you report. A wrong choice costs one more round, and so does a question.
-- Ask first only for what is hard to take back or is a matter of the user's taste: what players get (balance numbers, defaults, removing something), a change that breaks saved worlds or configs, a new abstraction or a hack (general.design), committing and releasing (general.commits).
+- Decide and act. Design, names, layout, abstractions and refactors inside these rules are yours to choose (general.design); say what you chose when you report. A wrong choice costs one more round, and so does a question.
+- Ask first only for what is hard to take back or is a matter of the user's taste: what players get (balance numbers, defaults, removing something), a change that breaks saved worlds or configs, a hack (general.design), committing and releasing (general.commits).
 - A request is finished in one go: the code on both branches, its lang (runData), config comment, README, index entry and Untested notes. Nothing that belongs to the change is left for later.
 - Small and direct beats general: write what the feature needs now. Shared code comes when the same logic exists a third time, not before.
 - Long work (builds, runData, reviews by subagents) runs in the background while you go on (general.long-tasks).

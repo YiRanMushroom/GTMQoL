@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.yiran.minecraft.gtmqol.common.probable.ProbableDevices;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
+import com.yiran.minecraft.gtmqol.integration.ae2.datacenter.MEDataCenter;
 import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrix;
 import com.yiran.minecraft.gtmqol.integration.ae2.parts.AEDualParts;
 import com.yiran.minecraft.gtmqol.integration.ae2.AEProcessing;
@@ -177,6 +178,7 @@ public final class GTMQoLAddon implements IGTAddon {
             if (config.ae2.overclockedPatternBuffer) AE2Machines.addRecipes(provider);
             if (config.wirelessFE()) WirelessEnergyCellMachine.addRecipes(provider);
             if (config.assemblingMatrix()) AssemblingMatrix.addRecipes(provider, config.ae2.processing);
+            if (config.ae2.meDataCenter) MEDataCenter.addRecipes(provider, config.ae2.processing);
             if (config.ae2.processing) AEProcessing.addRecipes(provider);
             if (config.ae2.dualHatches) AEDualParts.addRecipes(provider, config.ae2.processing);
             if (EarlyConfig.AE2_STICKY_CARD) StickyCardItem.addRecipes(provider, config.ae2.processing);

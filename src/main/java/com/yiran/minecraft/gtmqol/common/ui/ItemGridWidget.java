@@ -1,6 +1,4 @@
-package com.yiran.minecraft.gtmqol.integration.ae2.matrix;
-
-import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixMachine.PatternEntry;
+package com.yiran.minecraft.gtmqol.common.ui;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -25,48 +23,58 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
- * All the patterns of a matrix as an inventory, each shown as what it makes. Slots would not do: a big matrix holds tens
- * of thousands. So this draws only the rows in view of its scrolling parent, and its height follows the list. Works as
- * an inventory too: a click picks a pattern up, Shift sends it to the player's inventory, and a click with a pattern in
- * hand puts it in. Client side only; clicks go out through the callbacks.
+ * The items of many inventories as one, each shown by its icon (the Assembling Matrix's patterns as what they make, the
+ * ME Data Center's crafting units). Slots would not do: a big multiblock holds tens of thousands. So this draws only the
+ * rows in view of its scrolling parent (a {@code ListWidget}), and its height follows the list. Works as an inventory
+ * too: a click picks an item up, Shift sends it to the player's inventory, and a click with an item in hand puts it
+ * in. Client side only; clicks go out through the callbacks.
  */
 // Untested: the patterns window opens and updates quickly with thousands of patterns, icons and tooltips as before
-class AssemblingMatrixPatternGridWidget extends Widget<AssemblingMatrixPatternGridWidget> implements Interactable {
+public class ItemGridWidget extends Widget<ItemGridWidget> implements Interactable {
 
-    static final int COLUMNS = 9;
-    static final int CELL = 18;
+    public static final int COLUMNS = 9;
+    public static final int CELL = 18;
 
-    private record Shown(PatternEntry entry, ItemStack icon, String name) {}
+    private record Shown(ItemGridEntry entry, ItemStack icon, String name) {}
 
-    private final Supplier<List<PatternEntry>> entries;
+    private final Supplier<List<ItemGridEntry>> entries;
     private final Supplier<String> search;
-    private final BiConsumer<PatternEntry, Boolean> onTake;
+    private final BiConsumer<ItemGridEntry, Boolean> onTake;
     private final Runnable onPut;
-    private List<PatternEntry> seenEntries = List.of();
+    private final String emptyKey;
+    private final String takeKey;
+    private List<ItemGridEntry> seenEntries = List.of();
     private String seenSearch = "";
     private List<Shown> all = List.of();
     private List<Shown> shown = List.of();
     private int rows = -1;
-    // the hovered pattern's tooltip, built again only when that changes: building it can decode the pattern
+    // the hovered item's tooltip, built again only when that changes: building it can decode a pattern
     private @Nullable Shown tooltipFor;
     private boolean tooltipShift;
     private boolean tooltipAdvanced;
     private List<Component> tooltip = List.of();
 
-    /** @param onTake the entry, and whether it goes to the inventory instead of the hand */
-    AssemblingMatrixPatternGridWidget(Supplier<List<PatternEntry>> entries, Supplier<String> search,
-                            BiConsumer<PatternEntry, Boolean> onTake, Runnable onPut) {
+    /**
+     * @param onTake   the entry, and whether it goes to the inventory instead of the hand
+     * @param emptyKey lang key of the line shown when there is nothing
+     * @param takeKey  lang key of the line under an item's tooltip
+     */
+    public ItemGridWidget(Supplier<List<ItemGridEntry>> entries, Supplier<String> search,
+                          BiConsumer<ItemGridEntry, Boolean> onTake, Runnable onPut, String emptyKey,
+                          String takeKey) {
         this.entries = entries;
         this.search = search;
         this.onTake = onTake;
         this.onPut = onPut;
+        this.emptyKey = emptyKey;
+        this.takeKey = takeKey;
         size(COLUMNS * CELL, CELL);
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
-        List<PatternEntry> list = entries.get();
+        List<ItemGridEntry> list = entries.get();
         String text = search.get().toLowerCase(Locale.ROOT);
         // the list may have got shorter than where it was scrolled to (the size changes a frame later)
         if (getParent() instanceof AbstractScrollWidget<?, ?> scroll && scroll.getScrollArea().getScrollY() != null) {
@@ -80,7 +88,7 @@ class AssemblingMatrixPatternGridWidget extends Widget<AssemblingMatrixPatternGr
         }
         if (!list.equals(seenEntries)) {
             seenEntries = List.copyOf(list);
-            all = list.stream().map(AssemblingMatrixPatternGridWidget::shown).toList();
+            all = list.stream().map(ItemGridWidget::shown).toList();
         }
         seenSearch = text;
         List<Shown> matching = new ArrayList<>();
@@ -95,8 +103,8 @@ class AssemblingMatrixPatternGridWidget extends Widget<AssemblingMatrixPatternGr
         if (isValid()) scheduleResize();
     }
 
-    /** The icon comes from the server, which has the pattern decoded already. */
-    private static Shown shown(PatternEntry entry) {
+    /** The icon comes from the server. */
+    private static Shown shown(ItemGridEntry entry) {
         ItemStack icon = entry.icon();
         return new Shown(entry, icon, icon.getHoverName().getString().toLowerCase(Locale.ROOT));
     }
@@ -116,7 +124,7 @@ class AssemblingMatrixPatternGridWidget extends Widget<AssemblingMatrixPatternGr
         GuiGraphics graphics = context.getGraphics();
         var font = Minecraft.getInstance().font;
         if (shown.isEmpty()) {
-            Component empty = Component.translatable(AssemblingMatrixMachine.KEY + "patterns.empty");
+            Component empty = Component.translatable(emptyKey);
             graphics.drawString(font, empty, (COLUMNS * CELL - font.width(empty)) / 2, 4, 0x808080, false);
             return;
         }
@@ -133,9 +141,17 @@ class AssemblingMatrixPatternGridWidget extends Widget<AssemblingMatrixPatternGr
             graphics.fill(x + CELL - 1, y + 1, x + CELL, y + CELL, 0xFFFFFFFF);
             ItemStack icon = shown.get(i).icon;
             graphics.renderItem(icon, x + 1, y + 1);
-            graphics.renderItemDecorations(font, icon, x + 1, y + 1);
+            graphics.renderItemDecorations(font, icon, x + 1, y + 1, countText(shown.get(i).entry.count()));
             if (i == hovered) graphics.fill(x + 1, y + 1, x + CELL - 1, y + CELL - 1, 0x80FFFFFF);
         }
+    }
+
+    /** How many an entry stands for, short enough for a slot; nothing for one. */
+    private static @Nullable String countText(int count) {
+        if (count <= 1) return null;
+        if (count < 1000) return Integer.toString(count);
+        if (count < 1_000_000) return count / 1000 + "k";
+        return count / 1_000_000 + "M";
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -150,7 +166,7 @@ class AssemblingMatrixPatternGridWidget extends Widget<AssemblingMatrixPatternGr
         boolean advanced = minecraft.options.advancedItemTooltips;
         if (hovered != tooltipFor || shift != tooltipShift || advanced != tooltipAdvanced) {
             List<Component> lines = new ArrayList<>(Screen.getTooltipFromItem(minecraft, hovered.entry.stack()));
-            lines.add(Component.translatable(AssemblingMatrixMachine.KEY + "patterns.take")
+            lines.add(Component.translatable(takeKey)
                     .withStyle(ChatFormatting.YELLOW));
             tooltip = lines;
             tooltipFor = hovered;

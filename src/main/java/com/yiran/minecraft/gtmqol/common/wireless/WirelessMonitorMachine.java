@@ -7,20 +7,18 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.yiran.minecraft.gtmqol.common.ui.NumberText;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.TextWidget;
 
 import java.util.function.Supplier;
 
@@ -83,17 +81,16 @@ public abstract class WirelessMonitorMachine extends MetaMachine implements IMui
 
         mainWidget.child(WirelessUI.create(syncManager, binding, guiData.getPlayer(), storedKey, pool)
                 .height(MachineUIPanel.DEFAULT_CONTENT_HEIGHT + 40)
-                .child(new TextWidget<>(Text.dynamic(() -> Component.translatable(inputRateKey,
-                        FormattingUtil.formatNumbers(input.getDoubleValue()))))
+                .child(NumberText.line(format -> Component.translatable(inputRateKey,
+                        format.apply(input.getDoubleValue())))
                         .horizontalCenter())
-                .child(new TextWidget<>(Text.dynamic(() -> Component.translatable(outputRateKey,
-                        FormattingUtil.formatNumbers(output.getDoubleValue()))))
+                .child(NumberText.line(format -> Component.translatable(outputRateKey,
+                        format.apply(output.getDoubleValue())))
                         .horizontalCenter())
-                .child(new TextWidget<>(Text.dynamic(() -> {
+                .child(NumberText.line(format -> {
                     double net = input.getDoubleValue() - output.getDoubleValue();
-                    return Component.translatable(netRateKey,
-                            (net > 0 ? "+" : "") + FormattingUtil.formatNumbers(net));
-                }))
+                    return Component.translatable(netRateKey, (net > 0 ? "+" : "") + format.apply(net));
+                })
                         .horizontalCenter()));
     }
 }

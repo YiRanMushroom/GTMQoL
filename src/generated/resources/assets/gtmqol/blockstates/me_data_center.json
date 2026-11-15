@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "gtmqol:block/machine/me_data_center",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtmqol:block/machine/me_data_center"
+    },
+    "facing=south": {
+      "model": "gtmqol:block/machine/me_data_center",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gtmqol:block/machine/me_data_center",
+      "y": 270
+    }
+  }
+}

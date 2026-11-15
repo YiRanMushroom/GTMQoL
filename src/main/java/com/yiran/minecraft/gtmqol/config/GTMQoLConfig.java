@@ -370,6 +370,13 @@ public final class GTMQoLConfig {
         public boolean assemblingMatrix = true;
 
         @Configurable
+        @Configurable.Comment({ "ME Data Center: a multiblock that is the crafting CPUs of an ME network. Its CPU Frames",
+                "hold AE2 Crafting Storages and Crafting Co-Processing Units; every crafting job takes the storage it",
+                "needs and has all the co-processors", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean meDataCenter = true;
+
+        @Configurable
         @Configurable.Comment({ "FE each craft in an Assembling Matrix uses", "Default: 64" })
         @Configurable.Range(min = 0)
         public int assemblingMatrixFEPerCraft = 64;

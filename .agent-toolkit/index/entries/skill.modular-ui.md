@@ -1,8 +1,8 @@
 +++
 title = "ModularUI windows and popups: looks, the user's preferences, popups, MUI traps; use when building or changing a UI"
 keys = [ "centered", "layout", "list", "modularui", "popuppanel", "scroll", "ui" ]
-updated = "2026-11-08 04:40:32"
-checked = "2026-11-07"
+updated = "2026-11-15 01:16:55"
+checked = "2026-11-15"
 
 [[items]]
 name = "popups"
@@ -34,6 +34,10 @@ ModularUI traps (each broke a UI once):
 - Shift-click tries every other slot group, highest priority first, and storage outranks the player's inventory. So machine outputs go to the inputs when they are separate groups: put all the machine's slots in one registered group (.slotGroup(name), PatternCrafterUI).
 - GTGuiScreen(panel) uses the gtceu:standard theme, which the theme reload leaves without the backgrounds of slots and off buttons (context.md): pass ThemeAPI.DEFAULT_ID, as machine UIs do.
 - A GenericListSyncHandler compares entries with equals and resends the whole list when one differs; MUI writes the packet later on the network thread from a cache the server thread clears and refills, so a resend racing that write crashed the client (NPE in StreamCodec composite, 2026-11-07). Entries holding an ItemStack (no equals of its own) need an equals by content (PatternEntry, Stored), else they resend every tick.
+
+## Shared widgets (common/ui)
+- Thousands of items across many inventories in one window (Assembling Matrix patterns, ME Data Center crafting units): ItemGridWidget inside a ListWidget, fed by a GenericListSyncHandler of ItemGridEntry, with take/put synced actions; a DepositHandler slot beside it takes items by hand or Shift-click and passes them on.
+- Numbers that can get very large (energy, bytes, crafts, rates): NumberText.line(format -> Component.translatable(key, format.apply(value))) shows them short (232G, 1.23k; full below 10,000) with the full line as tooltip. The user asked for this on 2026-11-14; used by the ME Data Center, the Assembling Matrix, WirelessUI and the wireless monitor, use it for new such lines.
 
 ## Popups
 Every popup of ours goes through PopupWidgets.popup instead of PopupPanel.createPopupPanel, so they all behave the same (void miner, fishing pond, cyclic stored list, ghost marks, pattern batching). Its button calls MUI's IPanelHandler.togglePanel() (second click closes), not openPanel(). Number settings in a popup: counterRow (click ±1, Shift ±shiftStep, Ctrl ×2/÷2; Mth.clamp on 1.20.1, Math.clamp on 1.21).
