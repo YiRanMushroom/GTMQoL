@@ -40,6 +40,7 @@ import com.yiran.minecraft.gtmqol.common.test.MixinTargetCheck;
 import com.yiran.minecraft.gtmqol.common.crafter.PatternCrafter;
 import com.yiran.minecraft.gtmqol.common.crystal.CrystalGrowth;
 import com.yiran.minecraft.gtmqol.common.greenhouse.Greenhouse;
+import com.yiran.minecraft.gtmqol.common.beacon.PersonalBeacon;
 import com.yiran.minecraft.gtmqol.common.engraving.AdvancedChipEngraving;
 import com.yiran.minecraft.gtmqol.common.implosion.ElectricImplosion;
 import com.yiran.minecraft.gtmqol.integration.kubejs.GTMQoLKubeJSPlugin;
@@ -107,6 +108,7 @@ public final class GTMQoL {
         if (config.recipes.useLegacyPartRecipes) LegacyPartRecipes.init();
         MaterialAliasTags.init();
         PotionContainers.init(modBus);
+        if (config.personalBeacon()) PersonalBeacon.init(modBus);
         RecipeTypeLayouts.init(modBus);
         SteamTweaks.init(modBus);
         AutoBuildButton.init();
@@ -243,6 +245,7 @@ public final class GTMQoL {
         if (config.machines.advancedChipEngravingFactory) AdvancedChipEngraving.initMachine();
         if (config.machines.crystalGrowthChamber) CrystalGrowth.initMachine();
         if (config.machines.greenhouse) Greenhouse.initMachines();
+        if (config.personalBeacon()) PersonalBeacon.initMachines();
         if (config.machines.patternCrafter) PatternCrafter.initMachines();
         if (config.machines.advancedSteamMachines) AdvancedSteamMachines.init();
         if (config.wireless.steam) WirelessSteamMachines.init();

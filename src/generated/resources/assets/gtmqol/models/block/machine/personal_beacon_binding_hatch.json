@@ -1,0 +1,24 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtmqol:personal_beacon_binding_hatch",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
+  "variants": {
+    "": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/single",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
+          "overlay": "gtmqol:block/overlay/machine/personal_beacon_binding",
+          "overlay_emissive": "gtceu:block/void",
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
+        }
+      }
+    }
+  }
+}

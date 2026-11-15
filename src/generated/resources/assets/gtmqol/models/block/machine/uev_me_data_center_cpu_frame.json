@@ -8,23 +8,13 @@
     "side"
   ],
   "variants": {
-    "is_painted=false": {
+    "": {
       "model": {
-        "parent": "gtceu:block/machine/template/part/hatch_machine",
+        "parent": "gtceu:block/machine/template/sided/single",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uev/bottom",
           "overlay": "gtceu:block/overlay/machine/hpca/empty",
-          "side": "gtceu:block/casings/voltage/uev/side",
-          "top": "gtceu:block/casings/voltage/uev/top"
-        }
-      }
-    },
-    "is_painted=true": {
-      "model": {
-        "parent": "gtceu:block/machine/template/part/hatch_machine_color_ring",
-        "textures": {
-          "bottom": "gtceu:block/casings/voltage/uev/bottom",
-          "overlay": "gtceu:block/overlay/machine/hpca/empty",
+          "overlay_emissive": "gtceu:block/void",
           "side": "gtceu:block/casings/voltage/uev/side",
           "top": "gtceu:block/casings/voltage/uev/top"
         }

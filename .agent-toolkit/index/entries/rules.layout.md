@@ -1,8 +1,8 @@
 +++
 title = "Source layout: package tree of com.yiran.minecraft.gtmqol (1.20.1) and where resources live"
 keys = [ "packages", "src/generated/resources", "where is" ]
-updated = "2026-11-12 06:56:32"
-checked = "2026-11-12"
+updated = "2026-11-15 06:12:19"
+checked = "2026-11-15"
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol"
@@ -10,7 +10,7 @@ dir = [ "GTMQoL.java", "GTMQoLAddon.java", "RenamedIds.java", "api/", "client/",
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/common"
-dir = [ "assembler/", "autobuild/", "blockprovider/", "circuit/", "crafter/", "crystal/", "engraving/", "feinput/", "ghost/", "greenhouse/", "implosion/", "modular/", "multiblock/", "overclock/", "potion/", "probable/", "recipedb/", "singleblock/", "stacklike/", "steam/", "test/", "ui/", "wireless/" ]
+dir = [ "assembler/", "autobuild/", "beacon/", "blockprovider/", "circuit/", "crafter/", "crystal/", "engraving/", "feinput/", "ghost/", "greenhouse/", "implosion/", "modular/", "multiblock/", "overclock/", "potion/", "probable/", "recipedb/", "singleblock/", "stacklike/", "steam/", "test/", "ui/", "wireless/" ]
 
 [[links]]
 path = "src/main/java/com/yiran/minecraft/gtmqol/core"
@@ -38,6 +38,7 @@ client/              GTMQoLClient, render types, Shift-drag; feature renders liv
 common/
   assembler/         magical assembler (type, machines, UI)
   autobuild/         survival auto-build button
+  beacon/            Personal Beacon, its cores and parts, Potion Core Infuser
   blockprovider/     gtmqol:block recipe capability
   circuit/           UniversalCircuits, ControlCircuits, CircuitTags
   crafter/           pattern crafter, crafting pattern items, DecodedPatterns

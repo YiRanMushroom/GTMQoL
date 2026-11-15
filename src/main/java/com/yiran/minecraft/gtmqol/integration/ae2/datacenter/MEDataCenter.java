@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.yiran.minecraft.gtmqol.GTMQoL;
@@ -67,7 +68,9 @@ public final class MEDataCenter {
                     .tier(tier)
                     .rotationState(RotationState.NONE)
                     .modelProperty(IS_FORMED, false)
-                    .colorOverlayTieredHullModel(GTCEu.id("block/overlay/machine/hpca/empty"))
+                    // the same on all six sides: a frame has no front
+                    .model(GTMachineModels.createSingleOverlayTieredHullMachineModel(
+                            GTCEu.id("block/overlay/machine/hpca/empty"), GTCEu.id("block/void")))
                     .langValue(VNF[tier] + " ME Data Center CPU Frame")
                     .tooltips(Component.translatable(MEDataCenterMachine.KEY + "frame.tooltip", tier + 1))
                     .register();

@@ -2,8 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-15 02:14:57"
-checked = "2026-11-15"
+updated = "2026-11-15 06:59:21"
 
 [[items]]
 name = "legacy-parts-no-unification"
@@ -403,9 +402,9 @@ snippet = "// Untested: in game, a formed ME Data Center with crafting units"
 
 [[items]]
 name = "me-data-center-stars"
-value = "A formed ME Data Center shows the End portal's stars behind its glass on every side, at any size and facing"
+value = "ME Data Center: the stars cover the glass of every side from just outside it, at any size and facing; CPU frames don't show through from far away; frames have their overlay on all six sides"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/datacenter/MEDataCenterStarsRender.java"
-snippet = "// Untested: a formed ME Data Center shows the End portal's stars"
+snippet = "// Untested: a formed ME Data Center's glass is covered by the End portal's stars"
 
 [[items]]
 name = "me-data-center-compat"
@@ -434,5 +433,65 @@ name = "me-cable-cover"
 value = "ME Cable Cover: on a plain machine cables on any sides connect through it and channels pass (32 by default); on an ME hatch or pattern buffer cables connect on all sides, still after a wrench turn, front only again once removed; survives a reload; one per machine, not on a Machine Hull"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/cablecover/MECableCover.java"
 snippet = "// Untested: on a machine without an ME connection, cables on any sides connect through it and channels pass (32"
+
+[[items]]
+name = "personal-beacon-structure"
+value = "Personal Beacon: forms on 1 and on 7 layers, also on a titanium floor; parts only on a layer's outer ring; preview and auto-build offer only the layer count; controller is a see-through beacon on a titanium base; creative tab has a Potion Beacon Core per effect"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PersonalBeacon.java"
+snippet = "// Untested: the beacon forms with the controller alone on top of 1 and of 7 layers"
+
+[[items]]
+name = "personal-beacon-effects"
+value = "Personal Beacon: bound online players get the effects every 15 s at their hatch levels, other dimensions too; Not enough FE without FE"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PersonalBeaconMachine.java"
+snippet = "// Untested: a bound online player gets the effects every 15 s"
+
+[[items]]
+name = "beacon-chunk-loading"
+value = "Personal Beacon Chunk Loader keeps the beacon working with nobody near; released when broken; again after restart"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PersonalBeaconMachine.java"
+snippet = "// Untested: with a chunk loader the beacon keeps working"
+
+[[items]]
+name = "beacon-flight"
+value = "Flight effect lets survival players fly and ends cleanly; Flight Speed per level, speed resets after it ends and after death"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/BeaconEffects.java"
+snippet = "// Untested: Flight lets a survival player fly"
+
+[[items]]
+name = "potion-core-infuser"
+value = "Potion Core Infuser: potions turn into time at 1A EV (strong ×2 per level, lingering ×4), wrong potions refused, core at 24 h, Clear"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PotionCoreInfuserMachine.java"
+snippet = "// Untested: a potion piped or poured in turns into time"
+
+[[items]]
+name = "beacon-beam"
+value = "Personal Beacon beam above a working beacon, coloured by its effects"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PersonalBeaconBeamRender.java"
+snippet = "// Untested: the beam shows above a working beacon"
+
+[[items]]
+name = "beacon-socket-core"
+value = "Personal Beacon Core Socket shows a white core on all six sides, and the core in its effect's colour once one is in"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PersonalBeaconCoreSocketMachine.java"
+snippet = "// Untested: a socket shows a white core on all six sides"
+
+[[items]]
+name = "beacon-effect-icons"
+value = "Flight shows the elytra as its effect icon, Flight Speed three elytras stacked"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/BeaconEffects.java"
+snippet = "// Untested: Flight lets a survival player fly"
+
+[[items]]
+name = "personal-beacon-reform"
+value = "Personal Beacon: breaking a lower-layer block leaves a smaller working beacon, the parts of the lost layers are plain again; after adding a layer, Check structure takes it in; any structure change stops the running cycle and the next counts only the parts still there"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PersonalBeaconMachine.java"
+snippet = "// Untested: breaking a block of a lower layer leaves a smaller beacon"
+
+[[items]]
+name = "beacon-sound"
+value = "Personal Beacon: hums like a vanilla beacon while working, with the activate and deactivate sounds; the beam starts inside the controller and is there in every cycle, also after a restart and a structure change"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PersonalBeaconMachine.java"
+snippet = "// Untested: a working beacon hums like a vanilla one"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

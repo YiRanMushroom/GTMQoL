@@ -44,6 +44,11 @@ public final class GTMQoLConfig {
         return wireless.energy && wireless.fe;
     }
 
+    /** The Personal Beacon: its switch, and wireless FE, its only energy. */
+    public boolean personalBeacon() {
+        return machines.personalBeacon && wirelessFE();
+    }
+
     /** The Assembling Matrix: its switch, and what it is made of (Crafting Patterns, wireless FE). */
     public boolean assemblingMatrix() {
         return ae2.assemblingMatrix && machines.patternCrafter && wirelessFE();
@@ -94,6 +99,12 @@ public final class GTMQoLConfig {
                 "other mods' by name)", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean greenhouse = true;
+
+        @Configurable
+        @Configurable.Comment({ "Personal Beacon (gives bound players effects from beacon cores, anywhere) and the Potion",
+                "Core Infuser. Needs wireless.energy and wireless.fe", "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean personalBeacon = true;
 
         @Configurable
         @Configurable.Comment({ "Pattern Crafter (runs crafting table, stonecutter and smithing table recipes from Crafting",
