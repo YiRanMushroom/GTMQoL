@@ -54,7 +54,7 @@ Unit tests (gradlew test, integration/ae2/crafting): TestWorld plays plans out a
 Code:
 - src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/CraftingCalculationPlannerMixin.java
 - src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/CraftingCpuLogicBatchMixin.java
-- src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/CraftingServiceBatchMixin.java
+- src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/CraftingServiceMixin.java
 - src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/CraftingSimulationStateBatchMixin.java
 - src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/MEPatternBufferPatternBatchingMixin.java
 - src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/PatternEncodingTermMenuUploadMixin.java

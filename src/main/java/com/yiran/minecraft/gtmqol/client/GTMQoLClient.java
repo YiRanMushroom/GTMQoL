@@ -11,6 +11,7 @@ import com.yiran.minecraft.gtmqol.common.stacklike.mekanism.ChemicalEmiConverter
 import com.yiran.minecraft.gtmqol.common.wireless.energy.EnergyCubeSidesRender;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.ae2.EnergyCellSidesRender;
 import com.yiran.minecraft.gtmqol.gregification.CasingPartRender;
+import com.yiran.minecraft.gtmqol.integration.ae2.datacenter.MEDataCenterStarsRender;
 import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixPartRender;
 
 import net.neoforged.bus.api.IEventBus;
@@ -46,6 +47,7 @@ public final class GTMQoLClient {
         if (GTCEu.Mods.isAE2Loaded()) {
             DynamicRenderManager.register(GTMQoL.id("energy_cell_sides"), EnergyCellSidesRender.TYPE);
             DynamicRenderManager.register(GTMQoL.id("matrix_part"), AssemblingMatrixPartRender.TYPE);
+            DynamicRenderManager.register(GTMQoL.id("me_data_center_stars"), MEDataCenterStarsRender.TYPE);
         }
         if (ModList.get().isLoaded("emi") && ModList.get().isLoaded("mekanism")) ChemicalEmiConverter.register();
         ShiftDragQuickMove.init();

@@ -9,8 +9,8 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 
 | Branch | Version | Notes |
 |---|---|---|
-| `1.21` (this checkout, the default branch) | NeoForge 21.1, Java 21 | Features are written here first |
-| `1.20` | Forge 47, Java 17 | ModDevGradle legacyForge |
+| `1.21` (this checkout, the default branch) | NeoForge 21.1, Java 21 | Features are written here first; the main released version, the one the user tests in game |
+| `1.20` | Forge 47, Java 17 | ModDevGradle legacyForge; gets all content, not tested in detail (the user will when there is time) |
 
 - The 1.20.1 worktree sits next to this one (`..\GTMQoL-1.20.1`). The user works on two computers, so paths differ
   (`C:\Users\yiran.wang\IdeaProjects\` or `E:\code\Minecraft\`): check `git worktree list` and the checked-out branch
@@ -26,7 +26,10 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
   gregified multiblock), ghost slots above the progress bar (`ghost.recipe-viewer`) and Mark by ID
   (`ghost.list-widget`). The user checked the slots and Mark by ID on 1.21; still to check: `status.untested`
   tag-ghosts, ghost-column (and on 1.20 dynamic-slots, ghost-by-id with JEI).
-- Otherwise nothing. 3.6.0 (2026-11-12) released the Advanced Chip Engraving Factory (`multiblock.advanced-chip-engraving`) and
+- 3.7.0 (2026-11-14) released the ME Data Center (`ae2.me-data-center`), the Assembling Matrix's Patterns with
+  problems line (`ae2.assembling-matrix`) and short numbers (`NumberText`, `skill.modular-ui`). The user tried all of
+  it in game on 1.21; on 1.20 it is untried (`status.untested` there). Not triable: me-data-center-compat.
+- 3.6.0 (2026-11-12) released the Advanced Chip Engraving Factory (`multiblock.advanced-chip-engraving`) and
   the fix for gregification reading other mods' ingredients while recipes load (`gregification.loading-tags`; the
   dev client crashed at every first world load), with MI distillery/mixer marks and slot counts (`gregification.mi`).
   Nobody has tried them in game yet: `status.untested` advanced-chip-engraving, reload-ingredient-reads,

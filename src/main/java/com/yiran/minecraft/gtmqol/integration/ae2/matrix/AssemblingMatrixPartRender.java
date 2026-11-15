@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 
+import com.yiran.minecraft.gtmqol.integration.ae2.CasingFrameBox;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -27,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 /**
- * Formed parts of a assembling matrix drawn as the casing of its frame. A machine's own part textures are fixed per
+ * Formed parts of a {@link CasingFrameBox} drawn as the casing of its frame. A machine's own part textures are fixed per
  * definition, this frame's tier isn't. Only with AE2 loaded.
  */
 @ParametersAreNonnullByDefault
@@ -63,8 +65,8 @@ public class AssemblingMatrixPartRender extends DynamicRender<MultiblockControll
     public void renderPartModel(List<BakedQuad> quads, MultiblockControllerMachine controller,
                                 MultiblockPartMachine part, Direction frontFacing, @Nullable Direction side,
                                 RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
-        if (!(controller instanceof AssemblingMatrixMachine matrix)) return;
-        BlockState casing = matrix.casingState();
+        if (!(controller instanceof CasingFrameBox.Controller box)) return;
+        BlockState casing = box.casingState();
         quads.addAll(RenderUtil.getModelForState(casing).getQuads(casing, side, rand, ModelData.EMPTY, renderType));
     }
 }

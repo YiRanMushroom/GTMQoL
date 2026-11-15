@@ -7,6 +7,7 @@ import com.yiran.minecraft.gtmqol.common.autobuild.AutoBuildButton;
 import com.yiran.minecraft.gtmqol.common.probable.ProbableDevices;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.integration.ae2.crafting.PatternBatch;
+import com.yiran.minecraft.gtmqol.integration.ae2.datacenter.MEDataCenter;
 import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrix;
 import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixUploadMessage;
 import com.yiran.minecraft.gtmqol.integration.ae2.parts.AEDualParts;
@@ -161,6 +162,7 @@ public final class GTMQoL {
                 AssemblingMatrix.init();
                 AssemblingMatrixUploadMessage.register(modBus);
             }
+            if (config.ae2.meDataCenter) MEDataCenter.init();
             if (config.ae2.processing) {
                 AEProcessing.initItems();
                 AEProcessing.initRecipeTypes();

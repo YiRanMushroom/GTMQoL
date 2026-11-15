@@ -21,20 +21,22 @@ import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.common.crafter.ICrafterPattern;
 import com.yiran.minecraft.gtmqol.common.crafter.PatternCrafter;
 import com.yiran.minecraft.gtmqol.common.crafter.PatternWear;
+import com.yiran.minecraft.gtmqol.common.ui.DepositHandler;
+import com.yiran.minecraft.gtmqol.common.ui.ItemGridEntry;
+import com.yiran.minecraft.gtmqol.common.ui.ItemGridWidget;
+import com.yiran.minecraft.gtmqol.common.ui.NumberText;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.WirelessFEHatchPartMachine;
 import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
+import com.yiran.minecraft.gtmqol.integration.ae2.CasingFrameBox;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.inventories.InternalInventory;
@@ -74,6 +76,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -88,7 +91,8 @@ import static com.yiran.minecraft.gtmqol.common.ui.PopupWidgets.popup;
  * Controller of the {@link AssemblingMatrix}. The frame's tier and the processing cores give its capacity; the work itself
  * is in {@link AssemblingMatrixWork}.
  */
-public class AssemblingMatrixMachine extends MultiblockControllerMachine implements IMuiMachine {
+public class AssemblingMatrixMachine extends MultiblockControllerMachine
+                                     implements IMuiMachine, CasingFrameBox.Controller {
 
     public static final String KEY = "gtmqol.assembling_matrix.";
 
@@ -98,32 +102,6 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
     /** Half a machine panel and a gap: the patterns window stays clear of the player's inventory. */
     private static final int PATTERNS_PANEL_OFFSET = 92;
     private static final int VISIBLE_ROWS = 8;
-
-    /** A pattern in the patterns window. */
-    public record PatternEntry(int core, int slot, ItemStack stack, ItemStack icon) {
-
-        static final StreamCodec<RegistryFriendlyByteBuf, PatternEntry> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.VAR_INT, PatternEntry::core,
-                ByteBufCodecs.VAR_INT, PatternEntry::slot,
-                ItemStack.STREAM_CODEC, PatternEntry::stack,
-                ItemStack.STREAM_CODEC, PatternEntry::icon,
-                PatternEntry::new);
-
-        /**
-         * By content: ItemStack has no equals of its own, and the UI resends the list whenever an entry differs. The icon
-         * follows from the pattern. Unchanged slots keep their entry, so most comparisons end at the first check.
-         */
-        @Override
-        public boolean equals(Object other) {
-            return other == this || other instanceof PatternEntry entry && entry.core == core && entry.slot == slot &&
-                    ItemStack.matches(entry.stack, stack);
-        }
-
-        @Override
-        public int hashCode() {
-            return (31 * core + slot) * 31 + stack.getItem().hashCode();
-        }
-    }
 
     @SaveField
     private final AssemblingMatrixWork work = new AssemblingMatrixWork();
@@ -140,8 +118,21 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
     private long capacity;
     private String size = "";
     private boolean patternsChanged;
-    private @Nullable List<PatternEntry> entries;
-    private List<PatternEntry> lastEntries = List.of();
+    private @Nullable List<ItemGridEntry> entries;
+    private List<ItemGridEntry> lastEntries = List.of();
+    /** Patterns the catalysts refused, with why and when: named in the window until AE2 stops asking for them. */
+    private final Map<IPatternDetails, Problem> problems = new LinkedHashMap<>();
+    private @Nullable List<ItemGridEntry> problemEntries;
+
+    /** {@link #problems}: a catalyst that is kept is not there. */
+    private static final int NO_CATALYST = 1;
+    /** {@link #problems}: a catalyst that wears is not there, or too worn. */
+    private static final int WORN = 2;
+    /** A waiting CPU asks again every tick: a problem not heard of for this long is over. */
+    private static final int PROBLEM_TICKS = 100;
+    private static final int PROBLEM_LINES = 12;
+
+    private record Problem(int reason, long time) {}
 
     public AssemblingMatrixMachine(BlockEntityCreationInfo info) {
         super(info);
@@ -160,40 +151,30 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         super.formStructure(substructureName);
         if (!isFormed()) return;
         PatternState state = patternStates.get(substructureName);
-        var bounds = AssemblingMatrix.bounds().apply(getLevel(), getBlockPos().mutable(), getFrontFacing(),
+        var bounds = CasingFrameBox.bounds().apply(getLevel(), getBlockPos().mutable(), getFrontFacing(),
                 getUpwardsFacing());
-        if (Math.abs(bounds.getInt(2) - bounds.getInt(3)) > 1) {
+        if (!CasingFrameBox.isCentered(bounds)) {
             state.setError(new PatternStringError(
                     Component.translatable("gtceu.predicate_error.cleanroom.not_centered")));
             invalidateStructure();
             return;
         }
-        int tier = -1;
+        int tier = CasingFrameBox.tier(state);
+        if (tier == CasingFrameBox.MIXED) {
+            state.setError(new PatternStringError(Component.translatable(KEY + "error.mixed_casings")));
+            invalidateStructure();
+            return;
+        }
         int processing = 0;
-        var casings = AssemblingMatrix.casings();
         Block processingCore = AssemblingMatrix.PROCESSING_CORE.get();
         for (var info : state.getCache().values()) {
-            Block block = info.getBlockState().getBlock();
-            if (block == processingCore) {
-                processing++;
-                continue;
-            }
-            for (int i = 0; i < casings.size(); i++) {
-                if (!casings.get(i).is(block)) continue;
-                if (tier >= 0 && tier != i) {
-                    state.setError(new PatternStringError(Component.translatable(KEY + "error.mixed_casings")));
-                    invalidateStructure();
-                    return;
-                }
-                tier = i;
-            }
+            if (info.getBlockState().getBlock() == processingCore) processing++;
         }
-        tier = Math.max(tier, GTValues.ULV);
         processingCores = processing;
         capacity = (long) processing * CRAFTS_PER_CORE << 2 * tier;
         size = String.format(Locale.ROOT, "%d x %d x %d", bounds.getInt(2) + bounds.getInt(3) + 1,
                 bounds.getInt(0) + 1, bounds.getInt(5) + 1);
-        setRenderState(getRenderState().setValue(AssemblingMatrix.CASING_TIER, tier));
+        setRenderState(getRenderState().setValue(CasingFrameBox.CASING_TIER, tier));
         collectParts();
     }
 
@@ -235,11 +216,13 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         capacity = 0;
         entries = null;
         lastEntries = List.of();
+        problems.clear();
+        problemEntries = null;
     }
 
-    /** The casing of the frame, which is what its parts show. */
+    @Override
     public BlockState casingState() {
-        return AssemblingMatrix.casings().get(getRenderState().getValue(AssemblingMatrix.CASING_TIER)).getDefaultState();
+        return CasingFrameBox.casings().get(getRenderState().getValue(CasingFrameBox.CASING_TIER)).getDefaultState();
     }
 
     InternalInventory terminalInventory() {
@@ -268,6 +251,10 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         if (patternsChanged) {
             patternsChanged = false;
             meInterface.updatePatterns(decodePatterns());
+        }
+        if (!problems.isEmpty() && getLevel().getGameTime() % 20 == 0) {
+            long now = getLevel().getGameTime();
+            if (problems.values().removeIf(problem -> now - problem.time() > PROBLEM_TICKS)) problemEntries = null;
         }
         work.tick(this);
         RecipeLogic.Status status = !work.isWorking() ? RecipeLogic.Status.IDLE :
@@ -299,21 +286,45 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
      * @return false, having changed nothing, when a catalyst is missing or can't do that many
      */
     boolean push(IPatternDetails pattern, KeyCounter[] inputs, long crafts) {
-        if (pattern instanceof CraftingPatternDetails details && !useCatalysts(details.plan(), crafts)) return false;
+        if (pattern instanceof CraftingPatternDetails details) {
+            int problem = useCatalysts(details.plan(), crafts);
+            if (problem != 0) {
+                Problem old = problems.put(pattern, new Problem(problem, getLevel().getGameTime()));
+                if (old == null || old.reason() != problem) problemEntries = null;
+                return false;
+            }
+            if (!problems.isEmpty() && problems.remove(pattern) != null) problemEntries = null;
+        }
         work.add(pattern, inputs, crafts);
         return true;
     }
 
-    private boolean useCatalysts(ICrafterPattern pattern, long crafts) {
+    /** @return 0 having used them, else {@link #NO_CATALYST} or {@link #WORN} */
+    private int useCatalysts(ICrafterPattern pattern, long crafts) {
         boolean wears = false;
         for (var input : pattern.itemInputs()) {
             if (input.consumed()) continue;
             if (input.changes()) wears = true;
-            else if (!hasCatalyst(input)) return false;
+            else if (!hasCatalyst(input)) return NO_CATALYST;
         }
         // nothing wears: such patterns come in batches of any size, past an int too
-        if (!wears) return true;
-        return crafts <= Integer.MAX_VALUE && PatternWear.wear(catalysts, pattern, (int) crafts);
+        if (!wears) return 0;
+        return crafts <= Integer.MAX_VALUE && PatternWear.wear(catalysts, pattern, (int) crafts) ? 0 : WORN;
+    }
+
+    /** {@link #problems} for the window: the reason as the entry's inventory, what the pattern makes as its item. */
+    private List<ItemGridEntry> problemEntries() {
+        if (problemEntries == null) {
+            List<ItemGridEntry> list = new ArrayList<>(problems.size());
+            for (var problem : problems.entrySet()) {
+                GenericStack output = problem.getKey().getPrimaryOutput();
+                ItemStack made = output != null && output.what() instanceof AEItemKey item ? item.toStack() :
+                        problem.getKey().getDefinition().toStack();
+                list.add(new ItemGridEntry(problem.getValue().reason(), 0, made, made));
+            }
+            problemEntries = list;
+        }
+        return problemEntries;
     }
 
     private boolean hasCatalyst(ICrafterPattern.ItemInput input) {
@@ -381,21 +392,21 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
     // ---------- UI ----------
 
     /** Rebuilt after a change, keeping the entries of slots that still hold the same pattern. */
-    private List<PatternEntry> patternEntries() {
+    private List<ItemGridEntry> patternEntries() {
         if (entries == null) {
-            Map<Integer, PatternEntry> before = new HashMap<>();
-            for (PatternEntry entry : lastEntries) {
-                before.put(entry.core() * AssemblingMatrixPatternCoreMachine.SLOTS + entry.slot(), entry);
+            Map<Integer, ItemGridEntry> before = new HashMap<>();
+            for (ItemGridEntry entry : lastEntries) {
+                before.put(entry.inventory() * AssemblingMatrixPatternCoreMachine.SLOTS + entry.slot(), entry);
             }
-            List<PatternEntry> list = new ArrayList<>();
+            List<ItemGridEntry> list = new ArrayList<>();
             for (int core = 0; core < patternCores.size(); core++) {
                 var patterns = patternCores.get(core).patterns();
                 for (int slot = 0; slot < AssemblingMatrixPatternCoreMachine.SLOTS; slot++) {
                     ItemStack stack = patterns.getStackInSlot(slot);
                     if (stack.isEmpty()) continue;
-                    PatternEntry old = before.get(core * AssemblingMatrixPatternCoreMachine.SLOTS + slot);
+                    ItemGridEntry old = before.get(core * AssemblingMatrixPatternCoreMachine.SLOTS + slot);
                     list.add(old != null && ItemStack.matches(old.stack(), stack) ? old :
-                            new PatternEntry(core, slot, stack.copy(), icon(patternCores.get(core), slot, stack)));
+                            new ItemGridEntry(core, slot, stack.copy(), icon(patternCores.get(core), slot, stack)));
                 }
             }
             entries = list;
@@ -449,48 +460,6 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         return false;
     }
 
-    /** The patterns window's slot: never holds anything, what it gets goes straight to the pattern cores. */
-    private final class PatternInput implements IItemHandlerModifiable {
-
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @Override
-        public ItemStack getStackInSlot(int slot) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public void setStackInSlot(int slot, ItemStack stack) {
-            if (!isRemote() && !stack.isEmpty()) addPattern(stack);
-        }
-
-        @Override
-        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            if (!isItemValid(slot, stack)) return stack;
-            if (!simulate) return addPattern(stack);
-            return stack.copyWithCount(stack.getCount() - 1);
-        }
-
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            return 1;
-        }
-
-        /** The client doesn't know the cores: it lets anything through, and the server has the last word. */
-        @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
-            return PatternCrafter.isPattern(stack) && (isRemote() || hasRoom());
-        }
-    }
-
     private TextWidget<?> line(Supplier<Component> text) {
         return new TextWidget<>(Text.dynamic(text::get));
     }
@@ -499,7 +468,7 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
         var formed = new BooleanSyncValue(this::isFormed);
-        var tier = new IntSyncValue(() -> getRenderState().getValue(AssemblingMatrix.CASING_TIER));
+        var tier = new IntSyncValue(() -> getRenderState().getValue(CasingFrameBox.CASING_TIER));
         var sizeValue = new StringSyncValue(() -> size);
         var processing = new IntSyncValue(() -> processingCores);
         var cores = new IntSyncValue(patternCores::size);
@@ -520,6 +489,17 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         syncManager.syncValue("stored", stored);
         syncManager.syncValue("waitingForFE", waitingForFE);
         syncManager.syncValue("canCancel", canCancel);
+        var problemList = new GenericListSyncHandler.Builder<RegistryFriendlyByteBuf, ItemGridEntry>()
+                .getter(() -> isRemote() ? List.of() : problemEntries())
+                .serializer(ItemGridEntry.STREAM_CODEC)
+                .deserializer(ItemGridEntry.STREAM_CODEC)
+                .immutableCopy()
+                .build();
+        syncManager.syncValue("problems", problemList);
+        Supplier<List<ItemGridEntry>> problemsShown = () -> {
+            List<ItemGridEntry> list = problemList.getValue();
+            return list == null ? List.of() : list;
+        };
         syncManager.registerSyncedAction("cancel", false, true, buf -> cancelWork());
         Player player = guiData.getPlayer();
         syncManager.registerSyncedAction("take", false, true,
@@ -530,6 +510,7 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
 
         mainWidget.child(Flow.col()
                 .coverChildren()
+                .collapseDisabledChildren()
                 .childPadding(2)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .center()
@@ -537,19 +518,35 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
                         Component.translatable(KEY + "not_formed").withStyle(ChatFormatting.RED) :
                         Component.translatable(KEY + "frame", GTValues.VNF[tier.getIntValue()],
                                 sizeValue.getStringValue())))
-                .child(line(() -> Component.translatable(KEY + "capacity",
-                        FormattingUtil.formatNumbers(capacityValue.getLongValue()))))
+                .child(NumberText.line(format -> Component.translatable(KEY + "capacity",
+                        format.apply(capacityValue.getLongValue()))))
                 .child(line(() -> Component.translatable(KEY + "cores", processing.getIntValue(),
                         cores.getIntValue())))
                 .child(line(() -> Component.translatable(KEY + "pattern_count",
                         FormattingUtil.formatNumbers(patternCount.getIntValue()),
                         FormattingUtil.formatNumbers((long) cores.getIntValue() * AssemblingMatrixPatternCoreMachine.SLOTS))))
-                .child(line(() -> waitingForFE.getBoolValue() ?
+                .child(NumberText.line(format -> waitingForFE.getBoolValue() ?
                         Component.translatable(KEY + "no_fe").withStyle(ChatFormatting.RED) :
-                        Component.translatable(KEY + "crafting",
-                                FormattingUtil.formatNumbers(crafts.getLongValue()))))
-                .child(line(() -> Component.translatable(KEY + "stored",
-                        FormattingUtil.formatNumbers(stored.getLongValue()))))
+                        Component.translatable(KEY + "crafting", format.apply(crafts.getLongValue()))))
+                .child(NumberText.line(format -> Component.translatable(KEY + "stored",
+                        format.apply(stored.getLongValue()))))
+                .child(line(() -> Component.translatable(KEY + "problems", problemsShown.get().size())
+                        .withStyle(ChatFormatting.RED))
+                        .setEnabledIf(widget -> !problemsShown.get().isEmpty())
+                        .tooltipAutoUpdate(true)
+                        .tooltipDynamic(tooltip -> {
+                            List<ItemGridEntry> list = problemsShown.get();
+                            for (int i = 0; i < Math.min(list.size(), PROBLEM_LINES); i++) {
+                                tooltip.addLine(Component.translatable(
+                                        KEY + (list.get(i).inventory() == WORN ? "problems.worn" :
+                                                "problems.no_catalyst"),
+                                        list.get(i).stack().getHoverName()));
+                            }
+                            if (list.size() > PROBLEM_LINES) {
+                                tooltip.addLine(Component.translatable(KEY + "problems.more",
+                                        list.size() - PROBLEM_LINES));
+                            }
+                        }))
                 .child(Flow.row()
                         .coverChildren()
                         .childPadding(2)
@@ -580,26 +577,26 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
     }
 
     private ModularPanel<?> patternsPanel(PanelSyncManager main, PanelSyncManager manager, IntSyncValue patternCount) {
-        var list = new GenericListSyncHandler.Builder<RegistryFriendlyByteBuf, PatternEntry>()
+        var list = new GenericListSyncHandler.Builder<RegistryFriendlyByteBuf, ItemGridEntry>()
                 .getter(() -> isRemote() ? List.of() : patternEntries())
-                .serializer(PatternEntry.STREAM_CODEC)
-                .deserializer(PatternEntry.STREAM_CODEC)
+                .serializer(ItemGridEntry.STREAM_CODEC)
+                .deserializer(ItemGridEntry.STREAM_CODEC)
                 // entries are never changed, so the cache can hold them as they are
                 .immutableCopy()
                 .build();
         manager.syncValue("entries", list);
         manager.registerSlotGroup(new SlotGroup(INPUT_SLOT_GROUP, 1).setAllowSorting(false));
         var search = new StringValue("");
-        int gridWidth = AssemblingMatrixPatternGridWidget.COLUMNS * AssemblingMatrixPatternGridWidget.CELL;
-        var grid = new AssemblingMatrixPatternGridWidget(list::getValue, search::getStringValue,
+        int gridWidth = ItemGridWidget.COLUMNS * ItemGridWidget.CELL;
+        var grid = new ItemGridWidget(list::getValue, search::getStringValue,
                 (entry, toInventory) -> main.callSyncedAction("take", buf -> {
-                    buf.writeVarInt(entry.core());
+                    buf.writeVarInt(entry.inventory());
                     buf.writeVarInt(entry.slot());
                     buf.writeBoolean(toInventory);
                 }),
-                () -> main.callSyncedAction("put", buf -> {}));
+                () -> main.callSyncedAction("put", buf -> {}), KEY + "patterns.empty", KEY + "patterns.take");
         // not deleteCachedPanel: MUI refuses that with an item slot in the panel
-        return popup(PATTERNS_PANEL, gridWidth + 24, VISIBLE_ROWS * AssemblingMatrixPatternGridWidget.CELL + 52)
+        return popup(PATTERNS_PANEL, gridWidth + 24, VISIBLE_ROWS * ItemGridWidget.CELL + 52)
                 // beside the machine panel and open while the inventory is in use, patterns come from there
                 .closeOnOutOfBoundsClick(false)
                 .leftRel(0.5f, PATTERNS_PANEL_OFFSET, 0f)
@@ -619,12 +616,15 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
                                         .hintText(Component.translatable(KEY + "patterns.search"))
                                         .value(search))
                                 .child(new ItemSlot()
-                                        .slot(new ModularSlot(new PatternInput(), 0).slotGroup(INPUT_SLOT_GROUP))
+                                        .slot(new ModularSlot(new DepositHandler(this::isRemote,
+                                                // the client doesn't know the cores: the server has the last word
+                                                stack -> PatternCrafter.isPattern(stack) && (isRemote() || hasRoom()),
+                                                this::addPattern), 0).slotGroup(INPUT_SLOT_GROUP))
                                         .backgroundOverlay(GTGuiTextures.PATTERN_OVERLAY)
                                         .tooltipBuilder(tooltip -> tooltip.addLine(
                                                 Text.lang(KEY + "patterns.put")))))
                         .child(new ListWidget<>()
-                                .size(gridWidth + 8, VISIBLE_ROWS * AssemblingMatrixPatternGridWidget.CELL)
+                                .size(gridWidth + 8, VISIBLE_ROWS * ItemGridWidget.CELL)
                                 .child(grid)));
     }
 
@@ -649,6 +649,10 @@ public class AssemblingMatrixMachine extends MultiblockControllerMachine impleme
         lang.addRawLang(KEY + "error.mixed_casings", "All Machine Casings must be of one tier");
         lang.addRawLang(KEY + "not_formed", "Structure not formed");
         lang.addRawLang(KEY + "frame", "Casing tier: %s, size: %s");
+        lang.addRawLang(KEY + "problems", "Patterns with problems: %s");
+        lang.addRawLang(KEY + "problems.no_catalyst", "%s: catalyst missing");
+        lang.addRawLang(KEY + "problems.worn", "%s: tool missing or worn out");
+        lang.addRawLang(KEY + "problems.more", "and %s more");
         lang.addRawLang(KEY + "capacity", "Speed: %s crafts per tick");
         lang.addRawLang(KEY + "cores", "Cores: %s processing, %s pattern");
         lang.addRawLang(KEY + "pattern_count", "Patterns: %s / %s");

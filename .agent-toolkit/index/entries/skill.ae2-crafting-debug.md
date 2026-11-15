@@ -2,8 +2,8 @@
 title = "Debugging AE crafting, batches and the Assembling Matrix: a job's path, saved state, symptoms; use when a job misbehaves"
 kind = "howto"
 keys = [ "assembling matrix bug", "batch debugging", "crafting job stuck", "lost items", "waitingfor" ]
-updated = "2026-11-11 07:38:56"
-checked = "2026-11-11"
+updated = "2026-11-15 00:46:21"
+checked = "2026-11-15"
 
 [[items]]
 name = "plan"
@@ -20,8 +20,8 @@ sha256 = "e7bc7f84a6d0eeb1350484a2fd9faab6a79b0b09a67860985d45a6f534f0e7d6"
 [[items]]
 name = "providers"
 value = "Step 4: getProviders unwraps batches"
-path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/CraftingServiceBatchMixin.java"
-sha256 = "59b50a115936484a733250553a603659d377199b2946e51ef732cc0116f0d213"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/CraftingServiceMixin.java"
+snippet = "private IPatternDetails gtmqol$patternOfBatch(IPatternDetails key)"
 
 [[items]]
 name = "push"

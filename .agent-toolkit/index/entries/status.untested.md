@@ -2,8 +2,8 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-13 05:11:32"
-checked = "2026-11-13"
+updated = "2026-11-15 01:22:36"
+checked = "2026-11-15"
 
 [[items]]
 name = "rotor-amount"
@@ -127,9 +127,9 @@ snippet = "// Untested: Shift + drag over the inventory moves stacks into a GTCE
 
 [[items]]
 name = "patterns-window-speed"
-value = "Patterns window fast with thousands of patterns, icons and tooltips unchanged"
-path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixPatternGridWidget.java"
-snippet = "// Untested: the patterns window opens and updates quickly with thousands of patterns, icons and tooltips as before"
+value = "Assembling Matrix: patterns window fast with thousands of patterns; since 2026-11-14 (shared ItemGridWidget, CasingFrameBox) the matrix still forms and its window still takes and puts patterns"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/ui/ItemGridWidget.java"
+snippet = "// Untested: the patterns window opens and updates quickly"
 
 [[items]]
 name = "matrix-fe-flush"
@@ -358,5 +358,11 @@ name = "tag-ghosts"
 value = "A gregified MI distillery recipe runs with GT's fluid (or a pattern making it) marked; EMI shows the tag's fluids in its ghost slot; a KubeJS recipe with a \"#c:...\" ghost input runs with any item of the tag marked"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/ghost/TagGhostIngredient.java"
 snippet = "// Untested: a recipe with a tag ghost runs with any item or fluid of the tag marked (a gregified MI distillery"
+
+[[items]]
+name = "me-data-center-compat"
+value = "An AE2 lacking a member the ME Data Center uses: the probe throws a LinkageError and the controller shows \"This AE2 version is not supported\"; cannot be tried with the supported AE2"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/datacenter/MEDataCenterCompat.java"
+snippet = "// Untested: with an AE2 that lacks one of these"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).
