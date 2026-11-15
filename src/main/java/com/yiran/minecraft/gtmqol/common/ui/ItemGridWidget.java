@@ -29,7 +29,6 @@ import java.util.function.Supplier;
  * too: a click picks an item up, Shift sends it to the player's inventory, and a click with an item in hand puts it
  * in. Client side only; clicks go out through the callbacks.
  */
-// Untested: the patterns window opens and updates quickly with thousands of patterns, icons and tooltips as before
 public class ItemGridWidget extends Widget<ItemGridWidget> implements Interactable {
 
     public static final int COLUMNS = 9;

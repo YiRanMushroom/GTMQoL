@@ -1,4 +1,4 @@
-// 1.21.1	2026-11-14T18:15:41.6953999	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider, Tags (materials), Tags (tag_prefixes)]
+// 1.21.1	2026-11-14T19:13:24.8385154	Registrate Provider for gtmqol [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider, Tags (materials), Tags (tag_prefixes)]
 d70d8f2a104bade5476637b7dd4d43637c65ead1 assets/gtmqol/blockstates/advanced_chip_engraving_factory.json
 c1fca4a807586d29d76056d9bc1960b4d43fcace assets/gtmqol/blockstates/assembling_matrix.json
 cc9d61376b9b7d8764bc101571b43764d4e05648 assets/gtmqol/blockstates/assembling_matrix_interface.json
@@ -213,8 +213,8 @@ e4f6c7cd5e60df3e1606e23f1806d5fbadde48e8 assets/gtmqol/blockstates/zpm_me_circui
 674a583f2b29eee523d730ad4211c0134c9f8134 assets/gtmqol/blockstates/zpm_wireless_energy_accessor.json
 1136e3739fdb3b339bc80d9bedcd1bde88a780e9 assets/gtmqol/blockstates/zpm_wireless_energy_input_hatch.json
 a77ec21bfd8e4ba2dd87ea6bde687970c4039a69 assets/gtmqol/blockstates/zpm_wireless_energy_output_hatch.json
-7ab2fe3a1899374537d1efd251bf337202138064 assets/gtmqol/lang/en_ud.json
-b019320bf0b803bc0beceda3adaa609d7b0ce72f assets/gtmqol/lang/en_us.json
+45a9ecb13aecccccec93fa244ed08fcd18aceea0 assets/gtmqol/lang/en_ud.json
+57ba9226244b0efb6aee60e258b48216ce63ac0c assets/gtmqol/lang/en_us.json
 b4d7fab4d810bb365fa2e41e966479d70acde352 assets/gtmqol/models/block/machine/advanced_chip_engraving_factory.json
 163bfdb692c7c93c302b8167a858b879147ce27a assets/gtmqol/models/block/machine/assembling_matrix.json
 4a0967d9f064d68c0e0c1e5145a9a92017afbfcb assets/gtmqol/models/block/machine/assembling_matrix_interface.json
@@ -566,6 +566,7 @@ a4b7b6f335e9bf4b27f51d20d6df1b6ec07e384d assets/gtmqol/models/item/max_universal
 dc8f2b39dd32583e6ecf86c5a00022417c94affe assets/gtmqol/models/item/max_wireless_energy_input_hatch.json
 8b2048a623bd1ca289a42dd7a63a3dc9fbf920a4 assets/gtmqol/models/item/max_wireless_energy_output_cover.json
 522e7617efd3df7ea4932c204f7eae9562273b7d assets/gtmqol/models/item/max_wireless_energy_output_hatch.json
+bd8c65010eab826377f04be0ee0a589f068c753c assets/gtmqol/models/item/me_cable_cover.json
 277e5d648a0511a437bc221c04c1ef5bad8cba2a assets/gtmqol/models/item/me_data_center.json
 6cfc105661643f045708b821f6f829d8ea8cfd72 assets/gtmqol/models/item/me_data_center_interface.json
 ac8970bfb4a62ae88852bb6eb6d834828322d726 assets/gtmqol/models/item/me_dual_input.json

@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-15 01:22:36"
+updated = "2026-11-15 02:14:57"
 checked = "2026-11-15"
 
 [[items]]
@@ -124,12 +124,6 @@ name = "shift-drag"
 value = "Shift + drag moves stacks in and out of GTCEu machine UIs; held-stack spreading unchanged"
 path = "src/main/java/com/yiran/minecraft/gtmqol/client/ShiftDragQuickMove.java"
 snippet = "// Untested: Shift + drag over the inventory moves stacks into a GTCEu machine, and over machine slots back out;"
-
-[[items]]
-name = "patterns-window-speed"
-value = "Assembling Matrix: patterns window fast with thousands of patterns; since 2026-11-14 (shared ItemGridWidget, CasingFrameBox) the matrix still forms and its window still takes and puts patterns"
-path = "src/main/java/com/yiran/minecraft/gtmqol/common/ui/ItemGridWidget.java"
-snippet = "// Untested: the patterns window opens and updates quickly"
 
 [[items]]
 name = "matrix-fe-flush"
@@ -364,5 +358,17 @@ name = "me-data-center-compat"
 value = "An AE2 lacking a member the ME Data Center uses: the probe throws a LinkageError and the controller shows \"This AE2 version is not supported\"; cannot be tried with the supported AE2"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/datacenter/MEDataCenterCompat.java"
 snippet = "// Untested: with an AE2 that lacks one of these"
+
+[[items]]
+name = "interface-front"
+value = "Assembling Matrix and ME Data Center interfaces connect to the ME network on their front only (before: all sides), also after a wrench turns them and after a reload; worlds with a cable on another side need rewiring"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixInterfaceMachine.java"
+snippet = "// Untested: the Assembling Matrix and ME Data Center interfaces take a cable on their front only, also after a"
+
+[[items]]
+name = "me-cable-cover"
+value = "ME Cable Cover: on a plain machine cables on any sides connect through it and channels pass (32 by default); on an ME hatch or pattern buffer cables connect on all sides, still after a wrench turn, front only again once removed; survives a reload; one per machine, not on a Machine Hull"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/cablecover/MECableCover.java"
+snippet = "// Untested: on a machine without an ME connection, cables on any sides connect through it and channels pass (32"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

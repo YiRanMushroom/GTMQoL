@@ -29,6 +29,9 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 - 3.7.0 (2026-11-14) released the ME Data Center (`ae2.me-data-center`), the Assembling Matrix's Patterns with
   problems line (`ae2.assembling-matrix`) and short numbers (`NumberText`, `skill.modular-ui`). The user tried all of
   it in game on 1.21; on 1.20 it is untried (`status.untested` there). Not triable: me-data-center-compat.
+- Written after 3.7.0 on both branches, not committed, never run in game (`status.untested` me-cable-cover,
+  interface-front): the ME Cable Cover (`ae2.me-cable-cover`), and the Assembling Matrix and ME Data Center
+  interfaces connecting on their front only.
 - 3.6.0 (2026-11-12) released the Advanced Chip Engraving Factory (`multiblock.advanced-chip-engraving`) and
   the fix for gregification reading other mods' ingredients while recipes load (`gregification.loading-tags`; the
   dev client crashed at every first world load), with MI distillery/mixer marks and slot counts (`gregification.mi`).

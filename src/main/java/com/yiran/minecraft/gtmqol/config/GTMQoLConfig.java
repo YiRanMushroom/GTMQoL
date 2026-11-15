@@ -383,6 +383,13 @@ public final class GTMQoLConfig {
         public boolean meDataCenter = true;
 
         @Configurable
+        @Configurable.Comment({ "ME Cable Cover: on a machine, the machine carries ME channels on all sides like an ME",
+                "Dense Cable; on a machine with an ME connection (ME hatches, pattern buffers), that connects on all sides",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean meCableCover = true;
+
+        @Configurable
         @Configurable.Comment({ "FE each craft in an Assembling Matrix uses", "Default: 64" })
         @Configurable.Range(min = 0)
         public int assemblingMatrixFEPerCraft = 64;
