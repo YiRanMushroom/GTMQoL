@@ -235,8 +235,6 @@ public class PersonalBeaconMachine extends CyclicMultiblockMachine {
     }
 
     /** Keeps the chunks within {@code radius} blocks of the controller loaded; -1 releases them. */
-    // Untested: with a chunk loader the beacon keeps working with nobody near; breaking the loader or the controller
-    // lets the chunks unload; after a restart they are loaded again
     private void loadChunks(int radius) {
         if (!(getLevel() instanceof ServerLevel serverLevel) || radius == loadedRadius) return;
         if (loadedRadius >= 0) forEachChunk(loadedRadius, chunk -> PersonalBeacon.forceChunk(serverLevel, getBlockPos(),
@@ -267,8 +265,6 @@ public class PersonalBeaconMachine extends CyclicMultiblockMachine {
 
     private record Grant(ServerPlayer player, Holder<MobEffect> effect, int level) {}
 
-    // Untested: a bound online player gets the effects every 15 s, at the levels set in their hatch (Shift: off / highest),
-    // in other dimensions too; without FE the status says Not enough FE and the effects run out; the cost line
     @Override
     protected @Nullable String startCycle() {
         String problem = grant();

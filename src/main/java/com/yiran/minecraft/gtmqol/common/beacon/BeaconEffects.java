@@ -23,8 +23,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class BeaconEffects {
 
-    // Untested: Flight lets a survival player fly and ends with the effect (falling); Flight Speed makes flying faster
-    // per level and flying speed is back to normal when it ends, also after death
     /** Vanilla's flying speed. */
     public static final float BASE_FLYING_SPEED = 0.05f;
     /** Flight Speed adds this share of {@link #BASE_FLYING_SPEED} per level. */

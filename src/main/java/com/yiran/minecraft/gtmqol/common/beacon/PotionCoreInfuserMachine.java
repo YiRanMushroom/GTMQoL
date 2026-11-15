@@ -132,9 +132,6 @@ public class PotionCoreInfuserMachine extends TieredEnergyMachine implements IMu
         }
     }
 
-    // Untested: a potion piped or poured in turns into time at once while it has 1A EV (a strong potion doubles, a
-    // lingering one ×4); a potion of another effect, two effects or an instant one is refused; at 24 h a Potion
-    // Beacon Core appears; Clear empties it
     private void tick() {
         FluidStack fluid = tank.getStorages()[0].getFluid();
         boolean working = false;

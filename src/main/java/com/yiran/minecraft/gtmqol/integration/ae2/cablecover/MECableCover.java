@@ -68,9 +68,6 @@ public class MECableCover extends CoverBehavior implements IInWorldGridNodeHost 
         if (!coverHolder.isRemote()) subscription = coverHolder.subscribeServerTick(subscription, this::tick);
     }
 
-    // Untested: on a machine without an ME connection, cables on any sides connect through it and channels pass (32
-    // by default); on an ME hatch or pattern buffer, cables connect on all sides, still after turning it with a
-    // wrench, and only on the front again once the cover is removed; survives a reload
     private void tick() {
         MetaMachine machine = machine();
         if (machine == null) return;

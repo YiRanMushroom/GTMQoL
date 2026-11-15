@@ -31,10 +31,8 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
   it in game on 1.21; on 1.20 it is untried (`status.untested` there). Not triable: me-data-center-compat.
 - 3.8.0 (2026-11-15) released the Personal Beacon and Potion Core Infuser (`multiblock.personal-beacon`), the ME
   Cable Cover (`ae2.me-cable-cover`), the Assembling Matrix and ME Data Center interfaces connecting on their
-  front only, the ME Data Center's stars over its glass and CPU frame overlays on six sides. The user tried the
-  beacon's structure, models, beam, sounds and the stars on 1.21. Still unconfirmed there (`status.untested`):
-  personal-beacon-effects, beacon-chunk-loading, beacon-flight, potion-core-infuser, me-cable-cover,
-  interface-front. On 1.20 all of it is untried.
+  front only, the ME Data Center's stars over its glass and CPU frame overlays on six sides. The user tried all of it in
+  game on 1.21 (2026-11-15). On 1.20 all of it is untried (`status.untested` there).
 - 3.6.0 (2026-11-12) released the Advanced Chip Engraving Factory (`multiblock.advanced-chip-engraving`) and
   the fix for gregification reading other mods' ingredients while recipes load (`gregification.loading-tags`; the
   dev client crashed at every first world load), with MI distillery/mixer marks and slot counts (`gregification.mi`).

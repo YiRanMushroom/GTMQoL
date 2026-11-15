@@ -81,8 +81,6 @@ public class AssemblingMatrixInterfaceMachine extends MultiblockPartMachine
     }
 
     /** Like GTCEu's ME hatches, the network connects to the front only. */
-    // Untested: the Assembling Matrix and ME Data Center interfaces take a cable on their front only, also after a
-    // wrench turns them and after a reload
     @Override
     public void onRotated(Direction oldFacing, Direction newFacing) {
         super.onRotated(oldFacing, newFacing);
