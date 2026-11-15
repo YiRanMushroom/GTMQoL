@@ -14,6 +14,7 @@ import com.yiran.minecraft.gtmqol.common.probable.ProbableDevices;
 import com.yiran.minecraft.gtmqol.integration.ae2.AE2Machines;
 import com.yiran.minecraft.gtmqol.common.wireless.energy.ae2.WirelessEnergyCellMachine;
 import com.yiran.minecraft.gtmqol.integration.ae2.crafting.PatternBatch;
+import com.yiran.minecraft.gtmqol.integration.ae2.cablecover.MECableCovers;
 import com.yiran.minecraft.gtmqol.integration.ae2.datacenter.MEDataCenter;
 import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrix;
 import com.yiran.minecraft.gtmqol.integration.ae2.matrix.AssemblingMatrixUploadMessage;
@@ -216,6 +217,7 @@ public final class GTMQoL {
         // here, not in the constructor: GTItems.attach loads GTItems, which needs the materials
         if (config.machines.patternCrafter) PatternCrafter.initItems();
         if (GTCEu.Mods.isAE2Loaded()) {
+            if (config.ae2.meCableCover) MECableCovers.init();
             PatternBatch.init();
             if (hasAssemblingMatrix(config)) AssemblingMatrix.initBlocks();
         }

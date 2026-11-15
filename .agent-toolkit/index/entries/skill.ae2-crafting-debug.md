@@ -2,7 +2,7 @@
 title = "Debugging AE crafting, batches and the Assembling Matrix: a job's path, saved state, symptoms; use when a job misbehaves"
 kind = "howto"
 keys = [ "assembling matrix bug", "batch debugging", "crafting job stuck" ]
-updated = "2026-11-11 07:38:56"
+updated = "2026-11-15 01:59:44"
 checked = "2026-11-11"
 
 [[items]]
@@ -27,7 +27,7 @@ sha256 = "e53cc6069e38fc11bb22d5aacda9c2fb4a6cc9f99e586f20d890690fa2a18509"
 name = "interface"
 value = "Step 6: matrix side"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixInterfaceMachine.java"
-sha256 = "031d53e2350d96446ef6d1fa6f2caaa55a2ea646ab7bf848f847bce049184eeb"
+sha256 = "0ba0318dba4f7ee61338f78a4ae5c5c4c0b2c599e8dbb03104fa6665aad535bc"
 
 [[items]]
 name = "work"

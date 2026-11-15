@@ -43,7 +43,13 @@ public class MEDataCenterInterfaceMachine extends MultiblockPartMachine implemen
     public MEDataCenterInterfaceMachine(BlockEntityCreationInfo info) {
         super(info);
         this.nodeHolder = attachTrait(new GridNodeHolder(this));
-        nodeHolder.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
+    }
+
+    /** Like GTCEu's ME hatches, the network connects to the front only. */
+    @Override
+    public void onRotated(Direction oldFacing, Direction newFacing) {
+        super.onRotated(oldFacing, newFacing);
+        getMainNode().setExposedOnSides(EnumSet.of(newFacing));
     }
 
     @Nullable

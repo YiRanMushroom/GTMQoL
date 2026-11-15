@@ -50,7 +50,8 @@ smithing patterns, and the Crafting Patterns made for the Pattern Crafter. Proce
   stonecutting or smithing pattern right into the Assembling Matrix; a plain click keeps it in the terminal as usual.
   A notification in the top right corner, visible over the terminal, says what happened: a pattern the matrix already
   has, or one no matrix has room for, stays in the terminal. The switch is on the controller and on the ME Interface.
-- **ME Interface**: its name, shown in Pattern Access Terminals, can be changed in its window.
+- **ME Interface**: the ME network connects to its front. Its name, shown in Pattern Access Terminals, can be
+  changed in its window.
 - **Cancelling**: AE2's cancel stops the crafting job, but crafts already sent to the matrix still finish and their
   products go to the network. To get the ingredients back instead, cancel the job in the Crafting Status first, then
   Shift-click the return button on the controller: the ingredients of all crafts not done yet go back to the ME
@@ -87,7 +88,20 @@ its own, so one data center runs any number of jobs at once.
 - **Recipes**: the CPU Frames and the ME Interface in the ME Assembler (the assembler without `ae2.processing`); the
   controller is crafted from an IV Machine Hull, 256k Crafting Storages, Crafting Co-Processing Units, IV Robot Arms
   and IV circuits.
+- The ME network connects to the front of the ME Data Center Interface.
 - Needs AE2. Uses the ME network's power as AE2's Crafting CPUs do, and no EU.
+
+#### ME Cable Cover
+
+The **ME Cable Cover** makes the machine it is on part of the ME network's cabling.
+
+- On a machine without an ME connection, cables and ME devices on any sides connect through the machine, and channels
+  pass as through an ME Dense Cable (32 by default; AE2's channel setting applies). The machine uses no channel.
+- On a machine with an ME connection (ME hatches and buses, pattern buffers, the Assembling Matrix and ME Data Center
+  interfaces), that connection takes cables on all sides instead of the front only, so such machines placed side by
+  side form one line without cables between them.
+- One per machine. Made in the Assembler from a Cable Anchor, an ME Covered Dense Cable, a Steel Plate and an LV
+  circuit. Config: `ae2.meCableCover`.
 
 #### Pattern Batching
 
@@ -372,7 +386,7 @@ Assembler, the Ghost Ingredient Hatch, potion fluids, the circuit and material t
 | `recipes` | `miscRecipes`, `earlyGame`, `keepManualCompression`, `keepVanillaTNT`, `netherStarDust`, `useLegacyPartRecipes` |
 | `steamTweaks` | `circuitSlots`, `fluidTanks`, `noOutputLimits`, `optionalLargeBoilerParts` |
 | `overclocking` | `buffFusionReactor`, `enableMultiTierSkipping`, `absoluteParallelHatches` |
-| `ae2` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn` (live), `skipNotConsumedInputs` (live), `assemblingMatrix`, `meDataCenter`, `assemblingMatrixFEPerCraft` (live, default 64), `patternBatchParts` (live, default 1), `fastCraftingPlans` (live) |
+| `ae2` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn` (live), `skipNotConsumedInputs` (live), `assemblingMatrix`, `meDataCenter`, `meCableCover`, `assemblingMatrixFEPerCraft` (live, default 64), `patternBatchParts` (live, default 1), `fastCraftingPlans` (live) |
 | `misc` | `feInput`, `autoBuild` (live) |
 | `voidMiner` (live) | `dimensionMapping`: mine another dimension's veins (`"from=to"`, read when a Void Miner loads); `maxOperations` (default 64), `maxMultiplier` (default 4096): the most ore types and stacks per cycle |
 | `integrationTests` | `enabled` (default off): runtime-generated example machines, for development |

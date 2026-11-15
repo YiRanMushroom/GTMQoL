@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-15 01:16:55"
+updated = "2026-11-15 02:14:57"
 checked = "2026-11-15"
 
 [[items]]
@@ -422,5 +422,17 @@ snippet = "// Untested: a pattern whose catalyst is missing or worn out shows un
 [[items]]
 name = "number-text"
 value = "Short numbers (NumberText): ME Data Center storage, Assembling Matrix speed/crafting/stored, wireless network stored energy and monitor rates read like 232G with the full number in the tooltip; the +/- credit buttons say Locked while a job runs"
+
+[[items]]
+name = "interface-front"
+value = "Assembling Matrix and ME Data Center interfaces connect to the ME network on their front only (before: all sides), also after a wrench turns them and after a reload; worlds with a cable on another side need rewiring"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixInterfaceMachine.java"
+snippet = "// Untested: the Assembling Matrix and ME Data Center interfaces take a cable on their front only, also after a"
+
+[[items]]
+name = "me-cable-cover"
+value = "ME Cable Cover: on a plain machine cables on any sides connect through it and channels pass (32 by default); on an ME hatch or pattern buffer cables connect on all sides, still after a wrench turn, front only again once removed; survives a reload; one per machine, not on a Machine Hull"
+path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/cablecover/MECableCover.java"
+snippet = "// Untested: on a machine without an ME connection, cables on any sides connect through it and channels pass (32"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

@@ -77,9 +77,16 @@ public class AssemblingMatrixInterfaceMachine extends MultiblockPartMachine
         super(info);
         this.nodeHolder = attachTrait(new GridNodeHolder(this));
         this.source = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
-        nodeHolder.getMainNode()
-                .setExposedOnSides(EnumSet.allOf(Direction.class))
-                .addService(ICraftingProvider.class, this);
+        nodeHolder.getMainNode().addService(ICraftingProvider.class, this);
+    }
+
+    /** Like GTCEu's ME hatches, the network connects to the front only. */
+    // Untested: the Assembling Matrix and ME Data Center interfaces take a cable on their front only, also after a
+    // wrench turns them and after a reload
+    @Override
+    public void onRotated(Direction oldFacing, Direction newFacing) {
+        super.onRotated(oldFacing, newFacing);
+        getMainNode().setExposedOnSides(EnumSet.of(newFacing));
     }
 
     private @Nullable AssemblingMatrixMachine matrix() {
