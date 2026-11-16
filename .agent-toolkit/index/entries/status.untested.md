@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-16 00:50:31"
+updated = "2026-11-16 01:17:59"
 
 [[items]]
 name = "rotor-amount"
@@ -81,12 +81,6 @@ name = "matrix-cancel"
 value = "Assembling Matrix cancel button gives back the inputs of crafts not done"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/matrix/AssemblingMatrixWork.java"
 snippet = "// Untested: Shift-click on the controller's cancel button"
-
-[[items]]
-name = "partial-push"
-value = "AE2's CPU pushes part of a batch: a chain's next step starts as the step before delivers; a batch needing more power than the network stores goes in parts; the rest shows in the CPU list and survives a restart"
-path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/ae2/CraftingCpuLogicBatchMixin.java"
-snippet = "// Untested: a chain's next step starts with part of a batch as the step before delivers"
 
 [[items]]
 name = "matrix-controller-broken"

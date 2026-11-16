@@ -45,8 +45,6 @@ import java.util.Set;
  * batch waits for all of its inputs and power. A pattern that can't get the inputs of a single craft is skipped for
  * the rest of the pass: neither can its other pieces.
  */
-// Untested: a chain's next step starts with part of a batch as the step before delivers; a batch needing more power
-// than the network stores still goes, in parts; the rest of a part shows in the CPU's list and survives a restart
 @Mixin(value = CraftingCpuLogic.class, remap = false)
 public abstract class CraftingCpuLogicBatchMixin {
 
