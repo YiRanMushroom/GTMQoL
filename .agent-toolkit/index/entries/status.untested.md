@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-15 07:57:24"
+updated = "2026-11-16 00:50:31"
 
 [[items]]
 name = "rotor-amount"
