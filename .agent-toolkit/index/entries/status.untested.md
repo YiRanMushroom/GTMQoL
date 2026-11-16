@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-15 06:59:21"
+updated = "2026-11-15 23:39:56"
 
 [[items]]
 name = "legacy-parts-no-unification"
@@ -493,5 +493,11 @@ name = "beacon-sound"
 value = "Personal Beacon: hums like a vanilla beacon while working, with the activate and deactivate sounds; the beam starts inside the controller and is there in every cycle, also after a restart and a structure change"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PersonalBeaconMachine.java"
 snippet = "// Untested: a working beacon hums like a vanilla one"
+
+[[items]]
+name = "certainty-parallels"
+value = "Probable Certainty Device with parallels: each chanced output comes out once per parallel (before: once per recipe, so 1/parallels of it)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/probable/ProbableDevicePartMachine.java"
+snippet = "// Untested: with parallels, a Probable Certainty Device gives every chanced output once per parallel"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

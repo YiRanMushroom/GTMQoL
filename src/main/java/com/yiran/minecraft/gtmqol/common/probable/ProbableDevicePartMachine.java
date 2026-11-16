@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
@@ -35,8 +36,9 @@ public class ProbableDevicePartMachine extends MultiblockPartMachine {
     public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
         GTRecipe modified = recipe.copy();
         if (certainty) {
-            certain(modified.outputs, modified.outputChanceLogics);
-            certain(modified.tickOutputs, modified.tickOutputChanceLogics);
+            int runs = Math.max(1, modified.getTotalRuns());
+            certain(modified.outputs, modified.outputChanceLogics, runs);
+            certain(modified.tickOutputs, modified.tickOutputChanceLogics, runs);
         } else {
             improbable(modified.inputs, modified.inputChanceLogics);
             improbable(modified.tickInputs, modified.tickInputChanceLogics);
@@ -44,13 +46,22 @@ public class ProbableDevicePartMachine extends MultiblockPartMachine {
         return modified;
     }
 
+    // Untested: with parallels, a Probable Certainty Device gives every chanced output once per parallel
+    /**
+     * @param runs the recipe's parallels: gtceu multiplies only certain contents by them and rolls chanced ones that
+     *             many times instead, so a chanced output still has the amount of one run here
+     */
     private static void certain(Map<RecipeCapability<?>, List<Content>> contents,
-                                Map<RecipeCapability<?>, ChanceLogic> logics) {
+                                Map<RecipeCapability<?>, ChanceLogic> logics, int runs) {
         int max = ChanceLogic.getMaxChancedValue();
         contents.replaceAll((cap, list) -> list.stream()
                 .map(content -> {
                     Object fixed = fixRange(content.content(), true);
-                    return new Content(fixed == null ? content.content() : fixed, max, max);
+                    if (fixed == null) fixed = content.content();
+                    if (runs > 1 && content.chance() < content.maxChance()) {
+                        fixed = cap.copyContent(fixed, ContentModifier.multiplier(runs));
+                    }
+                    return new Content(fixed, max, max);
                 })
                 .toList());
         // everything is certain now, so XOR / FIRST would drop outputs that are guaranteed
