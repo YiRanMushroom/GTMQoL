@@ -164,6 +164,8 @@ public class PotionCoreInfuserMachine extends TieredEnergyMachine implements IMu
             if (!output.storage.insertItem(0, core, true).isEmpty()) return;
             output.storage.insertItem(0, core, false);
             storedTicks -= CORE_TICKS;
+            // nothing of the effect is left, so another one may go in
+            if (storedTicks == 0) effect = null;
             markAsChanged();
         }
     }

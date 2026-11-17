@@ -259,7 +259,7 @@ crafter wears tools, the modular simulation chamber trains data models.
   press Check structure in the beacon's window.
 - **Potion Core Infuser** (EV single block): turns potions into time for one effect, 1A EV while it works. Each
   level of a potion doubles its time and a lingering potion counts 4 times; 24 hours make a Potion Beacon Core. The
-  stored time can be cleared.
+  stored time can be cleared. The recipe viewer shows how much of each potion makes a core.
 - The Assembling Matrix is described under Crafting and AE2.
 
 Unlike GTCEu's multiblocks, the Void Miner and the Industrial Fishing Pond never void their outputs: they wait
@@ -294,8 +294,9 @@ from the same log. It is never used up.
 - Steam single blocks get fluid input/output tanks and a ghost circuit slot; steam input buses get one too.
 - No output limits on the steam macerator and similar machines, so byproducts always come out.
 - The large boiler's muffler and maintenance hatch are optional.
-- Early game: simple bus and hatch recipes from machine casings, sand still smelts into glass, and manual
-  compression (3×3 blocks, nuggets) is kept.
+- Early game: simple bus and hatch recipes from machine casings.
+- The vanilla recipes GTCEu removes are kept, such as TNT, sand smelting into glass, buckets and paper, and so is
+  3×3 crafting of blocks and nuggets for every material.
 
 ### Recipe lookup performance
 
@@ -393,7 +394,7 @@ Assembler, the Ghost Ingredient Hatch, potion fluids, the circuit and material t
 | `gregification` | `modernIndustrialization` (1.21.1), `mekanism`, `productiveBees`, `create`, `hostileNeuralNetworks` |
 | `wireless` | `energy`, `fe`, `steam`, `computation`, `opticalData` |
 | `circuits` | `universalCircuits`, `controlCircuits`, `mekanismCircuitTags` (live on `/reload`) |
-| `recipes` | `miscRecipes`, `earlyGame`, `keepManualCompression`, `keepVanillaTNT`, `netherStarDust`, `useLegacyPartRecipes` |
+| `recipes` | `miscRecipes`, `earlyGame`, `keepVanillaRecipes`, `netherStarDust`, `useLegacyPartRecipes` |
 | `steamTweaks` | `circuitSlots`, `fluidTanks`, `noOutputLimits`, `optionalLargeBoilerParts` |
 | `overclocking` | `buffFusionReactor`, `enableMultiTierSkipping`, `absoluteParallelHatches` |
 | `ae2` | `overclockedPatternBuffer`, `processing`, `dualHatches`, `patternBufferReturn` (live), `skipNotConsumedInputs` (live), `assemblingMatrix`, `meDataCenter`, `meCableCover`, `assemblingMatrixFEPerCraft` (live, default 64), `fastCraftingPlans` (live) |

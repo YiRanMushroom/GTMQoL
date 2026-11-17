@@ -257,22 +257,16 @@ public final class GTMQoLConfig {
         public boolean miscRecipes = true;
 
         @Configurable
-        @Configurable.Comment({ "Early game: casing + chest/glass buses and hatches, and sand -> glass smelting is kept",
-                "with GTCEu's hardGlassRecipes", "Default: true" })
+        @Configurable.Comment({ "Early game: casing + chest/glass buses and hatches", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean earlyGame = true;
 
         @Configurable
-        @Configurable.Comment({ "Keep 3x3 / 2x2 compression recipes in the crafting table (ingot <-> block, nugget <-> ingot)",
-                "even when GTCEu's disableManualCompression is on", "Default: true" })
+        @Configurable.Comment({ "Keep the vanilla recipes GTCEu's recipe settings remove (TNT, glass, bucket, paper, ...)",
+                "and the 3x3 / 2x2 compression recipes in the crafting table (ingot <-> block, nugget <-> ingot)",
+                "for every material", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
-        public boolean keepManualCompression = true;
-
-        @Configurable
-        @Configurable.Comment({ "Keep vanilla's TNT crafting recipe even when GTCEu's removeVanillaTNTRecipe is on",
-                "Default: true" })
-        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
-        public boolean keepVanillaTNT = true;
+        public boolean keepVanillaRecipes = true;
 
         @Configurable
         @Configurable.Comment({ "Nether star dust in the mixer (HV): 4 diamond dust + 16 silver dust", "Default: true" })

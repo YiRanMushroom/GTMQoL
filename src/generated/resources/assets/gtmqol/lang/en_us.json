@@ -519,6 +519,7 @@
   "gtmqol.personal_beacon.tooltip.2": "Every 15 s, per online player: the voltage of each effect level's tier (level 1: LV), Flight 1A EV, in FE from Wireless FE Input Hatches",
   "gtmqol.personal_beacon.tooltip.3": "Core sockets, hatches and chunk loaders only go on the outer ring of a layer",
   "gtmqol.personal_beacon.tooltip.4": "Potion Beacon Cores are made from potions in the Potion Core Infuser",
+  "gtmqol.potion_core_infuser": "Potion Core Infuser",
   "gtmqol.recipe.ghost_ingredient": "Mark it in a Ghost Ingredient Hatch; not consumed",
   "gtmqol.void_miner.config": "Settings",
   "gtmqol.void_miner.config.multiplier": "Stacks per ore: %s",

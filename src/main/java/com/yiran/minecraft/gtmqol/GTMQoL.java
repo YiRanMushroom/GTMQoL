@@ -203,6 +203,7 @@ public final class GTMQoL {
         if (GTMQoLConfig.get().machines.crystalGrowthChamber) CrystalGrowth.initRecipeType();
         if (GTMQoLConfig.get().machines.greenhouse) Greenhouse.initRecipeType();
         if (GTMQoLConfig.get().machines.patternCrafter) PatternCrafter.initRecipeType();
+        if (GTMQoLConfig.get().personalBeacon()) PersonalBeacon.initRecipeType();
         if (GTCEu.Mods.isAE2Loaded() && GTMQoLConfig.get().ae2.processing) {
             AEProcessing.initRecipeTypes();
         }
