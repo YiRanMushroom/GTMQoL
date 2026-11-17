@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-16 01:17:59"
+updated = "2026-11-17 01:42:46"
 
 [[items]]
 name = "rotor-amount"
@@ -351,5 +351,17 @@ name = "me-data-center-compat"
 value = "An AE2 lacking a member the ME Data Center uses: the probe throws a LinkageError and the controller shows \"This AE2 version is not supported\"; cannot be tried with the supported AE2"
 path = "src/main/java/com/yiran/minecraft/gtmqol/integration/ae2/datacenter/MEDataCenterCompat.java"
 snippet = "// Untested: with an AE2 that lacks one of these"
+
+[[items]]
+name = "potion-core-infuser-recipes"
+value = "Potion Core Infuser: EMI page with every potion (plain, lingering) and how much makes a core; a core from exactly 24 h clears the stored effect"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PotionCoreInfuserRecipes.java"
+snippet = "// Untested: EMI shows a Potion Core Infuser page with each potion, plain and lingering, and the amount that makes a"
+
+[[items]]
+name = "keep-vanilla-recipes"
+value = "recipes.keepVanillaRecipes on: vanilla TNT, sand -> glass, bucket, paper, charcoal, flint and steel craftable next to GTCEu's harder recipes; 3x3 compression of GT materials still works; off: GTCEu removes them again"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/RecipeRemovalMixin.java"
+snippet = "// Untested: with recipes.keepVanillaRecipes on"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).
