@@ -35,6 +35,15 @@ public final class Overclocking {
         return (int) Math.min(MAX_PARALLELS, crafts * recipe.batchParallels);
     }
 
+    /**
+     * How many times a run's crafts may still be multiplied without going over {@link #MAX_PARALLELS}, at least 1:
+     * the limit for the next parallels (subtick, batch, ...). gtceu multiplies the three as ints for its total runs,
+     * and its chance rolls take that many runs.
+     */
+    public static int room(GTRecipe recipe) {
+        return Math.max(1, MAX_PARALLELS / Math.max(1, crafts(recipe)));
+    }
+
     public static OverclockingLogic replace(OverclockingLogic logic) {
         if (logic == OverclockingLogic.NON_PERFECT_OVERCLOCK || logic == OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK) {
             return STANDARD;

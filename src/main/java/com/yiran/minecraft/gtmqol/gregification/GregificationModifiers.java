@@ -77,7 +77,7 @@ public final class GregificationModifiers {
                     .build();
         }
 
-        int parallels = (int) Math.min(Overclocking.MAX_PARALLELS, (long) (speed / duration));
+        int parallels = (int) Math.min(Overclocking.room(recipe), (long) (speed / duration));
         parallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, parallels);
         if (parallels == 0) return ModifierFunction.NULL;
         return ModifierFunction.builder()
@@ -94,7 +94,8 @@ public final class GregificationModifiers {
         int batchDuration = ConfigHolder.INSTANCE.machines.batchDuration;
         if (recipe.duration >= batchDuration) return ModifierFunction.IDENTITY;
 
-        int parallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, batchDuration / recipe.duration);
+        int parallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe,
+                Math.min(batchDuration / recipe.duration, Overclocking.room(recipe)));
         if (parallels == 0) return ModifierFunction.NULL;
         if (parallels == 1) return ModifierFunction.IDENTITY;
         return ModifierFunction.builder()

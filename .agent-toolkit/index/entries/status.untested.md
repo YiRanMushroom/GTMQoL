@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-17 01:42:46"
+updated = "2026-11-17 03:31:48"
 
 [[items]]
 name = "rotor-amount"
@@ -363,5 +363,11 @@ name = "keep-vanilla-recipes"
 value = "recipes.keepVanillaRecipes on: vanilla TNT, sand -> glass, bucket, paper, charcoal, flint and steel craftable next to GTCEu's harder recipes; 3x3 compression of GT materials still works; off: GTCEu removes them again"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/RecipeRemovalMixin.java"
 snippet = "// Untested: with recipes.keepVanillaRecipes on"
+
+[[items]]
+name = "total-runs-overflow"
+value = "Batch mode on a multiblock with a huge parallel hatch and subtick parallels (above 2.1 billion crafts before): chanced outputs come out, total runs positive (at most 2,000,000,000)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/GTRecipeMixin.java"
+snippet = "// Untested: a batch-mode multiblock with a huge parallel hatch"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).
