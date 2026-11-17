@@ -29,6 +29,10 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 - 3.7.0 (2026-11-14) released the ME Data Center (`ae2.me-data-center`), the Assembling Matrix's Patterns with
   problems line (`ae2.assembling-matrix`) and short numbers (`NumberText`, `skill.modular-ui`). The user tried all of
   it in game on 1.21; on 1.20 it is untried (`status.untested` there). Not triable: me-data-center-compat.
+- 3.9.0 (2026-11-16) released `recipes.keepVanillaRecipes` (`recipes.keep-vanilla-recipes`: one option keeps every
+  vanilla recipe GTCEu removes and manual compression, in place of keepVanillaTNT / keepManualCompression) and the
+  Potion Core Infuser's recipe page and 24 h fix (`multiblock.personal-beacon`). Untried in game on both branches
+  (`status.untested` keep-vanilla-recipes, potion-core-infuser-recipes).
 - 3.8.0 (2026-11-15) released the Personal Beacon and Potion Core Infuser (`multiblock.personal-beacon`), the ME
   Cable Cover (`ae2.me-cable-cover`), the Assembling Matrix and ME Data Center interfaces connecting on their
   front only, the ME Data Center's stars over its glass and CPU frame overlays on six sides. The user tried all of it in
