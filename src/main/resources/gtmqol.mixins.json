@@ -36,6 +36,7 @@
     "gtceufix.AbstractWidgetMenuMixin",
     "gtceufix.EnergyContainerListMixin",
     "gtceufix.FluidRecipeCapabilityMixin",
+    "gtceufix.GTRecipeMixin",
     "gtceufix.RecipeLogicMixin",
     "gtceufix.RecipeRunnerMixin",
     "mekanism.TaggedChemicalStackIngredientAccessor"

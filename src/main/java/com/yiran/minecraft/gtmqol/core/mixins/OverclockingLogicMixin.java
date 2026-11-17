@@ -40,6 +40,8 @@ public interface OverclockingLogicMixin {
         if (OCs <= 0) return ModifierFunction.IDENTITY;
 
         OverclockingLogic logic = Overclocking.replace((OverclockingLogic) (Object) this);
+        // parallels from a parallel hatch come first; all of them together must stay within MAX_PARALLELS
+        int room = Overclocking.room(recipe);
         int maxParallels;
         if (!shouldParallel) {
             maxParallels = 1;
@@ -51,12 +53,12 @@ public interface OverclockingLogicMixin {
             // recipe runs it overclocked
             int limit = effectiveBoostPower > 30 ? Overclocking.MAX_PARALLELS :
                     effectiveBoostPower < 0 ? 1 : (1 << effectiveBoostPower) + 1;
-            maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, limit);
+            maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, Math.min(limit, room));
         } else if (logic == Overclocking.STANDARD) {
             maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe,
-                    Math.max((int) Math.min(maxVoltage / recipe.duration, Overclocking.MAX_PARALLELS), 1));
+                    Math.max((int) Math.min(maxVoltage / recipe.duration, room), 1));
         } else {
-            maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, Overclocking.MAX_PARALLELS);
+            maxParallels = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, room);
         }
 
         var params = new OverclockingLogic.OCParams(EUt, recipe.duration, OCs, maxParallels);
