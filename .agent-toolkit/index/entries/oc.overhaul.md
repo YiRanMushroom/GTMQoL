@@ -1,7 +1,7 @@
 +++
 title = "Overclocking overhaul: OverclockingLogic @Overwrites (4x/4x and 2x/4x subtick, equivalent OC, coil OC 4x/8x)"
 keys = [ "getmodifier", "heatingcoiloc", "parallel", "perfect overclock", "subtickparalleloc", "ulv penalty" ]
-updated = "2026-11-17 03:32:15"
+updated = "2026-11-17 05:07:27"
 checked = "2026-11-10"
 
 [[links]]
@@ -22,7 +22,7 @@ snippet = "static OverclockingLogic.OCResult heatingCoilOC(OverclockingLogic.OCP
 
 [[items]]
 name = "room"
-value = "Every parallel stage (subtick OC, batch mode, AbsoluteParallel, gregification OC and batch) is limited by Overclocking.room, so parallels x subtick x batch stays within MAX_PARALLELS (gtceufix.total-runs-overflow)"
+value = "Overclocking.room limits every ParallelLogic call (gtceufix ParallelLogicMixin): parallels x subtick x batch stay within MAX_PARALLELS and every multiplied item or fluid amount within int (gtceufix.total-runs-overflow); our call sites only cap at MAX_PARALLELS"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/overclock/Overclocking.java"
 snippet = "public static int room(GTRecipe recipe) {"
 +++

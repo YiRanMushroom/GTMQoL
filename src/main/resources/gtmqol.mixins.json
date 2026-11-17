@@ -37,6 +37,7 @@
     "gtceufix.EnergyContainerListMixin",
     "gtceufix.FluidRecipeCapabilityMixin",
     "gtceufix.GTRecipeMixin",
+    "gtceufix.ParallelLogicMixin",
     "gtceufix.RecipeLogicMixin",
     "gtceufix.RecipeRunnerMixin",
     "mekanism.TaggedChemicalStackIngredientAccessor"

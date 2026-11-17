@@ -1,14 +1,14 @@
 +++
 title = "Upstream bug workarounds in core/mixins/gtceufix: rules, which exist on 1.20.1 vs 1.21.1, recheck after bumps"
 keys = [ "both branches", "modularui bug", "remove once fixed" ]
-updated = "2026-11-17 03:32:33"
+updated = "2026-11-17 05:07:27"
 checked = "2026-11-17"
 
 [[items]]
 name = "package"
 value = "The gtceufix mixins (directory link: stale when one is added or removed)"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix"
-dir = [ "AbstractWidgetMenuMixin.java", "BaseSchemaRendererMixin.java", "DummyChunkSourceMixin.java", "EnergyContainerListMixin.java", "FluidRecipeCapabilityMixin.java", "GTEmiRecipeMixin.java", "GTRecipeMixin.java", "MachineModelVariantOrderMixin.java", "RecipeLogicMixin.java", "RecipeRunnerMixin.java" ]
+dir = [ "AbstractWidgetMenuMixin.java", "BaseSchemaRendererMixin.java", "DummyChunkSourceMixin.java", "EnergyContainerListMixin.java", "FluidRecipeCapabilityMixin.java", "GTEmiRecipeMixin.java", "GTRecipeMixin.java", "MachineModelVariantOrderMixin.java", "ParallelLogicMixin.java", "RecipeLogicMixin.java", "RecipeRunnerMixin.java" ]
 
 [[items]]
 name = "mixin-config-common"
@@ -31,7 +31,7 @@ snippet = "public enum PotionCanningLogic implements GTRecipeType.ICustomRecipeL
 Mixins in `core/mixins/gtceufix/` work around bugs in GTCEu or ModularUI. Each class javadoc says what it fixes and ends with "Remove once ... fixes it": delete it when upstream does (check on every GTCEu / MUI bump, see skill.gtceu-upgrade). All of them are listed in `gtmqol.mixins.json` (no separate config on 1.20.1).
 
 On 1.20.1 (checked 2026-10-29 against GTCEu 327 / MUI 25: none of their targets changed upstream), all also on 1.21.1:
-- common: `AbstractWidgetMenuMixin`, `EnergyContainerListMixin`, `FluidRecipeCapabilityMixin`, `GTRecipeMixin` (gtceufix.total-runs-overflow), `RecipeLogicMixin`, `RecipeRunnerMixin`, `MachineModelVariantOrderMixin` (only matters in data generation)
+- common: `AbstractWidgetMenuMixin`, `EnergyContainerListMixin`, `FluidRecipeCapabilityMixin`, `GTRecipeMixin` and `ParallelLogicMixin` (gtceufix.total-runs-overflow), `RecipeLogicMixin`, `RecipeRunnerMixin`, `MachineModelVariantOrderMixin` (only matters in data generation)
 - client: `GTEmiRecipeMixin`, `BaseSchemaRendererMixin`, `DummyChunkSourceMixin`
 AbstractWidgetMenu, BaseSchemaRenderer, EnergyContainerList and RecipeLogic are byte-identical to 1.21.1 apart from imports; DummyChunkSource lacks 1.21.1's clear() wrapper (1.20.1's MUI has no clear); FluidRecipeCapability, GTEmiRecipe and RecipeRunner use NBT / GTCEu 1.20 ingredients where 1.21.1 uses data components / NeoForge sized ingredients.
 
