@@ -1,6 +1,7 @@
 package com.yiran.minecraft.gtmqol.common.beacon;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -9,13 +10,16 @@ import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.yiran.minecraft.gtmqol.GTMQoL;
 import com.yiran.minecraft.gtmqol.GTMQoLAddon;
 import com.yiran.minecraft.gtmqol.common.assembler.MagicalAssembler;
@@ -104,6 +108,7 @@ public final class PersonalBeacon {
     public static MachineEntry<MachineDefinition> BINDING_HATCH;
     public static MachineEntry<MachineDefinition> CHUNK_LOADER;
     public static MachineEntry<MachineDefinition> INFUSER;
+    public static GTRecipeTypeEntry INFUSER_RECIPES;
     public static MachineEntry<MultiblockMachineDefinition> CONTROLLER;
 
     private PersonalBeacon() {}
@@ -151,8 +156,17 @@ public final class PersonalBeacon {
                 .langValue("Personal Beacon Chunk Loader")
                 .tooltips(Component.translatable(KEY + "chunk_loader.desc"))
                 .register();
+        INFUSER_RECIPES = GTMQoLAddon.registrate().recipeType("potion_core_infuser", GTRecipeTypes.ELECTRIC)
+                .setMaxIOSize(0, 1, 1, 0)
+                .setEUIO(IO.IN)
+                .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW_MULTIPLE))
+                .addCustomRecipeLogic(PotionCoreInfuserRecipes.INSTANCE)
+                .setSound(GTSoundEntries.CHEMICAL)
+                .lang("Potion Core Infuser")
+                .register();
         INFUSER = GTMQoLAddon.machine("potion_core_infuser", PotionCoreInfuserMachine::new)
                 .tier(EV)
+                .recipeType(INFUSER_RECIPES)
                 .rotationState(RotationState.NON_Y_AXIS)
                 .modelProperty(RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
                 .workableTieredHullModel(GTCEu.id("block/machines/brewery"))

@@ -5,36 +5,29 @@ import com.yiran.minecraft.gtmqol.config.GTMQoLConfig;
 
 import net.minecraft.resources.ResourceLocation;
 
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import java.util.function.Consumer;
 
 /**
- * Keep vanilla's sand → glass smelting even with gtceu's {@code hardGlassRecipes}, so the glass + casing hatch
- * recipes ({@code EarlyGameRecipes}) work before the alloy smelter. The rest of the hard glass removals stay.
- * <p>
- * Also keeps vanilla's TNT recipe regardless of gtceu's {@code removeVanillaTNTRecipe} (same reason as
- * {@link ManualCompressionMixin}: setting gtceu's config from our constructor doesn't stick).
+ * With {@code recipes.keepVanillaRecipes}, GTCEu's recipe removals ({@link RecipeRemoval#init}, its wood removals
+ * included) skip every {@code minecraft:} recipe, whatever its config says. Its removals of its own recipes stay. The
+ * ids are filtered here because setting gtceu's config from our constructor doesn't stick (see
+ * {@link ManualCompressionMixin}, which keeps the compression recipes of GT materials under the same option).
  */
+// Untested: with recipes.keepVanillaRecipes on, vanilla's TNT, sand -> glass smelting, bucket, paper, charcoal and
+// flint and steel recipes are there next to GTCEu's harder ones, and 3x3 compression still works for GT materials;
+// off: GTCEu's recipe settings remove them again
 @Mixin(value = RecipeRemoval.class, remap = false)
 public class RecipeRemovalMixin {
 
-    @WrapWithCondition(method = "hardGlassRecipes",
-                       at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V"))
-    private static boolean gtmqol$keepGlass(Consumer<Object> registry, Object id) {
-        return !(GTMQoLConfig.get().recipes.earlyGame && ResourceLocation.withDefaultNamespace("glass").equals(id));
-    }
-
-    @ModifyExpressionValue(method = "generalRemovals",
-                           at = @At(value = "FIELD",
-                                    target = "Lcom/gregtechceu/gtceu/config/ConfigHolder$RecipeConfigs;removeVanillaTNTRecipe:Z",
-                                    opcode = Opcodes.GETFIELD))
-    private static boolean gtmqol$keepTNT(boolean remove) {
-        return remove && !GTMQoLConfig.get().recipes.keepVanillaTNT;
+    @ModifyVariable(method = "init", at = @At("HEAD"), argsOnly = true)
+    private static Consumer<ResourceLocation> gtmqol$keepVanillaRecipes(Consumer<ResourceLocation> registry) {
+        if (!GTMQoLConfig.get().recipes.keepVanillaRecipes) return registry;
+        return id -> {
+            if (!ResourceLocation.DEFAULT_NAMESPACE.equals(id.getNamespace())) registry.accept(id);
+        };
     }
 }

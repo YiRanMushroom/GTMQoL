@@ -698,5 +698,6 @@
   "recipe_type.gtmqol.magical_assembler": "Magical Assembler",
   "recipe_type.gtmqol.me_assembler": "ME Assembler",
   "recipe_type.gtmqol.me_circuit_slicer": "ME Circuit Slicer",
-  "recipe_type.gtmqol.pattern_crafter": "Pattern Crafter"
+  "recipe_type.gtmqol.pattern_crafter": "Pattern Crafter",
+  "recipe_type.gtmqol.potion_core_infuser": "Potion Core Infuser"
 }

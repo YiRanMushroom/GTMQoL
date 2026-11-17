@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
 /**
- * Keeps the crafting table compression recipes (ingot <-> block, nugget <-> ingot, raw ore <-> raw ore block)
- * regardless of GTCEu's {@code disableManualCompression}. Setting that field from the mod constructor does not
+ * With {@code recipes.keepVanillaRecipes}, keeps the crafting table compression recipes (ingot <-> block, nugget <->
+ * ingot, raw ore <-> raw ore block) of every material regardless of GTCEu's {@code disableManualCompression}. Setting that field from the mod constructor does not
  * stick, so every place GTCEu reads it sees {@code false} instead.
  */
 @Mixin(value = { RecipeAddition.class, RecipeRemoval.class, MaterialRecipeHandler.class, OreRecipeHandler.class },
@@ -27,6 +27,6 @@ public class ManualCompressionMixin {
                                     target = "Lcom/gregtechceu/gtceu/config/ConfigHolder$RecipeConfigs;disableManualCompression:Z",
                                     opcode = Opcodes.GETFIELD))
     private static boolean gtmqol$keepManualCompression(boolean disabled) {
-        return disabled && !GTMQoLConfig.get().recipes.keepManualCompression;
+        return disabled && !GTMQoLConfig.get().recipes.keepVanillaRecipes;
     }
 }
