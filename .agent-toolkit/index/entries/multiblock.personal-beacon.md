@@ -2,7 +2,7 @@
 title = "Personal Beacon: EV beacon on a titanium pyramid, gives bound players effects from cores anywhere, FE per 15 s cycle"
 kind = "design"
 keys = [ "beacon beam", "binding hatch", "chunk loading", "core socket", "environmental tech", "flight", "nanobot beacon", "personal beacon", "potion core", "potion core infuser" ]
-updated = "2026-11-15 06:59:21"
+updated = "2026-11-16 06:48:08"
 checked = "2026-11-15"
 
 [[items]]
@@ -34,6 +34,12 @@ name = "effects"
 value = "BeaconEffects: Flight, Flight Speed"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/BeaconEffects.java"
 snippet = "public final class BeaconEffects {"
+
+[[items]]
+name = "infuser-recipes"
+value = "Recipe viewer page of the infuser: display-only recipe type potion_core_infuser, built by PotionCoreInfuserRecipes from the potion registry"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PotionCoreInfuserRecipes.java"
+snippet = "public enum PotionCoreInfuserRecipes implements GTRecipeType.ICustomRecipeLogic {"
 +++
 The user's design (2026-11-14), both branches, config machines.personalBeacon. Package common/beacon. Built 2026-11-14 on both branches, untried in game (status.untested).
 

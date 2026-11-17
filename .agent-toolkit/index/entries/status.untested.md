@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-15 23:39:56"
+updated = "2026-11-17 01:42:48"
 
 [[items]]
 name = "legacy-parts-no-unification"
@@ -499,5 +499,17 @@ name = "certainty-parallels"
 value = "Probable Certainty Device with parallels: each chanced output comes out once per parallel (before: once per recipe, so 1/parallels of it)"
 path = "src/main/java/com/yiran/minecraft/gtmqol/common/probable/ProbableDevicePartMachine.java"
 snippet = "// Untested: with parallels, a Probable Certainty Device gives every chanced output once per parallel"
+
+[[items]]
+name = "potion-core-infuser-recipes"
+value = "Potion Core Infuser: EMI page with every potion (plain, lingering) and how much makes a core; a core from exactly 24 h clears the stored effect"
+path = "src/main/java/com/yiran/minecraft/gtmqol/common/beacon/PotionCoreInfuserRecipes.java"
+snippet = "// Untested: EMI shows a Potion Core Infuser page with each potion, plain and lingering, and the amount that makes a"
+
+[[items]]
+name = "keep-vanilla-recipes"
+value = "recipes.keepVanillaRecipes on: vanilla TNT, sand -> glass, bucket, paper, charcoal, flint and steel craftable next to GTCEu's harder recipes; 3x3 compression of GT materials still works; off: GTCEu removes them again"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/RecipeRemovalMixin.java"
+snippet = "// Untested: with recipes.keepVanillaRecipes on"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

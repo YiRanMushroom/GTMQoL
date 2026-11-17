@@ -1,8 +1,8 @@
 +++
 title = "Upstream bug workarounds in core/mixins/gtceufix: rules, which exist on 1.20.1 vs 1.21.1, recheck after bumps"
 keys = [ "both branches", "modularui bug", "remove once fixed" ]
-updated = "2026-11-11 08:19:21"
-checked = "2026-11-11"
+updated = "2026-11-16 02:37:27"
+checked = "2026-11-16"
 
 [[items]]
 name = "package"
@@ -42,3 +42,5 @@ Deleted after the 2026-10-14 GTCEu bump (fixed upstream, GTCEu #5540 ghost circu
 `PotionCanningLogic` (canner potion representative recipes) is a feature, not a fix, and lives outside `gtceufix/`.
 
 Per-fix entries: gtceufix.*.
+
+Upstream check 2026-11-16 (GregTech-Modern 1.20.1 d24b74a, 1.21 d5bafc8; clone in E:/code/Minecraft/GregTech-Modern/<branch>, issues from #2096 and PRs from #3954 searched): every mixin here is still needed, none fixed upstream and no open PR fixes one. Reported upstream without a PR: AEConfigSyncHandler (#5567), EnergyContainerList.hasPrimeFactorGreaterThanTwo (#3697, since 2025-08), maybe the bloom crash (#5449, no stack trace in the text). Not reported: all others. ModularUI's own bugs (AbstractWidget menu, BaseSchemaRenderer, DummyChunkSource, RecipeSlotAccessor) belong to brachy.modularui, whose tracker was not checked.
