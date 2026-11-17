@@ -2,7 +2,7 @@
 title = "Untested changes the user still has to check in game; each item is linked to its Untested: comment"
 kind = "status"
 keys = [ "in-game check", "remind", "untested" ]
-updated = "2026-11-17 03:31:48"
+updated = "2026-11-17 05:06:56"
 
 [[items]]
 name = "rotor-amount"
@@ -369,5 +369,11 @@ name = "total-runs-overflow"
 value = "Batch mode on a multiblock with a huge parallel hatch and subtick parallels (above 2.1 billion crafts before): chanced outputs come out, total runs positive (at most 2,000,000,000)"
 path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/GTRecipeMixin.java"
 snippet = "// Untested: a batch-mode multiblock with a huge parallel hatch"
+
+[[items]]
+name = "parallel-input-amounts"
+value = "A multiblock fed from an ME network with over 2.1 billion of an input it uses 2+ per craft, at parallels needing more than 2.1 billion of it per run: the full amount is taken (before: at most 2.1 billion)"
+path = "src/main/java/com/yiran/minecraft/gtmqol/core/mixins/gtceufix/ParallelLogicMixin.java"
+snippet = "// Untested: a multiblock fed from an ME network with over 2.1 billion of an input it uses 2 or more of per craft, with"
 +++
 Remind the user of these at the start of a session. Once one is checked: delete its Untested: comment; the item goes stale, then remove it (index_update remove_items).

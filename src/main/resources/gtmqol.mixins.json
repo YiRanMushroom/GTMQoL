@@ -36,6 +36,7 @@
     "gtceufix.EmiCallWrapperMixin",
     "gtceufix.FluidRecipeCapabilityMixin",
     "gtceufix.GTRecipeMixin",
+    "gtceufix.ParallelLogicMixin",
     "gtceufix.MachineModelVariantOrderMixin",
     "gtceufix.GTRecipeBuilderMixin",
     "gtceufix.ItemDataComponentMapIngredientMixin",

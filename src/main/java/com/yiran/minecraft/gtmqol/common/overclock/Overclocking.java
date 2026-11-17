@@ -1,7 +1,18 @@
 package com.yiran.minecraft.gtmqol.common.overclock;
 
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
+
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+
+import java.util.List;
 
 /**
  * Replacement factors for gtceu's four overclock constants. The constants themselves are
@@ -36,12 +47,39 @@ public final class Overclocking {
     }
 
     /**
-     * How many times a run's crafts may still be multiplied without going over {@link #MAX_PARALLELS}, at least 1:
-     * the limit for the next parallels (subtick, batch, ...). gtceu multiplies the three as ints for its total runs,
-     * and its chance rolls take that many runs.
+     * How many times a run's crafts may still be multiplied, at least 1: the limit for the next parallels (parallel
+     * hatch, subtick, batch, ...), applied to every gtceu {@code ParallelLogic} call by {@code ParallelLogicMixin}.
+     * The crafts stay within {@link #MAX_PARALLELS}: gtceu multiplies the three parallels as ints for its total runs,
+     * and its chance rolls take that many runs. Every multiplied item and fluid amount stays an int: gtceu's
+     * {@code ContentModifier} saturates them there, so a run would take or give less than its crafts.
      */
     public static int room(GTRecipe recipe) {
-        return Math.max(1, MAX_PARALLELS / Math.max(1, crafts(recipe)));
+        long room = Math.min(MAX_PARALLELS / Math.max(1, crafts(recipe)), Integer.MAX_VALUE / largestAmount(recipe));
+        return (int) Math.max(1, room);
+    }
+
+    /**
+     * The largest item or fluid amount of the recipe that parallels multiply, at least 1. gtceu multiplies neither
+     * chanced contents (rolled once per craft) nor non-consumed ones; ranged amounts count at their highest roll.
+     */
+    private static int largestAmount(GTRecipe recipe) {
+        int largest = 1;
+        for (var contents : List.of(recipe.inputs, recipe.outputs, recipe.tickInputs, recipe.tickOutputs)) {
+            for (Content content : contents.getOrDefault(ItemRecipeCapability.CAP, List.of())) {
+                if (content.chance() < content.maxChance()) continue;
+                SizedIngredient ing = ItemRecipeCapability.CAP.of(content.content());
+                largest = Math.max(largest,
+                        SizedIngredientExtensions.getContainedCustom(ing) instanceof IntProviderIngredient provider ?
+                                provider.getMaxRoll() : ing.count());
+            }
+            for (Content content : contents.getOrDefault(FluidRecipeCapability.CAP, List.of())) {
+                if (content.chance() < content.maxChance()) continue;
+                SizedFluidIngredient ing = FluidRecipeCapability.CAP.of(content.content());
+                largest = Math.max(largest,
+                        ing.ingredient() instanceof IRangedIngredient<?> ranged ? ranged.getMaxRoll() : ing.amount());
+            }
+        }
+        return largest;
     }
 
     public static OverclockingLogic replace(OverclockingLogic logic) {

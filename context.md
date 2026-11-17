@@ -29,6 +29,10 @@ Two long-lived branches, kept in sync with cherry-picks. Features go on both unl
 - 3.7.0 (2026-11-14) released the ME Data Center (`ae2.me-data-center`), the Assembling Matrix's Patterns with
   problems line (`ae2.assembling-matrix`) and short numbers (`NumberText`, `skill.modular-ui`). The user tried all of
   it in game on 1.21; on 1.20 it is untried (`status.untested` there). Not triable: me-data-center-compat.
+- 3.9.2 (2026-11-16): gtceufix `ParallelLogicMixin` puts `Overclocking.room` into every ParallelLogic call, now
+  also bounding each multiplied item and fluid amount at int (inputs above 2.1G per run were partly free); the 3.9.1
+  room caps at our call sites are gone (`gtceufix.total-runs-overflow`). Untried in game (`status.untested`
+  parallel-input-amounts).
 - 3.9.1 (2026-11-16) fixed lost chanced outputs and negative total runs above 2^31 crafts per run
   (`gtceufix.total-runs-overflow`); untried in game (`status.untested` total-runs-overflow).
 - 3.9.0 (2026-11-16) released `recipes.keepVanillaRecipes` (`recipes.keep-vanilla-recipes`: one option keeps every
